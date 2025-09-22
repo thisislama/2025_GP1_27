@@ -7,7 +7,7 @@ a process that is mentally demanding, and heavily reliant on the experience of m
 of an intelligent automated detection system that analyzes ventilator waveform images. To overcome the critical challenges in manual ventilator waveform monitoring.
 
 ##  Technology
- ###All software technology will be used:
+ ### All software technology will be used:
 Python: main programming language
 Django: web framework for Python
 HTML, CSS and JavaScript: front-end technologies
