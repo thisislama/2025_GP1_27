@@ -24,5 +24,5 @@ PythonAnywhere: Cloud hosting platform for deploying the website.
 The system will be hosted in pythonsnyqehre it will be open source website, But for now the project is still under development but you can preview it locally by  
  Clone the repository:
   
-   git clone https://github.com/<your-org-or-username>/2025_GP_27.git
-   cd 2025_GP_27
+  #### git clone https://github.com/<your-org-or-username>/2025_GP_27.git
+  #### cd 2025_GP_27
