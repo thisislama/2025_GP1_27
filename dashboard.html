@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TANAFS </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- Header -->
+
+
+<dvi class="dashboard">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="logo">💙</div>
+    <nav>
+        <a href="#">🏠</a>
+        <a href="#">📊</a>
+        <a href="#">🧑‍⚕️</a>
+        <a href="#">⚙️</a>
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<main>
+
+    <header class="top-bar">
+        <div class="logo-section">
+            <hr>
+            <div class="logo">
+                <a href="dashboard.html">
+                    <img src="images/logo.png" alt="tanafs" id="logo">
+                </a>
+            </div>
+            <hr>
+        </div>
+
+        <div class="profile">
+            <img src="https://via.placeholder.com/40" alt="Profile">
+            <span class="name">Kellan Michel</span>
+        </div>
+    </header>
+    <div class="title-2">
+        <h1>Dashboard</h1>
+        <p>Real-time respiratory waveform analysis and pattern detection</p>
+    </div>
+
+    <div class="content">
+
+        <div class="box upload">
+            <h4>Upload</h4>
+            <input type="file" id="file" accept="image/*">
+            <button class="upload-button">Upload waveform</button>
+        </div>
+
+        <div class="box results">
+            <h4>Results</h4>
+
+            <!--result of uploaded should be here-->
+        </div>
+
+        <div class="box patients">
+            <h4>Patients</h4>
+
+
+        </div>
+
+        <div class="box controls">
+            <h4>Recent analysis</h4>
+            <button class="btn primary">Monitoring Active</button>
+            <button class="btn">Pause</button>
+        </div>
+
+
+    </div>
+</main>
+</dvi>
+
+
+<footer>
+    <div>
+        <a href="#">Home</a> |
+        <a href="#">About</a> |
+        <a href="#">Support</a> |
+        <a href="#">Contact</a>
+    </div>
+    <p>&copy; 2025 TANAFS. All rights reserved.</p>
+</footer>
+
+
+
+<script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+</body>
+</html>
