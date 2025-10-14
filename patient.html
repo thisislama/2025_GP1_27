@@ -62,18 +62,29 @@
         /* -------- Main -------- */
         .main { margin-left: 88px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
         header.topbar {
-            height: 84px; display: flex; align-items: center; justify-content: space-between; padding: 10px 36px;
+            height: 84px; display: flex; align-items: center; justify-content: center; padding: 10px 36px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
             border-bottom: 1px solid rgba(15, 21, 40, 0.04);
+            position: relative;
         }
         
-        .logo-top { display: flex; align-items: center; gap: 12px; font-weight: 800; color: var(--accent); font-size: 20px; margin-right: 185px; }
-        .top-actions { display: flex; align-items: center; gap: 14px }
+        .logo-top { display: flex; align-items: center; gap: 12px; font-weight: 800; color: var(--accent); font-size: 20px; margin-right: 185px;position: absolute;
+          left: 50%; transform: translateX(-50%); }
+        .top-actions { display: flex; align-items: center; gap: 14px; position: absolute; right: 36px; }
        
         .profile { display: flex; gap: 10px; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff);
             padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(15, 21, 40, 0.03); }
         .avatar { width: 34px; height: 34px; border-radius: 999px; background: linear-gradient(180deg, #2e9cff, #1a57ff);
             color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+
+
+            
+
+
+
+
+
+
 
         /* -------- Page content -------- */
      
