@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-1:#0875fa29;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --primary:#0B83FE;
+      --primary-pressed:#0970d7;
+      --ring:#D1E6FE;
+      --radius:24px;
+      --field-h:3.25rem;
+      --field-r:12px;
+      --gap:16px;
+      --pad:36px;
+      --maxw:800px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 10% -10%, var(--bg-1), transparent 60%),
+        radial-gradient(1200px 900px at 100% 100%, #ffffff, transparent 60%),
+        linear-gradient(160deg, #D1E6FE 0%, #ffffff 100%);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      min-height:100vh;
+            padding:clamp(60px, 8vh, 100px) 24px 60px; /* مسافة من فوق وتحت */
+
+    }
+
+    .wrap{
+      width:min(var(--maxw), 95vw);
+      margin-inline:auto;
+      margin-bottom:clamp(40px, 5vh, 80px); /* المسافة تحت الصندوق */
+      margin-top: clamp(40px, 6vh, 80px);
+
+    }
+
+
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:0 20px 50px rgba(31,41,55,.10),0 8px 20px rgba(31,41,55,.06);
+      padding:clamp(24px, 3vw, var(--pad));
+    }
+
+    header.card-head{
+      text-align:center;
+      margin-bottom:24px;
+    }
+    .title{
+      font-size:clamp(1.4rem, 2.5vw, 1.7rem);
+      font-weight:700;
+      margin:0 0 6px;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size:.95rem;
+      margin:0;
+    }
+
+    form{width:100%}
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:var(--gap);
+      margin-top:12px;
+    }
+
+    .grid-full{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:var(--gap);
+      margin-top:12px;
+    }
+
+    @media (max-width:640px){
+      .grid{grid-template-columns:1fr;}
+      .wrap{width:100%;}
+    }
+
+    label{
+      display:block;
+      font-size:.875rem;
+      font-weight:600;
+      margin:6px 2px 6px;
+    }
+
+    .field{position:relative;}
+    .input, select.input{
+      width:100%;
+      height:var(--field-h);
+      padding:0 14px;
+      background:#fff;
+      border:1px solid var(--ring);
+      border-radius:var(--field-r);
+      outline:none;
+      font-size:0.95rem;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    .input:focus{
+      border-color:#9FD0FF;
+      box-shadow:0 0 0 4px #0b84fe33;
+    }
+
+    .actions{
+      margin-top:24px;
+      display:grid;
+      gap:10px;
+    }
+
+    .btn{
+      width:100%;
+      height:3.5rem;
+      border-radius:12px;
+      border:0;
+      cursor:pointer;
+      font-weight:600;
+      font-size:1rem;
+      transition:transform .06s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .btn.primary{background:var(--primary);color:#fff;}
+    .btn.primary:hover{background:var(--primary-pressed);}
+    .btn:active{transform:translateY(1px);}
+
+    .footer-note{
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+      margin:8px 0 0;
+    }
+    .footer-note a{
+      color:var(--primary);
+      font-weight:600;
+      text-decoration:none;
+    }
+    .footer-note a:hover{text-decoration:underline;}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+  
+
+    <form class="card" action="signup.php" method="post">
+      <header class="card-head">
+        <h1 class="title">Create Account</h1>
+        <p class="subtitle">Please fill in your information to sign up.</p>
+      </header>
+
+      <!-- First / Last -->
+      <div class="grid">
+        <div>
+          <label for="first_name">First Name</label>
+          <div class="field">
+            <input class="input" id="first_name" name="first_name" type="text" placeholder="Enter your first name" required>
+          </div>
+        </div>
+
+        <div>
+          <label for="last_name">Last Name</label>
+          <div class="field">
+            <input class="input" id="last_name" name="last_name" type="text" placeholder="Enter your last name" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Role (بعرض كامل) -->
+      <div class="grid-full">
+        <div>
+          <label for="role">Role</label>
+          <div class="field">
+            <select class="input" id="role" name="role" required>
+              <option value="">Select your role</option>
+              <option value="Doctor">Doctor</option>
+              <option value="Nurse">Nurse</option>
+              <option value="Technician">Technician</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email / Phone -->
+      <div class="grid">
+        <div>
+          <label for="email">Email</label>
+          <div class="field">
+            <input class="input" id="email" name="email" type="email" placeholder="Enter your email" required>
+          </div>
+        </div>
+
+        <div>
+          <label for="phone">Phone Number</label>
+          <div class="field">
+            <input class="input" id="phone" name="phone" type="tel" placeholder="+966 5xxxxxxxx" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Password / DOB -->
+      <div class="grid">
+        <div>
+          <label for="password">Password</label>
+          <div class="field">
+            <input class="input" id="password" name="password" type="password" placeholder="Enter password" required minlength="8">
+          </div>
+        </div>
+
+        <div>
+          <label for="dob">Date of Birth</label>
+          <div class="field">
+            <input class="input" id="dob" name="dob" type="date" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="actions">
+        <button class="btn primary" type="submit">Sign Up</button>
+        <p class="footer-note">Already have an account? <a href="signin.html">Sign in</a></p>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-1:#0875fa29;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --primary:#0B83FE;
+      --primary-pressed:#0970d7;
+      --ring:#D1E6FE;
+      --radius:24px;
+
+      --maxw:640px;
+      --pad:36px;
+      --field-h:3.25rem;
+      --field-r:12px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 15% 0%, var(--bg-1), transparent 60%),
+        radial-gradient(1200px 900px at 100% 100%, #ffffff, transparent 60%),
+        linear-gradient(160deg, #D1E6FE 0%, #ffffff 100%);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding:clamp(100px, 12vh, 160px) 24px 80px; /* ← زدت المسافة من فوق */
+    }
+
+    .card{
+      width:min(var(--maxw), 94vw);
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:0 20px 50px rgba(31,41,55,.10), 0 8px 20px rgba(31,41,55,.06);
+      padding:clamp(24px, 3vw, var(--pad));
+      margin-top:clamp(40px, 6vh, 80px); /* فراغ إضافي من الأعلى */
+    }
+
+    .card header{text-align:center;margin-bottom:28px;}
+    .title{font-size:clamp(1.35rem, 2.2vw, 1.6rem);font-weight:700;margin:0 0 6px;}
+    .subtitle{color:var(--muted);font-size:.95rem;margin:0;}
+
+    label{display:block;font-size:.875rem;font-weight:600;margin:14px 4px 8px;}
+    .field{position:relative;}
+    .input{
+      width:100%;height:var(--field-h);padding:0 14px;
+      background:#fff;border:1px solid var(--ring);border-radius:var(--field-r);
+      outline:none;font-size:.95rem;transition:border-color .2s, box-shadow .2s;
+    }
+    .input:focus{border-color:#9FD0FF;box-shadow:0 0 0 4px #0b84fe33;}
+
+    .row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 2px 4px;}
+    .checkbox{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.9rem;}
+    .checkbox input{width:16px;height:16px;}
+
+    .link{color:#0B83FE;text-decoration:none;font-weight:600;font-size:.9rem;}
+    .link:hover{text-decoration:underline;}
+
+    .btn{
+      width:100%;height:56px;border-radius:12px;border:0;cursor:pointer;
+      font-weight:600;font-size:1rem;background:var(--primary);color:#fff;
+      transition:background .2s ease, transform .06s ease;margin-top:12px;
+    }
+    .btn:hover{background:var(--primary-pressed);}
+    .btn:active{transform:translateY(1px);}
+
+    .footer-note{text-align:center;color:var(--muted);font-size:.95rem;margin:16px 0 0;}
+    .footer-note a{color:#0B83FE;font-weight:600;text-decoration:none;}
+    .footer-note a:hover{text-decoration:underline;}
+  </style>
+</head>
+
+<body>
+  <form class="card" action="signin.php" method="post" autocomplete="on">
+    <header>
+      <h1 class="title">Welcome Back!</h1>
+      <p class="subtitle">Please enter your details.</p>
+    </header>
+
+    <label for="email">Email</label>
+    <div class="field">
+      <input class="input" id="email" name="email" type="email" placeholder="Enter your email" required>
+    </div>
+
+    <label for="password">Password</label>
+    <div class="field">
+      <input class="input" id="password" name="password" type="password" placeholder="Enter password" required>
+    </div>
+
+    <div class="row">
+      <label class="checkbox">
+        <input type="checkbox" name="remember"> Remember me
+      </label>
+      <a class="link" href="#">Forgot password?</a>
+    </div>
+
+    <button class="btn" type="submit">Sign in</button>
+
+    <p class="footer-note">Don't have an account? <a href="signup.html">Sign up</a></p>
+  </form>
+</body>
+</html>
