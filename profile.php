@@ -231,7 +231,7 @@ footer img { width: 200px; }
             <div class="buttons">
                 <button type="button" id="editBtn">Edit</button>
                 <button type="submit" name="save" id="saveBtn">Save</button>
-                <button type="button" onclick="window.location.href='dsh3.html'">Back</button>
+                <button type="button" onclick="window.location.href='dashboard.html'">Back</button>
             </div>
         </form>
 
