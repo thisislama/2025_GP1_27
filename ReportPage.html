@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tanafs History</title>
+    <title>Tanafs Report page</title>
 
     <!-- Google Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
@@ -11,127 +11,105 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg: #f2f6fb;
-            --accent: #0f65ff; /* primary blue */
-            --muted: #9aa6c0;
-            --radius: 14px;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: var(--bg);
-            color: #15314b;
-            display: flex;
-        }
-
-        /* -------- Sidebar -------- */
-        .sidebar {
-            position: fixed; left: 0; top: 0; width: 88px; height: 100vh;
-            background: linear-gradient(180deg, #fbfdff, #f3f7ff);
-            border-right: 1px solid rgba(15, 21, 40, 0.04);
-            display: flex; flex-direction: column; align-items: center;
-            padding: 24px 12px; gap: 28px;
-        }
-        
-        .sidebar-nav { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; margin-top: 18px; }
-        .sidebar-item { width: 60px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: var(--accent); transition: all .18s ease; position: relative; }
-        .sidebar-item .material-symbols-outlined { font-variation-settings: 'wght' 500; font-size: 20px }
-        .sidebar-item:hover { transform: translateX(4px) }
-        .sidebar-item.active {
-            background: linear-gradient(180deg, rgba(15, 101, 255, 0.08), rgba(15, 101, 255, 0.03));
-            box-shadow: 8px 8px 30px rgba(15, 101, 255, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            border-radius: 20px; width: 72px; height: 56px;
-        }
-        .sidebar-item.patients .material-symbols-outlined {
-            background: linear-gradient(180deg, #2e9cff, #1a57ff); -webkit-background-clip: text; background-clip: text;
-            color: transparent; font-size: 22px; filter: drop-shadow(0 4px 12px rgba(46, 156, 255, 0.18));
-        }
-        .sidebar-logout { margin-top: auto; width: 100%; display: flex; justify-content: center; padding-bottom: 20px }
-        .btn-logout {
-            background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 10px 14px; border-radius: 12px; font-weight: 600;
-            border: none; box-shadow: 0 8px 20px rgba(15, 101, 255, 0.14); cursor: pointer; font-size: 14px;
-        }
-
-        /* -------- Main -------- */
-        .main { margin-left: 88px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-         header.topbar {
-            height: 84px; display: flex; align-items: center; justify-content: center; padding: 10px 36px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-            border-bottom: 1px solid rgba(15, 21, 40, 0.04);
-            position: relative;
-        }
-        
-        .logo-top { display: flex; align-items: center; gap: 12px; font-weight: 800; color: var(--accent); font-size: 20px; margin-right: 185px;position: absolute;
-          left: 50%; transform: translateX(-50%); }
-        .top-actions { display: flex; align-items: center; gap: 14px; position: absolute; right: 36px; }
-       
-        .profile { display: flex; gap: 10px; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff);
-            padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(15, 21, 40, 0.03); }
-        .avatar { width: 34px; height: 34px; border-radius: 999px; background: linear-gradient(180deg, #2e9cff, #1a57ff);
-            color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
-
-        /* -------- Page content -------- */
      
-        div h2 { color: #1f47b7; }
-        
-        .status { padding: 4px 8px; border-radius: 12px; font-size: 13px; font-weight: 500; }
+:root {
+    --bg: #f2f6fb;
+    --accent: #0f65ff; /* primary blue */
+    --muted: #9aa6c0;
+    --radius: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: var(--bg);
+    color: #15314b;
+    display: flex;
+}
+
+  .status {
+  padding: 0.25em 0.5em;
+  border-radius: 0.75em;
+  font-size: 0.8125em;
+  font-weight: 500;
+}
         .status.normal { background: #eaf9ee; color: #1b8a3d; }
         .status.moderate { background: #fff7e6; color: #e6a100; }
         .status.critical { background: #fdeaea; color: #d32f2f; }
-      
+/* -------- Sidebar -------- */
+.sidebar {
+    position: fixed; left: 0; top: 0; width: 5.5em; height: 100vh;
+    background: linear-gradient(180deg, #fbfdff, #f3f7ff);
+    border-right: 1px solid rgba(15, 21, 40, 0.04);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 1.5em 0.75em; gap: 1.75em;
+}
 
-       
-       
-  
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar {
-                flex-direction: row; height: 64px; width: 100%; padding: 8px 16px; justify-content: space-between;
-                position: fixed; bottom: 0; top: auto; z-index: 1000;
-            }
-            .sidebar-nav { flex-direction: row; gap: 18px; margin-top: 0; }
-            .sidebar-item.active { width: 50px; height: 50px; }
-            .sidebar-logout { display: none; }
-            .main { margin-left: 0; padding-bottom: 80px; }
-           
-          /*  footer.site-footer { flex-direction: column; align-items: center; text-align: center; gap: 10px; }*/
-        }
-      
+.sidebar-nav { display: flex; flex-direction: column; gap: 0.625em; width: 100%; align-items: center; margin-top: 1.125em; }
+.sidebar-item { width: 3.75em; height: 3em; border-radius: 0.75em; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--accent); transition: all .18s ease; position: relative; }
+.sidebar-item .material-symbols-outlined { font-variation-settings: 'wght' 500; font-size: 1.25em }
+.sidebar-item:hover { transform: translateX(0.25em) }
+.sidebar-item.active {
+    background: linear-gradient(180deg, rgba(15, 101, 255, 0.08), rgba(15, 101, 255, 0.03));
+    box-shadow: 0.5em 0.5em 1.875em rgba(15, 101, 255, 0.04), inset 0 0.0625em 0 rgba(255, 255, 255, 0.6);
+    border-radius: 1.25em; width: 4.5em; height: 3.5em;
+}
+.sidebar-item.patients .material-symbols-outlined {
+    background: linear-gradient(180deg, #2e9cff, #1a57ff); -webkit-background-clip: text; background-clip: text;
+    color: transparent; font-size: 1.375em; filter: drop-shadow(0 0.25em 0.75em rgba(46, 156, 255, 0.18));
+}
+.sidebar-logout { margin-top: auto; width: 100%; display: flex; justify-content: center; padding-bottom: 1.25em }
+.btn-logout {
+    background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.625em 0.875em; border-radius: 0.75em; font-weight: 600;
+    border: none; box-shadow: 0 0.5em 1.25em rgba(15, 101, 255, 0.14); cursor: pointer; font-size: 0.875em;
+}
 
+/* -------- Main -------- */
+.main { margin-left: 5.5em; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+header.topbar {
+    height: 5.25em; display: flex; align-items: center; justify-content: center; padding: 0.625em 2.25em;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    border-bottom: 1px solid rgba(15, 21, 40, 0.04);
+    position: relative;
+}
 
+.logo-top { display: flex; align-items: center; gap: 0.75em; font-weight: 800; color: var(--accent); font-size: 1.25em; margin-right: 11.5em;position: absolute;
+  left: 50%; transform: translateX(-50%); }
+.top-actions { display: flex; align-items: center; gap: 0.875em; position: absolute; right: 2.25em; }
 
+.profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff);
+    padding: 0.375em 0.625em; border-radius: 999px;}
+.avatar { width: 2.125em; height: 2.125em; border-radius: 999px; background: linear-gradient(180deg, #2e9cff, #1a57ff);
+    color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875em; }
 
-
-/* Report sheet */
-.report-wrap { padding: 10px 30px; }
-.report-title { color:#1f46b6; font-weight:800; font-size:24px; margin-bottom:14px; }
+/* -------- Report Section -------- */
+#report-box { padding: 0.625em 1.875em; }
+.report-title { color:#1f46b6; font-weight:800; font-size:1.5em; }
 
 .report-sheet{
-  background:#fff; border:1px solid #e9eef6; border-radius:18px;
-  padding:22px; box-shadow:0 1px 3px rgba(0,0,0,.05);
+  background:#fff; border:1px solid #e9eef6; border-radius:1.125em;
+  padding:1.375em; box-shadow:0 0.0625em 0.1875em rgba(0,0,0,.05);
   width: 98%; 
 }
 
 /* Reprt titel*/
 .sheet-heading{
-  font-weight:800; color:#2b4a77; font-size:20px;
-  text-align:center; margin-bottom:18px;
+  font-weight:800; color:#2b4a77; font-size:1.25em;
+  text-align:center; margin-bottom:1.125em;
 }
 
 .info-box{
   border:1px solid #e9eef6;
-  border-radius:12px;
-  padding:12px 14px;
+  border-radius:0.75em;
+  padding:0.75em 0.875em;
   background:#f9fbff;
   display:grid;
   grid-template-columns:1fr 1fr 1fr; 
-  margin-bottom:18px;
-  white-space: nowrap; 
- column-gap: 290px; 
+  margin-bottom:1.125em;
+  white-space: nowrap; /*to avoid go to next line in created by*/ 
+ column-gap: 18em; 
 }
 
 .info-row{ display:flex;  align-items:center; }
@@ -139,75 +117,76 @@
 .info-value{ color:#2b4a77; font-weight:700; }
 
 /* field for report info*/
-.field{ display:flex; gap:12px; margin:10px 0; align-items:center; }
-.field .label{ min-width:220px; color:#2b4a77; font-weight:700; }
+.field{ display:flex; gap:0.75em; margin:0.625em 0; align-items:center; }
+.field .label{ min-width:13.75em; color:#2b4a77; font-weight:800; }
 .field .value{
-  flex:1; background:#fff; border:1px solid #eef1f6; border-radius:12px;
-  padding:12px 14px; color:#2b4a77;
+   background:#fff; border:1px solid #eef1f6; border-radius:0.75em;
+  padding:0.75em 0.875em; color:#2b4a77;
 }
 
 /* Doctor note*/
-.note-label{ margin-top:14px; color:#2b4a77; font-weight:800; }
+.note-label{ margin-top:0.875em; color:#2b4a77; font-weight:800; }
 .note-input{
-  width:100%; min-height:110px; resize:vertical;
-  background:#fff; border:1px solid #dfe6ef; border-radius:12px;
-  padding:12px 14px; color:#2b4a77; margin-top:8px;
+  width:100%; min-height:6.875em; 
+  background:#fff; border:1px solid #dfe6ef; border-radius:0.75em;
+  padding:0.75em 0.875em; color:#2b4a77; margin-top:0.5em;
 }
 
 /* Save button*/
-.btn-save{
-  margin-top:16px; align-self:flex-start;
-  background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; border:0;
-  padding:10px 16px; border-radius:12px; font-weight:700; cursor:pointer;
-  display:inline-flex; align-items:center; gap:8px; box-shadow:0 8px 20px rgba(15,101,255,.14);
+#btn-save{
+  margin-top:1em; 
+  background:linear-gradient(90deg,#0f65ff,#5aa6ff);
+  color:#fff;
+  border:0;
+  padding:0.625em 1em; 
+  border-radius:0.75em; 
+  font-weight:700; 
+  font-size: 0.9375em;
+  cursor:pointer;
+  display:inline-flex; /* to display the text next to the icon */ 
+  align-items:center; 
+  gap:0.5em; 
+  box-shadow:0 0.5em 1.25em rgba(15,101,255,.14);
 }
-.btn-save .material-symbols-outlined{ font-size:20px; line-height:1 }
 
 /* Responsive */
-@media (max-width: 768px){
+@media (max-width: 48em){
   .info-box{ grid-template-columns:1fr; }
   .field{ flex-direction:column; align-items:flex-start; }
   .field .label{ min-width:auto; }
 }
 
-
 /* Recent analyzed waveforms */
 .waves-list {
-  list-style: none;
-  display: flex;
+  list-style: none; /*to remove defult syle*/
+  display: flex;/*allowing easy control over the direction and alignment of its items.*/
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625em;
 }
 
 .wave-item {
   display: grid;
-  grid-template-columns: 1fr auto; /* الاسم | الشدة | الوقت */
-  gap: 12px;
+  grid-template-columns: 1fr auto; /*name and sevariy level*/
+  gap: 0.75em;
   align-items: center;
-  padding: 10px 12px;
+  padding: 0.625em 0.75em;
   border: 1px solid #eef1f6;
-  border-radius: 12px;
+  border-radius: 0.75em;
   background: #fff;
 }
 
 .wave-item .name {
-  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5em;
   font-weight: 600;
   color: #2b4a77;
 }
 
 .wave-item .name .material-symbols-outlined {
-  font-size: 18px; line-height: 1;
-}
-
-#r-last-status{
-  font-weight: 600;
+  font-size: 1.125em; /*control the size of icon */
 }
 
 /*profile button*/
-
 .profile-btn {
   all: unset; 
   cursor: pointer;          /* to remove  defult button desgin*/
@@ -216,6 +195,8 @@
 .profile-btn:focus {
   outline: none;      
 }
+</style>
+
 
 
     </style>
@@ -246,8 +227,11 @@
         
 
         <div class="logo-top" aria-hidden>
-            <div class="logo-lungs"><img src="images/logon2.png" alt="logon" style="width: 280px"></div>
+            <div class="logo-lungs"><img src="images/logon2.png" alt="logon" style="width: 17.5em"></div>
         </div>
+
+       
+
 
         <div class="top-actions">
     <button class="profile-btn" onclick="">
@@ -260,16 +244,10 @@
     </header>
 
     <!-- Page Title -->
-    <section style="display:flex;align-items:flex-end;gap:12px;justify-content:space-between;padding:10px 30px;">
-        <div class="PName">
-            <h2 style="color: #1f46b6">Report</h2>
-        </div>
-        <div style="border-radius:12px; text-align: right;">
-            
-        </div>
-    </section>
+    <h2 style="color: #1f46b6;padding:10px 30px;">Report</h2>
+   
 
-    <section class="report-wrap">
+    <section id="report-box">
   
 
   <div class="report-sheet">
@@ -296,7 +274,7 @@
       <div class="label">Last waveform status:</div>
       <div class="value" id="r-last-status">Double Trigger</div>
     </div>
-    <div class="field">
+   
       
 
 
@@ -332,7 +310,7 @@
   </div>
 </div>
 
-    </div>
+  
 
     <!--Doctor note -->
     <div class="note-label">Doctor note</div>
@@ -340,7 +318,7 @@
 
    
   </div>
-   <button class="btn-save" id="btn-save-report">
+   <button  id="btn-save">
       <span class="material-symbols-outlined">save</span> Save
     </button>
 </section>

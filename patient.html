@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tanafs History</title>
+    <title>Tanafs Patient</title>
 
     <!-- Google Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
@@ -11,236 +11,200 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg: #f2f6fb;
-            --card: #ffffff;
-            --accent: #0f65ff; /* primary blue */
-            --muted: #9aa6c0;
-            --soft-blue: #eef6ff;
-            --panel-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
-            --radius: 14px;
-        }
+       :root {
+  --bg: #f2f6fb;
+  --card: #ffffff;
+  --accent: #0f65ff; /* primary blue */
+  --muted: #9aa6c0;
+  --soft-blue: #eef6ff;
+  --panel-shadow: 0 0.625em 1.875em rgba(17, 24, 39, 0.06);
+  --radius: 0.875em;
+}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: var(--bg);
-            color: #15314b;
-            display: flex;
-        }
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: #15314b;
+  display: flex;
+}
 
-        /* -------- Sidebar -------- */
-        .sidebar {
-            position: fixed; left: 0; top: 0; width: 88px; height: 100vh;
-            background: linear-gradient(180deg, #fbfdff, #f3f7ff);
-            border-right: 1px solid rgba(15, 21, 40, 0.04);
-            display: flex; flex-direction: column; align-items: center;
-            padding: 24px 12px; gap: 28px;
-        }
-        
-        .sidebar-nav { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; margin-top: 18px; }
-        .sidebar-item { width: 60px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: var(--accent); transition: all .18s ease; position: relative; }
-        .sidebar-item .material-symbols-outlined { font-variation-settings: 'wght' 500; font-size: 20px }
-        .sidebar-item:hover { transform: translateX(4px) }
-        .sidebar-item.active {
-            background: linear-gradient(180deg, rgba(15, 101, 255, 0.08), rgba(15, 101, 255, 0.03));
-            box-shadow: 8px 8px 30px rgba(15, 101, 255, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            border-radius: 20px; width: 72px; height: 56px;
-        }
-        .sidebar-item.patients .material-symbols-outlined {
-            background: linear-gradient(180deg, #2e9cff, #1a57ff); -webkit-background-clip: text; background-clip: text;
-            color: transparent; font-size: 22px; filter: drop-shadow(0 4px 12px rgba(46, 156, 255, 0.18));
-        }
-        .sidebar-logout { margin-top: auto; width: 100%; display: flex; justify-content: center; padding-bottom: 20px }
-        .btn-logout {
-            background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 10px 14px; border-radius: 12px; font-weight: 600;
-            border: none; box-shadow: 0 8px 20px rgba(15, 101, 255, 0.14); cursor: pointer; font-size: 14px;
-        }
+/* -------- Sidebar -------- */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0;
+  width: 5.5em; height: 100vh;
+  background: linear-gradient(180deg, #fbfdff, #f3f7ff);
+  border-right: 1px solid rgba(15, 21, 40, 0.04);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 1.5em 0.75em; gap: 1.75em;
+}
 
-        /* -------- Main -------- */
-        .main { margin-left: 88px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-        header.topbar {
-            height: 84px; display: flex; align-items: center; justify-content: center; padding: 10px 36px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-            border-bottom: 1px solid rgba(15, 21, 40, 0.04);
-            position: relative;
-        }
-        
-        .logo-top { display: flex; align-items: center; gap: 12px; font-weight: 800; color: var(--accent); font-size: 20px; margin-right: 185px;position: absolute;
-          left: 50%; transform: translateX(-50%); }
-        .top-actions { display: flex; align-items: center; gap: 14px; position: absolute; right: 36px; }
-       
-        .profile { display: flex; gap: 10px; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff);
-            padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(15, 21, 40, 0.03); }
-        .avatar { width: 34px; height: 34px; border-radius: 999px; background: linear-gradient(180deg, #2e9cff, #1a57ff);
-            color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 0.625em; width: 100%; align-items: center; margin-top: 1.125em; }
 
+.sidebar-item {
+  width: 3.75em; height: 3em;
+  border-radius: 0.75em;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--accent);
+  transition: all .18s ease; position: relative;
+}
+.sidebar-item .material-symbols-outlined { font-variation-settings: 'wght' 500; font-size: 1.25em; }
+.sidebar-item:hover { transform: translateX(0.25em); }
+.sidebar-item.active {
+  background: linear-gradient(180deg, rgba(15, 101, 255, 0.08), rgba(15, 101, 255, 0.03));
+  box-shadow: 0.5em 0.5em 1.875em rgba(15, 101, 255, 0.04), inset 0 0.0625em 0 rgba(255, 255, 255, 0.6);
+  border-radius: 1.25em; width: 4.5em; height: 3.5em;
+}
+.sidebar-item.patients .material-symbols-outlined {
+  background: linear-gradient(180deg, #2e9cff, #1a57ff);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; font-size: 1.375em;
+  filter: drop-shadow(0 0.25em 0.75em rgba(46, 156, 255, 0.18));
+}
+.sidebar-logout { margin-top: auto; width: 100%; display: flex; justify-content: center; padding-bottom: 1.25em; }
+.btn-logout {
+  background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+  color: white; padding: 0.625em 0.875em;
+  border-radius: 0.75em; font-weight: 600;
+  border: none; box-shadow: 0 0.5em 1.25em rgba(15, 101, 255, 0.14);
+  cursor: pointer; font-size: 0.875em;
+}
 
-            
+/* -------- Main -------- */
+.main { margin-left: 5.5em; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
+header.topbar {
+  height: 5.25em; display: flex; align-items: center; justify-content: center;
+  padding: 0.625em 2.25em;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+  border-bottom: 1px solid rgba(15, 21, 40, 0.04);
+  position: relative;
+}
 
+.logo-top {
+  display: flex; align-items: center; gap: 0.75em;
+  font-weight: 800; color: var(--accent);
+  font-size: 1.25em; margin-right: 11.5em;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
 
+.top-actions { display: flex; align-items: center; gap: 0.875em; position: absolute; right: 2.25em; }
 
+.profile {
+  display: flex; gap: 0.625em; align-items: center;
+  background: linear-gradient(90deg, #f7fbff, #fff);
+  padding: 0.375em 0.625em;
+  border-radius: 999px;
+}
+.avatar {
+  width: 2.125em; height: 2.125em; border-radius: 999px;
+  background: linear-gradient(180deg, #2e9cff, #1a57ff);
+  color: white; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.875em;
+}
 
-
-
-        /* -------- Page content -------- */
-     
-        div h2 { color: #1f47b7; }
-
-        /* Table */
-       
-        th, td { text-align: center; padding: 12px; }
-        
-        .status { padding: 4px 8px; border-radius: 12px; font-size: 13px; font-weight: 500; }
-        .status.normal { background: #eaf9ee; color: #1b8a3d; }
-        .status.moderate { background: #fff7e6; color: #e6a100; }
-        .status.critical { background: #fdeaea; color: #d32f2f; }
-      
-    
-        
+/* -------- Panels -------- */
 .panel {
   background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  padding: 20px;         
- margin-top: 10px ;    
- margin-bottom: 15px;   
- margin-left: 20px;
- margin-right: 5px;
-  width: calc(100% - 50px); 
-  box-sizing: border-box;
+  border-radius: 1.125em;
+  box-shadow: 0 0.0625em 0.1875em rgba(0,0,0,0.05);
+  padding: 1.25em;
+  margin: 0.625em 0.3125em 0.9375em 1.25em;
+  width: calc(100% - 3.125em);
 }
 
-       
-        .analysis-table { width: 100%; border-collapse: collapse; }
-        .analysis-table thead th { background: #f3f6fb; text-align: left; padding: 10px 12px; }
-        .analysis-table tbody td { padding: 10px 12px; border-top: 1px solid #eef1f6; }
-        
+/* ===== Table ===== */
+.analysis-table { border-collapse: collapse; }
+th, td { text-align: center; padding: 0.75em; color: #2b4a77; }
+.analysis-table thead th { background: #f3f6fb; text-align: left; }
+.analysis-table tbody td { border-top: 1px solid #eef1f6; }
 
-        .comment-card .title { font-weight: 700; color: #2b4a77; margin-bottom: 8px; }
-        .comment-meta { font-size: 13px; color: #6b7b8f; margin-bottom: 10px; }
-        .comment-content {
-            background: #f6f9ff; border: 1px solid rgba(15,101,255,0.12); border-radius: 12px; padding: 12px; color: #2b4a77;
-            margin-bottom: 12px;
-        }
-        .comment-input { width: 100%; border: 1px solid #dfe6ef; border-radius: 12px; padding: 12px; min-height: 70px; resize: vertical; }
-        .btn-add {
-            margin-top: 10px; background: linear-gradient(90deg,#0f65ff,#5aa6ff); color: #fff; border: 0;
-            padding: 10px 16px; border-radius: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-            box-shadow: 0 8px 20px rgba(15,101,255,0.14);
-        }
+.status { padding: 0.25em 0.5em; border-radius: 0.75em; font-size: 0.8125em; font-weight: 500; }
+.status.normal { background: #eaf9ee; color: #1b8a3d; }
+.status.moderate { background: #fff7e6; color: #e6a100; }
+.status.critical { background: #fdeaea; color: #d32f2f; }
 
-        /* ===== Responsive Fixes ===== */
-       
-  
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar {
-                flex-direction: row; height: 64px; width: 100%; padding: 8px 16px; justify-content: space-between;
-                position: fixed; bottom: 0; top: auto; z-index: 1000;
-            }
-            .sidebar-nav { flex-direction: row; gap: 18px; margin-top: 0; }
-            .sidebar-item.active { width: 50px; height: 50px; }
-            .sidebar-logout { display: none; }
-            .main { margin-left: 0; padding-bottom: 80px; }
-           
-          /*  footer.site-footer { flex-direction: column; align-items: center; text-align: center; gap: 10px; }*/
-        }
-      
-
-
+/* ===== Scroll for table ===== */
 .table-scroll {
-  width: 100%;              
-  max-height: 250px;       
+  max-height: 15.625em;
   overflow-y: auto;
-  overflow-x: auto;
-  border-radius: 12px;
-  border: none;           
-  background: transparent;  /* */
+  border-radius: 0.75em;
+  border: none;
+}
+.table-scroll::-webkit-scrollbar { width: 0.5em; }
+.table-scroll::-webkit-scrollbar-thumb { background: #c5d4f7; border-radius: 0.625em; }
+.table-scroll::-webkit-scrollbar-thumb:hover { background: #9fb8f5; }
+
+/* ===== Comment Section ===== */
+.comment-card .title { font-weight: 700; color: #2b4a77; margin-bottom: 0.5em; }
+.comment-basic-info { display: flex; justify-content: space-between; font-size: 0.8125em; color: #6b7b8f; margin-bottom: 0.3125em; }
+.comment-date { color: #2b4a77; font-weight: 600; }
+.comment-basic-info b { color: #2b4a77; font-weight: 600; }
+.comment-content {
+  background: #f6f9ff; border: 1px solid rgba(15,101,255,0.12);
+  border-radius: 0.75em; padding: 0.75em; color: #2b4a77; margin-bottom: 0.75em;
+}
+.comment-input {
+  width: 100%; border: 1px solid #dfe6ef; border-radius: 0.75em;
+  padding: 0.75em; min-height: 4.375em; resize: vertical; /*when the user write allot of note go vertical */
+}
+.btn-add {
+  margin-top: 0.625em;
+  background: linear-gradient(90deg,#0f65ff,#5aa6ff);
+  color: #fff; border: 0; /*to remove default border*/
+  padding: 0.625em 1em; border-radius: 0.75em;
+  font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.375em;
+  box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14);
 }
 
-
-/* scroll appearnce*/
-.table-scroll::-webkit-scrollbar {
-  width: 8px;
+/* ===== Report Section ===== */
+.reports-panel .title { font-weight: 700; color:#2b4a77; }
+.report-top {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 1.25em;
 }
-
-.table-scroll::-webkit-scrollbar-thumb {
-  background: #c5d4f7;
-  border-radius: 10px;
-}
-
-.table-scroll::-webkit-scrollbar-thumb:hover {
-  background: #9fb8f5;
-}
-
-        /* Report list*/
-.reports-panel .title {
-  font-weight: 800; color:#2b4a77; margin-bottom:12px; font-size:20px;
-}
-.report-list { display:flex; flex-direction:column; gap:14px; }
 .report-item {
   display:flex; align-items:center; justify-content:space-between;
-  padding:14px 16px; border:1px solid #eef1f6; border-radius:14px;
-  background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.05);
+  padding:0.5em 1em; border:1px solid #eef1f6;
+  border-radius:0.875em; background:#fff;
+  box-shadow:0 0.0625em 0.1875em rgba(0,0,0,.05);
 }
 .report-item .left {
-  display:flex; align-items:center; gap:12px; color:#2b4a77; font-weight:600;
+  display:flex; align-items:center; gap:0.75em;
+  color:#2b4a77; font-weight:550; font-size:0.9375em;
 }
-.badge {
-  background:#f0f6ff; color:#0f65ff; border:1px solid rgba(15,101,255,.15);
-  padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700;
+.pd {
+  background:#f0f6ff; color:#0f65ff;
+  border:1px solid rgba(15,101,255,.15);
+  padding:0.25em 0.625em;
+  border-radius:999px; font-size:0.75em; font-weight:700;
 }
 .btn-open {
-  border:1px solid rgba(15,101,255,.25); background:#f0f6ff; color:#0f65ff;
-  padding:8px 14px; border-radius:12px; font-weight:600; cursor:pointer;
-  display:inline-flex; align-items:center; gap:6px;
+  border:1px solid rgba(15,101,255,.25);
+  background:#f0f6ff; color:#0f65ff;
+  padding:0.5em 0.875em; border-radius:0.75em;
+  font-weight:600; cursor:pointer;
+  display:inline-flex; align-items:center; gap:0.375em;
 }
 .btn-generate {
-  margin-top:16px; align-self:flex-start;
+  margin-top:1em; align-self:flex-start;
   background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; border:0;
-  padding:10px 16px; border-radius:12px; font-weight:700; cursor:pointer;
-  box-shadow:0 8px 20px rgba(15,101,255,.14);
-  display: inline-flex;
-  align-items: center;   /* to icon in center*/
-  gap: 10px;             /* distence betwen them*/
-  line-height: 1; 
+  padding:0.625em 1em; border-radius:0.75em; font-weight:700; cursor:pointer;
+  box-shadow:0 0.5em 1.25em rgba(15,101,255,.14);
+  display: inline-flex; align-items: center; gap: 0.625em;
+}
+.report-date {
+  color:#2b4a77; font-weight:600; font-size:0.8125em;
+  position:relative; top:1.25em;
 }
 
+/* ===== Profile button ===== */
+.profile-btn { all: unset; cursor: pointer; display: inline-block; }
+.profile-btn:focus { outline: none; }
 
-
-/*profile button*/
-
-.profile-btn {
-  all: unset; 
-  cursor: pointer;          /* to remove  defult button desgin*/
-  display: inline-block;
-}
-.profile-btn:focus {
-  outline: none;      
-}
-
-.comment-meta {
-  display: flex;
-  justify-content: space-between; 
-  align-items: center;
-  font-size: 13px;
-  color: #6b7b8f;
-  margin-bottom: 5px;
-}
-
-.comment-meta b {
-  color: #2b4a77;
-  font-weight: 600;
-}
-
-.comment-meta .comment-date {
-  color: #2b4a77;
-  font-weight: 600;
-}
 
 
 
@@ -338,7 +302,29 @@
                 <td>5/19/2025</td>
             </tr>
              
+ <tr>
+                <td>Normal</td>
+                <td><span class="status moderate">Low</span></td>
+                <td>-</td>
+                <td>—</td>
+                <td>5/19/2025</td>
+            </tr>
 
+             <tr>
+                <td>Normal</td>
+                <td><span class="status moderate">Low</span></td>
+                <td>-</td>
+                <td>—</td>
+                <td>5/19/2025</td>
+            </tr>
+
+             <tr>
+                <td>Normal</td>
+                <td><span class="status moderate">Low</span></td>
+                <td>-</td>
+                <td>—</td>
+                <td>5/19/2025</td>
+            </tr>
 
          
             </tbody>
@@ -358,7 +344,7 @@
   
 <div class="comment-block">
         
-       <div class="comment-meta">
+       <div class="comment-basic-info">
   <span>Created by <b>Dr Asma</b></span>
   <span class="comment-date">10/10/2025</span>
 </div>
@@ -371,7 +357,7 @@
     <div class="comment-block">
         
 
-   <div class="comment-meta">
+   <div class="comment-basic-info">
   <span>Created by <b>Dr Abdullah</b></span>
   <span class="comment-date">10/10/2025</span>
 </div>
@@ -392,32 +378,20 @@
 
 <!-- ===== Reports Section ===== -->
 <section class="panel reports-panel" aria-label="Reports">
-  <div class="title">Reports</div>
-
-  <div class="report-list">
+<div class="report-top">
+  <div class="title">Report</div>
+  <div class="report-date">10/10/2025</div>
+</div>
     <div class="report-item">
       <div class="left">
         <span class="material-symbols-outlined">description</span>
         <div>Report #RPT-00041</div>
-        <span class="badge">PDF</span>
+        <span class="pd">PDF</span>
       </div>
       <button class="btn-open">
         <span class="material-symbols-outlined">open_in_new</span> Open
       </button>
     </div>
-
-    <div class="report-item">
-      <div class="left">
-        <span class="material-symbols-outlined">description</span>
-        <div>Report #RPT-00040</div>
-        <span class="badge">PDF</span>
-      </div>
-      <button class="btn-open">
-        <span class="material-symbols-outlined">open_in_new</span> Open
-      </button>
-    </div>
-  </div>
-
   <button class="btn-generate">
     <span class="material-symbols-outlined">summarize</span> Generate report
   </button>
