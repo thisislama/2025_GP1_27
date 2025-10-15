@@ -245,7 +245,7 @@ footer img {width:200px;}
     <tbody>
         <?php if ($result->num_rows > 0): while($row = $result->fetch_assoc()): ?>
             <tr>
-                <td><?= htmlspecialchars($row['PID']) ?></td>
+                <td><?= htmlspecialchars($row['ID']) ?></td>
                 <td><?= htmlspecialchars($row['first_name']) ?></td>
                 <td><?= htmlspecialchars($row['last_name']) ?></td>
                 <td><?= htmlspecialchars($row['gender']) ?></td>
