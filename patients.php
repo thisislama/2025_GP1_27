@@ -238,7 +238,7 @@ footer img {width:200px;}
 <table id="patientsTable">
     <thead>
         <tr>
-            <th>PID</th><th>First Name</th><th>Last Name</th>
+            <th>ID</th><th>First Name</th><th>Last Name</th>
             <th>Gender</th><th>Status</th><th>Phone</th><th>DOB</th>
         </tr>
     </thead>
