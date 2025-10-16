@@ -287,7 +287,18 @@ font-family: "Oxygen", sans-serif;
   gap: 2em; /* مسافات بين الأعمدة */
   align-items: start;
 }
+.footer-grid {
+  direction: ltr; 
+}
 
+.footer-col.brand {
+  text-align: left;  
+}
+
+.footer-logo {
+  margin-left: 0;
+  margin-right: 0; 
+}
 /* Brand */
 .footer-logo {
   height: 5.5em;
