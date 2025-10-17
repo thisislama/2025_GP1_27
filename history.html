@@ -35,95 +35,18 @@
             display: flex;
         }
 
-        /**/
-        /* -------- Sidebar -------- */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 88px;
-            height: 100vh;
-            background: linear-gradient(180deg, #fbfdff, #f3f7ff);
-            border-right: 1px solid rgba(15, 21, 40, 0.04);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 24px 12px;
-            gap: 28px;
-        }
 
-        .brand {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(180deg, #1b66ff, #2a9fff);
-            color: white;
-            font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 6px 18px rgba(15, 21, 40, 0.08);
-        }
 
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            align-items: center;
-            margin-top: 18px;
-        }
-
-        .sidebar-item {
-            width: 60px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--accent);
-            transition: all .18s ease;
-            position: relative;
-        }
-
-        .sidebar-item .material-symbols-outlined {
+         .material-symbols-outlined {
             font-variation-settings: 'wght' 500;
             font-size: 20px
         }
 
-        .sidebar-item:hover {
+        .material-symbols-outlined:hover {
             transform: translateX(4px)
         }
 
-        /* active item style - unique to only that item */
-        .sidebar-item.active {
-            background: linear-gradient(180deg, rgba(15, 101, 255, 0.08), rgba(15, 101, 255, 0.03));
-            box-shadow: 8px 8px 30px rgba(15, 101, 255, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            border-radius: 20px;
-            width: 72px;
-            height: 56px;
-        }
 
-        /* special icon design for only one icon (patient) */
-        .sidebar-item.patients .material-symbols-outlined {
-            background: linear-gradient(180deg, #2e9cff, #1a57ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 22px;
-            filter: drop-shadow(0 4px 12px rgba(46, 156, 255, 0.18));
-        }
-
-        /* logout button at bottom */
-        .sidebar-logout {
-            margin-top: auto;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding-bottom: 20px
-        }
 
         .btn-logout {
             background: linear-gradient(90deg, #0f65ff, #5aa6ff);
@@ -135,25 +58,26 @@
             box-shadow: 0 8px 20px rgba(15, 101, 255, 0.14);
             cursor: pointer;
             font-size: 14px;
+            height: 40px;
         }
 
         /* -------- Main (header + content) -------- */
         .main {
-            margin-left: 88px;
+         '   margin-left: 65px;'
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            height: 50em;
         }
 
         header.topbar {
-            height: 84px;
+            height: fit-content;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 36px;
+            padding: 1px ;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-            border-bottom: 1px solid rgba(15, 21, 40, 0.04);
+            border-bottom: 1px solid rgba(15, 21, 40, 0.54);
         }
 
         /* left area (search) center area (logo) right area (actions) */
@@ -236,11 +160,6 @@
         }
 
         /* -------- Page content -------- */
-        .page {
-            padding: 26px 36px 60px;
-            display: block;
-            align-items: flex-start;
-        }
 
 
         /*Headline for the page*/
@@ -256,169 +175,6 @@
             margin-bottom: 8px
         }
 
-        table {
-            display: block;
-        }
-
-        /* Content */
-        .content {
-            display: flex;
-            background-color: rgba(240, 244, 249, 0.72);
-        }
-
-        /* Filter Box */
-        .filter-box {
-            width: 280px;
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-            height: fit-content;
-            margin: 12px;
-            font-family: "Inter", sans-serif;
-        }
-
-        .filter-box h3 {
-            margin-bottom: 15px;
-            font-weight: 600;
-            color: #2c5187;
-        }
-
-        #dateFilter {
-            color: #2f4c6f;
-
-        }
-
-        .filter-box label {
-            display: inline-flex;
-            margin-top: 10px;
-            font-size: 12px;
-            width: fit-content;
-            margin-bottom: 8px;
-        }
-
-        .anom-options {
-            display: inline-block;
-            gap: 3px;
-
-        }
-
-        .status-options {
-            display: inline-block;
-            gap: 5px;
-        }
-
-        /* Table */
-        .table-section {
-            flex: 2;
-            background: #fff;
-            border-radius: 18px;
-            padding: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .table-header {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-end;
-            margin-bottom: 15px;
-            gap: 10px;
-        }
-
-        ul {
-            list-style-type: none;
-            display: inline;
-
-        }
-
-        .btn-download,
-        .btn-import {
-            background: #e8f0ff;
-            color: #1976d2;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: 500;
-        }
-
-        .table-section {
-            width: fit-content;
-            margin: 8px;
-
-        }
-
-        table {
-            width: 110vh;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #f3f6fb;
-
-        }
-
-        th, td {
-            text-align: center;
-            padding: 12px;
-            /* width: 100%;*/
-        }
-
-        tbody tr:hover {
-            background: #f9f9f9;
-        }
-
-
-        .status {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .status.normal {
-            background: #eaf9ee;
-            color: #1b8a3d;
-        }
-
-        .status.moderate {
-            background: #fff7e6;
-            color: #e6a100;
-        }
-
-        .status.critical {
-            background: #fdeaea;
-            color: #d32f2f;
-        }
-
-        .delete {
-            cursor: pointer;
-            color: #999;
-        }
-
-        .pagination {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .pagination button {
-            border: none;
-            background: #f3f6fb;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .pagination button.active {
-            background: #1976d2;
-            color: #fff;
-        }
-
 
         /* Footer */
         footer {
@@ -430,16 +186,6 @@
             width: 100%;
         }
 
-        .footer-left {
-            display: flex;
-            gap: 40px
-        }
-
-        .footer-col {
-            font-size: 14px;
-            color: #2f4c6f;
-            margin-left: 25px;
-        }
 
         /* responsive */
         /* ===== Responsive Fixes ===== */
@@ -567,43 +313,151 @@
         }
 
 
+
+        main {
+            flex: 1;
+            background-color: #f9faff;
+            border-top-left-radius: 30px;
+            padding: 36px;
+            overflow-y: auto;
+        }
+
+        .title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .title h2 {
+            color: #1f46b6;
+            font-size: 1.5rem;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .table-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .table-actions input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 80%;
+        }
+
+        .table-actions button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .download-btn {
+            background-color: #1f46b6;
+            color: white;
+        }
+
+        .filter-btn {
+            background-color: #f0f0f0;
+            color: #1b2250;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            text-align: center;
+            width: 20em;
+        }
+
+        th {
+            background-color: #f4f6fc;
+            color: #1f46b6;
+
+        }
+
+        tr:hover {
+            background-color: #f9fbff;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status.completed { background-color: #e2f5e9; color: #15803d; }
+        .status.pending { background-color: #fff4e5; color: #b45309; }
+        .status.failed { background-color: #fee2e2; color: #b91c1c; }
+
+        .pagination {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+
+        .pagination {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            border: none;
+            background: #f3f6fb;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #1976d2;
+            color: #fff;
+        }
+
+        footer {
+            background-color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        @media (max-width: 992px) {
+            nav { width: 180px; }
+            .table-actions input { width: 150px; }
+        }
     </style>
+
 
 </head>
 <body>
-<!-- SIDEBAR -->
-<aside class="sidebar" role="navigation" aria-label="Sidebar">
-    <!-- <div class="brand" title="Tanafs">تنف</div>-->
-
-    <div class="sidebar-nav" role="list">
-        <div class="sidebar-item" title="Dashboard">
-            <span class="material-symbols-outlined">space_dashboard</span>
-        </div>
-
-        <!-- This one is 'active' and also has a special look - only this icon uses the special gradient style -->
-        <div class="sidebar-item patients" title="Dashboard - Patients">
-            <span class="material-symbols-outlined">group</span>
-        </div>
-
-        <div class="sidebar-item" title="Schedule">
-            <span class="material-symbols-outlined">calendar_month</span>
-        </div>
-
-        <div class="sidebar-item active" title="Analytics">
-            <span class="material-symbols-outlined">analytics</span>
-        </div>
-    </div>
-
-    <div class="sidebar-logout">
-        <button class="btn-logout"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">logout</span>
-        </button>
-    </div>
-</aside>
 
 <!-- MAIN -->
 <main class="main">
     <header class="topbar" role="banner">
         <div class="top-left">
+            <button class="btn-logout"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">logout</span> </button>
             <div class="search" role="search" aria-label="Site search">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
                     <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"/>
@@ -631,149 +485,55 @@
 
     <!-- Page Title -->
 
-    <section style="display:flex;padding:10px 30px;">
-        <div class="tit">
-        <h2 style="color: #1f46b6">History</h2>
-        <p style="color: #a1a6b1; margin-top: 18px; font-weight: 500;">Here will be your past waves analysis <br>you
-            requested before!</p>
-        </div>
-        <div style="border-radius:12px; text-align: right; justify-content: right">
-            <div style="display: inline-flex; gap: 22px">
-                <button class="btn-download"><span class="material-symbols-outlined">download</span> Download</button>
-                <button class="btn-import"><span class="material-symbols-outlined">upload</span> Import</button>
-            </div>
+    <main>
+        <div class="title">
+            <h2>History Analysis</h2>
         </div>
 
-    </section>
-
-    <section class="content">
-        <!-- Filter Section -->
-        <div class="filter-box">
-            <h3>Filter</h3>
-            <div style="border-radius: 8px;padding: 10px; border: 1px solid rgba(187,195,202,0.47); background-color: transparent">
-                <label>Date Range:</label>
-                <select id="dateFilter">
-                    <option>Last 30 days</option>
-                    <option>Today</option>
-                    <option>Last Week</option>
-                </select><br>
-                <hr style="width: 70%; margin: 0 auto;">
-
-                <label>Status:</label>
-                <div class="status-options">
-                    <label style="background-color: #f1f4f6; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Normal" checked/> Normal</label>
-                    <label style="background-color: #F1F4F6FF; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Moderate" checked/> Moderate</label>
-                    <label style="background-color: #F1F4F6FF; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Critical" checked/> Critical</label>
-                </div>
-                <hr style="width: 70%; margin: 0 auto;">
-
-                <label>Anomaly type:</label>
-                <div class="anom-options">
-                    <label style="background-color: #f1f4f6; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Normal" checked/> Double-Trigger</label>
-                    <label style="background-color: #F1F4F6FF; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Moderate" checked/> Flow Limited</label>
-                    <label style="background-color: #F1F4F6FF; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Critical" checked/> Auto Trigger</label>
-                    <label style="background-color: #f1f4f6; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Normal" checked/> Early Cycling</label>
-                    <label style="background-color: #F1F4F6FF; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Moderate" checked/> Reverse Trigger</label>
-                    <label style="background-color: #F1F4F6FF; border: 1px solid rgba(128,128,128,0.46); border-radius: 15px; padding: 5px"><input
-                            type="checkbox" value="Critical" checked/> Ineffective Trigger</label>
-
-
+        <div class="table-container">
+            <div class="table-actions">
+                <input type="text" id="search" placeholder="Search...">
+                <div>
+                    <button class="filter-btn">Filter</button>
+                    <button class="download-btn">Download</button>
                 </div>
             </div>
-        </div>
 
-        <!--        <div class="table-header">
-                    <div>
-                        <ul>
-                            <li>
-                                <button class="btn-download"><span class="material-symbols-outlined">download</span> Download
-                                </button>
-                            </li>
-                            <li>
-                                <button class="btn-import"><span class="material-symbols-outlined">upload</span> Import</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>-->
-        <!-- Table Section -->
-
-        <div class="table-section" style="margin-top: 0;">
-            <!-- <div class="table-header">
-                 <div>
-                     <button class="btn-download"><span class="material-symbols-outlined">download</span> Download</button>
-                     <button class="btn-import"><span class="material-symbols-outlined">upload</span> Import</button>
-                 </div>
-             </div>-->
-
-            <table style="width: 100%; height: 60vh" id="historyTable">
+            <table id="historyTable">
                 <thead>
                 <tr>
-                    <th>File</th>
-                    <th>Status</th>
-                    <th>Email</th>
-                    <th>Date</th>
-                    <th>Delete</th>
+                    <th><input type="checkbox" id="selectAll"></th>
+                    <th>ID</th>
+                    <th>Patient Name</th>
+                    <th >Email</th>
+                    <th >Date</th>
+                    <th >Status</th>
                 </tr>
                 </thead>
-                <tbody>
-                <!-- Sample rows -->
+                <tbody id="tableBody">
                 <tr>
-                    <td>
-                        <div class="user">PI8736F</div>
-                    </td>
-                    <td><span class="status normal">Normal</span></td>
-                    <td>jessica.hanson@example.com</td>
-                    <td>5/27/2025</td>
-                    <td style="width: 100%; text-align:center"><span
-                            class="material-symbols-outlined delete">cancel</span></td>
+                    <td><input type="checkbox"></td>
+                    <td>P093E2</td>
+                    <td>Ahmed Ali</td>
+                    <td>ahmed@example.com</td>
+                    <td>2025-10-12</td>
+                    <td><span class="status completed">Completed</span></td>
                 </tr>
                 <tr>
-                    <td>
-                        <div class="user">PI8736F</div>
-                    </td>
-                    <td><span class="status normal">Normal</span></td>
-                    <td>willie.jennings@example.com</td>
-                    <td>5/19/2025</td>
-                    <td style="width: 100%; text-align:center"><span
-                            class="material-symbols-outlined delete">cancel</span></td>
+                    <td><input type="checkbox"></td>
+                    <td>P553E2</td>
+                    <td>Sarah Omar</td>
+                    <td>sarah@example.com</td>
+                    <td>2025-10-10</td>
+                    <td><span class="status pending">Pending</span></td>
                 </tr>
                 <tr>
-                    <td>
-                        <div class="user">PI8736F</div>
-                    </td>
-                    <td><span class="status critical">Critical</span></td>
-                    <td>d.chambers@example.com</td>
-                    <td>3/4/2025</td>
-                    <td style="width: 100%; text-align:center"><span
-                            class="material-symbols-outlined delete">cancel</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="user"> PI8736F</div>
-                    </td>
-                    <td><span class="status critical">Critical</span></td>
-                    <td>willie.jennings@example.com</td>
-                    <td>3/4/2025</td>
-                    <td style="width: 100%; text-align:center"><span
-                            class="material-symbols-outlined delete">cancel</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="user">PI8736F</div>
-                    </td>
-                    <td><span class="status moderate">Moderate</span></td>
-                    <td>michael.mitic@example.com</td>
-                    <td>7/27/2025</td>
-                    <td style="width: 100%; text-align:center"><span
-                            class="material-symbols-outlined delete">cancel</span></td>
+                    <td><input type="checkbox"></td>
+                    <td>P0879T</td>
+                    <td>Mohammed Saleh</td>
+                    <td>mohd@example.com</td>
+                    <td>2025-10-09</td>
+                    <td><span class="status failed">Failed</span></td>
                 </tr>
                 </tbody>
             </table>
@@ -786,33 +546,36 @@
                 <button>6</button>
             </div>
         </div>
-    </section>
+    </main>
 
-<!--
     <footer>
-        <div class="footer-left">
-            <div class="footer-col">
-                <div style="font-weight:700;margin-bottom:8px">Resources</div>
-                <div>Support</div>
-                <div>Developers</div>
-                <div>Resource library</div>
-            </div>
-
-            <div class="footer-col">
-                <div style="font-weight:700;margin-bottom:8px">Explore</div>
-                <div>Design</div>
-                <div style="margin-top:18px;font-weight:700">Use cases</div>
-                <div>Team collaboration</div>
-            </div>
-
-        </div>
-
-
-        <div><img style="width: 250px" src="images/logon2.png" alt="logob"></div>
-
+        © 2025 TANAFS. All Rights Reserved.
     </footer>
+    <!--
+        <footer>
+            <div class="footer-left">
+                <div class="footer-col">
+                    <div style="font-weight:700;margin-bottom:8px">Resources</div>
+                    <div>Support</div>
+                    <div>Developers</div>
+                    <div>Resource library</div>
+                </div>
 
--->
+                <div class="footer-col">
+                    <div style="font-weight:700;margin-bottom:8px">Explore</div>
+                    <div>Design</div>
+                    <div style="margin-top:18px;font-weight:700">Use cases</div>
+                    <div>Team collaboration</div>
+                </div>
+
+            </div>
+
+
+            <div><img style="width: 250px" src="images/logon2.png" alt="logob"></div>
+
+        </footer>
+
+    -->
 </main>
 </body>
 </html>
