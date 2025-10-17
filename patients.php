@@ -19,7 +19,7 @@ if (!isset($_SESSION['userID'])) {
 $userID = $_SESSION['userID'];
 
 // --- Get doctor name ---
-$docRes = $conn->prepare("SELECT first_name, last_name FROM users WHERE userID=?");
+$docRes = $conn->prepare("SELECT first_name, last_name FROM user WHERE userID=?");
 $docRes->bind_param("i", $userID);
 $docRes->execute();
 $docData = $docRes->get_result()->fetch_assoc();
@@ -31,8 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['connect'])) {
     $PID = trim($_POST['PID']);
     $Pname = trim($_POST['Pname']);
 
-    // Find patient by ID or Name
-    $find = $conn->prepare("SELECT PID FROM patients WHERE PID = ? OR first_name = ? OR last_name = ?");
+    $find = $conn->prepare("SELECT PID FROM patient WHERE PID = ? OR first_name = ? OR last_name = ?");
     $find->bind_param("sss", $PID, $Pname, $Pname);
     $find->execute();
     $patient = $find->get_result()->fetch_assoc();
@@ -41,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['connect'])) {
     if ($patient) {
         $realPID = $patient['PID'];
 
-        // Check if already connected
         $dup = $conn->prepare("SELECT COUNT(*) AS cnt FROM user_patient WHERE PID = ? AND userID = ?");
         $dup->bind_param("si", $realPID, $userID);
         $dup->execute();
@@ -50,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['connect'])) {
         if ($dupRes['cnt'] > 0) {
             echo "<script>alert('⚠️ This patient is already under your care.');</script>";
         } else {
-            // Check total doctors connected
             $check = $conn->prepare("SELECT COUNT(*) AS cnt FROM user_patient WHERE PID = ?");
             $check->bind_param("s", $realPID);
             $check->execute();
@@ -75,9 +72,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['connect'])) {
     }
 }
 
-// --- Get patients list ---
-$sql = "SELECT PID, first_name, last_name, gender, status, phone, DOB FROM patients";
-$result = $conn->query($sql);
+// --- Get only patients linked to this doctor ---
+$sql = "
+SELECT p.PID, p.first_name, p.last_name, p.gender, p.status, p.phone, p.DOB
+FROM patient p
+INNER JOIN user_patient up ON p.PID = up.PID
+WHERE up.userID = ?
+";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -162,9 +167,9 @@ table {
 th,td {padding:12px;text-align:center;border-bottom:1px solid #eee;}
 th {background:#f3f6fb;}
 .status {padding:4px 8px;border-radius:12px;font-size:13px;font-weight:500;}
-.status.normal {background:#eaf9ee;color:#1b8a3d;}
-.status.moderate {background:#fff7e6;color:#e6a100;}
+.status.stable {background:#eaf9ee;color:#1b8a3d;}
 .status.critical {background:#fdeaea;color:#d32f2f;}
+.status.recovered {background:#e6f2ff;color:#0f65ff;}
 footer {
     display:flex;justify-content:space-between;align-items:center;
     padding:10px 36px;background:#fff;border-top:1px solid rgba(15,21,40,0.04);
@@ -245,7 +250,7 @@ footer img {width:200px;}
     <tbody>
         <?php if ($result->num_rows > 0): while($row = $result->fetch_assoc()): ?>
             <tr>
-                <td><?= htmlspecialchars($row['ID']) ?></td>
+                <td><?= htmlspecialchars($row['PID']) ?></td>
                 <td><?= htmlspecialchars($row['first_name']) ?></td>
                 <td><?= htmlspecialchars($row['last_name']) ?></td>
                 <td><?= htmlspecialchars($row['gender']) ?></td>
@@ -254,7 +259,7 @@ footer img {width:200px;}
                 <td><?= htmlspecialchars($row['DOB']) ?></td>
             </tr>
         <?php endwhile; else: ?>
-            <tr><td colspan="7">No patients found.</td></tr>
+            <tr><td colspan="7">No patients linked to you.</td></tr>
         <?php endif; ?>
     </tbody>
 </table>
