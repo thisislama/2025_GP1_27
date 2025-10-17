@@ -12,88 +12,96 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-// --- Simulated login (remove later when you have real login) ---
+// --- Simulated login (remove when real login works) ---
 if (!isset($_SESSION['userID'])) {
-    $_SESSION['userID'] = 1;
+    $_SESSION['userID'] = 1; // test doctor ID
 }
 $userID = $_SESSION['userID'];
 
 // --- Get doctor name ---
-$docRes = $conn->prepare("SELECT first_name, last_name FROM users WHERE userID=?");
+$docRes = $conn->prepare("SELECT first_name, last_name FROM user WHERE userID=?");
 $docRes->bind_param("i", $userID);
 $docRes->execute();
 $docData = $docRes->get_result()->fetch_assoc();
 $_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
 $docRes->close();
 
-// --- Add Patient logic ---
-$success = $error = "";
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["addPatient"])) {
-    $PID = trim($_POST["PID"]);
-    $first_name = trim($_POST["first_name"]);
-    $last_name  = trim($_POST["last_name"]);
-    $gender     = trim($_POST["gender"]);
-    $status     = trim($_POST["status"]);
-    $phone      = trim($_POST["phone"]);
-    $DOB        = trim($_POST["DOB"]);
-
-    if ($PID && $first_name && $last_name) {
-        // Check if patient exists
-        $check = $conn->prepare("SELECT PID FROM patients WHERE PID=?");
-        $check->bind_param("s", $PID);
-        $check->execute();
-        $exists = $check->get_result()->fetch_assoc();
-        $check->close();
-
-        if ($exists) {
-            // Check if already under this doctor
-            $checkLink = $conn->prepare("SELECT COUNT(*) AS cnt FROM user_patient WHERE PID=? AND userID=?");
-            $checkLink->bind_param("si", $PID, $userID);
-            $checkLink->execute();
-            $linkData = $checkLink->get_result()->fetch_assoc();
-            $checkLink->close();
-
-            if ($linkData['cnt'] > 0) {
-                $error = "⚠️ This patient is already under your care.";
-            } else {
-                // Count connected doctors
-                $count = $conn->prepare("SELECT COUNT(*) AS cnt FROM user_patient WHERE PID=?");
-                $count->bind_param("s", $PID);
-                $count->execute();
-                $c = $count->get_result()->fetch_assoc();
-                $count->close();
-
-                if ($c['cnt'] >= 5) {
-                    $error = "❌ This patient already has 5 doctors.";
-                } else {
-                    $error = "ℹ️ This patient exists in the system. Please connect from the Patients page.";
-                }
-            }
-        } else {
-            // Add new patient and connect automatically
-            $stmt = $conn->prepare("INSERT INTO patients (PID, first_name, last_name, gender, status, phone, DOB) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssss", $PID, $first_name, $last_name, $gender, $status, $phone, $DOB);
-            if ($stmt->execute()) {
-                $link = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
-                $link->bind_param("si", $PID, $userID);
-                $link->execute();
-                $link->close();
-                $success = "✅ Patient added and connected successfully!";
-            } else {
-                $error = "❌ Failed to add patient.";
-            }
-            $stmt->close();
+// --- AJAX request handler ---
+if (isset($_POST['action']) && $_POST['action'] === 'search') {
+    $q = "%".trim($_POST['query'])."%";
+    $stmt = $conn->prepare("SELECT PID, first_name, last_name FROM patient WHERE PID LIKE ? OR first_name LIKE ? OR last_name LIKE ? LIMIT 10");
+    $stmt->bind_param("sss", $q, $q, $q);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res->num_rows > 0) {
+        while ($row = $res->fetch_assoc()) {
+            echo "<div class='result-item'>
+                    <div><strong>{$row['PID']}</strong> - {$row['first_name']} {$row['last_name']}</div>
+                    <button class='add-btn' onclick=\"addPatient('{$row['PID']}')\">Add</button>
+                  </div>";
         }
     } else {
-        $error = "⚠️ Please fill in all required fields.";
+        echo "<div class='result-item' style='color:#888;'>No matches found.</div>";
     }
+    exit;
+}
+
+if (isset($_POST['action']) && $_POST['action'] === 'add') {
+    $PID = trim($_POST['PID']);
+
+    // Check if patient exists
+    $checkExist = $conn->prepare("SELECT PID FROM patient WHERE PID=?");
+    $checkExist->bind_param("s", $PID);
+    $checkExist->execute();
+    $exists = $checkExist->get_result()->fetch_assoc();
+    $checkExist->close();
+
+    if (!$exists) {
+        echo "❌ Patient not found in database.";
+        exit;
+    }
+
+    // Check if already linked to same doctor
+    $checkLink = $conn->prepare("SELECT COUNT(*) AS cnt FROM user_patient WHERE PID=? AND userID=?");
+    $checkLink->bind_param("si", $PID, $userID);
+    $checkLink->execute();
+    $cnt = $checkLink->get_result()->fetch_assoc();
+    $checkLink->close();
+
+    if ($cnt['cnt'] > 0) {
+        echo "ℹ️ You already have this patient.";
+        exit;
+    }
+
+    // Check if linked to other doctor
+    $checkOther = $conn->prepare("SELECT COUNT(*) AS cnt FROM user_patient WHERE PID=?");
+    $checkOther->bind_param("s", $PID);
+    $checkOther->execute();
+    $c = $checkOther->get_result()->fetch_assoc();
+    $checkOther->close();
+
+    if ($c['cnt'] > 0) {
+        echo "⚠️ This patient is already under another doctor. Please use Connect.";
+        exit;
+    }
+
+    // Add connection
+    $insert = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
+    $insert->bind_param("si", $PID, $userID);
+    if ($insert->execute()) {
+        echo "✅ Patient added successfully!";
+    } else {
+        echo "❌ Failed to add patient.";
+    }
+    $insert->close();
+    exit;
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Add Patient</title>
+<title>Add Patient from Database</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 <style>
@@ -115,44 +123,48 @@ padding:10px 36px;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(2
 .logo-top img {width:220px;}
 .profile {display:flex;align-items:center;gap:10px;cursor:pointer;}
 .avatar {width:36px;height:36px;border-radius:50%;background:linear-gradient(180deg,#2e9cff,#1a57ff);color:white;display:flex;align-items:center;justify-content:center;font-weight:600;}
-.container {
-    display:flex;justify-content:center;align-items:center;
-    height:calc(100vh - 120px);flex-direction:column;text-align:center;
-}
+.container {display:flex;justify-content:center;align-items:center;height:calc(100vh - 120px);flex-direction:column;text-align:center;}
 h2 {color:#1f46b6;margin-bottom:20px;}
-form {background:#fff;padding:30px;border-radius:14px;box-shadow:var(--shadow);
-max-width:500px;width:100%;text-align:left;}
-label {display:block;margin-bottom:5px;font-weight:600;}
-input,select {width:100%;padding:10px;margin-bottom:15px;border:1px solid rgba(0,0,0,0.1);border-radius:10px;}
-button {padding:10px 16px;border:none;border-radius:10px;background:#0f65ff;color:white;font-weight:600;cursor:pointer;}
-.alert {margin-top:15px;font-weight:600;}
+.search-box {background:#fff;padding:30px;border-radius:14px;box-shadow:var(--shadow);max-width:500px;width:100%;text-align:left;}
+input {width:100%;padding:10px;margin-bottom:15px;border:1px solid rgba(0,0,0,0.1);border-radius:10px;}
+.result-item {display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee;}
+.result-item:hover {background:#f8fbff;}
+.add-btn {background:#0f65ff;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:14px;}
+#results {max-height:250px;overflow-y:auto;margin-top:10px;}
+.message {margin-top:15px;font-weight:600;}
 .success {color:#1b8a3d;}
 .error {color:#d32f2f;}
-.back-btn {
-    margin-top:20px;padding:10px 16px;border:none;border-radius:10px;
-    background:#9aa6c0;color:white;font-weight:600;cursor:pointer;
-}
-.back-btn:hover {background:#8b97ad;}
 </style>
+<script>
+function searchPatient(val){
+    if(val.trim()===''){document.getElementById('results').innerHTML='';return;}
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST','',true);
+    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhr.onload = function(){document.getElementById('results').innerHTML=this.responseText;}
+    xhr.send('action=search&query='+encodeURIComponent(val));
+}
+function addPatient(pid){
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST','',true);
+    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhr.onload = function(){
+        const msg=document.getElementById('message');
+        msg.textContent=this.responseText;
+        msg.classList.add('message');
+        msg.scrollIntoView({behavior:'smooth'});
+    }
+    xhr.send('action=add&PID='+encodeURIComponent(pid));
+}
+</script>
 </head>
 <body>
-
 <aside class="sidebar">
-    <div class="sidebar-item" onclick="location.href='dashboard.html'">
-        <span class="material-symbols-outlined">space_dashboard</span>
-    </div>
-    <div class="sidebar-item active" onclick="location.href='patients.php'">
-        <span class="material-symbols-outlined">group</span>
-    </div>
-    <div class="sidebar-item" style="opacity:.4;cursor:not-allowed;">
-        <span class="material-symbols-outlined">calendar_month</span>
-    </div>
-    <div class="sidebar-item" onclick="location.href='history.html'">
-        <span class="material-symbols-outlined">analytics</span>
-    </div>
-    <div class="sidebar-logout">
-        <button class="btn-logout"><span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">logout</span></button>
-    </div>
+    <div class="sidebar-item" onclick="location.href='dashboard.html'"><span class="material-symbols-outlined">space_dashboard</span></div>
+    <div class="sidebar-item active" onclick="location.href='patients.php'"><span class="material-symbols-outlined">group</span></div>
+    <div class="sidebar-item" style="opacity:.4;cursor:not-allowed;"><span class="material-symbols-outlined">calendar_month</span></div>
+    <div class="sidebar-item" onclick="location.href='history.html'"><span class="material-symbols-outlined">analytics</span></div>
+    <div class="sidebar-logout"><button class="btn-logout"><span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">logout</span></button></div>
 </aside>
 
 <main class="main">
@@ -165,44 +177,13 @@ button {padding:10px 16px;border:none;border-radius:10px;background:#0f65ff;colo
 </header>
 
 <div class="container">
-    <h2>Add Patient</h2>
-    <form method="POST">
-        <label>Patient ID</label>
-        <input type="text" name="PID" required>
-
-        <label>First Name</label>
-        <input type="text" name="first_name" required>
-
-        <label>Last Name</label>
-        <input type="text" name="last_name" required>
-
-        <label>Gender</label>
-        <select name="gender" required>
-            <option value="">Select...</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select>
-
-        <label>Status</label>
-        <select name="status" required>
-            <option value="Normal">Normal</option>
-            <option value="Moderate">Moderate</option>
-            <option value="Critical">Critical</option>
-        </select>
-
-        <label>Phone</label>
-        <input type="text" name="phone">
-
-        <label>Date of Birth</label>
-        <input type="date" name="DOB">
-
-        <button type="submit" name="addPatient">Add Patient</button>
-    </form>
-
-    <button class="back-btn" onclick="window.location.href='patients.php'">← Back to Patients</button>
-
-    <?php if ($success): ?><p class="alert success"><?= $success ?></p><?php endif; ?>
-    <?php if ($error): ?><p class="alert error"><?= $error ?></p><?php endif; ?>
+    <h2>Add Patient from Database</h2>
+    <div class="search-box">
+        <label>Search by Name or File Number</label>
+        <input type="text" onkeyup="searchPatient(this.value)" placeholder="Type to search...">
+        <div id="results"></div>
+    </div>
+    <p id="message"></p>
 </div>
 </main>
 </body>
