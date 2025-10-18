@@ -6,455 +6,244 @@
     <title>TANAFS Dashboard</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
 
-    <style>
-        :root {
-            /* --bg-gradient: linear-gradient(135deg, #b9ddff 0%, #88c6ff 25%, #7fbff8 50%, #7eb8ff 75%, #baddff 100%);*/
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --muted: #6b7b8c;
-            --accent: #1776ff;
-            --glass: rgba(255, 255, 255, 0.16);
-            --radius: 12px;
-            --soft-shadow: 0 8px 20px rgba(20, 40, 80, 0.08);
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-        }
+ 
+  <style>
+ 
+    html, body { height: 100%; }
 
-        html, body {
-            height: 100%;
-        }
+    body {
+      margin: 0;
+      background: #d1e6fea7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+         color:var(--text);
+      overflow-y: auto;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      display: block; /* مهم: لا نستخدم flex على body حتى لا يسبب تمدد غريب */
+    }
 
-        body {
-            margin: 0;
-            background: rgba(130, 169, 227, 0.64);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            color: #122433;
-            overflow-y: auto;
-        }
+      :root{
+      --bg-1:#0875fa29;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --primary:#0B83FE;
+      --primary-pressed:#0970d7;
+      --ring:#D1E6FE;
+      --radius:24px;
+      --field-h:3.25rem;
+      --field-r:12px;
+      --gap:16px;
+      --pad:36px;
+      --maxw:800px;
+    }
 
-        :root {
-            --bg: #f2f6fb;
-            --card: #ffffff;
-            --accent: #0f65ff; /* primary blue */
-            --muted: #9aa6c0;
-            --soft-blue: #eef6ff;
-            --panel-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
-            --radius: 14px;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    .material-symbols-outlined { font-variation-settings: 'wght' 500; font-size: 20px }
+    .material-symbols-outlined:hover { transform: translateX(4px) }
 
-        body {
-            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: #8ca8bf;
-            color: #15314b;
-            /* min-height: 100vh;*/
-            display: flex;
-        }
+    .btn-logout {
+      background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      border: none;
+      box-shadow: 0 8px 20px rgba(15, 101, 255, 0.14);
+      cursor: pointer;
+      font-size: 14px;
+      height: 40px;
+    }
 
+    /* -------- Main (header + content) -------- */
+    .main { flex: 1; display: flex; flex-direction: column; height: 50em; }
 
-        .material-symbols-outlined {
-            font-variation-settings: 'wght' 500;
-            font-size: 20px
-        }
+    /* -------- Page content -------- */
+    .container {
+      width: 100%;
+      margin: 5px;
+      margin-top: 90px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
 
-        .material-symbols-outlined:hover {
-            transform: translateX(4px)
-        }
+    .left-column { display: flex; flex-direction: column; gap: 19px }
+.welcome {
+  color: #000000;
+  margin-bottom: 6px;
+  text-indent: 12px;
+  font-family: "Oxygen", sans-serif;
+}
 
+.welcome h1 {
+  font-size: 30px;
+  margin: 0;
+  font-family: "Oxygen", sans-serif;
+}
 
-        .btn-logout {
-            background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-            color: white;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-weight: 600;
-            border: none;
-            box-shadow: 0 8px 20px rgba(15, 101, 255, 0.14);
-            cursor: pointer;
-            font-size: 14px;
-            height: 40px;
-        }
-
-        /* -------- Main (header + content) -------- */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 50em;
-        }
-
-        header.topbar {
-            height: fit-content;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-            border-bottom: 1px solid rgba(15, 21, 40, 0.54);
-        }
-
-        /* left area (search) center area (logo) right area (actions) */
-        .top-left {
-            display: flex;
-            align-items: center;
-            gap: 12px
-        }
-
-        .search {
-            background: var(--card);
-            padding: 10px 12px;
-            border-radius: 999px;
-            width: 360px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: var(--panel-shadow);
-            border: 1px solid rgba(7, 12, 30, 0.03);
-        }
-
-        .search input {
-            border: 0;
-            outline: 0;
-            font-size: 14px;
-            width: 100%;
-            color: #6b7b8f;
-            background: transparent;
-        }
-
-        .logo-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            color: var(--accent);
-            font-size: 20px;
-            margin-right: 185px;
-        }
-
-        .top-actions {
-            display: flex;
-            align-items: center;
-            gap: 14px
-        }
-
-        .icon-round {
-            width: 44px;
-            height: 44px;
-            border-radius: 999px;
-            background: linear-gradient(180deg, #fff, #f3f6ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(15, 21, 40, 0.04);
-            box-shadow: 0 6px 16px rgba(20, 30, 60, 0.03);
-        }
-
-        .profile {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background: linear-gradient(90deg, #f7fbff, #fff);
-            padding: 6px 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(15, 21, 40, 0.03);
-        }
-
-        .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            background: linear-gradient(180deg, #2e9cff, #1a57ff);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        /* -------- Page content -------- */
-
-        /* Main layout */
-        .container {
-            width: 100%;
-            margin: 5px;
-            padding: 24px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-
-        /* left column */
-        .left-column {
-            display: flex;
-            flex-direction: column;
-            gap: 19px
-        }
-
-        .welcome {
-            color: #fff;
-            margin-bottom: 6px;
-            text-indent: 12px;
-        }
-
-        .welcome h1 {
-            font-size: 30px;
-            margin: 0
-        }
-
-        .welcome p {
-            margin: 6px 0 0;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .upload-card {
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 14px;
-            padding: 36px;
-            min-height: 230px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 12px;
-            backdrop-filter: blur(4px);
-            box-shadow: var(--soft-shadow);
-        }
-
-        .upload-card input[type=file] {
-            display: none
-        }
-
-        .upload-drop {
-            width: 100%;
-            height: 230px;
-            border-radius: 12px;
-            border: 2px dashed rgba(255, 255, 255, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        .upload-drop .hint {
-            opacity: 0.9
-        }
-
-        .small-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 12px;
-            background: rgba(209, 220, 236, 0.25);
-            border-radius: 12px
-        }
-
-        .small-item {
-            background: rgba(255, 255, 255, 0.56);
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center
-        }
-
-        .small-item .id {
-            font-weight: 700
-        }
-
-        /* right column */
-        .right-column {
-            display: flex;
-            flex-direction: column;
-            gap: 18px
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns:repeat(2, 1fr);
-            gap: 14px
-        }
-
-        .stat {
-            background: rgba(237, 246, 248, 0.79);
-            padding: 16px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--soft-shadow)
-        }
-
-        .stat .value {
-            font-size: 22px;
-            font-weight: 700;
-            color: rgba(20, 51, 64, 0.9);
-        }
-
-        .stat .label {
-            color: #195695;
-            font-weight: 600
-        }
-
-        .result-card {
-            background: rgba(255, 255, 255, 0.34);
-            padding: 22px;
-            border-radius: 10px;
-            min-height: 260px;
-            box-shadow: var(--soft-shadow)
-        }
-
-        .result-card .title {
-            color: rgba(255, 255, 255, 0.85);
-            border-bottom: 1px solid #ffffff;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-            font-weight: 600;
-            opacity: 0.65;
-        }
-
-        .result-output {
-            color: #52637e;
-            font-weight: 600;
-            text-align: center;
-            padding-top: 36px;
-            opacity: 0.55
-        }
+.welcome p {
+  margin: 6px 0 0;
+  color: rgba(0, 0, 0, 0.9);
+  font-family: "Oxygen", sans-serif;
+}
 
 
-        footer {
-            background: #fff;
-            padding: 25px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
-            margin-top: 40px;
-        }
+    .upload-card { background: rgb(255, 255, 255); border-radius: 14px; padding: 36px; min-height: 230px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; backdrop-filter: blur(4px); box-shadow: var(--soft-shadow); }
+    .upload-card input[type=file] { display: none }
 
-        footer .footer-left {
-            display: flex;
-            gap: 50px;
-            font-size: 14px;
-            color: #3b6e9a;
-        }
+    .upload-drop { width: 100%; height: 230px; border-radius: 12px; border: 2px dashed #0b84feb3; display: flex; align-items: center; justify-content: center; flex-direction: column; color: rgba(0, 0, 0, 0.85); }
+    .upload-drop .hint { opacity: 0.9; font-size: 18px; }
 
-        footer .footer-left div strong {
-            display: block;
-            color: #122433;
-            margin-bottom: 6px;
-        }
+    .small-cards { display: flex; flex-direction: column; gap: 12px; padding: 12px; background: rgb(255, 255, 255); border-radius: 12px }
+    .small-item { background: #0b84fe17; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center }
+    .small-item .id { font-weight: 700 }
 
-        footer .footer-right img {
-            height: 45px;
-        }
+    .right-column { display: flex; flex-direction: column; gap: 18px; margin-top: 94px; }
 
-        footer .footer-right div {
-            text-align: right;
-            color: #3b6e9a;
-            font-weight: 700;
-        }
+    .stats-grid { display: grid; grid-template-columns:repeat(2, 1fr); gap: 14px; }
 
+    .stat { background: rgb(255, 255, 255); padding: 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--soft-shadow) }
+    .stat .value { font-size: 22px; font-weight: 700; color: rgba(20, 51, 64, 0.9); }
+    .stat .label { color: #195695; font-weight: 600 }
 
-        @media (max-width: 1000px) {
-            .container {
-                grid-template-columns:1fr;
-            }
-        }
+    .result-card { background: rgb(255, 255, 255); padding: 22px; border-radius: 10px; min-height: 260px; box-shadow: var(--soft-shadow) }
+    .result-card .title { color: rgb(0, 0, 0); border-bottom: 1px solid #0000006b; padding-bottom: 8px; margin-bottom: 12px; font-weight: 600; opacity: 0.65; }
+    .result-output { color: #000000; font-weight: 600; text-align: center; padding-top: 36px; opacity: 0.55 }
 
-        /* Responsive adjustments */
-        @media (max-width: 1000px) {
-            .container {
-                max-width: 920px;
-                grid-template-columns:1fr;
-            }
+    @media (max-width: 1000px) {
+      .container { grid-template-columns:1fr; }
+      .container { max-width: 920px; grid-template-columns:1fr; }
+      .upload-drop { height: 160px }
+      .stats-grid { grid-template-columns:repeat(2, 1fr) }
+    }
+    @media (max-width: 720px) {
+      .topbar { padding: 10px }
+      .container { padding: 8px }
+      .welcome h1 { font-size: 22px }
+      .upload-drop { height: 140px }
+    }
 
-            .upload-drop {
-                height: 160px
-            }
+    .muted { color: var(--muted) }
+    .btn { background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer }
 
-            .stats-grid {
-                grid-template-columns:repeat(2, 1fr)
-            }
-        }
+    .wrapper {
+      position: relative;
+      width: 100%;
+        height: auto;        
+      min-height: 100vh;  
+      overflow: visible;   
+    }
 
-        @media (max-width: 720px) {
-            .topbar {
-                padding: 10px
-            }
-            .container {
-                padding: 8px
-            }
+    img.topimg { position: absolute; top: -13.4%; left: 48%; transform: translateX(-50%); height: auto; width: auto; max-width: 90%; z-index: 10; pointer-events: none; }
+    img.logo { position: absolute; top: -7.1%; left: 14%; width: clamp(100px, 12vw, 180px); height: auto; z-index: 20; pointer-events: none; }
 
-            .welcome h1 {
-                font-size: 22px
-            }
+    .auth-nav { position: absolute; top: -6%; right: 16.2%; display: flex; align-items: center; gap: 1.6em; z-index: 30; }
 
-            .upload-drop {
-                height: 140px
-            }
-        }
+    .nav-link { color: #0876FA; font-weight: 600; text-decoration: none; font-size: 1em; transition: all 0.3s ease; position: relative; }
+    .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0876FA, #78C1F5); transition: width 0.3s ease; border-radius: 2px; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { transform: translateY(-2px); color: #055ac0; }
 
-        /* small helpers */
-        .muted {
-            color: var(--muted)
-        }
+    .profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff); padding: 0.375em 0.625em; border-radius: 999px; border: 1px solid rgba(15,101,255,0.12); }
+    .avatar { width: 2.125em; height: 2.125em; border-radius: 999px; background: linear-gradient(180deg, #2e9cff, #1a57ff); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875em; }
+    .profile-btn { all: unset; cursor: pointer; display: inline-block; }
 
-        .btn {
-            background: var(--accent);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer
-        }
+    .btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em; font-weight: 400; border: none; box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14); cursor: pointer; font-size: 0.875em; }
 
+    .search{ display:flex; align-items:center; gap:10px; padding:10px 14px; width:min(320px, 40vw); background:#ffffff; border:1px solid #e7eef8; border-radius: 14px; box-shadow: 0 6px 20px rgba(20,40,80,0.06); transition: box-shadow .2s ease, border-color .2s ease, transform .08s ease; }
+    .search svg{ flex:0 0 18px; opacity:.7; }
+    .search input{ flex:1 1 auto; border:0; outline:0; background:transparent; font-size:14px; color:#384b66; }
+    .search input::placeholder{ color:#8fa3bf; }
+    .search:focus-within{ border-color:#cfe2ff; box-shadow: 0 8px 26px rgba(15,101,255,0.10), 0 0 0 4px rgba(15,101,255,0.10); transform: translateY(-1px); }
+    .search:hover{ border-color:#d9e6f7; }
+
+    /* ===== Footer ===== */
+    .site-footer { background: #F6F6F6; color: #0b1b2b; font-family: 'Montserrat', sans-serif; margin-top: 3em; }
+    .footer-grid { max-width: 75em; margin: 0 auto; padding: 2.5em 1.25em; display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 2em; align-items: start; direction:ltr; }
+    .footer-col.brand { text-align: left; }
+    .footer-logo { height: 5.5em; width: auto; display: block; margin-left: -3em; }
+    .brand-tag { margin-top: 0.75em; color: #4c5d7a; font-size: 0.95em; }
+    .footer-title { margin: 0 0 1em 0; font-size: 1.05em; font-weight: 700; letter-spacing: 0.02em; color: #0B83FE; text-transform: uppercase; }
+    .social-list { list-style: none; padding: 0; margin: 0; display: flex; gap: 0.75em; align-items: center; }
+    .social-list li a { display: inline-flex; width: auto; height: auto; align-items: center; justify-content: center; border-radius: 0; background: none; box-shadow: none; transition: transform 0.2s ease, opacity 0.2s ease; }
+    .social-list li a:hover { transform: translateY(-0.2em); box-shadow: 0 0.6em 1.4em rgba(0, 0, 0, 0.08); }
+    .social-list img { width: 1.2em; height: 1.2em; }
+    .social-handle { display: block; margin-top: 0.6em; color: #0B83FE; font-size: 0.95em; }
+    .contact-list { list-style: none; padding: 0; margin: 0.25em 0 0 0; display: grid; gap: 0.6em; }
+    .contact-link { display: flex; align-items: center; gap: 0.6em; text-decoration: none; color: #0B83FE; padding: 0.5em 0.6em; border-radius: 0.6em; transition: background 0.2s ease, transform 0.2s ease; }
+    .contact-link:hover { background: rgba(255, 255, 255, 0.7); transform: translateX(0.2em); }
+    .contact-link img { width: 1.15em; height: 1.15em; }
+    .footer-bar { border-top: 0.06em solid rgba(11, 45, 92, 0.12); text-align: center; padding: 0.9em 1em 1.2em; }
+    .legal { margin: 0.2em 0; color: #4c5d7a; font-size: 0.9em; }
+    .legal a { color: #27466e; text-decoration: none; }
+    .legal a:hover { text-decoration: underline; }
+    .legal .dot { margin: 0 0.5em; color: rgba(11, 45, 92, 0.6); }
+    .copy { margin: 0.2em 0 0; color: #0B83FE; font-size: 0.85em; }
+
+    @media (max-width: 56.25em) {
+      .footer-grid { grid-template-columns: 1fr; gap: 1.5em; text-align: center; }
+      .social-list { justify-content: center; }
+      .contact-link { justify-content: center; }
+      .brand { display: flex; flex-direction: column; align-items: center; }
+    }
+
+/* ===== Responsive ===== */
+@media (max-width: 56.25em) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5em;
+    text-align: center;
+  }
+  .social-list {
+    justify-content: center;
+  }
+  .contact-link {
+    justify-content: center;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
     </style>
 </head>
 <body>
 
-<!-- MAIN -->
-<main class="main">
-    <header class="topbar" role="banner">
-        <div class="top-left">
-            <button class="btn-logout"><span class="material-symbols-outlined"
-                                             style="font-size:18px;vertical-align:middle">logout</span></button>
-            <div class="search" role="search" aria-label="Site search">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"/>
-                    <circle cx="11" cy="11" r="5.2" stroke="#6b7b8f" stroke-width="1.6"/>
-                </svg>
-                <input placeholder="Search ..." aria-label="Search"/>
-            </div>
-        </div>
 
-        <div class="logo-top" aria-hidden>
-            <div class="logo-lungs"><img src="images/logon2.png" alt="logon" style="width: 280px"></div>
-        </div>
+<div class="wrapper">
+ 
+  <img class="topimg" src="Images/Group 8.png" alt="img">
+  <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
-        <div class="top-actions">
-            <div class="icon-round" title="Notifications">
-                <span class="material-symbols-outlined" style="font-size:20px">notifications</span>
-            </div>
+  <nav class="auth-nav" aria-label="User navigation">
+    
+    <div class="search" role="search" aria-label="Site search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"></path>
+      <circle cx="11" cy="11" r="5.2" stroke="#6b7b8f" stroke-width="1.6"></circle>
+    </svg>
+    <input placeholder="Search ..." aria-label="Search">
+  </div>
+    <button class="profile-btn" aria-haspopup="true" aria-expanded="false">
+      <div class="profile">
+        <div class="avatar">DA</div>
+        <div style="font-size:14px;color:#2b4a77;font-weight:600;">Dr. Abdulrahman</div>
+      </div>
+    </button>
 
-            <div class="profile" title="Dr. Abdularahman">
-                <div class="avatar">DA</div>
-                <div style="font-size:14px;color:#2b4a77">Dr.Abdul...</div>
-            </div>
-        </div>
-    </header>
+    <button class="btn-logout">Logout</button>
+  </nav>
 
     <main class="container">
         <!-- LEFT -->
         <section class="left-column">
             <div class="welcome">
                 <h1>Welcome back,</h1>
-                <p style="font-size:18px;font-weight:700;color:white;margin-top:6px;">Mark Johnson</p>
+                <p style="font-size:18px;font-weight:700;color:rgb(35, 35, 35);margin-top:6px;">Mark Johnson</p>
             </div>
 
             <label class="upload-card" for="fileUpload">
@@ -464,7 +253,7 @@
                         <span class="material-symbols-outlined">upload</span>
                     </div>
                     <div class="hint">Upload your waveform, Here!</div>
-                    <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:8px">Drag &amp; drop or click to
+                    <div style="font-size:13px;color:#0b84feb3;margin-top:8px">Drag &amp; drop or click to
                         select a file
                     </div>
                 </div>
@@ -478,7 +267,7 @@
                             consectetur.
                         </div>
                     </div>
-                    <div style="background:rgba(255,255,255,0.25);padding:8px;border-radius:8px">
+                    <div style="background:rgb(255, 255, 255);padding:8px;border-radius:8px">
                         <span class="material-symbols-outlined" style="color: rgba(18,36,51,0.65)">arrow_forward</span>
                     </div>
                 </div>
@@ -490,7 +279,7 @@
                             consectetur.
                         </div>
                     </div>
-                    <div style="background:rgba(255,255,255,0.25);padding:8px;border-radius:8px">
+                    <div style="background:rgb(255, 255, 255);padding:8px;border-radius:8px">
                         <span class="material-symbols-outlined" style="color: rgba(18,36,51,0.65)">arrow_forward</span>
                     </div>
                 </div>
@@ -549,15 +338,7 @@
     </main>
 
 
-    <footer>
-        <div class="footer-left">
-            <div><strong>Resources</strong>Support<br>Developers<br>Resource library</div>
-            <div><strong>Explore</strong>Design<br>Use cases<br>Team collaboration</div>
-        </div>
-        <div class="footer-right">
-            <img src="images/logon2.png" alt="logo small" style="height: 65px">
-        </div>
-    </footer>
+    
 
     <script>
         // Tab switching (visual only)
@@ -611,5 +392,63 @@
         dropzone.addEventListener('click', () => fileInput.click());
 
     </script>
+<footer  id="contact" class="site-footer">
+  <div class="footer-grid">
+
+    <div class="footer-col brand">
+      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo" />
+      <p class="brand-tag">Breathe well, live well</p>
+    </div>
+
+    <!-- Social -->
+    <nav class="footer-col social" aria-label="Social media">
+      <h3 class="footer-title">Social Media</h3>
+      <ul class="social-list">
+        <li>
+          <a href="#" aria-label="Twitter">
+            <img src="images/twitter.png" alt="Twitter" />
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Instagram">
+            <img src="images/instagram.png" alt="Instagram" />
+          </a>
+        </li>
+      </ul>
+      <span class="social-handle">@official_Tanafs</span>
+    </nav>
+
+    <!-- Contact -->
+    <div class="footer-col contact">
+      <h3 class="footer-title">Contact Us</h3>
+      <ul class="contact-list">
+        <li>
+          <a href="#" class="contact-link">
+            <img src="images/whatsapp.png" alt="WhatsApp" />
+            <span>+123 165 788</span>
+          </a>
+        </li>
+        <li>
+          <a href="mailto:Appointly@gmail.com" class="contact-link">
+            <img src="images/email.png" alt="Email" />
+            <span>Tanafs@gmail.com</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bar">
+    <p class="legal">
+      <a href="#">Terms &amp; Conditions</a>
+      <span class="dot">•</span>
+      <a href="#">Privacy Policy</a>
+    </p>
+    <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
+  </div>
+</footer>
+
+
 </body>
 </html>
