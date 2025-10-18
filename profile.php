@@ -16,7 +16,7 @@ if ($conn->connect_error) die("Database connection failed: " . $conn->connect_er
 $conn->set_charset("utf8mb4");
 
 // Fetch user data
-$sql = "SELECT first_name, last_name, email, role, phone, DOB FROM users WHERE userID = ?";
+$sql = "SELECT first_name, last_name, email, role, phone, DOB FROM user WHERE userID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
@@ -31,11 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $phone      = trim($_POST['phone']);
     $dob        = trim($_POST['dob']);
 
-    $update = $conn->prepare("UPDATE users SET first_name=?, last_name=?, phone=?, DOB=? WHERE userID=?");
+    $update = $conn->prepare("UPDATE user SET first_name=?, last_name=?, phone=?, DOB=? WHERE userID=?");
     $update->bind_param("ssssi", $first_name, $last_name, $phone, $dob, $userID);
 
     if ($update->execute()) {
-        $success = "✅ Changes saved successfully.";
+        $success = "Changes saved successfully.";
         $userData['first_name'] = $first_name;
         $userData['last_name']  = $last_name;
         $userData['phone']      = $phone;
