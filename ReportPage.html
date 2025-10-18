@@ -1,4 +1,4 @@
-<!doctype html>
+c:\Users\Njood\OneDrive\Documents\GitHub\2025_GP_27\ReportPage.html<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -91,7 +91,10 @@ header.topbar {
 .report-sheet{
   background:#fff; border:1px solid #e9eef6; border-radius:1.125em;
   padding:1.375em; box-shadow:0 0.0625em 0.1875em rgba(0,0,0,.05);
-  width: 98%; 
+  width: 75%; 
+  margin-left: 11em;
+  margin-top: 3em;
+
 }
 
 /* Reprt titel*/
@@ -109,7 +112,7 @@ header.topbar {
   grid-template-columns:1fr 1fr 1fr; 
   margin-bottom:1.125em;
   white-space: nowrap; /*to avoid go to next line in created by*/ 
- column-gap: 18em; 
+ column-gap: 9em; 
 }
 
 .info-row{ display:flex;  align-items:center; }
@@ -117,7 +120,7 @@ header.topbar {
 .info-value{ color:#2b4a77; font-weight:700; }
 
 /* field for report info*/
-.field{ display:flex; gap:0.75em; margin:0.625em 0; align-items:center; }
+.field{ display:flex; gap:0.75em;  margin: 2em 0; align-items:center; }
 .field .label{ min-width:13.75em; color:#2b4a77; font-weight:800; }
 .field .value{
    background:#fff; border:1px solid #eef1f6; border-radius:0.75em;
@@ -134,7 +137,7 @@ header.topbar {
 
 /* Save button*/
 #btn-save{
-  margin-top:1em; 
+  margin-top:1.5em; 
   background:linear-gradient(90deg,#0f65ff,#5aa6ff);
   color:#fff;
   border:0;
@@ -147,6 +150,7 @@ header.topbar {
   align-items:center; 
   gap:0.5em; 
   box-shadow:0 0.5em 1.25em rgba(15,101,255,.14);
+  margin-left: 12em;
 }
 
 /* Responsive */
@@ -197,9 +201,6 @@ header.topbar {
 }
 </style>
 
-
-
-    </style>
 </head>
 
 <body>
@@ -257,59 +258,61 @@ header.topbar {
     <div class="info-box">
       <div class="info-row">
         <div class="info-label">Patient name:</div>
-        <div class="info-value" id="r-patient">Sara Ibrahim</div>
+        <div class="info-value" id="r-patient"></div>
       </div>
       <div class="info-row">
         <div class="info-label">Created by:</div>
-        <div class="info-value" id="r-created-by">Ibrahim Mohammed</div>
+        <div class="info-value" id="r-created-by"></div>
       </div>
       <div class="info-row">
         <div class="info-label">Date of creation:</div>
-        <div class="info-value" id="r-date">3/9/2025</div>
+        <div class="info-value" id="r-date"></div>
       </div>
     </div>
 
     <!-- field-->
     <div class="field">
       <div class="label">Last waveform status:</div>
-      <div class="value" id="r-last-status">Double Trigger</div>
+      <div class="value" id="r-last-status"></div>
     </div>
    
       
 
 
 <div class="field">
-  <div class="label">Last analyzed waveforms:</div>
+  <div class="label">Last analyzed waveforms<br>with sevarity level:</div>
   <div class="value">
     <ul class="waves-list" id="waves-list">
       <li class="wave-item">
         <div class="name">
           <span class="material-symbols-outlined">show_chart</span>
-          Double Trigger
+         
         </div>
-        <span class="status critical">High</span>
+        <span class="status critical"></span>
       </li>
-       <li class="wave-item">
+      
+<li class="wave-item">
         <div class="name">
           <span class="material-symbols-outlined">show_chart</span>
-          Double Trigger
+         
         </div>
-        <span class="status critical">High</span>
+        <span class="status critical"></span>
       </li>
-
-
       <li class="wave-item">
         <div class="name">
           <span class="material-symbols-outlined">show_chart</span>
-          Normal
+         
         </div>
-        <span class="status moderate">Low</span>
-        
+        <span class="status critical"></span>
       </li>
+
     </ul>
   </div>
 </div>
-
+ <div class="field">
+      <div class="label">Last comment:</div>
+      <div class="value" id="r-comment"></div>
+    </div>
   
 
     <!--Doctor note -->
@@ -323,5 +326,59 @@ header.topbar {
     </button>
 </section>
 </main>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+  
+  const pid =1
+function getSeverityClass(level = "") {
+  const s = String(level).trim().toLowerCase();
+  if (s.includes("high") || s.includes("critical")) return "critical";
+  if (s.includes("moderate") || s.includes("med"))  return "moderate"; 
+  return "normal";                                                  
+}
+  try {
+    const res = await fetch(`report.php?pid=${pid}`);
+    const data = await res.json();
+
+   //fill info header
+    document.getElementById("r-patient").textContent     = data.patient ?? "Unknown";
+    document.getElementById("r-created-by").textContent  = data.createdBy ?? "System";
+    document.getElementById("r-date").textContent        = data.date ?? "";
+
+    // last result
+    document.getElementById("r-last-status").textContent = data.lastStatus ?? "-";
+
+    // last 3
+    const wavesList = document.getElementById("waves-list");
+    wavesList.innerHTML = "";
+    (data.waves || []).forEach(w => {
+      const li = document.createElement("li");
+      li.className = "wave-item";
+      li.innerHTML = `
+        <div class="name">
+          <span class="material-symbols-outlined">show_chart</span>
+          ${w.anomaly}
+        </div>
+       <span class="status ${getSeverityClass(w.level)}">${(w.level || '-')}</span>
+
+      `;
+      wavesList.appendChild(li);
+    });
+
+    // last comment
+    document.getElementById("r-comment").textContent = data.lastComment || "-";
+
+  } catch (e) {
+    console.error(e);
+    alert("cannot appload the report information");
+  }
+});
+</script>
+
+
+
+
+
 </body>
 </html>
