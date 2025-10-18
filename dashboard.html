@@ -142,9 +142,10 @@
     .nav-link:hover::after { width: 100%; }
     .nav-link:hover { transform: translateY(-2px); color: #055ac0; }
 
-    .profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff); padding: 0.375em 0.625em; border-radius: 999px; border: 1px solid rgba(15,101,255,0.12); }
-    .avatar { width: 2.125em; height: 2.125em; border-radius: 999px; background: linear-gradient(180deg, #2e9cff, #1a57ff); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875em; }
-    .profile-btn { all: unset; cursor: pointer; display: inline-block; }
+    .profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff); padding: 0.375em 0.625em;  }
+.avatar-icon{
+  width:30px; height:30px; display:block;
+}    .profile-btn { all: unset; cursor: pointer; display: inline-block; }
 
     .btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em; font-weight: 400; border: none; box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14); cursor: pointer; font-size: 0.875em; }
 
@@ -203,7 +204,7 @@
     flex-direction: column;
     align-items: center;
   }
-}/* ===== Harmonize colors with Report page (colors only) ===== */
+}
 :root{
   --bg:#f2f6fb;
   --accent:#0f65ff;
@@ -284,7 +285,6 @@ body{
   <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
   <nav class="auth-nav" aria-label="User navigation">
-    
     <div class="search" role="search" aria-label="Site search">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"></path>
@@ -292,12 +292,13 @@ body{
     </svg>
     <input placeholder="Search ..." aria-label="Search">
   </div>
-    <button class="profile-btn" aria-haspopup="true" aria-expanded="false">
-      <div class="profile">
-        <div class="avatar">DA</div>
-        <div style="font-size:14px;color:#2b4a77;font-weight:600;">Dr. Abdulrahman</div>
-      </div>
-    </button>
+   <a class="nav-link" href="#patients">Patients</a>
+    <a class="nav-link" href="history.html">history</a>
+   <button class="profile-btn" aria-haspopup="true" aria-expanded="false">
+  <div class="profile">
+    <img class="avatar-icon" src="images/profile.png" alt="Profile" />
+  </div>
+</button>
 
     <button class="btn-logout">Logout</button>
   </nav>
