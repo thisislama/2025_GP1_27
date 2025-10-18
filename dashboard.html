@@ -11,32 +11,29 @@
  
     html, body { height: 100%; }
 
-    body {
-      margin: 0;
-      background: #d1e6fea7;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-         color:var(--text);
-      overflow-y: auto;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      display: block; /* مهم: لا نستخدم flex على body حتى لا يسبب تمدد غريب */
-    }
+  body {
+  margin: 0;
+  background: var(--bg);   
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #15314b;          
+  overflow-y: auto;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  display: block;
+}
 
-      :root{
-      --bg-1:#0875fa29;
-      --card:#ffffff;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --primary:#0B83FE;
-      --primary-pressed:#0970d7;
-      --ring:#D1E6FE;
-      --radius:24px;
-      --field-h:3.25rem;
-      --field-r:12px;
-      --gap:16px;
-      --pad:36px;
-      --maxw:800px;
-    }
+:root{
+  --bg:#f2f6fb;
+  --accent:#0f65ff;
+  --muted:#9aa6c0;
+  --radius:24px;
+  --field-h:3.25rem;
+  --field-r:12px;
+  --gap:16px;
+  --pad:36px;
+  --maxw:800px;
+}
+
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -89,27 +86,27 @@
 }
 
 
-    .upload-card { background: rgb(255, 255, 255); border-radius: 14px; padding: 36px; min-height: 230px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; backdrop-filter: blur(4px); box-shadow: var(--soft-shadow); }
+    .upload-card {  border-radius: 14px; padding: 36px; min-height: 230px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; backdrop-filter: blur(4px); box-shadow: var(--soft-shadow); }
     .upload-card input[type=file] { display: none }
 
-    .upload-drop { width: 100%; height: 230px; border-radius: 12px; border: 2px dashed #0b84feb3; display: flex; align-items: center; justify-content: center; flex-direction: column; color: rgba(0, 0, 0, 0.85); }
+    .upload-drop { width: 100%; height: 230px; border-radius: 12px; border: 2px dashed; display: flex; align-items: center; justify-content: center; flex-direction: column;  }
     .upload-drop .hint { opacity: 0.9; font-size: 18px; }
 
-    .small-cards { display: flex; flex-direction: column; gap: 12px; padding: 12px; background: rgb(255, 255, 255); border-radius: 12px }
-    .small-item { background: #0b84fe17; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center }
+    .small-cards { display: flex; flex-direction: column; gap: 12px; padding: 12px; border-radius: 12px }
+    .small-item {  padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center }
     .small-item .id { font-weight: 700 }
 
     .right-column { display: flex; flex-direction: column; gap: 18px; margin-top: 94px; }
 
     .stats-grid { display: grid; grid-template-columns:repeat(2, 1fr); gap: 14px; }
 
-    .stat { background: rgb(255, 255, 255); padding: 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--soft-shadow) }
-    .stat .value { font-size: 22px; font-weight: 700; color: rgba(20, 51, 64, 0.9); }
+    .stat {  padding: 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--soft-shadow) }
+    .stat .value { font-size: 22px; font-weight: 700;  }
     .stat .label { color: #195695; font-weight: 600 }
 
-    .result-card { background: rgb(255, 255, 255); padding: 22px; border-radius: 10px; min-height: 260px; box-shadow: var(--soft-shadow) }
-    .result-card .title { color: rgb(0, 0, 0); border-bottom: 1px solid #0000006b; padding-bottom: 8px; margin-bottom: 12px; font-weight: 600; opacity: 0.65; }
-    .result-output { color: #000000; font-weight: 600; text-align: center; padding-top: 36px; opacity: 0.55 }
+    .result-card {  padding: 22px; border-radius: 10px; min-height: 260px; box-shadow: var(--soft-shadow) }
+    .result-card .title {border-bottom: 1px solid ; padding-bottom: 8px; margin-bottom: 12px; font-weight: 600; opacity: 0.65; }
+    .result-output {  font-weight: 600; text-align: center; padding-top: 36px; opacity: 0.55 }
 
     @media (max-width: 1000px) {
       .container { grid-template-columns:1fr; }
@@ -125,7 +122,7 @@
     }
 
     .muted { color: var(--muted) }
-    .btn { background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer }
+    .btn { background: var(--accent); padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer }
 
     .wrapper {
       position: relative;
@@ -206,7 +203,76 @@
     flex-direction: column;
     align-items: center;
   }
+}/* ===== Harmonize colors with Report page (colors only) ===== */
+:root{
+  --bg:#f2f6fb;
+  --accent:#0f65ff;
+  --muted:#9aa6c0;
 }
+
+body{
+  background: var(--bg);            /* بدل #d1e6fea7 */
+  color:#15314b;
+}
+
+/* كروت وعناصر واجهة موحدة */
+.upload-card,
+.small-cards,
+.stat,
+.result-card{
+  background:#fff;
+  border:1px solid #e9eef6;
+  box-shadow:0 1px 6px rgba(0,0,0,.05);
+}
+
+/* الدروب زون */
+.upload-drop{
+  background:#fff;
+  border:2px dashed #0b84feb3;
+  color:#2b4a77;
+}
+.upload-drop .hint{ color:#2b4a77; }
+
+/* العناصر الصغيرة */
+.small-item{
+  background:#eef3fb;
+  border:1px solid #e9eef6;
+}
+.small-item .id{ color:#2b4a77; }
+.muted{ color:var(--muted) }
+
+/* شبكة الإحصائيات */
+.stat .label{ color:#195695; }
+.stat .value{ color:#143340e6; }
+
+/* كرت النتيجة */
+.result-card .title{
+  color:#2b4a77;
+  border-bottom:1px solid #e9eef6;
+  opacity:1;
+}
+.result-output{ color:#2b4a77; opacity:.75 }
+
+/* شريط البحث */
+.search{
+  background:#fff;
+  border:1px solid #e7eef8;
+  box-shadow:0 6px 20px rgba(20,40,80,.06);
+}
+.search input{ color:#384b66; }
+.search input::placeholder{ color:#8fa3bf; }
+
+/* الأزرار والروابط */
+.btn,
+.btn-logout{ background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; }
+.nav-link,
+.footer-title,
+.social-handle,
+.contact-link{ color:#0B83FE; }
+
+/* نصوص الترحيب */
+.welcome, .welcome h1, .welcome p{ color:#2b4a77; }
+
     </style>
 </head>
 <body>
@@ -263,7 +329,7 @@
                             consectetur.
                         </div>
                     </div>
-                    <div style="background:rgb(255, 255, 255);padding:8px;border-radius:8px">
+                    <div style="background:#8fa3bf2f;padding:8px;border-radius:8px">
                         <span class="material-symbols-outlined" style="color: rgba(18,36,51,0.65)">arrow_forward</span>
                     </div>
                 </div>
@@ -275,7 +341,7 @@
                             consectetur.
                         </div>
                     </div>
-                    <div style="background:rgb(255, 255, 255);padding:8px;border-radius:8px">
+                    <div style="background:#8fa3bf2f;padding:8px;border-radius:8px">
                         <span class="material-symbols-outlined" style="color: rgba(18,36,51,0.65)">arrow_forward</span>
                     </div>
                 </div>
