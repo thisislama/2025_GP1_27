@@ -252,19 +252,15 @@ th, td { text-align: center; padding: 0.75em; color: #2b4a77; }
     <!-- Page Title -->
     <section style="display:flex;align-items:flex-end;gap:12px;justify-content:space-between;padding:10px 30px;">
         <div class="PName">
-            <h2 style="color: #1f46b6">Ibrahim mohammed</h2>
+            <h2 style="color: #1f46b6"></h2>
         </div>
         <div style="border-radius:12px; text-align: right;">
-            
-
-
-
         </div>
     </section>
 
     <!-- ===== Patient Detail Section (from your sketch) ===== -->
     <section class="panel" aria-label="Patient detail">
-       
+
 
         <div class="panel-body">
     <div class="table-scroll">
@@ -279,54 +275,7 @@ th, td { text-align: center; padding: 0.75em; color: #2b4a77; }
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>Double Trigger</td>
-                <td><span class="status critical">High</span></td>
-                <td>-</td>
-                <td>-</td>
-                <td>5/27/2025</td>
-            </tr>
-            <tr>
-                <td>Normal</td>
-                <td><span class="status moderate">Low</span></td>
-                <td>-</td>
-                <td>—</td>
-                <td>5/19/2025</td>
-            </tr>
 
- <tr>
-                <td>Normal</td>
-                <td><span class="status moderate">Low</span></td>
-                <td>-</td>
-                <td>—</td>
-                <td>5/19/2025</td>
-            </tr>
-             
- <tr>
-                <td>Normal</td>
-                <td><span class="status moderate">Low</span></td>
-                <td>-</td>
-                <td>—</td>
-                <td>5/19/2025</td>
-            </tr>
-
-             <tr>
-                <td>Normal</td>
-                <td><span class="status moderate">Low</span></td>
-                <td>-</td>
-                <td>—</td>
-                <td>5/19/2025</td>
-            </tr>
-
-             <tr>
-                <td>Normal</td>
-                <td><span class="status moderate">Low</span></td>
-                <td>-</td>
-                <td>—</td>
-                <td>5/19/2025</td>
-            </tr>
-
-         
             </tbody>
         </table>
     </div>
@@ -334,39 +283,26 @@ th, td { text-align: center; padding: 0.75em; color: #2b4a77; }
 
     </section>
 
-   
+
 
     <!-- ===== Comments Card (from your sketch) ===== -->
  <section class="panel comment-card" aria-label="Comments">
     <div class="title">Comments</div>
 
     <!--1-->
-  
+
 <div class="comment-block">
-        
-       <div class="comment-basic-info">
-  <span>Created by <b>Dr Asma</b></span>
-  <span class="comment-date">10/10/2025</span>
+
+     <div class="comment-basic-info">
+  <span> <b></b></span>
+  <span class="comment-date"></span>
 </div>
 
         <div class="comment-content">
-            Patient showed stable waveform readings throughout the session.
+
         </div>
     </div>
-    <!--2-->
-    <div class="comment-block">
-        
 
-   <div class="comment-basic-info">
-  <span>Created by <b>Dr Abdullah</b></span>
-  <span class="comment-date">10/10/2025</span>
-</div>
-
-         
-        <div class="comment-content">
-            Patient showed stable waveform readings throughout the session.
-        </div>
-    </div>
 
     <!-- add comment-->
     <textarea class="comment-input" placeholder="Write your comment here"></textarea>
@@ -385,7 +321,7 @@ th, td { text-align: center; padding: 0.75em; color: #2b4a77; }
     <div class="report-item">
       <div class="left">
         <span class="material-symbols-outlined">description</span>
-        <div>Report #RPT-00041</div>
+        <div>Last Report</div>
         <span class="pd">PDF</span>
       </div>
       <button class="btn-open">
@@ -400,5 +336,226 @@ th, td { text-align: center; padding: 0.75em; color: #2b4a77; }
 
 
 </main>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const pid = 1; // غيّريها لاحقاً حسب رقم المريض اللي تبين تعرضينه
+
+ fetch(`PHPpatient.php?pid=1&mode=patient`)
+    .then(response => response.json())
+    .then(data => {
+      const nameElement = document.querySelector(".PName h2");
+      if (nameElement && data.name) {
+        nameElement.textContent = data.name;
+      } else {
+        nameElement.textContent = "Unknown Patient";
+      }
+    })
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const pid =1;
+  const tbody = document.querySelector(".analysis-table tbody");
+
+  // Linking the anomaly with the explanation and solution.
+  const anomalyInfo = {
+    "Double Trigger": {
+      explanation: "Overlapping breaths due to short inspiratory time.",
+      solution: "Increase inspiratory time or adjust trigger sensitivity."
+    },
+    "Auto Trigger": {
+      explanation: "Breaths triggered without effort (leak/high sensitivity).",
+      solution: "Fix leaks and reduce trigger sensitivity."
+    },
+    "Flow Asynchrony": {
+      explanation: "Mismatch between patient demand and ventilator flow.",
+      solution: "Increase flow or adjust pressure support."
+    },
+    "Normal": {
+      explanation: "Waveform within normal pattern.",
+      solution: "Continue monitoring."
+    }
+  };
+
+  function getSeverityClass(level) {
+    if (!level) return ""; // if level null or undefine
+    const SL = level.toLowerCase();
+    if (SL.includes("high") || SL.includes("critical")) return "critical";
+    if (SL.includes("moderate")) return "moderate";
+    return "normal";
+  }
+
+fetch(`PHPpatient.php?pid=1&mode=analysis`)
+    .then(res => res.json())
+    .then(data => {
+      tbody.innerHTML = "";
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No records found</td></tr>`;
+        return;
+      }
+
+      data.forEach(row => {
+        const type = row.anomaly_type || "Normal";
+        const severity = row.severity_level || "-";
+        const date = row.timestamp ? new Date(row.timestamp).toLocaleDateString() : "-";
+        const info = anomalyInfo[type] || { explanation: "-", solution: "-" };
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${type}</td>
+          <td><span class="status ${getSeverityClass(severity)}">${severity}</span></td>
+          <td>${info.explanation}</td>
+          <td>${info.solution}</td>
+          <td>${date}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      tbody.innerHTML = `<tr><td colspan="5" style="color:red;text-align:center;">Error loading data</td></tr>`;
+    });
+});
+</script>
+<script>
+(function () {
+  const pid =1;
+
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+  function loadComments() {
+    const panel = document.querySelector('.comment-card');
+    if (!panel) return;
+
+    const inputBox = panel.querySelector('.comment-input');
+
+    panel.querySelectorAll('.comment-block').forEach(el => el.remove());//remove from panel each comment block
+
+    
+    fetch(`PHPpatient.php?mode=comments&pid=${encodeURIComponent(pid)}&_=${Date.now()}`, { cache: 'no-store' })
+      .then(res => res.json())
+      .then(list => {
+        (list || []).forEach(comment => {// list or If list is empty or undefined, use an empty array []
+          const block = document.createElement('div');
+          block.className = 'comment-block';
+         d = new Date(comment.date).toLocaleDateString();
+          block.innerHTML = `
+            <div class="comment-basic-info">
+              <span>Created by <b>${esc(comment.by || 'Unknown')}</b></span>
+              <span class="comment-date">${esc(d)}</span>
+            </div>
+            <div class="comment-content">${esc(comment.text || '')}</div>
+          `;
+          panel.insertBefore(block, inputBox);
+        });
+      })
+      .catch(err => {
+        console.error('loadComments error:', err);
+        const note = document.createElement('div');
+        note.style.cssText = 'color:#d32f2f;margin:.5em 0;font-size:.9em;';
+        note.textContent = 'Error loading comments';
+        panel.insertBefore(note, inputBox);
+      });
+  }
+
+  // add comment button 
+  const addBtn = document.querySelector('.btn-add');
+  if (addBtn) {
+    addBtn.addEventListener('click', () => {
+      const ta = document.querySelector('.comment-input');
+     
+
+      const txt = ta.value.trim();
+      if (!txt) { alert('Please write your comment first.'); return; }
+
+    
+
+      const fd = new FormData();
+      fd.append('content', txt);
+      fd.append('userID', 1);
+
+      addBtn.disabled = true;
+
+      fetch(`PHPpatient.php?mode=add_comment&pid=${encodeURIComponent(pid)}`, {
+        method: 'POST',
+        body: fd
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          ta.value = '';
+          loadComments(); 
+        } else {
+          alert(data.message || 'Error adding comment.');
+        }
+      })
+      .catch(err => {
+        console.error('add_comment error:', err);
+        alert('Error adding comment. Please try again.');
+      })
+      .finally(() => {
+        addBtn.disabled = false;
+      });
+    });
+  }
+
+  // تحميل أولي
+  loadComments();
+})();
+</script>
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const pid = 1; 
+  const panel    = document.querySelector('.reports-panel');
+  const item     = panel.querySelector('.report-item');
+  const left     = item.querySelector('.left');
+  const btnOpen  = item.querySelector('.btn-open');
+  const dateBox  = panel.querySelector('.report-date');
+
+  try {
+    const res  = await fetch(`PHPpatient.php?mode=report&pid=${encodeURIComponent(pid)}&_=${Date.now()}`, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data.status === 'success' && data.filePath) {
+     
+      const rel = String(data.filePath).replace(/^\/+/, '');
+      const url = `/Tanafas/reports/${encodeURI(rel)}`;
+
+      btnOpen.disabled = false;
+      btnOpen.title = 'Open last report';
+      btnOpen.onclick = () => window.open(url, '_blank');
+
+      
+      if (data.timestamp) dateBox.textContent = new Date(data.timestamp).toLocaleDateString();
+    } else {
+      
+      left.innerHTML = `
+        
+        <div>There is no report related to this patient</div>
+      `;
+      btnOpen.style.display = 'none';
+      dateBox.textContent = '—';
+    }
+  } catch (e) {
+    console.error(e);
+    left.innerHTML = `
+      <span class="material-symbols-outlined">error</span>
+      <div style="color:#d32f2f">Error loading report</div>
+    `;
+    btnOpen.style.display = 'none';
+    dateBox.textContent = '—';
+  }
+});
+</script>
+
+
+
 </body>
 </html>
