@@ -338,9 +338,9 @@ th, td { text-align: center; padding: 0.75em; color: #2b4a77; }
 </main>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const pid = 1; // غيّريها لاحقاً حسب رقم المريض اللي تبين تعرضينه
+  const pid =5001; // غيّريها لاحقاً حسب رقم المريض اللي تبين تعرضينه
 
- fetch(`PHPpatient.php?pid=1&mode=patient`)
+ fetch(`PHPpatient.php?pid=${pid}&mode=patient`)
     .then(response => response.json())
     .then(data => {
       const nameElement = document.querySelector(".PName h2");
@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const pid =1;
+  const pid =5001;
   const tbody = document.querySelector(".analysis-table tbody");
 
   // Linking the anomaly with the explanation and solution.
@@ -375,7 +375,12 @@ document.addEventListener("DOMContentLoaded", () => {
     "Normal": {
       explanation: "Waveform within normal pattern.",
       solution: "Continue monitoring."
+    },
+    "None": {
+      explanation: "Waveform within normal pattern.",
+      solution: "Continue monitoring."
     }
+    
   };
 
   function getSeverityClass(level) {
@@ -386,7 +391,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return "normal";
   }
 
-fetch(`PHPpatient.php?pid=1&mode=analysis`)
+fetch(`PHPpatient.php?pid=${pid}&mode=analysis`)
     .then(res => res.json())
     .then(data => {
       tbody.innerHTML = "";
@@ -396,7 +401,8 @@ fetch(`PHPpatient.php?pid=1&mode=analysis`)
       }
 
       data.forEach(row => {
-        const type = row.anomaly_type || "Normal";
+        let type = row.anomaly_type;
+if (!type || type.toLowerCase() === "none") type = "Normal";
         const severity = row.severity_level || "-";
         const date = row.timestamp ? new Date(row.timestamp).toLocaleDateString() : "-";
         const info = anomalyInfo[type] || { explanation: "-", solution: "-" };
@@ -420,7 +426,7 @@ fetch(`PHPpatient.php?pid=1&mode=analysis`)
 </script>
 <script>
 (function () {
-  const pid =1;
+  const pid =5001;
 
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
@@ -435,12 +441,14 @@ fetch(`PHPpatient.php?pid=1&mode=analysis`)
 
     
     fetch(`PHPpatient.php?mode=comments&pid=${encodeURIComponent(pid)}&_=${Date.now()}`, { cache: 'no-store' })
+
       .then(res => res.json())
       .then(list => {
         (list || []).forEach(comment => {// list or If list is empty or undefined, use an empty array []
           const block = document.createElement('div');
           block.className = 'comment-block';
-         d = new Date(comment.date).toLocaleDateString();
+         const d = comment.date ? new Date(comment.date).toLocaleDateString() : '-';
+
           block.innerHTML = `
             <div class="comment-basic-info">
               <span>Created by <b>${esc(comment.by || 'Unknown')}</b></span>
@@ -474,7 +482,7 @@ fetch(`PHPpatient.php?pid=1&mode=analysis`)
 
       const fd = new FormData();
       fd.append('content', txt);
-      fd.append('userID', 1);
+      fd.append('userID', 101);
 
       addBtn.disabled = true;
 
@@ -501,7 +509,7 @@ fetch(`PHPpatient.php?pid=1&mode=analysis`)
     });
   }
 
-  // تحميل أولي
+
   loadComments();
 })();
 </script>
@@ -512,7 +520,7 @@ fetch(`PHPpatient.php?pid=1&mode=analysis`)
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
-  const pid = 1; 
+  const pid = 5001; 
   const panel    = document.querySelector('.reports-panel');
   const item     = panel.querySelector('.report-item');
   const left     = item.querySelector('.left');

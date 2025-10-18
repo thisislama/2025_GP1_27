@@ -14,6 +14,7 @@ $u = mysqli_fetch_assoc(mysqli_query($conn,
   "SELECT CONCAT(first_name,' ',last_name) AS name FROM user"));
 
 // last three analsis wevform
+// last three analysis waveform
 $aRes = mysqli_query($conn,
   "SELECT anomaly_type, severity_level
    FROM waveform_analysis
@@ -23,13 +24,22 @@ $aRes = mysqli_query($conn,
 
 $waves = [];
 if ($aRes) {
-  while($row = mysqli_fetch_assoc($aRes)) {
+  while ($row = mysqli_fetch_assoc($aRes)) {
+    
+    $anomaly = isset($row['anomaly_type']) ? trim($row['anomaly_type']) : '';
+    if ($anomaly === '' || strcasecmp($anomaly, 'None') === 0) {
+      $anomaly = 'Normal';
+    }
+
+    $level = isset($row['severity_level']) && $row['severity_level'] !== '' ? $row['severity_level'] : '-';
+
     $waves[] = [
-      "anomaly" => $row["anomaly_type"] ?: "Normal",
-      "level"   => $row["severity_level"] ?: "-"
+      "anomaly" => $anomaly,
+      "level"   => $level
     ];
   }
 }
+
 
 // Last comment
 $c = mysqli_fetch_assoc(mysqli_query($conn,
