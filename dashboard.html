@@ -43,19 +43,17 @@
     .material-symbols-outlined { font-variation-settings: 'wght' 500; font-size: 20px }
     .material-symbols-outlined:hover { transform: translateX(4px) }
 
-    .btn-logout {
-      background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-      color: white;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      border: none;
-      box-shadow: 0 8px 20px rgba(15, 101, 255, 0.14);
-      cursor: pointer;
-      font-size: 14px;
-      height: 40px;
-    }
-
+  .btn-logout {
+  background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+  color: white;
+  padding: 0.5em 0.975em;
+  border-radius: 0.75em;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14);
+  cursor: pointer;
+  font-size: 0.875em;
+}
     /* -------- Main (header + content) -------- */
     .main { flex: 1; display: flex; flex-direction: column; height: 50em; }
 
@@ -241,11 +239,9 @@
     <main class="container">
         <!-- LEFT -->
         <section class="left-column">
-            <div class="welcome">
-                <h1>Welcome back,</h1>
-                <p style="font-size:18px;font-weight:700;color:rgb(35, 35, 35);margin-top:6px;">Mark Johnson</p>
-            </div>
-
+           
+ <h2 style="color:#0B83FE; font-weight:800; font-size:1.6em;
+           margin:40px 0 0px 1.2em;">Welcome back <span style="color:#2f2f2fc3;">Mark Johnson</span></h2>
             <label class="upload-card" for="fileUpload">
                 <input id="fileUpload" type="file" accept=".wav,.txt,.csv,.png,.jpg"/>
                 <div class="upload-drop" id="dropzone">
