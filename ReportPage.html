@@ -195,7 +195,7 @@ img.logo {
 
 .auth-nav {
   position: absolute;
-  top: 3.4%;
+  top: 3.9%;
   right: 16.2%;
   display: flex;
   align-items: center;
@@ -226,28 +226,7 @@ img.logo {
 .nav-link:hover::after { width: 100%; }
 .nav-link:hover { transform: translateY(-2px); color: #055ac0; }
 
-/* بروفايل المستخدم */
-.profile {
-  display: flex;
-  gap: 0.625em;
-  align-items: center;
-  background: linear-gradient(90deg, #f7fbff, #fff);
-  padding: 0.375em 0.625em;
-  border-radius: 999px;
-  border: 1px solid rgba(15,101,255,0.12);
-}
-.avatar {
-  width: 2.125em;
-  height: 2.125em;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #2e9cff, #1a57ff);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.875em;
-}
+
 .profile-btn { all: unset; cursor: pointer; display: inline-block; }
 
 /* زر تسجيل الخروج */
@@ -393,7 +372,9 @@ img.logo {
   color: #0B83FE;
   font-size: 0.85em;
 }
-
+.avatar-icon{
+  width:30px; height:30px; display:block;
+}  
 
     </style>
 
@@ -414,12 +395,11 @@ img.logo {
     <a class="nav-link" href="#patients">Patients</a>
     <a class="nav-link" href="history.html">history</a>
     <a class="nav-link" href="dashboard.html">Dashboard</a>
-    <button class="profile-btn" aria-haspopup="true" aria-expanded="false">
-      <div class="profile">
-        <div class="avatar">DA</div>
-        <div style="font-size:14px;color:#2b4a77;font-weight:600;">Dr. Abdulrahman</div>
-      </div>
-    </button>
+        <button class="profile-btn" aria-haspopup="true" aria-expanded="false">
+  <div class="profile">
+    <img class="avatar-icon" src="images/profile.png" alt="Profile" />
+  </div>
+</button>
 
     <button class="btn-logout">Logout</button>
   </nav>
