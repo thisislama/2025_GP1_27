@@ -29,7 +29,8 @@ $docRes->close();
 // Handle AJAX
 if (isset($_POST['action']) && $_POST['action'] === 'search') {
     $q = "%".trim($_POST['query'])."%";
-    $stmt = $conn->prepare("SELECT PID, first_name, last_name FROM patient WHERE PID LIKE ? OR first_name LIKE ? OR last_name LIKE ? LIMIT 10");
+    // ✅ Changed from patient → hospital_record
+    $stmt = $conn->prepare("SELECT PID, first_name, last_name FROM hospital_record WHERE PID LIKE ? OR first_name LIKE ? OR last_name LIKE ? LIMIT 10");
     $stmt->bind_param("sss", $q, $q, $q);
     $stmt->execute();
     $res = $stmt->get_result();
@@ -48,14 +49,15 @@ if (isset($_POST['action']) && $_POST['action'] === 'search') {
 
 if (isset($_POST['action']) && $_POST['action'] === 'add') {
     $PID = trim($_POST['PID']);
-    $check = $conn->prepare("SELECT PID FROM patient WHERE PID=?");
+    // ✅ Changed from patient → hospital_record
+    $check = $conn->prepare("SELECT PID FROM hospital_record WHERE PID=?");
     $check->bind_param("s", $PID);
     $check->execute();
     $exists = $check->get_result()->fetch_assoc();
     $check->close();
 
     if (!$exists) {
-        echo "❌ Patient not found.";
+        echo "❌ Record not found.";
         exit;
     }
 
