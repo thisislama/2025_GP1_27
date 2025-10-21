@@ -1,7 +1,5 @@
 <?php
 session_start();
-
-// Simulate logged-in user
 $_SESSION['userID'] = 1;
 $userID = $_SESSION['userID'];
 
@@ -9,10 +7,9 @@ $userID = $_SESSION['userID'];
 $host = "localhost";
 $user = "root";
 $pass = "root";
-$db   = "tanafs"; 
-
+$db   = "tanafs";
 $conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) die("Database connection failed: " . $conn->connect_error);
+if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
 // Fetch user data
@@ -33,277 +30,227 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
 
     $update = $conn->prepare("UPDATE user SET first_name=?, last_name=?, phone=?, DOB=? WHERE userID=?");
     $update->bind_param("ssssi", $first_name, $last_name, $phone, $dob, $userID);
-
     if ($update->execute()) {
-        $success = "Changes saved successfully.";
+        $success = "✅ Changes saved successfully.";
         $userData['first_name'] = $first_name;
         $userData['last_name']  = $last_name;
         $userData['phone']      = $phone;
         $userData['DOB']        = $dob;
     } else {
-        $error = "❌ Error while saving changes: " . $conn->error;
+        $error = "❌ Error while saving changes.";
     }
-
     $update->close();
 }
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profile</title>
+<title>Tanafs Profile</title>
 
+<!-- Google Material Symbols -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root {
-    --bg: #f2f6fb;
-    --card: #ffffff;
-    --accent: #0f65ff;
-    --muted: #9aa6c0;
-    --radius: 14px;
-    --shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+  --bg: #f2f6fb;
+  --card: #ffffff;
+  --accent: #0f65ff;
+  --muted: #9aa6c0;
+  --soft-blue: #eef6ff;
+  --panel-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+  --radius: 14px;
 }
 body {
-    font-family: "Inter", sans-serif;
-    background: var(--bg);
-    color: #15314b;
-    margin: 0;
-    display: flex;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: #15314b;
+  display: flex;
+}
+.wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+img.topimg { position: absolute; top: -3%; left: 48%; transform: translateX(-50%); height: auto; width: auto; max-width: 90%; z-index: 10; pointer-events: none; }
+img.logo { position: absolute; top: 3%; left: 14%; width: clamp(100px, 12vw, 180px); z-index: 20; pointer-events: none; }
+.auth-nav { position: absolute; top: 3.4%; right: 16.2%; display: flex; align-items: center; gap: 1.6em; z-index: 30; }
+.nav-link { color: #0876FA; font-weight: 600; text-decoration: none; font-size: 1em; transition: all 0.3s ease; position: relative; }
+.nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0876FA, #78C1F5); transition: width 0.3s ease; border-radius: 2px; }
+.nav-link:hover::after { width: 100%; }
+.nav-link:hover { transform: translateY(-2px); color: #055ac0; }
+.profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff); padding: 0.375em 0.625em; }
+.avatar-icon { width: 30px; height: 30px; display: block; }
+.btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em; font-weight: 400; border: none; box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14); cursor: pointer; font-size: 0.875em; }
+
+/* ===== Main ===== */
+main {
+  flex: 1;
+  background-color: #f9faff;
+  border-top-left-radius: 30px;
+  padding: 36px;
+  padding-top: 140px;
+  overflow-y: auto;
+}
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.title h2 {
+  color: #0B83FE;
+  font-size: 1.5rem;
 }
 
-/* Sidebar */
-.sidebar {
-    width: 88px;
-    height: 100vh;
-    background: linear-gradient(180deg, #fbfdff, #f3f7ff);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 12px;
-    gap: 24px;
-    position: fixed;
-}
-.sidebar-item {
-    width: 60px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--accent);
-    cursor: pointer;
-    transition: all .18s ease;
-}
-.sidebar-item:hover {
-    transform: translateX(4px);
-    background: rgba(15, 101, 255, 0.08);
-}
-.sidebar-item.active {
-    background: linear-gradient(180deg, rgba(15,101,255,0.08), rgba(15,101,255,0.03));
-    border-radius: 20px;
-    width: 72px;
-    height: 56px;
-}
-.sidebar-logout {
-    margin-top: auto;
-    margin-bottom: 40px;
-}
-.btn-logout {
-    background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: 0 8px 20px rgba(15,101,255,0.14);
-}
-
-/* Main Area */
-.main {
-    margin-left: 88px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-header.topbar {
-    height: 84px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 0 36px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-    border-bottom: 1px solid rgba(15,21,40,0.04);
-}
-.logo-top img { width: 220px; }
-
-/* Page */
-.page {
-    padding: 40px 36px 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.page h2 {
-    color: #1f46b6;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-/* Profile Card */
+/* ===== Profile Card ===== */
 .profile-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 30px;
-    width: 400px;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+  background-color: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  width: 450px;
+  margin: 0 auto;
+  text-align: center;
 }
-.profile-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.profile-card img {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 15px;
 }
-.profile-form label {
-    font-weight: 600;
-    font-size: 14px;
-    color: #274b7a;
+.profile-card label {
+  display: block;
+  font-weight: 600;
+  text-align: left;
+  margin-top: 10px;
+  color: #1f3e73;
 }
-.profile-form input[type="text"],
-.profile-form input[type="email"],
-.profile-form input[type="date"] {
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(15,21,40,0.1);
-    background: #f7f9fc;
-    font-size: 14px;
-    width: 100%;
-    color: #15314b;
+.profile-card input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f8faff;
+  margin-top: 5px;
 }
-.profile-form input:disabled {
-    background: #e5e8ef;
+.profile-card input:disabled {
+  background: #eef2f7;
 }
-.buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    gap: 10px;
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
-.buttons button {
-    flex: 1;
-    padding: 12px 0;
-    border-radius: 10px;
-    border: none;
-    background: var(--accent);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
+.actions button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
 }
-.buttons button:hover {
-    background: #0d50cc;
-}
+.edit-btn { background-color: #f0f0f0; color: #1b2250; }
+.save-btn { background-color: #0a77e3; color: white; }
+.back-btn { background-color: #eef6ff; color: #0a77e3; }
 
-/* Footer */
-footer {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 36px;
-    background:#ffffff;
-    border-top: 1px solid rgba(15,21,40,0.04);
-    font-size:14px;
-    color:#2f4c6f;
+/* ===== Footer ===== */
+.site-footer {
+  background: #F6F6F6;
+  color: #0b1b2b;
+  margin-top: 3em;
 }
-footer img { width: 200px; }
+.footer-grid {
+  max-width: 75em;
+  margin: 0 auto;
+  padding: 2.5em 1.25em;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 2em;
+  align-items: start;
+}
+.footer-logo { height: 5.5em; margin-left: -3em; }
+.footer-title { color: #0B83FE; font-weight: 700; margin-bottom: 1em; }
+.social-list { list-style: none; display: flex; gap: .8em; }
+.social-list img { width: 1.2em; }
+.contact-link { display: flex; gap: .6em; color: #0B83FE; text-decoration: none; }
+.footer-bar { text-align: center; border-top: 1px solid rgba(11,45,92,0.12); padding: 1em; color: #4c5d7a; }
+.copy { color: #0B83FE; font-size: 0.85em; }
 </style>
 </head>
 <body>
+<div class="wrapper">
+  <img class="topimg" src="images/Group 8.png" alt="">
+  <img class="logo" src="images/logo.png" alt="Logo">
 
-<!-- Sidebar -->
-<aside class="sidebar">
-    <div class="sidebar-item active" onclick="location.href='dashboard.html'">
-        <span class="material-symbols-outlined">space_dashboard</span>
-    </div>
-    <div class="sidebar-item" onclick="location.href='patients.php'">
-        <span class="material-symbols-outlined">group</span>
-    </div>
-    <div class="sidebar-item" style="opacity:0.4;cursor:not-allowed;">
-        <span class="material-symbols-outlined">calendar_month</span>
-    </div>
-    <div class="sidebar-item" onclick="location.href='history.html'">
-        <span class="material-symbols-outlined">analytics</span>
-    </div>
+  <nav class="auth-nav">
+    <a class="nav-link" href="patients.php">Patients</a>
+    <a class="nav-link" href="dashboard.html">Dashboard</a>
+    <a class="nav-link" href="history.html">History</a>
+    <button class="profile-btn"><div class="profile"><img class="avatar-icon" src="images/profile.png" alt="Profile"></div></button>
+    <button class="btn-logout">Logout</button>
+  </nav>
 
-    <div class="sidebar-logout">
-        <button class="btn-logout">
-            <span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">logout</span>
-        </button>
-    </div>
-</aside>
+  <main>
+    <div class="title"><h2>Doctor Profile</h2></div>
 
-<!-- Main -->
-<main class="main">
-<header class="topbar">
-    <div class="logo-top"><img src="images/logon2.png" alt="Logo"></div>
-</header>
-
-<section class="page">
-    <h2>Profile</h2>
     <div class="profile-card">
-        <form class="profile-form" method="POST">
-            <label>First Name</label>
-            <input type="text" name="first_name" value="<?= htmlspecialchars($userData['first_name']); ?>" disabled>
+      <form method="POST">
+        <label>First Name</label>
+        <input type="text" name="first_name" value="<?= htmlspecialchars($userData['first_name']); ?>" disabled>
+        <label>Last Name</label>
+        <input type="text" name="last_name" value="<?= htmlspecialchars($userData['last_name']); ?>" disabled>
+        <label>Email</label>
+        <input type="email" value="<?= htmlspecialchars($userData['email']); ?>" disabled>
+        <label>Role</label>
+        <input type="text" value="<?= htmlspecialchars($userData['role']); ?>" disabled>
+        <label>Phone</label>
+        <input type="text" name="phone" value="<?= htmlspecialchars($userData['phone']); ?>" disabled>
+        <label>Date of Birth</label>
+        <input type="date" name="dob" value="<?= htmlspecialchars($userData['DOB']); ?>" disabled>
 
-            <label>Last Name</label>
-            <input type="text" name="last_name" value="<?= htmlspecialchars($userData['last_name']); ?>" disabled>
+        <div class="actions">
+          <button type="button" class="edit-btn" id="editBtn">Edit</button>
+          <button type="submit" name="save" class="save-btn">Save</button>
+          <button type="button" class="back-btn" onclick="window.location.href='dashboard.html'">Back</button>
+        </div>
+      </form>
 
-            <label>Email</label>
-            <input type="email" value="<?= htmlspecialchars($userData['email']); ?>" disabled>
-
-            <label>Role</label>
-            <input type="text" value="<?= htmlspecialchars($userData['role']); ?>" disabled>
-
-            <label>Phone</label>
-            <input type="text" name="phone" value="<?= htmlspecialchars($userData['phone']); ?>" disabled>
-
-            <label>Date of Birth</label>
-            <input type="date" name="dob" value="<?= htmlspecialchars($userData['DOB']); ?>" disabled>
-
-            <div class="buttons">
-                <button type="button" id="editBtn">Edit</button>
-                <button type="submit" name="save">Save</button>
-                <button type="button" onclick="window.location.href='dashboard.html'">Back</button>
-            </div>
-        </form>
-
-        <?php if (!empty($success)): ?>
-            <p style="color:green; font-weight:bold;"><?= $success ?></p>
-        <?php elseif (!empty($error)): ?>
-            <p style="color:red; font-weight:bold;"><?= $error ?></p>
-        <?php endif; ?>
+      <?php if (!empty($success)): ?>
+        <p style="color:green;font-weight:bold;margin-top:10px;"><?= $success ?></p>
+      <?php elseif (!empty($error)): ?>
+        <p style="color:red;font-weight:bold;margin-top:10px;"><?= $error ?></p>
+      <?php endif; ?>
     </div>
-</section>
+  </main>
 
-<footer>
-    <div>Resources | Support | Developers</div>
-    <div><img src="images/logon2.png" alt="Logo"></div>
-</footer>
-</main>
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col brand">
+        <img src="images/logo.png" alt="Tanafs logo" class="footer-logo" />
+        <p>Breathe well, live well</p>
+      </div>
+      <nav class="footer-col social">
+        <h3 class="footer-title">Social Media</h3>
+        <ul class="social-list">
+          <li><a href="#"><img src="images/twitter.png" alt="Twitter" /></a></li>
+          <li><a href="#"><img src="images/instagram.png" alt="Instagram" /></a></li>
+        </ul>
+      </nav>
+      <div class="footer-col contact">
+        <h3 class="footer-title">Contact Us</h3>
+        <ul class="contact-list">
+          <li><a href="#" class="contact-link"><img src="images/whatsapp.png" alt="WhatsApp"/><span>+123 165 788</span></a></li>
+          <li><a href="mailto:Tanafs@gmail.com" class="contact-link"><img src="images/email.png" alt="Email"/><span>Tanafs@gmail.com</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bar"><p class="copy">© 2025 Tanafs Company. All rights reserved.</p></div>
+  </footer>
+</div>
 
 <script>
-const editBtn = document.getElementById('editBtn');
-const inputs = document.querySelectorAll('.profile-form input:not([type=email]):not([value*=Role])');
-editBtn.addEventListener('click', () => {
-    inputs.forEach(i => i.disabled = false);
+document.getElementById('editBtn').addEventListener('click', () => {
+  document.querySelectorAll('input[name]').forEach(i => i.disabled = false);
 });
 </script>
 </body>
