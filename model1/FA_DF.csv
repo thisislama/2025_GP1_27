@@ -1,0 +1,463 @@
+sample_id,time,anomaly,anomaly_type,data_modality,description,volume,flow,pressure
+0,0.0161607905784448,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.39978452279229,,
+0,0.1123453579522235,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.9585020618939736,,
+0,0.1242709068618344,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.2016569454248192,,
+0,0.1510198016123638,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.4020135973548307,,
+0,0.1781030575472748,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.24237470743396,,
+0,0.2613589924582977,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.6034847865661055,,
+0,0.3175316714344094,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.1242337556191195,,
+0,0.3597726343946203,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.644796968458593,,
+0,0.42998848311476,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.0457331797748566,,
+0,0.4999814243786453,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.6866664189917095,,
+0,0.5698629119144032,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.4475981721588589,,
+0,0.6538990229223163,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.9687186536389624,,
+0,0.7243377790987109,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.1296578370546406,,
+0,0.7653527510495224,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.9702047033473242,,
+0,0.807370806553479,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.730764944087376,,
+0,0.8627633094327003,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.0915035107924318,,
+0,0.9339822417059848,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.5875469034439256,,
+0,1.005758442619905,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.866589887431738,,
+0,1.049782665230152,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.266002897796932,,
+0,1.0787606345432248,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.4656165248727575,,
+0,1.1201099676784183,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.985065200430956,,
+0,1.1483077608946015,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.344689229854742,,
+0,1.2169632574209606,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.26377382323439,,
+0,1.229891889883716,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.183601441468221,,
+0,1.2725786677564364,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.143032284429916,,
+0,1.301222275885128,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.982650369654866,,
+0,1.370992309692759,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.101720102537433,,
+0,1.412230189099825,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.501170264145339,,
+0,1.4679570531634278,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.500427239291156,,
+0,1.4811085930824384,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.66025188542557,,
+0,1.4802169632574207,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.700263773823236,,
+0,1.4929226882639222,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.3800943641564825,,
+0,1.5193372218300698,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.8197421703756049,,
+0,1.5449715792993273,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.580599621057317,,
+0,1.529813872274027,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.9003975182969803,,
+0,1.5554482297432843,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-5.300739309729906,,
+0,1.625998439647806,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-4.341679979195295,,
+0,1.667236319054872,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-4.942229817587393,,
+0,1.7095887357432098,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-4.342794516476566,,
+0,1.7656499609911946,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.983541999479879,,
+0,1.835977263439461,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.2644796968458536,,
+0,1.906416019615856,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.4254188802615424,,
+0,1.990340676895641,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.066537875691936,,
+0,2.0604450718876546,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.5874726009584954,,
+0,2.172233161199242,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.2289631088159858,,
+0,2.242337556191254,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.749897834082546,,
+0,2.28480142660772,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.0304640190214335,,
+0,2.3398595683025585,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.7511981275773643,,
+0,2.381208901437753,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.231749452019166,,
+0,2.451759111342274,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.2726901214845583,,
+0,2.522086413790541,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.4463721811494601,,
+0,2.551064383103615,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.645985808225289,,
+0,2.5795965375041785,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.3656053794999465,,
+0,2.634654679199019,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.644871270944016,,
+0,2.6501467474087006,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.3246647100345523,,
+0,2.6787903555373926,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.1642827952595045,,
+0,2.7076568711223388,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.243897908385037,,
+0,2.749340565441914,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.12334212579411,,
+0,2.7780956272987325,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.0829587249693535,,
+0,2.806404874243043,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.562581268343429,,
+0,2.860459932384738,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.761860534234872,,
+0,2.9009176356949133,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.3213210981907366,,
+0,2.941709700189471,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.240777203997478,,
+0,2.9544154251959727,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.9206077943307244,,
+0,2.980941412490248,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.5197458854998658,,
+0,3.0502656313853693,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.8806702084184685,,
+0,3.2453096556079792,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.8832707954081016,,
+0,3.329011405431511,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.7643868187390837,,
+0,3.3699149236541954,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.7249321989820494,,
+0,3.439796411189953,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.4858639521491988,,
+0,3.56596203142995,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.6475461604190613,,
+0,3.650555411078499,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.4313259278522885,,
+0,3.693910911319983,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.110747854515738,,
+0,3.735371698183304,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.7501950440242258,,
+0,3.7226659731768033,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.0703644536909778,,
+0,3.7523126648586382,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.989969164468555,,
+0,3.780844819259204,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.709588735743212,,
+0,3.809376973659769,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.42920830701787,,
+0,3.851395029163725,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.668648066277818,,
+0,3.892521454842664,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.948099713935433,,
+0,3.919493257049448,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.98774008990601,,
+0,3.93297915815284,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.507560277891297,,
+0,4.003752275513616,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.706616636326485,,
+0,4.0320615224579255,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.1862391797005625,,
+0,4.11565181855333,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.185124642419291,,
+0,4.14396106549764,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.664747185793367,,
+0,4.170932867704424,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.704387561763943,,
+0,4.183750046439053,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.50421666604748,,
+0,4.209718765092691,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.463870416465433,,
+0,4.250287922130995,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.1433294943715904,,
+0,4.24805884756845,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.256640784634243,,
+0,4.259315674109298,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-4.1367908756547855,,
+0,4.2859531151317,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-5.457146041535086,,
+0,4.342794516476576,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-4.257903926886353,,
+0,4.384143849611769,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-4.738455251328151,,
+0,4.45469405951629,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.7793959207935472,,
+0,4.524575547052048,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.540327673960689,,
+0,4.637032358732399,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.46182709811643,,
+0,4.693205037708511,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.9825760671694432,,
+0,4.763197978972396,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.6235093063862926,,
+0,4.80532748820448,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.2640710331760552,,
+0,4.916781216331686,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.2655570828844205,,
+0,5.0005944198833445,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.0266745922651097,,
+0,5.056544191403201,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.787420589218705,,
+0,5.099008061819667,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.0679867741575961,,
+0,5.1828212653713255,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.1708957164617182,,
+0,5.197756064940371,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.2506965858007997,,
+0,5.226511126797191,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.210313184976041,,
+0,5.267971913660512,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.8497603744845303,,
+0,5.283129620685811,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.169558271724192,,
+0,5.298175873982983,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.369357655013562,,
+0,5.3967009696474335,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.448043987071369,,
+0,5.425678938960507,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.647657614147194,,
+0,5.493554259389975,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.7267526098748025,,
+0,5.506371438124604,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.526581714158341,,
+0,5.560983764906935,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.3258535498012414,,
+0,5.615150276776757,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.6451313296429824,,
+0,5.654827803990043,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.6353977040531935,,
+0,5.708994315859864,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.31611992421146,,
+0,5.806627781699297,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.1974217037559853,,
+0,5.890775346435337,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.5985436712858,,
+0,6.003120704387561,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.640041609391826,,
+0,6.087491176579856,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.8011665490210618,,
+0,6.212876620722962,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.802838354942967,,
+0,6.255897759780063,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.5165880298696024,,
+0,6.312850614853066,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.83582865846863,,
+0,6.355983207638294,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.2752535572314905,,
+0,6.371029460935468,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.475052940520861,,
+0,6.386521529145148,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.154846379611399,,
+0,6.414830776089459,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.634468922985475,,
+0,6.497752349816101,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.913363302002454,,
+0,6.538210053126276,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.472823865958318,,
+0,6.608983170487052,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.671880224393506,,
+0,6.665601664375673,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.631125311141659,,
+0,6.706950997510866,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,6.150573986699857,,
+0,6.762343500390088,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.7898354199948,,
+0,6.789426756325,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.949474309915669,,
+0,6.816621465988037,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.229111713786828,,
+0,6.815729836163019,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.2691236021844947,,
+0,6.8282126537132655,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.7089571646171589,,
+0,6.868893264479697,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.5084147564736057,,
+0,6.881041720845561,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.411747222944605,,
+0,6.879369914923652,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.211724932198976,,
+0,6.905227179849165,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-5.372069695731316,,
+0,6.947691050265629,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-4.652635880670204,,
+0,7.003863729241743,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-4.17338484972322,,
+0,7.0876769327934,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.934502359103906,,
+0,7.143626704313258,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.6952483560575047,,
+0,7.213731099305269,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.216183081324065,,
+0,7.256083515993611,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.6167477802132453,,
+0,7.312367648697847,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.017498235315969,,
+0,7.396403759705761,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.5386187167960763,,
+0,7.479994055801166,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.5397332540773476,,
+0,7.536055281049149,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.18048073708065,,
+0,7.591782145112752,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.181223761934831,,
+0,7.6339116543448355,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.8217854887245934,,
+0,7.70401604933685,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.3427202139911536,,
+0,7.7604116357692146,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.3765278448564118,,
+0,7.789278151354161,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.4561429579819478,,
+0,7.789723966266671,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.936137013783113,,
+0,7.845562284058401,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.0553925028792257,,
+0,7.874205892187092,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.8950105881041743,,
+0,7.888917784299883,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.73481442954267,,
+0,7.904186945053311,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.174610840732624,,
+0,7.9605825314856755,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.893858899580192,,
+0,8.043949920124827,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.652747334398336,,
+0,8.070698814875357,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.45239068246833,,
+0,8.097559163354013,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.372032544488617,,
+0,8.138462681576698,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,2.4114871642456457,,
+0,8.1651001225991,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.0911319983653485,,
+0,8.177917301333727,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.109038897351116,,
+0,8.204666196084258,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.3093955492811205,,
+0,8.217706282275142,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.269569417097,,
+0,8.244678084481924,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.2299290411264217,,
+0,8.286919047442137,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.750492253965892,,
+0,8.37050934353754,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.7516067912471627,,
+0,8.440502284801426,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.392540030464016,,
+0,8.496786417505664,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.793290485566736,,
+0,8.566556451313295,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.674220752684171,,
+0,8.594977151985733,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.074599695359808,,
+0,8.636995207489688,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.8351599360998598,,
+0,8.748448935616894,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.8366459858082216,,
+0,8.81877623806516,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.1175836831742032,,
+0,8.819444960433923,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.6024074005275502,,
+0,8.847977114834489,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.3220269718022113,,
+0,8.904261247538729,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.9212765166994856,,
+0,8.94728238659583,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.2407029015120568,,
+0,8.97637180963703,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,4.560315042538175,,
+0,9.046587658357168,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.159378831221906,,
+0,9.07523126648586,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.998996916446858,,
+0,9.116134784708548,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,5.038451536203887,,
+0,9.142995133187204,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.958093398224172,,
+0,9.184010105138016,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,3.1175465319314952,,
+0,9.210424638704165,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.557194338150614,,
+0,9.237062079726568,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.2368391722703151,,
+0,9.263699520748968,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.0835159936099856,,
+0,9.290225508043244,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.523869673440576,,
+0,9.401121967529813,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-3.125348292900391,,
+0,9.457294646505924,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.646097261953408,,
+0,9.513578779210162,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-2.0468477170561314,,
+0,9.58390608165843,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.3277854144221095,,
+0,9.62536686852175,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.6883382249136183,,
+0,9.667607831481964,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.208901437753088,,
+0,9.723334695545566,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-1.2096444626072689,,
+0,9.765687112233902,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.6102091614964493,,
+0,9.835345692313403,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,-0.6111379425641772,,
+0,9.87825537764238,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,0.5882899282981064,,
+0,9.9070104394992,1,flow_asynchrony_volume,volume_only,Flow asynchrony detected in volume signal,1.547906527473346,,
+1,0.0,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-6.666666666666671,4.731182795698928
+1,0.0198019801980198,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-5.545929592959302,4.731182795698928
+1,0.1029159519725557,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-0.841909662664392,4.490479967047225
+1,0.1683168316831684,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,3.124381188118821,4.301075268817208
+1,0.1715265866209261,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,3.319039451114918,4.301075268817208
+1,0.2871287128712874,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-0.2646264626462864,4.301075268817208
+1,0.3602058319039449,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-2.5300171526586723,4.20187111529169
+1,0.4455445544554459,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,1.6089108910891277,4.086021505376344
+1,0.4802744425385934,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,3.2933104631217844,4.840369612128589
+1,0.5145797598627788,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,39.95711835334477,5.585495859385097
+1,0.5148514851485149,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,39.97029702970297,8.387096774193552
+1,0.5544554455445545,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,41.8910891089109,10.967741935483872
+1,0.5660377358490565,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,42.45283018867924,12.477175897747998
+1,0.5742574257425743,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,42.10272277227722,13.548387096774192
+1,0.603960396039604,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,40.83756188118811,15.91397849462366
+1,0.6732673267326734,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,37.88551980198019,15.268817204301076
+1,0.7029702970297032,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,36.62035891089108,12.903225806451616
+1,0.7032590051457976,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,36.60806174957118,12.88284549696602
+1,0.7425742574257423,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,34.90694902823617,10.107526881720432
+1,0.7722772277227721,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,33.621745507884135,6.666666666666671
+1,0.831683168316832,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,31.05133846718005,3.870967741935488
+1,0.8576329331046315,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,29.928530588907947,2.8376276459051866
+1,0.891089108910891,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,28.097153465346555,1.5053763440860308
+1,0.9801980198019806,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,23.21936881188117,0.43010752688172
+1,0.9948542024013722,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,22.417095483133224,0.7939230580739942
+1,1.0495049504950495,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,19.491914191419145,2.150537634408608
+1,1.118811881188119,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,15.782260726072607,3.870967741935488
+1,1.1663807890222988,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,13.236134934248128,6.626213443011995
+1,1.1782178217821784,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,12.731951320132008,7.311827956989248
+1,1.1980198019801982,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,11.8885107260726,10.322580645161295
+1,1.217821782178218,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,11.045070132013194,13.333333333333336
+1,1.2376237623762378,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,10.201629537953789,16.12903225806452
+1,1.2673267326732671,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,8.936468646864698,19.35483870967742
+1,1.30360205831904,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,7.391366495140062,17.18807060255626
+1,1.3069306930693068,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,6.420792079208097,16.989247311827956
+1,1.337907375643225,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-2.611492281303612,15.374462826684368
+1,1.3550600343053176,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-26.77958833619212,14.480311329976578
+1,1.3564356435643568,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-27.581683168316843,14.408602150537636
+1,1.3722126929674103,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-36.78101772441396,13.517622973496374
+1,1.4059405940594063,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-32.68729372937294,8.172043010752688
+1,1.4408233276157807,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-28.45340194396799,7.414375034581977
+1,1.4851485148514856,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-26.303630363036305,6.451612903225808
+1,1.5608919382504292,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-22.630074328187547,6.002927521214474
+1,1.5940594059405946,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-21.02145214521452,5.806451612903231
+1,1.6466552315608922,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-18.47055460263008,5.806451612903231
+1,1.7425742574257423,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-17.76161462300077,5.806451612903231
+1,1.8613861386138617,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-16.88347296268089,6.236559139784951
+1,1.869639794168096,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-16.822469982847352,6.214150021210283
+1,1.989708404802745,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-17.66580903373358,5.888157288035564
+1,2.01980198019802,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-16.20627062706275,5.806451612903231
+1,2.058319039451116,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-14.3381932532876,5.806451612903231
+1,2.188118811881188,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-15.137273102310225,5.806451612903231
+1,2.195540308747856,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-15.18296169239565,5.791797239813623
+1,2.297029702970297,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.078264969354096,5.591397849462375
+1,2.3156089193825045,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-12.692967409948553,4.945720135008019
+1,2.3465346534653464,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-9.189768976897716,3.870967741935488
+1,2.367066895368782,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-6.863922241280733,4.495324517235662
+1,2.384219554030876,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,1.4679817038307732,5.01691289031524
+1,2.396039603960396,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,7.783828382838039,5.376344086021511
+1,2.4013722126929675,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,42.29988564894225,5.762432603576872
+1,2.4257425742574257,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,41.5578589108911,7.526881720430111
+1,2.4554455445544554,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,40.65346534653467,10.322580645161295
+1,2.4752475247524752,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,40.05053630363037,12.473118279569896
+1,2.5346534653465347,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,38.24174917491751,12.688172043010752
+1,2.538593481989709,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,38.12178387650086,12.517014330769626
+1,2.594059405940594,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,35.42244224422444,10.107526881720432
+1,2.6415094339622645,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,33.11320754716981,8.046256847230634
+1,2.643564356435643,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,33.02984048404844,7.956989247311831
+1,2.722772277227723,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,29.816419141914192,5.591397849462375
+1,2.7821782178217824,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,27.40635313531353,3.0107526881720474
+1,2.847341337907376,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,24.76272155517438,3.0107526881720474
+1,2.861386138613861,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,24.147442244224457,3.0107526881720474
+1,2.910891089108912,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,21.9787128712871,5.161290322580655
+1,2.94059405940594,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,20.677475247524782,7.526881720430111
+1,2.96039603960396,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,19.80998349834986,10.322580645161295
+1,2.9702970297029707,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,19.376237623762364,13.548387096774192
+1,3.0,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,18.075000000000003,15.91397849462366
+1,3.018867924528302,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,17.24842767295597,17.758165956583465
+1,3.0198019801980203,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,17.212046204620446,17.8494623655914
+1,3.03960396039604,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,16.440759075907575,19.35483870967742
+1,3.0891089108910887,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,14.512541254125424,18.06451612903226
+1,3.168316831683168,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,11.42739273927393,17.8494623655914
+1,3.190394511149228,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,10.567467124070902,17.8494623655914
+1,3.241852487135506,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-8.60348770726128,17.8494623655914
+1,3.247524752475248,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.28877887788792,17.8494623655914
+1,3.259005145797599,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-22.771583762149817,17.163724893487505
+1,3.276157804459692,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-41.93967981703831,16.139176303509807
+1,3.287128712871287,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-35.544554455445976,15.483870967741936
+1,3.2933104631217844,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-31.94110920526016,13.335546579612055
+1,3.297029702970297,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-31.67037953795386,8.817204301075272
+1,3.3619210977701544,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-26.94682675814751,7.094519961227203
+1,3.386138613861386,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-27.73322332233222,6.451612903225808
+1,3.413379073756433,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-28.617781589479705,6.392445452701083
+1,3.481989708404803,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-23.62349914236708,6.243420203249787
+1,3.5506003430531736,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-18.629216695254428,6.09439495379849
+1,3.584158415841584,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-18.632013201320124,6.021505376344095
+1,3.6363636363636367,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-18.636363636363622,6.021505376344095
+1,3.732673267326733,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-15.970650636492218,6.021505376344095
+1,3.756432246998285,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-15.313036020583183,6.193523795471463
+1,3.821782178217821,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-18.493399339933948,6.666666666666671
+1,3.842195540308748,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-19.486849628359067,6.444973164388864
+1,3.920792079207921,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-16.152227722772267,5.591397849462375
+1,3.979416809605489,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.664951400800447,5.464062413545077
+1,4.118811881188119,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-12.322112211221128,5.161290322580655
+1,4.150943396226416,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-12.0125786163522,5.161290322580655
+1,4.253859348198971,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-5.354488279016579,5.161290322580655
+1,4.297029702970297,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-3.522896039603961,5.161290322580655
+1,4.391080617495712,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,0.4674099485420271,4.23273290644507
+1,4.405940594059405,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,0.6105610561056076,4.086021505376344
+1,4.435643564356436,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,0.8966996699670037,3.4408602150537675
+1,4.459691252144083,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,1.128359062321335,4.877257050111592
+1,4.475247524752476,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,1.278217821782187,5.806451612903231
+1,4.476843910806175,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,43.79359634076617,5.945148379719267
+1,4.5049504950495045,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,42.42574257425748,8.387096774193552
+1,4.534653465346533,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,40.98019801980208,10.752688172043015
+1,4.564356435643564,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,39.53465346534659,13.118279569892472
+1,4.603960396039604,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,37.60726072607267,13.76344086021506
+1,4.614065180102917,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,37.11549456832476,12.556299452221424
+1,4.623762376237623,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,36.70245462046209,11.397849462365592
+1,4.673267326732674,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,34.59385313531353,9.032258064516128
+1,4.7128712871287135,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,32.906971947194705,6.236559139784951
+1,4.751286449399657,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,31.270726129216683,4.806169687484348
+1,4.782178217821782,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,29.89239548954898,3.655913978494624
+1,4.861386138613861,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,26.358292079207967,1.5053763440860308
+1,4.930693069306932,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,23.2659515951595,-0.2150537634408564
+1,4.95711835334477,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,22.086906803887945,0.5024069053283938
+1,5.009900990099011,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,19.51815181518154,1.9354838709677509
+1,5.099009900990099,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,15.181518151815222,6.881720430107528
+1,5.138613861386139,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,13.254125412541285,11.612903225806456
+1,5.145797598627788,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,12.904516866781009,12.143418358877934
+1,5.188118811881189,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,10.33085808580856,15.268817204301076
+1,5.207920792079207,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,9.126650165016589,18.49462365591398
+1,5.237623762376238,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,7.32033828382841,20.43010752688172
+1,5.283018867924529,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,4.559748427672957,18.95110570095353
+1,5.316831683168317,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-6.9422442244225735,17.8494623655914
+1,5.317324185248713,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-45.44311034877073,17.710396724395615
+1,5.326732673267326,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-42.01567656765696,15.053763440860216
+1,5.351629502572899,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-32.94596912521443,12.530170850316942
+1,5.356435643564357,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-32.12912541254125,12.043010752688176
+1,5.376237623762377,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-28.763613861386222,9.032258064516128
+1,5.385934819897085,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-27.115494568324763,8.731361963254816
+1,5.445544554455445,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-31.464521452145185,6.881720430107528
+1,5.454545454545454,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-32.12121212121211,6.83571962509344
+1,5.48885077186964,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-25.457404230989127,6.660395802209556
+1,5.613861386138614,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-20.91274752475247,6.021505376344095
+1,5.626072041166381,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-20.468839336763864,6.006770894171998
+1,5.7289879931389365,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-17.144082332761585,5.882583186295914
+1,5.792079207920793,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-15.310231023102308,5.806451612903231
+1,5.8147512864494,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-14.651229273870785,5.806451612903231
+1,5.866209262435677,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-18.822184105202965,5.806451612903231
+1,5.883361921097771,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-14.656946826758144,5.806451612903231
+1,5.969125214408234,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-17.164093767867357,5.806451612903231
+1,5.990099009900991,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-15.80720572057206,5.806451612903231
+1,6.020583190394512,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.835048599199538,5.806451612903231
+1,6.089193825042882,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-12.174099485420244,5.806451612903231
+1,6.148514851485148,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.825907590759034,5.806451612903231
+1,6.209262435677531,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-15.517438536306456,5.728836103688423
+1,6.312178387650087,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-15.526014865637508,5.597343236525514
+1,6.316831683168317,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-14.998899889989149,5.591397849462375
+1,6.363636363636364,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-9.696969696969704,4.574780058651015
+1,6.405940594059405,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-2.849559955995748,3.655913978494624
+1,6.415094339622642,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-1.3679245283018844,3.996753905457525
+1,6.449399656946826,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,41.12921669525444,5.27411318646862
+1,6.475247524752476,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,40.40947666195191,6.236559139784951
+1,6.495049504950494,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,39.85808580858091,9.462365591397848
+1,6.564356435643564,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,37.92821782178223,11.612903225806456
+1,6.569468267581477,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,37.78587764436821,11.390840849148749
+1,6.633663366336634,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,34.14191419141918,8.602150537634408
+1,6.672384219554032,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,31.943967981703835,6.079049779597536
+1,6.673267326732674,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,31.91052438577193,6.021505376344095
+1,6.702970297029703,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,30.785661899523333,3.655913978494624
+1,6.782178217821782,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,27.786028602860316,1.9354838709677509
+1,6.826758147512865,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,26.09777015437392,2.5810140356701723
+1,6.87128712871287,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,23.93069306930702,3.225806451612904
+1,6.96039603960396,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,19.59405940594069,5.376344086021511
+1,6.963979416809607,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,19.41966838193254,5.480120744880393
+1,7.079207920792079,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,14.433901723505732,8.817204301075272
+1,7.11835334476844,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,12.74013722126928,11.538021726701103
+1,7.128712871287128,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,12.235973597359816,12.258064516129032
+1,7.168316831683168,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,10.308580858085875,15.268817204301076
+1,7.198019801980198,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,8.863036303630377,18.27956989247312
+1,7.227722772277227,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,7.417491749174966,20.0
+1,7.238421955403088,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,6.8967981703830645,19.535218281414227
+1,7.255574614065181,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-5.604631217838758,18.79009203415773
+1,7.272727272727272,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-20.606060606060595,18.04496578690135
+1,7.287128712871288,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-30.402640264027145,17.419354838709676
+1,7.289879931389366,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-38.940823327615774,17.00105129198261
+1,7.306930693069306,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-35.07645764576476,14.408602150537636
+1,7.336633663366337,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-28.34460946094605,10.752688172043015
+1,7.341337907375643,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-27.27844482561464,10.275856557049526
+1,7.366336633663367,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-29.10231023102311,7.741935483870968
+1,7.409948542024014,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-32.28416237850199,7.299876427082759
+1,7.427101200686107,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-25.61892510005717,7.126013636056238
+1,7.514851485148515,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-22.428836633663344,6.236559139784951
+1,7.564322469982847,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-20.63036020583189,6.102242756229374
+1,7.673267326732674,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-17.614922206506325,5.806451612903231
+1,7.684391080617495,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-17.307032590051463,5.806451612903231
+1,7.821612349914237,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.985134362492843,5.806451612903231
+1,7.841584158415841,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.380363036303642,5.806451612903231
+1,7.958833619210979,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-9.829902801600907,5.806451612903231
+1,8.029702970297029,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-9.405424917491752,5.806451612903231
+1,8.09605488850772,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-9.008004574042303,5.710372132770191
+1,8.178217821782178,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-9.58510136727957,5.591397849462375
+1,8.21612349914237,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-9.851343624928532,5.591397849462375
+1,8.30188679245283,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-14.025157232704387,5.591397849462375
+1,8.326732673267326,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.785808580858085,5.591397849462375
+1,8.387650085763294,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-13.198970840480284,5.723713089507378
+1,8.425742574257425,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-11.968371837183762,5.806451612903231
+1,8.49056603773585,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-9.874213836477992,4.820856157435595
+1,8.524752475247526,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-7.385726072607265,4.301075268817208
+1,8.559176672384222,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,10.95340194396799,3.55336690090188
+1,8.564356435643566,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,13.972772277227348,3.4408602150537675
+1,8.576329331046313,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,43.72975033352396,4.156015418949099
+1,8.603960396039604,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,42.83250825082517,5.806451612903231
+1,8.623762376237623,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,42.18949394939502,8.172043010752688
+1,8.662092624356777,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,40.94482561463694,9.504122171194702
+1,8.673267326732672,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,40.292409240924265,9.892473118279568
+1,8.747855917667238,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,35.937678673527735,7.462328703959909
+1,8.752475247524753,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,35.73780711404468,7.311827956989248
+1,8.85148514851485,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,31.45379537953795,4.516129032258064
+1,8.90222984562607,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,29.258147512864497,2.12803629723907
+1,8.910891089108912,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,28.8833883388338,1.7204301075268873
+1,9.009900990099007,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,24.59937660432725,1.5053763440860308
+1,9.056603773584907,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,22.578616352201266,3.5341854331508125
+1,9.05940594059406,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,22.442244224422524,3.655913978494624
+1,9.12871287128713,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,19.06930693069311,7.311827956989248
+1,9.148514851485148,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,18.105610561056235,12.258064516129032
+1,9.178217821782178,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,16.66006600660075,16.55913978494624
+1,9.193825042881649,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,15.900514579759855,18.367116078619716
+1,9.207920792079207,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,15.214521452145352,20.0
+1,9.267326732673268,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,12.32343234323439,18.70967741935484
+1,9.33104631217839,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,9.222412807318475,19.500544089710303
+1,9.336633663366335,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,8.54331683168368,19.569892473118284
+1,9.39965694682676,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,0.8833619210977872,20.08322728194916
+1,9.415841584158414,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-10.126237623761334,20.21505376344086
+1,9.41680960548885,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-10.784734133790735,20.10992456518917
+1,9.433962264150946,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-29.119496855345915,18.247108947047856
+1,9.435643564356436,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-30.018151815180637,18.06451612903226
+1,9.451114922813035,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-44.12092624356775,16.55231560891949
+1,9.475247524752476,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-40.60561056105618,14.193548387096776
+1,9.495049504950494,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-37.72112211221176,9.677419354838712
+1,9.502572898799317,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-29.12521440823328,9.350596654309197
+1,9.571183533447684,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-34.13093196112062,6.370091665283288
+1,9.574257425742571,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-33.68316831683204,6.236559139784951
+1,9.60548885077187,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-29.133790737564325,6.151764141721534
+1,9.639794168096056,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-23.303316180674685,6.058623360814472
+1,9.777015437392798,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-17.481417953116065,5.686060237186229
+1,9.811881188118813,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-16.731481481481513,5.591397849462375
+1,9.931389365351633,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-14.160949113779296,5.454778427837982
+1,10.0,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-11.500000000000142,5.376344086021511
+1,10.017152658662097,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-10.834762721555164,5.702336819196304
+1,10.07920792079208,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-16.86963696369626,6.881720430107528
+1,10.085763293310464,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-17.5071469411092,6.881720430107528
+1,10.154373927958837,1,flow_asynchrony_flow_pressure,flow_pressure,Flow asynchrony detected in flow and pressure signals,,-12.51286449399656,6.881720430107528
