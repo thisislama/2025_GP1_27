@@ -212,11 +212,10 @@
 }
 
 body{
-  background: var(--bg);            /* بدل #d1e6fea7 */
+  background: var(--bg);
   color:#15314b;
 }
 
-/* كروت وعناصر واجهة موحدة */
 .upload-card,
 .small-cards,
 .stat,
@@ -226,15 +225,13 @@ body{
   box-shadow:0 1px 6px rgba(0,0,0,.05);
 }
 
-/* الدروب زون */
 .upload-drop{
   background:#fff;
-  border:2px dashed #0b84feb3;
+  border:2px dashed rgba(68, 110, 170, 0.7);
   color:#2b4a77;
 }
 .upload-drop .hint{ color:#2b4a77; }
 
-/* العناصر الصغيرة */
 .small-item{
   background:#eef3fb;
   border:1px solid #e9eef6;
@@ -242,11 +239,9 @@ body{
 .small-item .id{ color:#2b4a77; }
 .muted{ color:var(--muted) }
 
-/* شبكة الإحصائيات */
 .stat .label{ color:#195695; }
 .stat .value{ color:#143340e6; }
 
-/* كرت النتيجة */
 .result-card .title{
   color:#2b4a77;
   border-bottom:1px solid #e9eef6;
@@ -254,7 +249,6 @@ body{
 }
 .result-output{ color:#2b4a77; opacity:.75 }
 
-/* شريط البحث */
 .search{
   background:#fff;
   border:1px solid #e7eef8;
@@ -263,7 +257,6 @@ body{
 .search input{ color:#384b66; }
 .search input::placeholder{ color:#8fa3bf; }
 
-/* الأزرار والروابط */
 .btn,
 .btn-logout{ background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; }
 .nav-link,
@@ -271,7 +264,6 @@ body{
 .social-handle,
 .contact-link{ color:#0B83FE; }
 
-/* نصوص الترحيب */
 .welcome, .welcome h1, .welcome p{ color:#2b4a77; }
 
     </style>
@@ -307,8 +299,7 @@ body{
         <!-- LEFT -->
         <section class="left-column">
            
- <h2 style="color:#0B83FE; font-weight:800; font-size:1.6em;
-           margin:40px 0 0px 1.2em;">Welcome back <span style="color:#2f2f2fc3;">Mark Johnson</span></h2>
+ <h2 style="color:#0b82fc; font-size:1.6em;margin:40px 0 0px 1.2em;">Welcome back <br><span style="color:rgba(90,98,120,0.76);font-size: .81em; margin-left: 10px">Mark Johnson</span></h2>
             <label class="upload-card" for="fileUpload">
                 <input id="fileUpload" type="file" accept=".wav,.txt,.csv,.png,.jpg"/>
                 <div class="upload-drop" id="dropzone">
@@ -357,7 +348,7 @@ body{
                         <div class="value">3</div>
                         <div class="label">Anomaly</div>
                     </div>
-                    <div style="background:linear-gradient(150deg,rgba(218,35,35,0.7),#933939);padding:10px;border-radius:8px;color:#fff;font-weight:700">
+                    <div style="background:linear-gradient(150deg,rgb(218,35,35),rgb(214,103,103));padding:10px;border-radius:8px;color:#fff;font-weight:700">
                         <span class="material-symbols-outlined">warning</span>
                     </div>
                 </div>
@@ -367,7 +358,7 @@ body{
                         <div class="value">4</div>
                         <div class="label">Total scans</div>
                     </div>
-                    <div style="background:linear-gradient(150deg,rgba(170,232,78,0.7),#6fa139);padding:10px;border-radius:8px;color:#fff;font-weight:700">
+                    <div style="background:linear-gradient(150deg,rgb(151,255,2),#5b8c2f);padding:10px;border-radius:8px;color:#fff;font-weight:700">
                         <span class="material-symbols-outlined">scan</span>
                     </div>
                 </div>
@@ -377,7 +368,7 @@ body{
                         <div class="value">6</div>
                         <div class="label">Patients</div>
                     </div>
-                    <div style="background:linear-gradient(150deg,rgba(136,87,213,0.7),#7750b8);padding:10px;border-radius:8px;color:#fff;font-weight:700">
+                    <div style="background:linear-gradient(150deg,rgb(101,0,255),#7750b8);padding:10px;border-radius:8px;color:#fff;font-weight:700">
                         <span class="material-symbols-outlined">group</span>
                     </div>
                 </div>
@@ -387,7 +378,7 @@ body{
                         <div class="value">96.3%</div>
                         <div class="label">AI confidence</div>
                     </div>
-                    <div style="background:linear-gradient(150deg,rgba(78,232,163,0.7),#39a176);padding:10px;border-radius:8px;color:#fff;font-weight:700">
+                    <div style="background:linear-gradient(150deg,rgb(0,255,140),#6b9a85);padding:10px;border-radius:8px;color:#fff;font-weight:700">
                         <span class="material-symbols-outlined">check_circle</span>
                     </div>
                 </div>
@@ -396,12 +387,13 @@ body{
             <div class="result-card">
                 <div class="title">Result</div>
                 <div class="result-output" id="resultArea">You result will show here!</div>
+                <div id="myChart" style="width:100%;max-width:700px"></div>
             </div>
         </section>
     </main>
 
+</div>
 
-    
 
     <script>
         // Tab switching (visual only)
