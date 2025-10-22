@@ -108,9 +108,9 @@ body {
 
 /* HEADER like History */
 .wrapper { position: relative; width: 100%; min-height: 100vh; }
-img.topimg { position: absolute; top: -3.4%; left: 48%; transform: translateX(-50%); max-width: 90%; z-index: 10; pointer-events: none; }
-img.logo { position: absolute; top: 2.6%; left: 14%; width: clamp(100px, 12vw, 180px); height: auto; z-index: 20; }
-.auth-nav { position: absolute; top: 3.4%; right: 16.2%; display: flex; align-items: center; gap: 1.6em; z-index: 30; }
+img.topimg { position: absolute; top: -3.6%; left: 48%; transform: translateX(-50%); max-width: 90%; z-index: 10; pointer-events: none; }
+img.logo { position: absolute; top: 4.5%; left: 14%; width: clamp(100px, 12vw, 180px); height: auto; z-index: 20; }
+.auth-nav { position: absolute; top: 5.4%; right: 16.2%; display: flex; align-items: center; gap: 1.6em; z-index: 30; }
 .nav-link { color: #0876FA; font-weight: 600; text-decoration: none; font-size: 1em; transition: all 0.3s ease; position: relative; }
 .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0876FA, #78C1F5); transition: width 0.3s ease; border-radius: 2px; }
 .nav-link:hover::after { width: 100%; }
