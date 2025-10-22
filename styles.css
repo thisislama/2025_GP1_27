@@ -53,14 +53,13 @@ top: 3.3%;
 right: 12%;
 display: flex;
 align-items: center;
-gap: 1.1em; /* تقليل الفجوة لتأخير الالتفاف */
-flex-wrap: wrap; /* يسمح بالالتفاف عند الحاجة */
+gap: 1.1em; 
+flex-wrap: wrap; 
 z-index: 30;
 }
 .auth-nav a { white-space: nowrap; }
 
 
-/* شدّ الأزرار قليلاً بدون تغيير الشكل */
 .auth-signup, .auth-signin { padding: 0.55em 1em; }
 
 .auth-signin{
