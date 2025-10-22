@@ -12,10 +12,8 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-// --- Simulated login (for testing) ---
-if (!isset($_SESSION['userID'])) {
-    $_SESSION['userID'] = 1; // Doctor ID
-}
+// --- Simulated login ---
+$_SESSION['userID'] = 1; 
 $userID = $_SESSION['userID'];
 
 // --- Get doctor name ---
@@ -26,274 +24,224 @@ $docData = $docRes->get_result()->fetch_assoc();
 $_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
 $docRes->close();
 
-// --- Handle Connect ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['connect'])) {
-    $PID = trim($_POST['PID']);
-    $Pname = trim($_POST['Pname']);
+// --- AJAX requests ---
+if (isset($_POST['ajax'])) {
+    $action = $_POST['ajax'];
+    $response = ["type" => "error", "msg" => "⚠️ Unknown error."];
 
-    $find = $conn->prepare("SELECT PID FROM patient WHERE PID = ? OR first_name = ? OR last_name = ?");
-    $find->bind_param("sss", $PID, $Pname, $Pname);
-    $find->execute();
-    $patient = $find->get_result()->fetch_assoc();
-    $find->close();
+    // 🔹 Search patient
+    if ($action === 'searchPatient') {
+        $input = trim($_POST['query']);
+        $find = $conn->prepare("SELECT PID, first_name, last_name FROM patient WHERE PID=? OR first_name=? OR last_name=?");
+        $find->bind_param("sss", $input, $input, $input);
+        $find->execute();
+        $patient = $find->get_result()->fetch_assoc();
+        $find->close();
 
-    if ($patient) {
-        $realPID = $patient['PID'];
+        if ($patient) {
+            $PID = $patient['PID'];
 
-        $dup = $conn->prepare("SELECT COUNT(*) AS cnt FROM user_patient WHERE PID = ? AND userID = ?");
-        $dup->bind_param("si", $realPID, $userID);
-        $dup->execute();
-        $dupRes = $dup->get_result()->fetch_assoc();
+            // Check if already linked with this doctor
+            $dup = $conn->prepare("SELECT COUNT(*) AS c FROM user_patient WHERE PID=? AND userID=?");
+            $dup->bind_param("si", $PID, $userID);
+            $dup->execute();
+            $dupRes = $dup->get_result()->fetch_assoc();
+            $dup->close();
 
-        if ($dupRes['cnt'] > 0) {
-            echo "<script>alert('⚠️ This patient is already under your care.');</script>";
-        } else {
-            $check = $conn->prepare("SELECT COUNT(*) AS cnt FROM user_patient WHERE PID = ?");
-            $check->bind_param("s", $realPID);
-            $check->execute();
-            $res = $check->get_result()->fetch_assoc();
-
-            if ($res['cnt'] >= 5) {
-                echo "<script>alert('❌ This patient already has 5 doctors.');</script>";
+            if ($dupRes['c'] > 0) {
+                $response = ["type" => "info", "msg" => "🩺 This patient is already under your care."];
             } else {
-                $stmt = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
-                $stmt->bind_param("si", $realPID, $userID);
-                if ($stmt->execute()) {
-                    echo "<script>alert('✅ Connected successfully!');</script>";
+                // Check other doctors linked
+                $check = $conn->prepare("SELECT u.first_name, u.last_name 
+                                         FROM user_patient up 
+                                         INNER JOIN user u ON up.userID = u.userID
+                                         WHERE up.PID = ?");
+                $check->bind_param("s", $PID);
+                $check->execute();
+                $linked = $check->get_result()->fetch_all(MYSQLI_ASSOC);
+                $check->close();
+
+                if ($linked && count($linked) > 0) {
+                    $docs = array_map(fn($d) => "{$d['first_name']} {$d['last_name']}", $linked);
+                    $docList = implode(", ", $docs);
+                    $response = [
+                        "type" => "warn",
+                        "msg" => "👨‍⚕️ This patient is under care of: $docList — you can still connect.",
+                        "PID" => $PID
+                    ];
                 } else {
-                    echo "<script>alert('❌ Failed to connect.');</script>";
+                    $response = [
+                        "type" => "ready",
+                        "msg" => "✅ Found patient {$patient['first_name']} {$patient['last_name']} — you can connect now.",
+                        "PID" => $PID
+                    ];
                 }
-                $stmt->close();
             }
+        } else {
+            $response = ["type" => "error", "msg" => "❌ Patient not found in database."];
         }
-        $dup->close();
-    } else {
-        echo "<script>alert('❌ Patient not found.');</script>";
     }
+
+    // 🔹 Connect
+    elseif ($action === 'connect') {
+        $PID = $_POST['PID'];
+        $add = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
+        $add->bind_param("si", $PID, $userID);
+        if ($add->execute())
+            $response = ["type" => "success", "msg" => "✅ Connected successfully!"];
+        else
+            $response = ["type" => "error", "msg" => "❌ Failed to connect."];
+        $add->close();
+    }
+
+    // 🔹 Disconnect
+    elseif ($action === 'disconnect') {
+        $PID = $_POST['PID'];
+        $conn->query("DELETE FROM user_patient WHERE PID='$PID' AND userID='$userID'");
+        $response = ["type" => "info", "msg" => "🔗 Disconnected successfully!"];
+    }
+
+    // 🔹 Delete
+    elseif ($action === 'delete') {
+        $PID = $_POST['PID'];
+        $conn->query("DELETE FROM user_patient WHERE PID='$PID'");
+        $conn->query("DELETE FROM patient WHERE PID='$PID'");
+        $response = ["type" => "success", "msg" => "🗑️ Patient deleted successfully!"];
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
 }
 
-// --- Get only patients linked to this doctor ---
-$sql = "
-SELECT p.PID, p.first_name, p.last_name, p.gender, p.status, p.phone, p.DOB
-FROM patient p
-INNER JOIN user_patient up ON p.PID = up.PID
-WHERE up.userID = ?
-";
+// --- Get patients linked to current doctor ---
+$sql = "SELECT p.PID, p.first_name, p.last_name, p.gender, p.status, p.phone, p.DOB
+        FROM patient p
+        INNER JOIN user_patient up ON p.PID = up.PID
+        WHERE up.userID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Patients</title>
+<meta charset="utf-8"/>
+<title>Tanafs Patients</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
 <style>
-:root {
-    --bg: #f2f6fb;
-    --card: #ffffff;
-    --accent: #0f65ff;
-    --muted: #9aa6c0;
-    --shadow: 0 10px 30px rgba(17,24,39,0.06);
-    --radius: 14px;
-}
-body {
-    font-family: "Inter", sans-serif;
-    background: var(--bg);
-    color: #15314b;
-    margin: 0;
-    display: flex;
-}
-.sidebar {
-    width: 88px;
-    height: 100vh;
-    background: linear-gradient(180deg,#fbfdff,#f3f7ff);
-    display:flex;flex-direction:column;align-items:center;
-    padding:24px 12px;gap:24px;position:fixed;
-}
-.sidebar-item {
-    width:60px;height:48px;border-radius:12px;
-    display:flex;align-items:center;justify-content:center;
-    color:var(--accent);cursor:pointer;transition:.18s;
-}
-.sidebar-item:hover {transform:translateX(4px);background:rgba(15,101,255,0.08);}
-.sidebar-item.active {
-    background:linear-gradient(180deg,rgba(15,101,255,0.08),rgba(15,101,255,0.03));
-    border-radius:20px;width:72px;height:56px;
-}
-.sidebar-logout {margin-top:auto;margin-bottom:40px;}
-.btn-logout {
-    background:linear-gradient(90deg,#0f65ff,#5aa6ff);
-    color:white;border:none;padding:10px;
-    border-radius:12px;cursor:pointer;
-    box-shadow:0 8px 20px rgba(15,101,255,0.14);
-}
-.main {margin-left:88px;flex:1;display:flex;flex-direction:column;}
-header.topbar {
-    height:84px;display:flex;align-items:center;justify-content:space-between;
-    padding:10px 36px;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.7));
-    border-bottom:1px solid rgba(15,21,40,0.04);
-}
-.logo-top img {width:220px;}
-.profile {display:flex;align-items:center;gap:10px;cursor:pointer;}
-.avatar {
-    width:36px;height:36px;border-radius:50%;
-    background:linear-gradient(180deg,#2e9cff,#1a57ff);
-    color:white;display:flex;align-items:center;justify-content:center;font-weight:600;
-}
-.action-bar {
-    display:flex;justify-content:space-between;align-items:center;padding:20px 36px 0;
-}
-.action-group {display:flex;gap:16px;align-items:center;}
-.action-btn {
-    background:#e8f0ff;color:#1976d2;border:none;
-    padding:10px 16px;border-radius:10px;font-weight:600;
-    cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s;
-}
-.action-btn:hover {background:#dbe7ff;}
-.search-box {
-    display:flex;align-items:center;background:white;border:1px solid rgba(15,21,40,0.08);
-    border-radius:12px;padding:6px 12px;box-shadow:0 2px 6px rgba(15,21,40,0.05);width:250px;
-}
-.search-box input {border:none;outline:none;background:transparent;width:100%;font-size:14px;}
-.search-box span {color:#6b7b8f;font-size:20px;}
-table {
-    width:calc(100% - 72px);margin:20px auto;background:white;
-    border-collapse:collapse;border-radius:12px;box-shadow:var(--shadow);overflow:hidden;
-}
-th,td {padding:12px;text-align:center;border-bottom:1px solid #eee;}
-th {background:#f3f6fb;}
-.status {padding:4px 8px;border-radius:12px;font-size:13px;font-weight:500;}
-.status.stable {background:#eaf9ee;color:#1b8a3d;}
-.status.critical {background:#fdeaea;color:#d32f2f;}
-.status.recovered {background:#e6f2ff;color:#0f65ff;}
-footer {
-    display:flex;justify-content:space-between;align-items:center;
-    padding:10px 36px;background:#fff;border-top:1px solid rgba(15,21,40,0.04);
-    font-size:14px;color:#2f4c6f;
-}
-footer img {width:200px;}
-.modal {
-    display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;
-    background:rgba(0,0,0,0.4);justify-content:center;align-items:center;
-}
-.modal-content {
-    background:#fff;padding:20px;border-radius:14px;width:360px;text-align:center;
-    box-shadow:0 4px 20px rgba(0,0,0,0.15);
-}
-.modal-content input {
-    width:80%;padding:8px;border:1px solid #ccc;border-radius:8px;margin:8px 0;
-}
-.modal-content button {
-    margin-top:10px;padding:8px 16px;border:none;border-radius:8px;
-    background:#0f65ff;color:#fff;cursor:pointer;font-weight:600;
-}
+body{font-family:"Inter",sans-serif;background:#f2f6fb;margin:0;}
+.table-container{background:white;border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(17,24,39,0.06);}
+.table-actions{display:flex;justify-content:space-between;margin-bottom:15px;}
+.table-actions input{padding:8px 12px;border-radius:8px;border:1px solid #ccc;width:70%;}
+.table-actions button{padding:8px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:600;}
+.add-btn{background-color:#0a77e3;color:white;}
+.connect-btn{background-color:#eef6ff;color:#0a77e3;}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th,td{padding:12px;text-align:center;border-bottom:1px solid #eee;}
+th{background-color:#f4f6fc;color:#1f46b6;}
+.action-icons span{cursor:pointer;padding:4px;border-radius:6px;margin:0 4px;color:#0f65ff;transition:.2s;}
+.action-icons span:hover{background:#eef6ff;}
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.4);justify-content:center;align-items:center;}
+.modal-content{background:#fff;padding:20px;border-radius:14px;width:360px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.15);}
+.modal-content input{width:80%;padding:8px;border:1px solid #ccc;border-radius:8px;margin:8px 0;}
+.modal-content button{margin-top:10px;padding:8px 16px;border:none;border-radius:8px;background:#0f65ff;color:#fff;cursor:pointer;font-weight:600;}
+#connectMsg{margin-top:10px;font-weight:600;}
+.success{color:#0a7e1e;} .error{color:#c00;} .warn{color:#b97900;} .info{color:#0b65d9;} .ready{color:#0a7e1e;}
 </style>
 </head>
+
 <body>
+<main style="padding:40px;">
+  <div class="table-container">
+    <div class="table-actions">
+      <input type="text" id="search" placeholder="Search patient...">
+      <div>
+        <button class="connect-btn" onclick="window.location.href='addPatient.php'">Add</button>
+        <button class="add-btn" id="connectBtn">Connect</button>
+      </div>
+    </div>
 
-<aside class="sidebar">
-    <div class="sidebar-item" onclick="location.href='dashboard.html'">
-        <span class="material-symbols-outlined">space_dashboard</span>
-    </div>
-    <div class="sidebar-item active" onclick="location.href='patients.php'">
-        <span class="material-symbols-outlined">group</span>
-    </div>
-    <div class="sidebar-item" style="opacity:.4;cursor:not-allowed;">
-        <span class="material-symbols-outlined">calendar_month</span>
-    </div>
-    <div class="sidebar-item" onclick="location.href='history.html'">
-        <span class="material-symbols-outlined">analytics</span>
-    </div>
-    <div class="sidebar-logout">
-        <button class="btn-logout">
-            <span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">logout</span>
-        </button>
-    </div>
-</aside>
-
-<main class="main">
-<header class="topbar">
-    <div class="logo-top"><img src="images/logon2.png" alt="Logo"></div>
-    <div class="profile" onclick="window.location.href='profile.php'">
-        <div class="avatar"><?= strtoupper(substr($_SESSION['doctorName'], 0, 2)) ?></div>
-        <div><?= htmlspecialchars($_SESSION['doctorName']) ?></div>
-    </div>
-</header>
-
-<div class="action-bar">
-    <h2 style="color:#1f46b6;">Patients</h2>
-    <div class="action-group">
-        <div class="search-box">
-            <span class="material-symbols-outlined">search</span>
-            <input type="text" id="searchInput" placeholder="Search patient...">
-        </div>
-        <button class="action-btn" onclick="window.location.href='addPatient.php'">
-            <span class="material-symbols-outlined">add</span> Add
-        </button>
-        <button class="action-btn" id="connectBtn">
-            <span class="material-symbols-outlined">link</span> Connect
-        </button>
-    </div>
-</div>
-
-<table id="patientsTable">
-    <thead>
-        <tr>
-            <th>ID</th><th>First Name</th><th>Last Name</th>
-            <th>Gender</th><th>Status</th><th>Phone</th><th>DOB</th>
+    <table id="patientsTable">
+      <thead><tr><th>ID</th><th>First</th><th>Last</th><th>Gender</th><th>Status</th><th>Phone</th><th>DOB</th><th>Actions</th></tr></thead>
+      <tbody>
+      <?php if ($result->num_rows > 0): while($row = $result->fetch_assoc()): ?>
+        <tr id="row-<?= $row['PID'] ?>">
+          <td><?= htmlspecialchars($row['PID']) ?></td>
+          <td><?= htmlspecialchars($row['first_name']) ?></td>
+          <td><?= htmlspecialchars($row['last_name']) ?></td>
+          <td><?= htmlspecialchars($row['gender']) ?></td>
+          <td><?= htmlspecialchars($row['status']) ?></td>
+          <td><?= htmlspecialchars($row['phone']) ?></td>
+          <td><?= htmlspecialchars($row['DOB']) ?></td>
+          <td class="action-icons">
+            <span class="material-symbols-outlined" onclick="performAction('disconnect','<?= $row['PID'] ?>')">link_off</span>
+            <span class="material-symbols-outlined" onclick="performAction('delete','<?= $row['PID'] ?>')">delete</span>
+          </td>
         </tr>
-    </thead>
-    <tbody>
-        <?php if ($result->num_rows > 0): while($row = $result->fetch_assoc()): ?>
-            <tr>
-                <td><?= htmlspecialchars($row['PID']) ?></td>
-                <td><?= htmlspecialchars($row['first_name']) ?></td>
-                <td><?= htmlspecialchars($row['last_name']) ?></td>
-                <td><?= htmlspecialchars($row['gender']) ?></td>
-                <td><span class="status <?= strtolower($row['status']) ?>"><?= htmlspecialchars($row['status']) ?></span></td>
-                <td><?= htmlspecialchars($row['phone']) ?></td>
-                <td><?= htmlspecialchars($row['DOB']) ?></td>
-            </tr>
-        <?php endwhile; else: ?>
-            <tr><td colspan="7">No patients linked to you.</td></tr>
-        <?php endif; ?>
-    </tbody>
-</table>
-
-<footer>
-    <div>Resources | Support | Developers</div>
-    <div><img src="images/logon2.png" alt="Logo"></div>
-</footer>
+      <?php endwhile; else: ?><tr><td colspan="8">No patients linked to you.</td></tr><?php endif; ?>
+      </tbody>
+    </table>
+    <p id="message" class="message"></p>
+  </div>
 </main>
 
 <!-- Connect Modal -->
 <div class="modal" id="connectModal">
-    <div class="modal-content">
-        <h3>Connect to a Patient</h3>
-        <form method="POST">
-            <input type="text" name="PID" placeholder="Enter Patient ID">
-            <input type="text" name="Pname" placeholder="Or Patient Name">
-            <button type="submit" name="connect">Connect</button>
-            <button type="button" onclick="closeModal()">Cancel</button>
-        </form>
+  <div class="modal-content">
+    <h3>Connect to a Patient</h3>
+    <input type="text" id="patient_search" placeholder="Enter Patient ID or Name" required>
+    <button id="searchBtn">Check</button>
+    <div id="connectMsg"></div>
+    <div style="margin-top:10px;">
+      <button id="confirmConnect" style="display:none;">Connect</button>
+      <button type="button" onclick="closeModal()">Cancel</button>
     </div>
+  </div>
 </div>
 
 <script>
-document.getElementById("searchInput").addEventListener("keyup", function() {
-    const filter = this.value.toLowerCase();
-    document.querySelectorAll("#patientsTable tbody tr").forEach(r => {
-        r.style.display = r.textContent.toLowerCase().includes(filter) ? "" : "none";
-    });
-});
-const modal = document.getElementById("connectModal");
-document.getElementById("connectBtn").addEventListener("click", ()=> modal.style.display="flex");
-function closeModal(){modal.style.display="none";}
-window.onclick = e => {if(e.target==modal)closeModal();}
+const modal=document.getElementById("connectModal");
+document.getElementById("connectBtn").onclick=()=>modal.style.display="flex";
+function closeModal(){modal.style.display="none";msg("");document.getElementById('confirmConnect').style.display="none";}
+window.onclick=e=>{if(e.target==modal)closeModal();};
+function msg(txt,cls){document.getElementById('connectMsg').innerHTML=`<span class="${cls}">${txt}</span>`;}
+
+document.getElementById("searchBtn").onclick=()=>{
+  const val=document.getElementById("patient_search").value.trim();
+  if(!val)return msg("Please enter something.","error");
+  msg("⏳ Searching...","info");
+  fetch("",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`ajax=searchPatient&query=${encodeURIComponent(val)}`})
+  .then(r=>r.json()).then(res=>{
+    msg(res.msg,res.type);
+    if(res.PID){const btn=document.getElementById("confirmConnect");btn.style.display="inline-block";btn.dataset.pid=res.PID;}
+    else document.getElementById("confirmConnect").style.display="none";
+  });
+};
+
+document.getElementById("confirmConnect").onclick=e=>{
+  const pid=e.target.dataset.pid;
+  msg("⏳ Connecting...","info");
+  fetch("",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`ajax=connect&PID=${pid}`})
+  .then(r=>r.json()).then(res=>{
+    msg(res.msg,res.type);
+    if(res.type==="success")setTimeout(()=>location.reload(),1200);
+  });
+};
+
+function performAction(action,pid){
+  if(!confirm(`Are you sure you want to ${action} this patient?`))return;
+  fetch("",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`ajax=${action}&PID=${pid}`})
+  .then(r=>r.json()).then(res=>{
+    document.getElementById("message").innerHTML=`<span class="${res.type}">${res.msg}</span>`;
+    if(res.type==="success"||res.type==="info")document.getElementById('row-'+pid)?.remove();
+  });
+}
 </script>
 </body>
 </html>
