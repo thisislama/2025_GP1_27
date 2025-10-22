@@ -9,12 +9,13 @@ $password = "root";
 $dbname = "tanafs";
 
 
-$_SESSION['userID'] = 1;
-$userID = $_SESSION['userID'];
-
-/* Check if user is logged in, redirect to login if not
+// Check if user is logged in, redirect to login if not
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
-    header("Location: login.php");
+    echo
+          "<script>
+            alert('You need to sign up as user!');
+            window.location.href = 'HomePage.html';             
+          </script>";
     exit();
 }
 
@@ -24,12 +25,12 @@ $current_user_role = $_SESSION['role'];
 $current_user_name = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
 $current_user_initials = strtoupper(substr($_SESSION['first_name'], 0, 1) . substr($_SESSION['last_name'], 0, 1));
 
-/* Handle logout
+// Handle logout
 if (isset($_POST['logout'])) {
     session_destroy();
-    header("Location: login.php");
+    header("Location: signin.php");
     exit();
-}*/
+}
 
 // Initialize variables
 $results = [];
@@ -349,7 +350,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
             background-color: white;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
 
         .table-actions {
@@ -430,12 +431,35 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
             min-width: 80px;
         }
 
-        .status.completed { background-color: #e2f5e9; color: #15803d; }
-        .status.pending { background-color: #fff4e5; color: #b45309; }
-        .status.failed { background-color: #fee2e2; color: #b91c1c; }
-        .status.normal { background-color: #e2f5e9; color: #15803d; }
-        .status.critical { background-color: #fee2e2; color: #b91c1c; }
-        .status.abnormal { background-color: #fff4e5; color: #b45309; }
+        .status.completed {
+            background-color: #e2f5e9;
+            color: #15803d;
+        }
+
+        .status.pending {
+            background-color: #fff4e5;
+            color: #b45309;
+        }
+
+        .status.failed {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status.normal {
+            background-color: #e2f5e9;
+            color: #15803d;
+        }
+
+        .status.critical {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status.abnormal {
+            background-color: #fff4e5;
+            color: #b45309;
+        }
 
         .pagination {
             display: flex;
@@ -506,26 +530,70 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
 
         /* Responsive styles */
         @media (max-width: 1280px) {
-            .search { width: 240px; }
-            .logo-top img { width: 200px !important; }
+            .search {
+                width: 240px;
+            }
+
+            .logo-top img {
+                width: 200px !important;
+            }
         }
+
         @media (max-width: 1024px) {
-            main { padding: 20px; }
-            .table-actions { flex-direction: column; }
-            .filter-section { justify-content: center; }
+            main {
+                padding: 20px;
+            }
+
+            .table-actions {
+                flex-direction: column;
+            }
+
+            .filter-section {
+                justify-content: center;
+            }
         }
+
         @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .main { margin-left: 0; }
-            .table-actions { flex-direction: column; }
-            .filter-section { flex-direction: column; align-items: stretch; }
-            .filter-section input, .filter-section select { width: 100%; }
+            body {
+                flex-direction: column;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .table-actions {
+                flex-direction: column;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-section input, .filter-section select {
+                width: 100%;
+            }
         }
+
         @media (max-width: 480px) {
-            .search { display: none; }
-            .top-actions .profile div:nth-child(2) { display: none; }
-            th, td { padding: 8px 4px; font-size: 12px; }
-            .table-actions button { padding: 6px 10px; font-size: 12px; }
+            .search {
+                display: none;
+            }
+
+            .top-actions .profile div:nth-child(2) {
+                display: none;
+            }
+
+            th, td {
+                padding: 8px 4px;
+                font-size: 12px;
+            }
+
+            .table-actions button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -545,7 +613,9 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
                     <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"/>
                     <circle cx="11" cy="11" r="5.2" stroke="#6b7b8f" stroke-width="1.6"/>
                 </svg>
-                <input type="text" name="search" placeholder="Search ..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" aria-label="Search"/>
+                <input type="text" name="search" placeholder="Search ..."
+                       value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"
+                       aria-label="Search"/>
             </form>
         </div>
 
@@ -583,20 +653,38 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
         <div class="table-container">
             <form method="get" class="table-actions">
                 <div class="filter-section">
-                    <input type="text" name="search" style="width: 33em" placeholder="Search by name or phone..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                    <select name="status" >
+                    <input type="text" name="search" style="width: 33em" placeholder="Search by name or phone..."
+                           value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                    <select name="status">
                         <option value="all">All Status</option>
-                        <option value="completed" <?php echo (isset($_GET['status']) && $_GET['status'] == 'completed') ? 'selected' : ''; ?>>Completed</option>
-                        <option value="pending" <?php echo (isset($_GET['status']) && $_GET['status'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
-                        <option value="failed" <?php echo (isset($_GET['status']) && $_GET['status'] == 'failed') ? 'selected' : ''; ?>>Failed</option>
-                        <option value="normal" <?php echo (isset($_GET['status']) && $_GET['status'] == 'normal') ? 'selected' : ''; ?>>Normal</option>
-                        <option value="critical" <?php echo (isset($_GET['status']) && $_GET['status'] == 'critical') ? 'selected' : ''; ?>>Critical</option>
-                        <option value="abnormal" <?php echo (isset($_GET['status']) && $_GET['status'] == 'abnormal') ? 'selected' : ''; ?>>Abnormal</option>
+                        <option value="completed" <?php echo (isset($_GET['status']) && $_GET['status'] == 'completed') ? 'selected' : ''; ?>>
+                            Completed
+                        </option>
+                        <option value="pending" <?php echo (isset($_GET['status']) && $_GET['status'] == 'pending') ? 'selected' : ''; ?>>
+                            Pending
+                        </option>
+                        <option value="failed" <?php echo (isset($_GET['status']) && $_GET['status'] == 'failed') ? 'selected' : ''; ?>>
+                            Failed
+                        </option>
+                        <option value="normal" <?php echo (isset($_GET['status']) && $_GET['status'] == 'normal') ? 'selected' : ''; ?>>
+                            Normal
+                        </option>
+                        <option value="critical" <?php echo (isset($_GET['status']) && $_GET['status'] == 'critical') ? 'selected' : ''; ?>>
+                            Critical
+                        </option>
+                        <option value="abnormal" <?php echo (isset($_GET['status']) && $_GET['status'] == 'abnormal') ? 'selected' : ''; ?>>
+                            Abnormal
+                        </option>
                     </select>
-                    <input type="date" name="date_from" value="<?php echo isset($_GET['date_from']) ? htmlspecialchars($_GET['date_from']) : ''; ?>" placeholder="From Date">
-                    <input type="date" name="date_to" value="<?php echo isset($_GET['date_to']) ? htmlspecialchars($_GET['date_to']) : ''; ?>" placeholder="To Date">
+                    <input type="date" name="date_from"
+                           value="<?php echo isset($_GET['date_from']) ? htmlspecialchars($_GET['date_from']) : ''; ?>"
+                           placeholder="From Date">
+                    <input type="date" name="date_to"
+                           value="<?php echo isset($_GET['date_to']) ? htmlspecialchars($_GET['date_to']) : ''; ?>"
+                           placeholder="To Date">
                     <button type="submit" class="filter-btn">Apply Filters</button>
-                    <a href="?" class="filter-btn" style="text-decoration: none; font-weight: 600;  font-size:15px;display: inline-block; padding: 8px 9px;">Clear</a>
+                    <a href="?" class="filter-btn"
+                       style="text-decoration: none; font-weight: 600;  font-size:15px;display: inline-block; padding: 8px 9px;">Clear</a>
                 </div>
             </form>
 
@@ -604,7 +692,8 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
                 <div class="table-actions">
                     <div></div>
                     <div>
-                        <button type="submit" name="download" class="download-btn" id="downloadBtn">Download Selected</button>
+                        <button type="submit" name="download" class="download-btn" id="downloadBtn">Download Selected
+                        </button>
                     </div>
                 </div>
 
@@ -689,7 +778,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
 
 <script>
     // JavaScript for table functionality
-    document.getElementById('selectAll').addEventListener('click', function() {
+    document.getElementById('selectAll').addEventListener('click', function () {
         const checkboxes = document.getElementsByClassName('row-checkbox');
         for (let checkbox of checkboxes) {
             checkbox.checked = this.checked;
@@ -710,7 +799,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
     });
 
     // Prevent form submission if no checkboxes are selected for download
-    document.getElementById('downloadForm').addEventListener('submit', function(e) {
+    document.getElementById('downloadForm').addEventListener('submit', function (e) {
         const checkboxes = document.querySelectorAll('.row-checkbox:checked');
         if (checkboxes.length === 0) {
             e.preventDefault();
@@ -720,7 +809,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
 
     // Auto-submit search form when typing (with delay)
     let searchTimeout;
-    document.querySelector('input[name="search"]').addEventListener('input', function() {
+    document.querySelector('input[name="search"]').addEventListener('input', function () {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             this.form.submit();
