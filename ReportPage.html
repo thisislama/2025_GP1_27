@@ -1,9 +1,14 @@
+
+
 <!doctype html>
 <html lang="en">
+   
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tanafs Report page</title>
+    
+  
 
     <!-- Google Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
@@ -376,9 +381,54 @@ img.logo {
   width:30px; height:30px; display:block;
 }  
 
+
+
+
+/* قائمة عامة لعناصر (موجات/تعليقات) */
+.item-list, .waves-list { list-style: none; display: flex; flex-direction: column; gap: 0.625em; margin: 0; padding: 0; }
+
+.item, .wave-item {
+  display: grid;
+  grid-template-columns: 1fr auto; /* نص يسار + يمين شارة/تاريخ */
+  gap: 0.75em;
+  align-items: center;
+  padding: 0.625em 0.75em;
+  border: 1px solid #eef1f6;
+  border-radius: 0.75em;
+  background: #fff;
+}
+
+.item .meta, .wave-item .meta {
+  display: flex; align-items: center; gap: .5em; color:#2b4a77; font-weight:600;
+}
+
+.item .right, .wave-item .right { display:flex; align-items:center; gap:.5em; white-space:nowrap; color:#2b4a77; font-variant-numeric: tabular-nums; }
+
+.item .text {
+  grid-column: 1 / -1;  /* يمتد كامل العرض تحت السطر الأول */
+  background: #f6f9ff; border: 1px solid rgba(15,101,255,0.12);
+  border-radius: 0.5em; padding: 0.6em 0.75em; color:#2b4a77; white-space: pre-wrap;
+}
+
+/* استايلات الشارة جاهزة عندك: .status.normal/.moderate/.critical */
+
+/* لتصغير وقت وتاريخ الويف فورم */
+.wave-item .date {
+  font-size: 0.70em;
+  color: #6b7b8f;   /* لون أهدى */
+}
+
+/* لتصغير وقت وتاريخ الكومنت */
+.comment-item .date {
+  font-size: 0.70em;
+  color: #6b7b8f;   /* نفس اللون حتى يكون مريح بصرياً */
+}
+
+.value { font-weight: strong; }
+
     </style>
 
-</style>
+
 
 </head>
 
@@ -387,8 +437,8 @@ img.logo {
 <div class="wrapper">
 
 
-  <img class="topimg" src="images/Group 8.png" alt="img">
-  <img class="logo" src="images/Logo.png" alt="Tanafs Logo">
+  <img class="topimg" src="Images/Group 8.png" alt="img">
+  <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
   <nav class="auth-nav" aria-label="User navigation">
     
@@ -437,16 +487,13 @@ img.logo {
     </div>
 
     <!-- field-->
-    <div class="field">
-      <div class="label">Last waveform status:</div>
-      <div class="value" id="r-last-status"></div>
-    </div>
+  
+
    
-      
 
 
 <div class="field">
-  <div class="label">Last analyzed waveforms<br>with sevarity level:</div>
+  <div class="label">Aِِnalyzed waveforms<br>with sevarity level:</div>
   <div class="value">
     <ul class="waves-list" id="waves-list">
       <li class="wave-item">
@@ -475,10 +522,16 @@ img.logo {
     </ul>
   </div>
 </div>
- <div class="field">
-      <div class="label">Last comment:</div>
-      <div class="value" id="r-comment"></div>
-    </div>
+
+     <!-- Comments list -->
+<div class="field">
+  <div class="label">Comments:</div>
+  <div class="value">
+    <ul class="item-list" id="comments-list"></ul>
+  </div>
+</div>
+
+ 
   
 
     <!--Doctor note -->
@@ -493,57 +546,98 @@ img.logo {
 </section>
 </main>
 <script>
+function fmtDate(mysqlTs, locale='en-GB') {
+  if (!mysqlTs) return '-';
+  const d = new Date(String(mysqlTs).replace(' ', 'T'));
+  if (isNaN(d)) return mysqlTs;
+  return new Intl.DateTimeFormat(locale, {year:'numeric',month:'2-digit',day:'2-digit', timeZone:'Asia/Riyadh'}).format(d);
+}
+function fmtTime(mysqlTs, locale='en-GB') {
+  if (!mysqlTs) return '-';
+  const d = new Date(String(mysqlTs).replace(' ', 'T'));
+  if (isNaN(d)) return mysqlTs;
+  return new Intl.DateTimeFormat(locale, {hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Riyadh'}).format(d);
+}
+function fmtDateTime(mysqlTs, locale='en-GB'){
+  const dt = fmtDate(mysqlTs, locale);
+  const tm = fmtTime(mysqlTs, locale);
+  return (dt==='-' || tm==='-') ? '-' : `${dt}, ${tm}`;
+}
+</script>
+
+<script>
 document.addEventListener("DOMContentLoaded", async () => {
   const pid = 5001;
 
-  function getSeverityClass(level = "") {
+  const wavesList   = document.getElementById("waves-list");
+  const commentsUl  = document.getElementById("comments-list");
+
+  const getSeverityClass = (level = "") => {
     const s = String(level).trim().toLowerCase();
     if (s.includes("high") || s.includes("critical")) return "critical";
     if (s.includes("moderate") || s.includes("med"))  return "moderate";
     return "normal";
-  }
+  };
 
   try {
-    const res = await fetch(`report.php?pid=${encodeURIComponent(pid)}`);
+    const res  = await fetch(`report.php?pid=${encodeURIComponent(pid)}&_=${Date.now()}`, { cache:'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    // fill info header
+    // header info
     document.getElementById("r-patient").textContent    = data.patient ?? "Unknown";
     document.getElementById("r-created-by").textContent = data.createdBy ?? "System";
-    document.getElementById("r-date").textContent       = data.date ?? "";
+    document.getElementById("r-date").textContent       = fmtDateTime(data.date);
 
-    // last result
-    document.getElementById("r-last-status").textContent = data.lastStatus ?? "-";
+    
 
-    // last 3
-    const wavesList = document.getElementById("waves-list");   // ✅ تعريف القائمة
+    // waves (مع التاريخ والوقت يمين)
     if (wavesList) {
       wavesList.innerHTML = "";
       (data.waves || []).forEach(w => {
         const li = document.createElement("li");
         li.className = "wave-item";
         li.innerHTML = `
-          <div class="name">
+          <div class="meta">
             <span class="material-symbols-outlined">show_chart</span>
             ${w.anomaly}
           </div>
-          <span class="status ${getSeverityClass(w.level)}">${w.level || '-'}</span>
+          <div class="right">
+            <span class="status ${getSeverityClass(w.level)}">${w.level || '-'}</span>
+            <time datetime="${w.timestamp}" title="${w.timestamp}">${fmtDateTime(w.timestamp)}</time>
+          </div>
         `;
         wavesList.appendChild(li);
       });
     }
 
-    // last comment
-    document.getElementById("r-comment").textContent = data.lastComment || "-";
+    // comments (كل التعليقات بصندوق + اسم + تاريخ/وقت)
+    if (commentsUl) {
+      commentsUl.innerHTML = "";
+      (data.comments || []).forEach(c => {
+        const li = document.createElement("li");
+        li.className = "item";
+        li.innerHTML = `
+          <div class="meta">
+            <span class="material-symbols-outlined">person</span>
+            ${c.by ? c.by : 'Unknown'}
+          </div>
+          <div class="right">
+            <time datetime="${c.timestamp}" title="${c.timestamp}">${fmtDateTime(c.timestamp)}</time>
+          </div>
+          <div class="text">${(c.text ?? '').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        `;
+        commentsUl.appendChild(li);
+      });
+    }
 
   } catch (e) {
     console.error(e);
     alert("cannot appload the report information");
   }
 });
-
 </script>
+
 
 
 
