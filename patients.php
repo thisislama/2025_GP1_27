@@ -1,4 +1,4 @@
-<?php
+<<?php
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -12,11 +12,11 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-// --- Simulated login ---
-$_SESSION['userID'] = 1; 
+// Simulated login
+$_SESSION['userID'] = 1;
 $userID = $_SESSION['userID'];
 
-// --- Get doctor name ---
+// Doctor name
 $docRes = $conn->prepare("SELECT first_name, last_name FROM user WHERE userID=?");
 $docRes->bind_param("i", $userID);
 $docRes->execute();
@@ -24,34 +24,37 @@ $docData = $docRes->get_result()->fetch_assoc();
 $_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
 $docRes->close();
 
-// --- AJAX requests ---
 if (isset($_POST['ajax'])) {
     $action = $_POST['ajax'];
     $response = ["type" => "error", "msg" => "⚠️ Unknown error."];
 
-    // 🔹 Search patient
-    if ($action === 'searchPatient') {
-        $input = trim($_POST['query']);
+    // 🔹 Connect (new simplified logic)
+    if ($action === 'connect') {
+        $input = trim($_POST['PID']);
+
+        // 1. Search in Tanafs
         $find = $conn->prepare("SELECT PID, first_name, last_name FROM patient WHERE PID=? OR first_name=? OR last_name=?");
         $find->bind_param("sss", $input, $input, $input);
         $find->execute();
         $patient = $find->get_result()->fetch_assoc();
         $find->close();
 
-        if ($patient) {
+        if (!$patient) {
+            $response = ["type" => "error", "msg" => "❌ Patient not found in Tanafs. Please add the patient through Add Patient."];
+        } else {
             $PID = $patient['PID'];
 
-            // Check if already linked with this doctor
-            $dup = $conn->prepare("SELECT COUNT(*) AS c FROM user_patient WHERE PID=? AND userID=?");
-            $dup->bind_param("si", $PID, $userID);
-            $dup->execute();
-            $dupRes = $dup->get_result()->fetch_assoc();
-            $dup->close();
+            // Check if under same doctor
+            $same = $conn->prepare("SELECT COUNT(*) AS c FROM user_patient WHERE PID=? AND userID=?");
+            $same->bind_param("si", $PID, $userID);
+            $same->execute();
+            $sameRes = $same->get_result()->fetch_assoc();
+            $same->close();
 
-            if ($dupRes['c'] > 0) {
-                $response = ["type" => "info", "msg" => "🩺 This patient is already under your care."];
+            if ($sameRes['c'] > 0) {
+                $response = ["type" => "info", "msg" => "⚠️ This patient is already under your care."];
             } else {
-                // Check other doctors linked
+                // Check if under other doctors
                 $check = $conn->prepare("SELECT u.first_name, u.last_name 
                                          FROM user_patient up 
                                          INNER JOIN user u ON up.userID = u.userID
@@ -64,41 +67,35 @@ if (isset($_POST['ajax'])) {
                 if ($linked && count($linked) > 0) {
                     $docs = array_map(fn($d) => "{$d['first_name']} {$d['last_name']}", $linked);
                     $docList = implode(", ", $docs);
+
+                    // connect current doctor too
+                    $add = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
+                    $add->bind_param("si", $PID, $userID);
+                    $add->execute();
+                    $add->close();
+
                     $response = [
-                        "type" => "warn",
-                        "msg" => "👨‍⚕️ This patient is under care of: $docList — you can still connect.",
-                        "PID" => $PID
+                        "type" => "success",
+                        "msg" => "️ This patient is under care of: $docList — connected successfully!"
                     ];
                 } else {
-                    $response = [
-                        "type" => "ready",
-                        "msg" => "✅ Found patient {$patient['first_name']} {$patient['last_name']} — you can connect now.",
-                        "PID" => $PID
-                    ];
+                    // Not under any doctor → connect directly
+                    $add = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
+                    $add->bind_param("si", $PID, $userID);
+                    $add->execute();
+                    $add->close();
+
+                    $response = ["type" => "success", "msg" => "✅ Connected successfully!"];
                 }
             }
-        } else {
-            $response = ["type" => "error", "msg" => "❌ Patient not found in database."];
         }
-    }
-
-    // 🔹 Connect
-    elseif ($action === 'connect') {
-        $PID = $_POST['PID'];
-        $add = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
-        $add->bind_param("si", $PID, $userID);
-        if ($add->execute())
-            $response = ["type" => "success", "msg" => "✅ Connected successfully!"];
-        else
-            $response = ["type" => "error", "msg" => "❌ Failed to connect."];
-        $add->close();
     }
 
     // 🔹 Disconnect
     elseif ($action === 'disconnect') {
         $PID = $_POST['PID'];
         $conn->query("DELETE FROM user_patient WHERE PID='$PID' AND userID='$userID'");
-        $response = ["type" => "info", "msg" => "🔗 Disconnected successfully!"];
+        $response = ["type" => "info", "msg" => "Disconnected successfully!"];
     }
 
     // 🔹 Delete
@@ -106,7 +103,7 @@ if (isset($_POST['ajax'])) {
         $PID = $_POST['PID'];
         $conn->query("DELETE FROM user_patient WHERE PID='$PID'");
         $conn->query("DELETE FROM patient WHERE PID='$PID'");
-        $response = ["type" => "success", "msg" => "🗑️ Patient deleted successfully!"];
+        $response = ["type" => "success", "msg" => "️Patient deleted successfully!"];
     }
 
     header('Content-Type: application/json');
@@ -149,7 +146,7 @@ th{background-color:#f4f6fc;color:#1f46b6;}
 .modal-content input{width:80%;padding:8px;border:1px solid #ccc;border-radius:8px;margin:8px 0;}
 .modal-content button{margin-top:10px;padding:8px 16px;border:none;border-radius:8px;background:#0f65ff;color:#fff;cursor:pointer;font-weight:600;}
 #connectMsg{margin-top:10px;font-weight:600;}
-.success{color:#0a7e1e;} .error{color:#c00;} .warn{color:#b97900;} .info{color:#0b65d9;} .ready{color:#0a7e1e;}
+.success{color:#0a7e1e;} .error{color:#c00;} .warn{color:#b97900;} .info{color:#0b65d9;}
 </style>
 </head>
 
@@ -159,8 +156,8 @@ th{background-color:#f4f6fc;color:#1f46b6;}
     <div class="table-actions">
       <input type="text" id="search" placeholder="Search patient...">
       <div>
-        <button class="connect-btn" onclick="window.location.href='addPatient.php'">Add</button>
-        <button class="add-btn" id="connectBtn">Connect</button>
+        <button class="connect-btn" id="connectBtn">Connect</button>
+        <button class="add-btn" onclick="window.location.href='addPatient.php'">Add</button>
       </div>
     </div>
 
@@ -192,56 +189,58 @@ th{background-color:#f4f6fc;color:#1f46b6;}
 <div class="modal" id="connectModal">
   <div class="modal-content">
     <h3>Connect to a Patient</h3>
-    <input type="text" id="patient_search" placeholder="Enter Patient ID or Name" required>
-    <button id="searchBtn">Check</button>
-    <div id="connectMsg"></div>
+    <input type="text" id="patient_input" placeholder="Enter Patient ID or Name" required>
     <div style="margin-top:10px;">
-      <button id="confirmConnect" style="display:none;">Connect</button>
+      <button id="connectNow">Connect</button>
       <button type="button" onclick="closeModal()">Cancel</button>
     </div>
+    <div id="connectMsg"></div>
   </div>
 </div>
 
 <script>
 const modal=document.getElementById("connectModal");
 document.getElementById("connectBtn").onclick=()=>modal.style.display="flex";
-function closeModal(){modal.style.display="none";msg("");document.getElementById('confirmConnect').style.display="none";}
+function closeModal(){modal.style.display="none";msg("");}
 window.onclick=e=>{if(e.target==modal)closeModal();};
-function msg(txt,cls){document.getElementById('connectMsg').innerHTML=`<span class="${cls}">${txt}</span>`;}
+function msg(txt,cls="info"){document.getElementById('connectMsg').innerHTML=`<span class="${cls}">${txt}</span>`;}
 
-document.getElementById("searchBtn").onclick=()=>{
-  const val=document.getElementById("patient_search").value.trim();
-  if(!val)return msg("Please enter something.","error");
-  msg("⏳ Searching...","info");
-  fetch("",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
-    body:`ajax=searchPatient&query=${encodeURIComponent(val)}`})
+document.getElementById("connectNow").onclick=()=>{
+  const val=document.getElementById("patient_input").value.trim();
+  if(!val)return msg("Please enter a patient ID or name.","error");
+  msg("⏳ Processing...","info");
+
+  fetch("",{
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`ajax=connect&PID=${encodeURIComponent(val)}`
+  })
   .then(r=>r.json()).then(res=>{
     msg(res.msg,res.type);
-    if(res.PID){const btn=document.getElementById("confirmConnect");btn.style.display="inline-block";btn.dataset.pid=res.PID;}
-    else document.getElementById("confirmConnect").style.display="none";
-  });
-};
-
-document.getElementById("confirmConnect").onclick=e=>{
-  const pid=e.target.dataset.pid;
-  msg("⏳ Connecting...","info");
-  fetch("",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
-    body:`ajax=connect&PID=${pid}`})
-  .then(r=>r.json()).then(res=>{
-    msg(res.msg,res.type);
-    if(res.type==="success")setTimeout(()=>location.reload(),1200);
+    if(res.type==="success")setTimeout(()=>location.reload(),1500);
   });
 };
 
 function performAction(action,pid){
   if(!confirm(`Are you sure you want to ${action} this patient?`))return;
-  fetch("",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
-    body:`ajax=${action}&PID=${pid}`})
+  fetch("",{
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`ajax=${action}&PID=${pid}`
+  })
   .then(r=>r.json()).then(res=>{
     document.getElementById("message").innerHTML=`<span class="${res.type}">${res.msg}</span>`;
     if(res.type==="success"||res.type==="info")document.getElementById('row-'+pid)?.remove();
   });
 }
+
+// 🔍 Simple search filter for patient table
+document.getElementById('search').addEventListener('keyup', function(){
+  const term=this.value.toLowerCase();
+  document.querySelectorAll('#patientsTable tbody tr').forEach(row=>{
+    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+  });
+});
 </script>
 </body>
 </html>
