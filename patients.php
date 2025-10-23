@@ -12,7 +12,7 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-Check if user is logged in, redirect to login if not
+/*Check if user is logged in, redirect to login if not
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
     echo
           "<script>
@@ -20,11 +20,11 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
             window.location.href = 'HomePage.html';             
           </script>";
     exit();
-}
-/*Simulated login
+}*/
+Simulated login
 $_SESSION['userID'] = 1;
 $userID = $_SESSION['userID'];
-*/
+
 // Doctor name
 $docRes = $conn->prepare("SELECT first_name, last_name FROM user WHERE userID=?");
 $docRes->bind_param("i", $userID);
