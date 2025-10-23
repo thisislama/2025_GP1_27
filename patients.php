@@ -628,6 +628,7 @@ main h2{
   <nav class="auth-nav" aria-label="User navigation">
     <a class="nav-link" href="dashboard.html">dashboard</a>
     <a class="nav-link" href="history2.php">History</a>
+        <a class="nav-link" href="report.php">report</a>
   <a href="profile.php" class="profile-btn">
   <div class="profile">
     <img class="avatar-icon" src="images/profile.png" alt="Profile">
