@@ -394,28 +394,59 @@ function addPatient(pid){
   </div>
 </main>
 
-<footer class="site-footer">
+<footer  id="contact" class="site-footer">
   <div class="footer-grid">
+
     <div class="footer-col brand">
-      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo"/>
-      <p>Breathe well, live well</p>
+      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo" />
+      <p class="brand-tag">Breathe well, live well</p>
     </div>
-    <nav class="footer-col social">
+
+    <!-- Social -->
+    <nav class="footer-col social" aria-label="Social media">
       <h3 class="footer-title">Social Media</h3>
       <ul class="social-list">
-        <li><a href="#"><img src="images/twitter.png" alt="Twitter"></a></li>
-        <li><a href="#"><img src="images/instagram.png" alt="Instagram"></a></li>
+        <li>
+          <a href="#" aria-label="Twitter">
+            <img src="images/twitter.png" alt="Twitter" />
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Instagram">
+            <img src="images/instagram.png" alt="Instagram" />
+          </a>
+        </li>
       </ul>
+      <span class="social-handle">@official_Tanafs</span>
     </nav>
+
+    <!-- Contact -->
     <div class="footer-col contact">
       <h3 class="footer-title">Contact Us</h3>
       <ul class="contact-list">
-        <li><a href="#" class="contact-link"><img src="images/whatsapp.png" alt="WhatsApp"/><span>+123 165 788</span></a></li>
-        <li><a href="mailto:Tanafs@gmail.com" class="contact-link"><img src="images/email.png" alt="Email"/><span>Tanafs@gmail.com</span></a></li>
+        <li>
+          <a href="#" class="contact-link">
+            <img src="images/whatsapp.png" alt="WhatsApp" />
+            <span>+123 165 788</span>
+          </a>
+        </li>
+        <li>
+          <a href="mailto:Appointly@gmail.com" class="contact-link">
+            <img src="images/email.png" alt="Email" />
+            <span>Tanafs@gmail.com</span>
+          </a>
+        </li>
       </ul>
     </div>
+
   </div>
+
   <div class="footer-bar">
+    <p class="legal">
+      <a href="#">Terms &amp; Conditions</a>
+      <span class="dot">•</span>
+      <a href="#">Privacy Policy</a>
+    </p>
     <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
   </div>
 </footer>
