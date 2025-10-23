@@ -1,527 +1,246 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tanafs Patient</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tanafs Patient</title>
 
-    <!-- Google Material Symbols -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-       :root {
-  --bg: #f2f6fb;
-  --card: #ffffff;
-  --accent: #0f65ff; /* primary blue */
-  --muted: #9aa6c0;
-  --soft-blue: #eef6ff;
-  --panel-shadow: 0 0.625em 1.875em rgba(17, 24, 39, 0.06);
-  --radius: 0.875em;
-}
+  <style>
+    :root{
+      --bg:#f2f6fb; --card:#fff; --accent:#0f65ff; --muted:#9aa6c0;
+      --soft-blue:#eef6ff; --panel-shadow:0 0.625em 1.875em rgba(17,24,39,.06);
+      --radius:.875em;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:var(--bg); color:#15314b;
+      min-height:100vh; display:flex; flex-direction:column;
+    }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+    /* ---------- Header (من صفحة 2) ---------- */
+    .wrapper{position:relative;width:100%;min-height:100px;overflow:visible}
+    img.topimg{
+      position:absolute; top:-4.9%; left:48%; transform:translateX(-50%);
+      height:auto; width:auto; max-width:90%; z-index:10; pointer-events:none;
+    }
+    img.logo{
+      position:absolute; top:3.8%; left:14%;
+      width:clamp(100px,12vw,180px); height:auto; z-index:20; pointer-events:none;
+    }
+    .auth-nav{
+      position:absolute; top:6%; right:16.2%;
+      display:flex; align-items:center; gap:1.6em; z-index:30;
+    }
+    .nav-link{
+      color:#0876FA; font-weight:600; text-decoration:none; font-size:1em;
+      transition:all .3s ease; position:relative;
+    }
+    .nav-link::after{
+      content:""; position:absolute; bottom:-4px; left:0; width:0; height:2px;
+      background:linear-gradient(90deg,#0876FA,#78C1F5); transition:width .3s ease; border-radius:2px;
+    }
+    .nav-link:hover::after{width:100%}
+    .nav-link:hover{transform:translateY(-2px); color:#055ac0}
+    .profile-btn{all:unset;cursor:pointer;display:inline-block}
+    .btn-logout{
+      background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; padding:.5em .975em;
+      border-radius:.75em; font-weight:600; border:none; box-shadow:0 .5em 1.25em rgba(15,101,255,.14);
+      cursor:pointer; font-size:.875em;
+    }
+    .avatar-icon{width:30px;height:30px;display:block}
 
+    /* ---------- Main panels (نفس الأولى مع تعديل الهوامش لأن ما فيه Sidebar) ---------- */
+    main.main{flex:1; display:flex; flex-direction:column}
+    .panel{
+      background:#fff; border-radius:1.125em; box-shadow:0 .0625em .1875em rgba(0,0,0,.05);
+      padding:1.25em; margin: 3em auto .9375em auto;
+ width:calc(100% - 7.125em);
+    }
+    .analysis-table{border-collapse:collapse}
+    th,td{text-align:center;padding:.75em;color:#2b4a77}
+    .analysis-table thead th{background:#f3f6fb;text-align:left}
+    .analysis-table tbody td{border-top:1px solid #eef1f6}
+    .status{padding:.25em .5em;border-radius:.75em;font-size:.8125em;font-weight:500}
+    .status.normal{background:#eaf9ee;color:#1b8a3d}
+    .status.moderate{background:#fff7e6;color:#e6a100}
+    .status.critical{background:#fdeaea;color:#d32f2f}
 
-body {
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: var(--bg);
-  color: #15314b;
- min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+    .table-scroll{max-height:15.625em;overflow-y:auto;border-radius:.75em;border:none}
+    .table-scroll::-webkit-scrollbar{width:.5em}
+    .table-scroll::-webkit-scrollbar-thumb{background:#c5d4f7;border-radius:.625em}
+    .table-scroll::-webkit-scrollbar-thumb:hover{background:#9fb8f5}
 
+    .comment-card .title{font-weight:700;color:#2b4a77;margin-bottom:.5em}
+    .comment-basic-info{display:flex;justify-content:space-between;font-size:.8125em;color:#6b7b8f;margin-bottom:.3125em}
+    .comment-date{color:#2b4a77;font-weight:600}
+    .comment-basic-info b{color:#2b4a77;font-weight:600}
+    .comment-content{background:#f6f9ff;border:1px solid rgba(15,101,255,.12);border-radius:.75em;padding:.75em;color:#2b4a77;margin-bottom:.75em}
+    .comment-input{width:100%;border:1px solid #dfe6ef;border-radius:.75em;padding:.75em;min-height:4.375em;resize:vertical}
+    .btn-add{margin-top:.625em;background:linear-gradient(90deg,#0f65ff,#5aa6ff);color:#fff;border:0;padding:.625em 1em;border-radius:.75em;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.375em;box-shadow:0 .5em 1.25em rgba(15,101,255,.14)}
 
+    .reports-panel .title{font-weight:700;color:#2b4a77}
+    .report-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25em}
+    .report-item{display:flex;align-items:center;justify-content:space-between;padding:.5em 1em;border:1px solid #eef1f6;border-radius:.875em;background:#fff;box-shadow:0 .0625em .1875em rgba(0,0,0,.05)}
+    .report-item .left{display:flex;align-items:center;gap:.75em;color:#2b4a77;font-weight:550;font-size:.9375em}
+    .pd{background:#f0f6ff;color:#0f65ff;border:1px solid rgba(15,101,255,.15);padding:.25em .625em;border-radius:999px;font-size:.75em;font-weight:700}
+    .btn-open{border:1px solid rgba(15,101,255,.25);background:#f0f6ff;color:#0f65ff;padding:.5em .875em;border-radius:.75em;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.375em}
+    .btn-generate{margin-top:1em;align-self:flex-start;background:linear-gradient(90deg,#0f65ff,#5aa6ff);color:#fff;border:0;padding:.625em 1em;border-radius:.75em;font-weight:700;cursor:pointer;box-shadow:0 .5em 1.25em rgba(15,101,255,.14);display:inline-flex;align-items:center;gap:.625em}
+    .report-date{color:#2b4a77;font-weight:600;font-size:.8125em;position:relative;top:1.25em}
 
-/* -------- Panels -------- */
-.panel {
-  background: #fff;
-  border-radius: 1.125em;
-  box-shadow: 0 0.0625em 0.1875em rgba(0,0,0,0.05);
-  padding: 1.25em;
-  margin: 0.625em auto 0.9375em auto;
-  width: calc(100% - 7.125em);
+    /* أعمدة التاريخ/الوقت (صفحتك الأولى) */
+    .analysis-table th:nth-child(5), .analysis-table td:nth-child(5){width:140px;white-space:nowrap}
+    .analysis-table th:nth-child(6), .analysis-table td:nth-child(6){width:120px;white-space:nowrap}
+    .analysis-table td:nth-child(5), .analysis-table td:nth-child(6){overflow:visible!important;text-overflow:clip!important;font-variant-numeric:tabular-nums}
 
-}
-
-/* ===== Table ===== */
-.analysis-table { border-collapse: collapse; }
-th, td { text-align: center; padding: 0.75em; color: #2b4a77; }
-.analysis-table thead th { background: #f3f6fb; text-align: left; }
-.analysis-table tbody td { border-top: 1px solid #eef1f6; }
-
-.status { padding: 0.25em 0.5em; border-radius: 0.75em; font-size: 0.8125em; font-weight: 500; }
-.status.normal { background: #eaf9ee; color: #1b8a3d; }
-.status.moderate { background: #fff7e6; color: #e6a100; }
-.status.critical { background: #fdeaea; color: #d32f2f; }
-
-/* ===== Scroll for table ===== */
-.table-scroll {
-  max-height: 15.625em;
-  overflow-y: auto;
-  border-radius: 0.75em;
-  border: none;
-}
-.table-scroll::-webkit-scrollbar { width: 0.5em; }
-.table-scroll::-webkit-scrollbar-thumb { background: #c5d4f7; border-radius: 0.625em; }
-.table-scroll::-webkit-scrollbar-thumb:hover { background: #9fb8f5; }
-
-/* ===== Comment Section ===== */
-.comment-card .title { font-weight: 700; color: #2b4a77; margin-bottom: 0.5em; }
-.comment-basic-info { display: flex; justify-content: space-between; font-size: 0.8125em; color: #6b7b8f; margin-bottom: 0.3125em; }
-.comment-date { color: #2b4a77; font-weight: 600; }
-.comment-basic-info b { color: #2b4a77; font-weight: 600; }
-.comment-content {
-  background: #f6f9ff; border: 1px solid rgba(15,101,255,0.12);
-  border-radius: 0.75em; padding: 0.75em; color: #2b4a77; margin-bottom: 0.75em;
-}
-.comment-input {
-  width: 100%; border: 1px solid #dfe6ef; border-radius: 0.75em;
-  padding: 0.75em; min-height: 4.375em; resize: vertical; /*when the user write allot of note go vertical */
-}
-.btn-add {
-  margin-top: 0.625em;
-  background: linear-gradient(90deg,#0f65ff,#5aa6ff);
-  color: #fff; border: 0; /*to remove default border*/
-  padding: 0.625em 1em; border-radius: 0.75em;
-  font-weight: 600; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 0.375em;
-  box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14);
-}
-
-/* ===== Report Section ===== */
-.reports-panel .title { font-weight: 700; color:#2b4a77; }
-.report-top {
-  display: flex; justify-content: space-between;
-  align-items: center; margin-bottom: 1.25em;
-}
-.report-item {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0.5em 1em; border:1px solid #eef1f6;
-  border-radius:0.875em; background:#fff;
-  box-shadow:0 0.0625em 0.1875em rgba(0,0,0,.05);
-}
-.report-item .left {
-  display:flex; align-items:center; gap:0.75em;
-  color:#2b4a77; font-weight:550; font-size:0.9375em;
-}
-.pd {
-  background:#f0f6ff; color:#0f65ff;
-  border:1px solid rgba(15,101,255,.15);
-  padding:0.25em 0.625em;
-  border-radius:999px; font-size:0.75em; font-weight:700;
-}
-.btn-open {
-  border:1px solid rgba(15,101,255,.25);
-  background:#f0f6ff; color:#0f65ff;
-  padding:0.5em 0.875em; border-radius:0.75em;
-  font-weight:600; cursor:pointer;
-  display:inline-flex; align-items:center; gap:0.375em;
-}
-.btn-generate {
-  margin-top:1em; align-self:flex-start;
-  background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; border:0;
-  padding:0.625em 1em; border-radius:0.75em; font-weight:700; cursor:pointer;
-  box-shadow:0 0.5em 1.25em rgba(15,101,255,.14);
-  display: inline-flex; align-items: center; gap: 0.625em;
-}
-.report-date {
-  color:#2b4a77; font-weight:600; font-size:0.8125em;
-  position:relative; top:1.25em;
-}
-
-/* ===== Profile button ===== */
-.profile-btn { all: unset; cursor: pointer; display: inline-block; }
-.profile-btn:focus { outline: none; }
-
-
-.wrapper {
+    /* ---------- Footer (من صفحة 2) ---------- */
+    .site-footer{background:#F6F6F6;color:#0b1b2b;font-family:'Montserrat',sans-serif;margin-top:6em}
+    .footer-grid{max-width:75em;margin:0 auto;padding:2.5em 1.25em;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:2em;align-items:start}
+    .footer-logo{height:5.5em;width:auto;display:block;margin-left:-3em}
+    .brand-tag{margin-top:.75em;color:#4c5d7a;font-size:.95em}
+    .footer-title{margin:0 0 1em 0;font-size:1.05em;font-weight:700;letter-spacing:.02em;color:#0B83FE;text-transform:uppercase}
+    .social-list{list-style:none;padding:0;margin:0;display:flex;gap:.75em;align-items:center}
+    .social-list li a{display:inline-flex;align-items:center;justify-content:center;border-radius:0;background:none;box-shadow:none;transition:transform .2s ease, opacity .2s ease}
+    .social-list li a:hover{transform:translateY(-.2em);box-shadow:0 .6em 1.4em rgba(0,0,0,.08)}
+    .social-list img{width:1.2em;height:1.2em}
+    .social-handle{display:block;margin-top:.6em;color:#0B83FE;font-size:.95em}
+    .contact-list{list-style:none;padding:0;margin:.25em 0 0 0;display:grid;gap:.6em}
+    .contact-link{display:flex;align-items:center;gap:.6em;text-decoration:none;color:#0B83FE;padding:.5em .6em;border-radius:.6em;transition:background .2s ease, transform .2s ease}
+    .contact-link:hover{background:rgba(255,255,255,.7);transform:translateX(.2em)}
+    .contact-link img{width:1.15em;height:1.15em}
+    .footer-bar{border-top:.06em solid rgba(11,45,92,.12);text-align:center;padding:.9em 1em 1.2em}
+    .legal{margin:.2em 0;color:#4c5d7a;font-size:.9em}
+    .legal a{color:#27466e;text-decoration:none}
+    .legal a:hover{text-decoration:underline}
+    .legal .dot{margin:0 .5em;color:rgba(11,45,92,.6)}
+    .copy{margin:.2em 0 0;color:#0B83FE;font-size:.85em}
+    
+  
+    
+    
+    
+   
+    
+ 
+.PName {
   position: relative;
-  width: 100%;
-  min-height: 100vh; 
-  height: auto;
-  overflow: visible;
+  top: 85px;         /* تنزليه لتحت - غيري الرقم لين يناسبك */
+  left: 40px;        /* تحريكه يسار أو يمين */
 }
 
-main.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-img.topimg {
-  position: absolute;
-  top: -4.9%;
-  left: 48%;
-  transform: translateX(-50%);
-  height: auto;
-  width: auto;
-  max-width: 90%;
-  z-index: 10;
-  pointer-events: none;
-}
-
-img.logo {
-  position: absolute;
-  top: 3.8%;
-  left: 14%;
-  width: clamp(100px, 12vw, 180px);
-  height: auto;
-  z-index: 20;
-  pointer-events: none;
-}
-
-.auth-nav {
-  position: absolute;
-  top: 6%;
-  right: 16.2%;
-  display: flex;
-  align-items: center;
-  gap: 1.6em;
-  z-index: 30;
-}
-
-/* روابط القائمة */
-.nav-link {
-  color: #0876FA;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 1em;
-  transition: all 0.3s ease;
-  position: relative;
-}
-.nav-link::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #0876FA, #78C1F5);
-  transition: width 0.3s ease;
-  border-radius: 2px;
-}
-.nav-link:hover::after { width: 100%; }
-.nav-link:hover { transform: translateY(-2px); color: #055ac0; }
-
-
-.profile-btn { all: unset; cursor: pointer; display: inline-block; }
-
-/* زر تسجيل الخروج */
-.btn-logout {
-  background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-  color: white;
-  padding: 0.5em 0.975em;
-  border-radius: 0.75em;
-  font-weight: 600;
-  border: none;
-  box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14);
-  cursor: pointer;
-  font-size: 0.875em;
-}
-
-.site-footer {
-  background: #F6F6F6;
-  color: #0b1b2b;
-  font-family: 'Montserrat', sans-serif;
-  margin-top: 6em; /* مسافة مريحة من المحتوى */
-  z-index: 10em;
-}
-
-.footer-grid {
-  max-width: 75em;
-  margin: 0 auto;
-  padding: 2.5em 1.25em; /* داخلي موحّد */
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
-  gap: 2em; /* مسافات بين الأعمدة */
-  align-items: start;
-}
-
-/* Brand */
-.footer-logo {
-  height: 5.5em;
-  width: auto;
-  display: block;
-  margin-left: -3em;
-}
-.brand-tag {
-  margin-top: 0.75em;
-  color: #4c5d7a;
-  font-size: 0.95em;
-}
-
-/* Headings */
-.footer-title {
-  margin: 0 0 1em 0;
-  font-size: 1.05em;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: #0B83FE;
-  text-transform: uppercase;
-}
-
-/* Social */
-.social-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 0.75em;
-  align-items: center;
-}
-.social-list li a {
-  display: inline-flex;
-  width: auto;   
-  height: auto;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0;
-  background: none; /* لا خلفية */
-  box-shadow: none; /* لا ظل */
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-.social-list li a:hover {
-  transform: translateY(-0.2em);
-  box-shadow: 0 0.6em 1.4em rgba(0, 0, 0, 0.08);
-}
-.social-list img {
-  width: 1.2em;
-  height: 1.2em;
-}
-.social-handle {
-  display: block;
-  margin-top: 0.6em;
-  color: #0B83FE;
-  font-size: 0.95em;
-}
-
-/* Contact */
-.contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0.25em 0 0 0;
-  display: grid;
-  gap: 0.6em;
-}
-.contact-link {
-  display: flex;
-  align-items: center;
-  gap: 0.6em;
-  text-decoration: none;
-  color: #0B83FE;
-  padding: 0.5em 0.6em;
-  border-radius: 0.6em;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-.contact-link:hover {
-  background: rgba(255, 255, 255, 0.7);
-  transform: translateX(0.2em);
-}
-.contact-link img {
-  width: 1.15em;
-  height: 1.15em;
-}
-
-/* Bottom bar */
-.footer-bar {
-  border-top: 0.06em solid rgba(11, 45, 92, 0.12);
-  text-align: center;
-  padding: 0.9em 1em 1.2em;
-}
-.legal {
-  margin: 0.2em 0;
-  color: #4c5d7a;
-  font-size: 0.9em;
-}
-.legal a {
-  color: #27466e;
-  text-decoration: none;
-}
-.legal a:hover {
-  text-decoration: underline;
-}
-.legal .dot {
-  margin: 0 0.5em;
-  color: rgba(11, 45, 92, 0.6);
-}
-.copy {
-  margin: 0.2em 0 0;
-  color: #0B83FE;
-  font-size: 0.85em;
-}
-.avatar-icon{
-  width:30px; height:30px; display:block;
-}  
-
-    </style>
+  </style>
 </head>
 
 <body>
 
-
-<!-- MAIN -->
 <main class="main">
+  <!-- ===== Header بدل الـSidebar ===== -->
+ <div class="header-wrapper">
+    <img class="topimg" src="Images/Group 8.png" alt="img">
+    <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
-<div class="wrapper">
+    <nav class="auth-nav">
+        <a class="nav-link" href="#patients">Patients</a>
+        <a class="nav-link" href="history.html">history</a>
+        <a class="nav-link" href="dashboard.html">Dashboard</a>
 
+        <button class="profile-btn">
+            <img class="avatar-icon" src="images/profile.png" alt="Profile" />
+        </button>
 
-  <img class="topimg" src="images/Group 8.png" alt="img">
-  <img class="logo" src="images/Logo.png" alt="Tanafs Logo">
-
-  <nav class="auth-nav" aria-label="User navigation">
-    
-    <a class="nav-link" href="#patients">Patients</a>
-    <a class="nav-link" href="history.html">history</a>
-    <a class="nav-link" href="dashboard.html">Dashboard</a>
-       <button class="profile-btn" aria-haspopup="true" aria-expanded="false">
-  <div class="profile">
-    <img class="avatar-icon" src="images/profile.png" alt="Profile" />
-  </div>
-</button>
-    <button class="btn-logout">Logout</button>
-  </nav>
+        <button class="btn-logout">Logout</button>
+    </nav>
+</div>
 
 
-    <!-- Page Title -->
-    <section style="display:flex;align-items:flex-end;gap:12px;justify-content:space-between;padding:70px 30px;">
-        <div class="PName">
-            <h2 style="color: #1f46b6"></h2>
-        </div>
-        <div style="border-radius:12px; text-align: right;">
-        </div>
-    </section>
+  <!-- Page Title: قللنا الـpadding علشان الهيدر -->
+  <section style="display:flex;align-items:flex-end;gap:12px;justify-content:space-between;padding:70px 30px;">
+    <div class="PName"><h2 style="color:#1f46b6"></h2></div>
+    <div style="border-radius:12px;text-align:right;"></div>
+  </section>
 
-    <!-- ===== Patient Detail Section (from your sketch) ===== -->
-    <section class="panel" aria-label="Patient detail">
-
-
-        <div class="panel-body">
-    <div class="table-scroll">
+  <!-- ===== Patient Detail Section ===== -->
+  <section class="panel" aria-label="Patient detail">
+    <div class="panel-body">
+      <div class="table-scroll">
         <table class="analysis-table">
-            <thead>
-            <tr>
-                <th style="width:180px">Waveform status</th>
-                <th style="width:140px">Severity level</th>
-                <th style="width:500px;  text-align:center;">Explanation</th>
-                <th style="width:500px;  text-align:center;">Solution</th>
-                <th style="width:140px">Date</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
+          <thead>
+          <tr>
+            <th style="width:180px">Waveform status</th>
+            <th style="width:150px">Severity level</th>
+            <th style="width:500px;text-align:center;">Explanation</th>
+            <th style="width:500px;text-align:center;">Solution</th>
+            <th style="width:140px">Date</th>
+            <th style="width:120px">Time</th>
+          </tr>
+          </thead>
+          <tbody></tbody>
         </table>
+      </div>
     </div>
-</div>
+  </section>
 
-    </section>
-
-
-
-    <!-- ===== Comments Card (from your sketch) ===== -->
- <section class="panel comment-card" aria-label="Comments">
+  <!-- ===== Comments ===== -->
+  <section class="panel comment-card" aria-label="Comments">
     <div class="title">Comments</div>
-
-    <!--1-->
-
-<div class="comment-block">
-
-     <div class="comment-basic-info">
-  <span> <b></b></span>
-  <span class="comment-date"></span>
-</div>
-
-        <div class="comment-content">
-
-        </div>
+    <div class="comment-block">
+      <div class="comment-basic-info">
+        <span><b></b></span>
+        <span class="comment-date"></span>
+      </div>
+      <div class="comment-content"></div>
     </div>
-
-
-    <!-- add comment-->
     <textarea class="comment-input" placeholder="Write your comment here"></textarea>
-    <button class="btn-add">
-        <span class="material-symbols-outlined">add_comment</span> Add comment
-    </button>
-</section>
+    <button class="btn-add"><span class="material-symbols-outlined">add_comment</span> Add comment</button>
+  </section>
 
-
-<!-- ===== Reports Section ===== -->
-<section class="panel reports-panel" aria-label="Reports">
-<div class="report-top">
-  <div class="title">Report</div>
-  <div class="report-date">10/10/2025</div>
-</div>
+  <!-- ===== Report ===== -->
+  <section class="panel reports-panel" aria-label="Reports">
+    <div class="report-top">
+      <div class="title">Report</div>
+      <div class="report-date">10/10/2025</div>
+    </div>
     <div class="report-item">
       <div class="left">
         <span class="material-symbols-outlined">description</span>
         <div>Last Report</div>
         <span class="pd">PDF</span>
       </div>
-      <button class="btn-open">
-        <span class="material-symbols-outlined">open_in_new</span> Open
-      </button>
+      <button class="btn-open"><span class="material-symbols-outlined">open_in_new</span> Open</button>
     </div>
-  <button class="btn-generate">
-    <span class="material-symbols-outlined">summarize</span> Generate report
-  </button>
-</section>
-
-
-
+    <button class="btn-generate"><span class="material-symbols-outlined">summarize</span> Generate report</button>
+  </section>
 </main>
 
-
-
-<footer  id="contact" class="site-footer">
+<!-- ===== Footer (نفس صفحة 2) ===== -->
+<footer id="contact" class="site-footer">
   <div class="footer-grid">
-
     <div class="footer-col brand">
-      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo" />
+      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo"/>
       <p class="brand-tag">Breathe well, live well</p>
     </div>
-
-    <!-- Social -->
     <nav class="footer-col social" aria-label="Social media">
       <h3 class="footer-title">Social Media</h3>
       <ul class="social-list">
-        <li>
-          <a href="#" aria-label="Twitter">
-            <img src="images/twitter.png" alt="Twitter" />
-          </a>
-        </li>
-        <li>
-          <a href="#" aria-label="Instagram">
-            <img src="images/instagram.png" alt="Instagram" />
-          </a>
-        </li>
+        <li><a href="#" aria-label="Twitter"><img src="images/twitter.png" alt="Twitter"/></a></li>
+        <li><a href="#" aria-label="Instagram"><img src="images/instagram.png" alt="Instagram"/></a></li>
       </ul>
       <span class="social-handle">@official_Tanafs</span>
     </nav>
-
-    <!-- Contact -->
     <div class="footer-col contact">
       <h3 class="footer-title">Contact Us</h3>
       <ul class="contact-list">
-        <li>
-          <a href="#" class="contact-link">
-            <img src="images/whatsapp.png" alt="WhatsApp" />
-            <span>+123 165 788</span>
-          </a>
-        </li>
-        <li>
-          <a href="mailto:Appointly@gmail.com" class="contact-link">
-            <img src="images/email.png" alt="Email" />
-            <span>Tanafs@gmail.com</span>
-          </a>
-        </li>
+        <li><a href="#" class="contact-link"><img src="images/whatsapp.png" alt="WhatsApp"/><span>+123 165 788</span></a></li>
+        <li><a href="mailto:Tanafs@gmail.com" class="contact-link"><img src="images/email.png" alt="Email"/><span>Tanafs@gmail.com</span></a></li>
       </ul>
     </div>
-
   </div>
-
   <div class="footer-bar">
     <p class="legal">
       <a href="#">Terms &amp; Conditions</a>
@@ -532,235 +251,157 @@ img.logo {
   </div>
 </footer>
 
-
+<!-- ====== نفس سكربتاتك بالضبط (بدون تغيير) ====== -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const pid =5001; // غيّريها لاحقاً حسب رقم المريض اللي تبين تعرضينه
-
- fetch(`PHPpatient.php?pid=${pid}&mode=patient`)
-    .then(response => response.json())
-    .then(data => {
-      const nameElement = document.querySelector(".PName h2");
-      if (nameElement && data.name) {
-        nameElement.textContent = data.name;
-      } else {
-        nameElement.textContent = "Unknown Patient";
-      }
-    })
+  const pid = 5001;
+  fetch(`PHPpatient.php?pid=${pid}&mode=patient`)
+    .then(r=>r.json())
+    .then(data=>{
+      const nameElement=document.querySelector(".PName h2");
+      nameElement.textContent = (nameElement && data.name) ? data.name : "Unknown Patient";
+    });
 });
 </script>
 
 <script>
+function fmtDateTime(mysqlTs, locale='en-GB'){
+  if(!mysqlTs) return '-';
+  const iso=String(mysqlTs).replace(' ','T');
+  const d=new Date(iso); if(isNaN(d)) return mysqlTs;
+  return new Intl.DateTimeFormat(locale,{
+    year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',
+    hour12:false,timeZone:'Asia/Riyadh'
+  }).format(d);
+}
+function fmtDate(mysqlTs, locale='en-GB'){
+  if(!mysqlTs) return '-';
+  const iso=String(mysqlTs).replace(' ','T');
+  const d=new Date(iso); if(isNaN(d)) return mysqlTs;
+  return new Intl.DateTimeFormat(locale,{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Riyadh'}).format(d);
+}
+function fmtTime(mysqlTs, locale='en-GB'){
+  if(!mysqlTs) return '-';
+  const iso=String(mysqlTs).replace(' ','T');
+  const d=new Date(iso); if(isNaN(d)) return mysqlTs;
+  return new Intl.DateTimeFormat(locale,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Riyadh'}).format(d);
+}
+</script>
+
+<script>
 document.addEventListener("DOMContentLoaded", () => {
-  const pid =5001;
-  const tbody = document.querySelector(".analysis-table tbody");
-
-  // Linking the anomaly with the explanation and solution.
-  const anomalyInfo = {
-    "Double Trigger": {
-      explanation: "Overlapping breaths due to short inspiratory time.",
-      solution: "Increase inspiratory time or adjust trigger sensitivity."
-    },
-    "Auto Trigger": {
-      explanation: "Breaths triggered without effort (leak/high sensitivity).",
-      solution: "Fix leaks and reduce trigger sensitivity."
-    },
-    "Flow Asynchrony": {
-      explanation: "Mismatch between patient demand and ventilator flow.",
-      solution: "Increase flow or adjust pressure support."
-    },
-    "Normal": {
-      explanation: "Waveform within normal pattern.",
-      solution: "Continue monitoring."
-    },
-    "None": {
-      explanation: "Waveform within normal pattern.",
-      solution: "Continue monitoring."
-    }
-    
+  const pid=5001;
+  const tbody=document.querySelector(".analysis-table tbody");
+  const anomalyInfo={
+    "Double Trigger":{explanation:"Overlapping breaths due to short inspiratory time.",solution:"Increase inspiratory time or adjust trigger sensitivity."},
+    "Auto Trigger":{explanation:"Breaths triggered without effort (leak/high sensitivity).",solution:"Fix leaks and reduce trigger sensitivity."},
+    "Flow Asynchrony":{explanation:"Mismatch between patient demand and ventilator flow.",solution:"Increase flow or adjust pressure support."},
+    "Normal":{explanation:"Waveform within normal pattern.",solution:"Continue monitoring."},
+    "None":{explanation:"Waveform within normal pattern.",solution:"Continue monitoring."}
   };
+  const getSeverityClass=(level)=>{ if(!level) return ""; const s=level.toLowerCase(); if(s.includes("high")||s.includes("critical"))return"critical"; if(s.includes("moderate"))return"moderate"; return"normal"; };
 
-  function getSeverityClass(level) {
-    if (!level) return ""; // if level null or undefine
-    const SL = level.toLowerCase();
-    if (SL.includes("high") || SL.includes("critical")) return "critical";
-    if (SL.includes("moderate")) return "moderate";
-    return "normal";
-  }
-
-fetch(`PHPpatient.php?pid=${pid}&mode=analysis`)
-    .then(res => res.json())
-    .then(data => {
-      tbody.innerHTML = "";
-      if (!Array.isArray(data) || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No records found</td></tr>`;
-        return;
-      }
-
-      data.forEach(row => {
-        let type = row.anomaly_type;
-if (!type || type.toLowerCase() === "none") type = "Normal";
-        const severity = row.severity_level || "-";
-        const date = row.timestamp ? new Date(row.timestamp).toLocaleDateString() : "-";
-        const info = anomalyInfo[type] || { explanation: "-", solution: "-" };
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
+  fetch(`PHPpatient.php?pid=${pid}&mode=analysis`)
+    .then(res=>res.json())
+    .then(data=>{
+      tbody.innerHTML="";
+      if(!Array.isArray(data)||data.length===0){ tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;">No records found</td></tr>`; return; }
+      data.forEach(row=>{
+        let type=row.anomaly_type; if(!type||type.toLowerCase()==="none") type="Normal";
+        const severity=row.severity_level||"-";
+        const info=anomalyInfo[type]||{explanation:"-",solution:"-"};
+        const tr=document.createElement("tr");
+        tr.innerHTML=`
           <td>${type}</td>
           <td><span class="status ${getSeverityClass(severity)}">${severity}</span></td>
           <td>${info.explanation}</td>
           <td>${info.solution}</td>
-          <td>${date}</td>
+          <td><time datetime="${row.timestamp}" title="${row.timestamp}">${fmtDate(row.timestamp)}</time></td>
+          <td><time datetime="${row.timestamp}" title="${row.timestamp}">${fmtTime(row.timestamp)}</time></td>
         `;
         tbody.appendChild(tr);
       });
     })
-    .catch(err => {
-      console.error(err);
-      tbody.innerHTML = `<tr><td colspan="5" style="color:red;text-align:center;">Error loading data</td></tr>`;
-    });
+    .catch(err=>{ console.error(err); tbody.innerHTML=`<tr><td colspan="6" style="color:red;text-align:center;">Error loading data</td></tr>`; });
 });
 </script>
+
 <script>
-(function () {
-  const pid =5001;
-
-
-  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-
-  function loadComments() {
-    const panel = document.querySelector('.comment-card');
-    if (!panel) return;
-
-    const inputBox = panel.querySelector('.comment-input');
-
-    panel.querySelectorAll('.comment-block').forEach(el => el.remove());//remove from panel each comment block
-
-    
-    fetch(`PHPpatient.php?mode=comments&pid=${encodeURIComponent(pid)}&_=${Date.now()}`, { cache: 'no-store' })
-
-      .then(res => res.json())
-      .then(list => {
-        (list || []).forEach(comment => {// list or If list is empty or undefined, use an empty array []
-          const block = document.createElement('div');
-          block.className = 'comment-block';
-         const d = comment.date ? new Date(comment.date).toLocaleDateString() : '-';
-
-          block.innerHTML = `
+(function(){
+  const pid=5001;
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  function loadComments(){
+    const panel=document.querySelector('.comment-card'); if(!panel) return;
+    const inputBox=panel.querySelector('.comment-input');
+    panel.querySelectorAll('.comment-block').forEach(el=>el.remove());
+    fetch(`PHPpatient.php?mode=comments&pid=${encodeURIComponent(pid)}&_=${Date.now()}`,{cache:'no-store'})
+      .then(res=>res.json())
+      .then(list=>{
+        (list||[]).forEach(comment=>{
+          const block=document.createElement('div'); block.className='comment-block';
+          const d=fmtDateTime(comment.date);
+          block.innerHTML=`
             <div class="comment-basic-info">
-              <span>Created by <b>${esc(comment.by || 'Unknown')}</b></span>
-              <span class="comment-date">${esc(d)}</span>
+              <span>Created by <b>${esc(comment.by||'Unknown')}</b></span>
+              <span class="comment-date" title="${esc(comment.date)}">${esc(d)}</span>
             </div>
-            <div class="comment-content">${esc(comment.text || '')}</div>
+            <div class="comment-content">${esc(comment.text||'')}</div>
           `;
-          panel.insertBefore(block, inputBox);
+          panel.insertBefore(block,inputBox);
         });
       })
-      .catch(err => {
-        console.error('loadComments error:', err);
-        const note = document.createElement('div');
-        note.style.cssText = 'color:#d32f2f;margin:.5em 0;font-size:.9em;';
-        note.textContent = 'Error loading comments';
-        panel.insertBefore(note, inputBox);
+      .catch(err=>{
+        console.error('loadComments error:',err);
+        const note=document.createElement('div');
+        note.style.cssText='color:#d32f2f;margin:.5em 0;font-size:.9em;';
+        note.textContent='Error loading comments';
+        panel.insertBefore(note,inputBox);
       });
   }
-
-  // add comment button 
-  const addBtn = document.querySelector('.btn-add');
-  if (addBtn) {
-    addBtn.addEventListener('click', () => {
-      const ta = document.querySelector('.comment-input');
-     
-
-      const txt = ta.value.trim();
-      if (!txt) { alert('Please write your comment first.'); return; }
-
-    
-
-      const fd = new FormData();
-      fd.append('content', txt);
-      fd.append('userID', 101);
-
-      addBtn.disabled = true;
-
-      fetch(`PHPpatient.php?mode=add_comment&pid=${encodeURIComponent(pid)}`, {
-        method: 'POST',
-        body: fd
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          ta.value = '';
-          loadComments(); 
-        } else {
-          alert(data.message || 'Error adding comment.');
-        }
-      })
-      .catch(err => {
-        console.error('add_comment error:', err);
-        alert('Error adding comment. Please try again.');
-      })
-      .finally(() => {
-        addBtn.disabled = false;
-      });
+  const addBtn=document.querySelector('.btn-add');
+  if(addBtn){
+    addBtn.addEventListener('click',()=>{
+      const ta=document.querySelector('.comment-input');
+      const txt=ta.value.trim(); if(!txt){ alert('Please write your comment first.'); return; }
+      const fd=new FormData(); fd.append('content',txt); fd.append('userID',101);
+      addBtn.disabled=true;
+      fetch(`PHPpatient.php?mode=add_comment&pid=${encodeURIComponent(pid)}`,{method:'POST',body:fd})
+        .then(res=>res.json())
+        .then(data=>{ if(data.status==='success'){ ta.value=''; loadComments(); } else { alert(data.message||'Error adding comment.'); } })
+        .catch(()=>alert('Error adding comment. Please try again.'))
+        .finally(()=>{ addBtn.disabled=false; });
     });
   }
-
-
   loadComments();
 })();
 </script>
 
-
-
-
-
 <script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const pid = 5001; 
-  const panel    = document.querySelector('.reports-panel');
-  const item     = panel.querySelector('.report-item');
-  const left     = item.querySelector('.left');
-  const btnOpen  = item.querySelector('.btn-open');
-  const dateBox  = panel.querySelector('.report-date');
-
-  try {
-    const res  = await fetch(`PHPpatient.php?mode=report&pid=${encodeURIComponent(pid)}&_=${Date.now()}`, { cache: 'no-store' });
-    const data = await res.json();
-
-    if (data.status === 'success' && data.filePath) {
-     
-      const rel = String(data.filePath).replace(/^\/+/, '');
-      const url = `/Tanafas/reports/${encodeURI(rel)}`;
-
-      btnOpen.disabled = false;
-      btnOpen.title = 'Open last report';
-      btnOpen.onclick = () => window.open(url, '_blank');
-
-      
-      if (data.timestamp) dateBox.textContent = new Date(data.timestamp).toLocaleDateString();
-    } else {
-      
-      left.innerHTML = `
-        
-        <div>There is no report related to this patient</div>
-      `;
-      btnOpen.style.display = 'none';
-      dateBox.textContent = '—';
+document.addEventListener("DOMContentLoaded", async ()=>{
+  const pid=5001;
+  const panel=document.querySelector('.reports-panel');
+  const item=panel.querySelector('.report-item');
+  const left=item.querySelector('.left');
+  const btnOpen=item.querySelector('.btn-open');
+  const dateBox=panel.querySelector('.report-date');
+  try{
+    const res=await fetch(`PHPpatient.php?mode=report&pid=${encodeURIComponent(pid)}&_=${Date.now()}`,{cache:'no-store'});
+    const data=await res.json();
+    if(data.status==='success'&&data.filePath){
+      const rel=String(data.filePath).replace(/^\/+/,''); const url=`/Tanafas/reports/${encodeURI(rel)}`;
+      btnOpen.disabled=false; btnOpen.title='Open last report'; btnOpen.onclick=()=>window.open(url,'_blank');
+      if(data.timestamp){ const txt=fmtDateTime(data.timestamp); dateBox.textContent=txt; dateBox.title=data.timestamp; }
+    }else{
+      left.innerHTML=`<div>There is no report related to this patient</div>`;
+      btnOpen.style.display='none'; dateBox.textContent='—';
     }
-  } catch (e) {
+  }catch(e){
     console.error(e);
-    left.innerHTML = `
-      <span class="material-symbols-outlined">error</span>
-      <div style="color:#d32f2f">Error loading report</div>
-    `;
-    btnOpen.style.display = 'none';
-    dateBox.textContent = '—';
+    left.innerHTML=`<span class="material-symbols-outlined">error</span><div style="color:#d32f2f">Error loading report</div>`;
+    btnOpen.style.display='none'; dateBox.textContent='—';
   }
 });
 </script>
-
-
 
 </body>
 </html>
