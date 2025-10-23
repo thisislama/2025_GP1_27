@@ -142,7 +142,7 @@
     .nav-link:hover::after { width: 100%; }
     .nav-link:hover { transform: translateY(-2px); color: #055ac0; }
 
-    .profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff); padding: 0.375em 0.625em;  }
+    .profile { display: flex; gap: 0.625em; align-items: center; padding: 0.375em 0.625em;  }
 .avatar-icon{
   width:30px; height:30px; display:block;
 }    .profile-btn { all: unset; cursor: pointer; display: inline-block; }
@@ -286,12 +286,11 @@ body{
   </div>
    <a class="nav-link" href="patients.php">Patients</a>
     <a class="nav-link" href="history2.php">history</a>
-   <button class="profile-btn" aria-haspopup="true" aria-expanded="false">
+  <a href="profile.php" class="profile-btn">
   <div class="profile">
-    <img class="avatar-icon" src="images/profile.png" alt="Profile" />
+    <img class="avatar-icon" src="images/profile.png" alt="Profile">
   </div>
-
-</button>
+</a>
 
     <button class="btn-logout">Logout</button>
   </nav>
