@@ -21,7 +21,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
           </script>";
     exit();
 }*/
-Simulated login
+//Simulated login
 $_SESSION['userID'] = 1;
 $userID = $_SESSION['userID'];
 
