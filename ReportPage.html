@@ -446,14 +446,14 @@ img.logo {
     <a class="nav-link" href="history.html">history</a>
     <a class="nav-link" href="dashboard.html">Dashboard</a>
         <button class="profile-btn" aria-haspopup="true" aria-expanded="false">
-  <div class="profile">
+   <button class="profile-btn" onclick="window.location.href='profile.php'">
     <img class="avatar-icon" src="images/profile.png" alt="Profile" />
-  </div>
 </button>
 
-    <button class="btn-logout">Logout</button>
-  </nav>
 
+      <button class="btn-logout" onclick="window.location.href='logout.php'">Logout</button>
+
+  </nav>
 
 <!-- MAIN -->
 <main class="main">
@@ -566,12 +566,20 @@ function fmtDateTime(mysqlTs, locale='en-GB'){
 </script>
 
 <script>
+function getPidFromURL(){
+  const pidStr = new URLSearchParams(location.search).get('pid');
+  const n = parseInt(pidStr, 10);
+  return Number.isFinite(n) ? n : 0;
+}
+</script>
+
+<script>
 document.addEventListener("DOMContentLoaded", async () => {
-  const pid = 5001;
+  const pid = getPidFromURL();
+  if (!pid) { alert("Invalid patient id"); return; }
 
   const wavesList   = document.getElementById("waves-list");
   const commentsUl  = document.getElementById("comments-list");
-
   const getSeverityClass = (level = "") => {
     const s = String(level).trim().toLowerCase();
     if (s.includes("high") || s.includes("critical")) return "critical";
@@ -589,9 +597,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("r-created-by").textContent = data.createdBy ?? "System";
     document.getElementById("r-date").textContent       = fmtDateTime(data.date);
 
-    
-
-    // waves (مع التاريخ والوقت يمين)
+    // waves
     if (wavesList) {
       wavesList.innerHTML = "";
       (data.waves || []).forEach(w => {
@@ -611,7 +617,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
 
-    // comments (كل التعليقات بصندوق + اسم + تاريخ/وقت)
+    // comments
     if (commentsUl) {
       commentsUl.innerHTML = "";
       (data.comments || []).forEach(c => {

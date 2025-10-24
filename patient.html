@@ -146,15 +146,19 @@
     <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
     <nav class="auth-nav">
-        <a class="nav-link" href="#patients">Patients</a>
+        <a class="nav-link" href="patients.php">Patients</a>
         <a class="nav-link" href="history.html">history</a>
         <a class="nav-link" href="dashboard.html">Dashboard</a>
 
-        <button class="profile-btn">
-            <img class="avatar-icon" src="images/profile.png" alt="Profile" />
-        </button>
+        <button class="profile-btn" onclick="window.location.href='profile.php'">
+    <img class="avatar-icon" src="images/profile.png" alt="Profile" />
+</button>
 
-        <button class="btn-logout">Logout</button>
+
+       <button class="btn-logout" onclick="window.location.href='logout.php'">Logout</button>
+
+     
+
     </nav>
 </div>
 
@@ -251,10 +255,19 @@
   </div>
 </footer>
 
+<script>
+// Helper: احضري pid من الاستعلام ?pid=...
+function getPidFromURL() {
+  const pidStr = new URLSearchParams(location.search).get('pid');
+  const pidNum = parseInt(pidStr, 10);
+  return Number.isFinite(pidNum) ? pidNum : 0;
+}
+</script>
+
 <!-- ====== نفس سكربتاتك بالضبط (بدون تغيير) ====== -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const pid = 5001;
+  const pid = getPidFromURL();
   fetch(`PHPpatient.php?pid=${pid}&mode=patient`)
     .then(r=>r.json())
     .then(data=>{
@@ -262,6 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameElement.textContent = (nameElement && data.name) ? data.name : "Unknown Patient";
     });
 });
+
 </script>
 
 <script>
@@ -290,7 +304,7 @@ function fmtTime(mysqlTs, locale='en-GB'){
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const pid=5001;
+  const pid = getPidFromURL();
   const tbody=document.querySelector(".analysis-table tbody");
   const anomalyInfo={
     "Double Trigger":{explanation:"Overlapping breaths due to short inspiratory time.",solution:"Increase inspiratory time or adjust trigger sensitivity."},
@@ -328,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 (function(){
-  const pid=5001;
+  const pid = getPidFromURL();;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
   function loadComments(){
     const panel=document.querySelector('.comment-card'); if(!panel) return;
@@ -363,7 +377,10 @@ document.addEventListener("DOMContentLoaded", () => {
     addBtn.addEventListener('click',()=>{
       const ta=document.querySelector('.comment-input');
       const txt=ta.value.trim(); if(!txt){ alert('Please write your comment first.'); return; }
-      const fd=new FormData(); fd.append('content',txt); fd.append('userID',101);
+     const fd = new FormData();
+fd.append('content', txt);
+// لا نرسل userID نهائيًا – السيرفر يعتمد على السيشن
+
       addBtn.disabled=true;
       fetch(`PHPpatient.php?mode=add_comment&pid=${encodeURIComponent(pid)}`,{method:'POST',body:fd})
         .then(res=>res.json())
@@ -378,7 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 document.addEventListener("DOMContentLoaded", async ()=>{
-  const pid=5001;
+  const pid = getPidFromURL();
   const panel=document.querySelector('.reports-panel');
   const item=panel.querySelector('.report-item');
   const left=item.querySelector('.left');
@@ -400,6 +417,13 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     left.innerHTML=`<span class="material-symbols-outlined">error</span><div style="color:#d32f2f">Error loading report</div>`;
     btnOpen.style.display='none'; dateBox.textContent='—';
   }
+});
+</script>
+
+<script>
+document.querySelector('.btn-generate')?.addEventListener('click', () => {
+  const pid = getPidFromURL();              
+  pid ? location.href = `ReportPage.html?pid=${pid}` : alert('Invalid patient id');
 });
 </script>
 

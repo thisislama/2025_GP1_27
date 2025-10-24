@@ -748,6 +748,33 @@ document.getElementById('search').addEventListener('keyup',function(){
   });
 });
 </script>
+
+<script>
+// === Row click → go to patient.html?pid=... ===
+const tbody = document.querySelector('#patientsTable tbody');
+if (tbody) {
+  tbody.addEventListener('click', (e) => {
+    // لو الضغط كان على أيقونات الإجراءات لا نذهب
+    if (e.target.closest('.action-icons')) return;
+
+    const tr = e.target.closest('tr');
+    if (!tr) return;
+
+    
+    let pid = '';
+    if (tr.id && tr.id.startsWith('row-')) {
+      pid = tr.id.slice(4);
+    } else {
+      const firstCell = tr.querySelector('td');
+      pid = firstCell ? firstCell.textContent.trim() : '';
+    }
+
+    if (pid) {
+      window.location.href = `patient.html?pid=${encodeURIComponent(pid)}`;
+    }
+  });
+}
+</script>
 </body>
 </html>
 <?php $conn->close(); ?>
