@@ -19,7 +19,7 @@ if (!isset($_SESSION['userID'])) {
 $userID = $_SESSION['userID'];
 
 // Get doctor name
-$docRes = $conn->prepare("SELECT first_name, last_name FROM user WHERE userID=?");
+$docRes = $conn->prepare("SELECT first_name, last_name FROM healthcareprofessional WHERE userID=?");
 $docRes->bind_param("i", $userID);
 $docRes->execute();
 $docData = $docRes->get_result()->fetch_assoc();

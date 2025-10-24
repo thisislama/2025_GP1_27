@@ -62,7 +62,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
     }
 
     try {
-        $check = $conn->prepare('SELECT userID FROM user WHERE email = ? LIMIT 1');
+        $check = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE email = ? LIMIT 1');
         $check->bind_param('s', $email);
         $check->execute();
         $check->store_result();
@@ -71,7 +71,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
             redirect_with_error('This email is already registered.');
         }
         $check->close();
-         $checkPhone = $conn->prepare('SELECT userID FROM user WHERE phone = ? LIMIT 1');
+         $checkPhone = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE phone = ? LIMIT 1');
          $checkPhone->bind_param('s', $phone);
          $checkPhone->execute();
         $checkPhone->store_result();
@@ -84,7 +84,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $conn->prepare('
-            INSERT INTO user (first_name, last_name, role, email, phone, password, DOB)
+            INSERT INTO healthcareprofessional (first_name, last_name, role, email, phone, password, DOB)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ');
         $stmt->bind_param('sssssss', $first_name, $last_name, $role, $email, $phone, $hashed_password, $dob);

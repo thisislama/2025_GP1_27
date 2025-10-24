@@ -1,5 +1,11 @@
 <?php
 session_start();
+if (!isset($_SESSION['userID'])) {
+    header("Location: HomePage.html");
+    exit;
+}
+
+session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -17,7 +23,7 @@ $_SESSION['userID'] = 1;
 $userID = $_SESSION['userID'];
 
 // --- Doctor name ---
-$docRes = $conn->prepare("SELECT first_name, last_name FROM user WHERE userID=?");
+$docRes = $conn->prepare("SELECT first_name, last_name FROM healthcareprofessional WHERE userID=?");
 $docRes->bind_param("i", $userID);
 $docRes->execute();
 $docData = $docRes->get_result()->fetch_assoc();
@@ -634,8 +640,9 @@ main h2{
     <img class="avatar-icon" src="images/profile.png" alt="Profile">
   </div>
 </a>
-    <button class="btn-logout">Logout</button>
-  </nav>
+<a href="Logout.php">
+  <button class="btn-logout">Logout</button>
+</a>  </nav>
 
   <!-- Page Content -->
   <main style="margin-top:130px; text-align:center;">
