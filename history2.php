@@ -411,6 +411,25 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
       .contact-link{ justify-content:center; }
       .brand{ display:flex; flex-direction:column; align-items:center; }
     }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+  .auth-nav {
+    top: 2.1%;
+    right: 12%;
+    gap: 1.2em;
+  }
+
+  img.logo {
+    top: 2.1%;
+    left: 11%;
+    width: clamp(5em, 14vw, 10em);
+  }
+
+  img.topimg {
+    top: -2%;
+    max-width: 100%;
+  }}
+
   </style>
 </head>
 <body>

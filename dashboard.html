@@ -265,130 +265,28 @@ body{
 .contact-link{ color:#0B83FE; }
 
 .welcome, .welcome h1, .welcome p{ color:#2b4a77; }
-/* ===== iPad Nav (scoped) ===== */
-:root{
-  --t-bg:#f2f6fb;
-  --t-accent:#0f65ff;
-  --t-accent-2:#5aa6ff;
-  --t-pill: #ffffff;
-  --t-shadow: 0 10px 30px rgba(17,24,39,.08);
-}
-
-.t-ipad-nav, .t-nav-spacer { display: none; }
-
-@media (min-width:768px) and (max-width:1024px){
-  .t-ipad-nav{
-    position: fixed; inset: 0 0 auto 0; top: max(8px, env(safe-area-inset-top));
-    z-index: 1000; display: block;
-    background: var(--t-bg); 
-  }
-  .t-ipad-nav .t-bar{
-    max-width: 1100px; margin: 10px auto 12px;
-    background: var(--t-pill);
-    border-radius: 999px;
-    padding: 10px 16px;
-    display: grid; grid-template-columns: auto 1fr auto;
-    align-items: center; gap: 12px;
-    box-shadow: 0 0 0 1px rgba(15,101,255,.12), var(--t-shadow);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-  }
-  .t-ipad-nav .t-brand img{ height: 38px; width: auto; display: block; }
-
-  .t-ipad-nav .t-links{
-    display: flex; justify-content: center; align-items: center; gap: 18px;
-  }
-  .t-ipad-nav .t-link{
-    color:#0876FA; font-weight:600; text-decoration:none; font-size: 1rem;
-    position: relative; padding: 6px 2px;
-  }
-  .t-ipad-nav .t-link::after{
-    content:""; position:absolute; left:0; bottom:-4px; width:0; height:2px;
-    background: linear-gradient(90deg, var(--t-accent), var(--t-accent-2));
-    border-radius:2px; transition:width .25s ease;
-  }
-  .t-ipad-nav .t-link:hover::after{ width:100%; }
-
-  .t-ipad-nav .t-avatar{ width:30px; height:30px; display:block; border-radius:50%; }
-  .t-ipad-nav .t-logout{
-    background: linear-gradient(90deg,var(--t-accent),var(--t-accent-2));
-    color:#fff; border:0; border-radius:12px; padding:8px 14px;
-    font-weight:600; cursor:pointer;
-    box-shadow: 0 8px 16px rgba(15,101,255,.18);
+   @media (min-width: 768px) and (max-width: 1024px) {
+  .auth-nav {
+    top: -5%;
+    right: 11%;
+    gap: 1.2em;
   }
 
-  .t-ipad-nav .t-burger{
-    display:none; background:transparent; border:0; cursor:pointer; padding:8px; margin-left:auto;
-  }
-  .t-ipad-nav .t-burger span{
-    display:block; width:22px; height:2px; background:#2b4a77; margin:5px 0; border-radius:2px;
-    transition:transform .2s ease, opacity .2s ease;
+  img.logo {
+    top: -5.1%;
+    left: 11%;
+    width: clamp(5em, 14vw, 10em);
   }
 
-  @media (orientation: portrait){
-    .t-ipad-nav .t-bar{ grid-template-columns:auto auto; }
-    .t-ipad-nav .t-burger{ display:inline-block; }
-    .t-ipad-nav .t-links{
-      display:none; grid-column:1 / -1;
-      background: #fff; border-radius:16px; padding:10px;
-      box-shadow: var(--t-shadow);
-    }
-    .t-ipad-nav.is-open .t-links{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; }
-    .t-ipad-nav.is-open .t-burger span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
-    .t-ipad-nav.is-open .t-burger span:nth-child(2){ opacity:0; }
-    .t-ipad-nav.is-open .t-burger span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
-  }
-
-  .t-nav-spacer{ display:block; height:74px; }
-}
-/* iPad فقط: أخفِ الهيدر القديم وأبقِ ناف الآيباد */
-@media (min-width:768px) and (max-width:1024px){
-  /* عناصر الهيدر/اللوغو/الخلفية القديمة */
-  .auth-nav,
-  img.logo,
   img.topimg {
-    display: none !important;
-  }
+    top: -9%;
+    max-width: 100%;
+  }}
 
-  /* في حال عندك شريط ثانوي أو مكرر تحت البحث (لو فيه) */
-  .topbar,
-  .secondary-nav,
-  .header-compact {
-    display: none !important;
-  }
-
-  /* امنع تكرار الفراغ العلوي: خله يجي من t-nav-spacer فقط */
-  main, .main, .container { margin-top: 0 !important; }
-  .t-nav-spacer { height: 74px; } /* نفس ارتفاع الناف الثابتة */
-}
 
     </style>
 </head>
 <body>
-<!-- iPad-only Nav (scoped) -->
-<div class="t-ipad-nav" role="navigation" aria-label="Main">
-  <div class="t-bar">
-    <a class="t-brand" href="dashboard.html" aria-label="Home">
-      <img src="images/logo.png" alt="Tanafs logo">
-    </a>
-
-    <button class="t-burger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-
-    <div class="t-links">
-      <a class="t-link" href="patients.php">Patients</a>
-      <a class="t-link" href="dashboard.html">Dashboard</a>
-      <a class="t-link" href="history2.php">History</a>
-      <a class="t-profile" href="profile.php" aria-label="Profile">
-        <img class="t-avatar" src="images/profile.png" alt="Profile">
-      </a>
-      <button class="t-logout">Logout</button>
-    </div>
-  </div>
-</div>
-<!-- spacer to push content below the fixed bar (iPad only) -->
-<div class="t-nav-spacer"></div>
 
 
 <div class="wrapper">
