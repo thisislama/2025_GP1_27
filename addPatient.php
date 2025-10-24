@@ -113,7 +113,7 @@ img.logo { position: absolute; top: 4.5%; left: 14%; width: clamp(100px, 12vw, 1
 .nav-link { color: #0876FA; font-weight: 600; text-decoration: none; font-size: 1em; transition: all 0.3s ease; position: relative; }
 .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0876FA, #78C1F5); transition: width 0.3s ease; border-radius: 2px; }
 .nav-link:hover::after { width: 100%; }
-.profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff); padding: 0.375em 0.625em; }
+.profile { display: flex; gap: 0.625em; align-items: center;  padding: 0.375em 0.625em; }
 .avatar-icon { width:30px; height:30px; display:block; }
 .btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em; font-weight: 400; border: none; cursor: pointer; font-size: 0.875em; }
 
