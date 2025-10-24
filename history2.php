@@ -420,8 +420,8 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
     <img class="logo" src="images/Logo.png" alt="Tanafs Logo">
 
     <nav class="auth-nav" aria-label="User navigation">
-      <a class="nav-link" href="patients.php">Patients</a>
       <a class="nav-link" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" href="patients.php">Patients</a>
       <a href="profile.php" class="profile-btn">
         <div class="profile">
           <img class="avatar-icon" src="images/profile.png" alt="Profile">
