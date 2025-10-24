@@ -380,7 +380,7 @@ function addPatient(pid){
 <nav class="auth-nav">
   <a class="nav-link" href="patients.php">Patients</a>
   <a class="nav-link" href="dashboard.html">Dashboard</a>
-  <a class="nav-link" href="history.html">History</a>
+  <a class="nav-link" href="history2.php">History</a>
   <div class="profile"><img class="avatar-icon" src="images/profile.png" alt="Profile"></div>
   <button class="btn-logout">Logout</button>
 </nav>
