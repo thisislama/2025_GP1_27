@@ -184,16 +184,16 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tanafs History</title>
 
-    <!-- Google Material Symbols -->
+       <!-- Google Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
+     :root {
             --bg: #f2f6fb;
             --card: #ffffff;
-            --accent: #0f65ff;
+            --accent: #0f65ff; /* primary blue */
             --muted: #9aa6c0;
             --soft-blue: #eef6ff;
             --panel-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
@@ -210,32 +210,57 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
             font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
             background: var(--bg);
             color: #15314b;
+            /* min-height: 100vh;*/
             display: flex;
         }
 
-        .material-symbols-outlined {
+
+
+         .material-symbols-outlined {
             font-variation-settings: 'wght' 500;
-            font-size: 20px;
+            font-size: 20px
         }
 
-        .btn-logout {
-            background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-            color: white;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-weight: 600;
-            border: none;
-            box-shadow: 0 8px 20px rgba(15, 101, 255, 0.14);
-            cursor: pointer;
-            font-size: 14px;
-            height: 40px;
+        .material-symbols-outlined:hover {
+            transform: translateX(4px)
         }
+
+
+
+       
+    .wrapper {
+      position: relative;
+      width: 100%;
+        height: auto;        
+      min-height: 100vh;  
+      overflow: visible;   
+    }
+
+    img.topimg { position: absolute; top: -3%; left: 48%; transform: translateX(-50%); height: auto; width: auto; max-width: 90%; z-index: 10; pointer-events: none; }
+    img.logo { position: absolute; top: 2.2%; left: 14%; width: clamp(100px, 12vw, 180px); height: auto; z-index: 20; pointer-events: none; }
+
+    .auth-nav { position: absolute; top: 3.2%; right: 16.2%; display: flex; align-items: center; gap: 1.6em; z-index: 30; }
+
+    .nav-link { color: #0876FA; font-weight: 600; text-decoration: none; font-size: 1em; transition: all 0.3s ease; position: relative; }
+    .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0876FA, #78C1F5); transition: width 0.3s ease; border-radius: 2px; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { transform: translateY(-2px); color: #055ac0; }
+
+ 
+    .profile { display: flex; gap: 0.625em; align-items: center; padding: 0.375em 0.625em;  }
+.avatar-icon{
+  width:30px; height:30px; display:block;
+}    .profile-btn { all: unset; cursor: pointer; display: inline-block; }
+
+    .btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em; font-weight: 400; border: none; box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14); cursor: pointer; font-size: 0.875em; }
 
         .main {
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            height: 50em;
+              margin-top: clamp(133px, 11vh, 340px); 
+
         }
 
         header.topbar {
@@ -243,92 +268,43 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1px;
+            padding: 1px ;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
             border-bottom: 1px solid rgba(15, 21, 40, 0.54);
         }
 
-        .top-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .search {
-            background: var(--card);
-            padding: 10px 12px;
-            border-radius: 999px;
-            width: 360px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: var(--panel-shadow);
-            border: 1px solid rgba(7, 12, 30, 0.03);
-        }
-
-        .search input {
-            border: 0;
-            outline: 0;
-            font-size: 14px;
-            width: 100%;
-            color: #6b7b8f;
-            background: transparent;
-        }
-
-        .logo-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            color: var(--accent);
-            font-size: 20px;
-            margin-right: 185px;
-        }
-
-        .top-actions {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .icon-round {
-            width: 44px;
-            height: 44px;
-            border-radius: 999px;
-            background: linear-gradient(180deg, #fff, #f3f6ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(15, 21, 40, 0.04);
-            box-shadow: 0 6px 16px rgba(20, 30, 60, 0.03);
-        }
-
-        .profile {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background: linear-gradient(90deg, #f7fbff, #fff);
-            padding: 6px 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(15, 21, 40, 0.03);
-        }
-
-        .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            background: linear-gradient(180deg, #2e9cff, #1a57ff);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-        }
+   
+    /* ===== Footer ===== */
+    .site-footer { background: #F6F6F6; color: #0b1b2b; font-family: 'Montserrat', sans-serif; margin-top: auto; }
+    .footer-grid { max-width: 75em; margin: 0 auto; padding: 2.5em 1.25em; display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 2em; align-items: start; direction:ltr; }
+    .footer-col.brand { text-align: left; }
+    .footer-logo { height: 5.5em; width: auto; display: block; margin-left: -3em; }
+    .brand-tag { margin-top: 0.75em; color: #4c5d7a; font-size: 0.95em; }
+    .footer-title { margin: 0 0 1em 0; font-size: 1.05em; font-weight: 700; letter-spacing: 0.02em; color: #0B83FE; text-transform: uppercase; }
+    .social-list { list-style: none; padding: 0; margin: 0; display: flex; gap: 0.75em; align-items: center; }
+    .social-list li a { display: inline-flex; width: auto; height: auto; align-items: center; justify-content: center; border-radius: 0; background: none; box-shadow: none; transition: transform 0.2s ease, opacity 0.2s ease; }
+    .social-list li a:hover { transform: translateY(-0.2em); box-shadow: 0 0.6em 1.4em rgba(0, 0, 0, 0.08); }
+    .social-list img { width: 1.2em; height: 1.2em; }
+    .social-handle { display: block; margin-top: 0.6em; color: #0B83FE; font-size: 0.95em; }
+    .contact-list { list-style: none; padding: 0; margin: 0.25em 0 0 0; display: grid; gap: 0.6em; }
+    .contact-link { display: flex; align-items: center; gap: 0.6em; text-decoration: none; color: #0B83FE; padding: 0.5em 0.6em; border-radius: 0.6em; transition: background 0.2s ease, transform 0.2s ease; }
+    .contact-link:hover { background: rgba(255, 255, 255, 0.7); transform: translateX(0.2em); }
+    .contact-link img { width: 1.15em; height: 1.15em; }
+    .footer-bar { border-top: 0.06em solid rgba(11, 45, 92, 0.12); text-align: center; padding: 0.9em 1em 1.2em; }
+    .legal { margin: 0.2em 0; color: #4c5d7a; font-size: 0.9em; }
+    .legal a { color: #27466e; text-decoration: none; }
+    .legal a:hover { text-decoration: underline; }
+    .legal .dot { margin: 0 0.5em; color: rgba(11, 45, 92, 0.6); }
+    .copy { margin: 0.2em 0 0; color: #0B83FE; font-size: 0.85em; }
+       @media (max-width: 56.25em) {
+      .footer-grid { grid-template-columns: 1fr; gap: 1.5em; text-align: center; }
+      .social-list { justify-content: center; }
+      .contact-link { justify-content: center; }
+      .brand { display: flex; flex-direction: column; align-items: center; }
+    }
 
         main {
             flex: 1;
-            background-color: #f9faff;
             border-top-left-radius: 30px;
             padding: 36px;
             overflow-y: auto;
@@ -595,48 +571,32 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
                 font-size: 12px;
             }
         }
+        
     </style>
 </head>
 <body>
 
 <!-- MAIN -->
-<main class="main">
-    <header class="topbar" role="banner">
-        <div class="top-left">
-            <form method="post" style="display: inline;">
-                <button type="submit" name="logout" class="btn-logout">
-                    <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">logout</span>
-                </button>
-            </form>
-            <form method="get" class="search" role="search">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"/>
-                    <circle cx="11" cy="11" r="5.2" stroke="#6b7b8f" stroke-width="1.6"/>
-                </svg>
-                <input type="text" name="search" placeholder="Search ..."
-                       value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"
-                       aria-label="Search"/>
-            </form>
-        </div>
+ <div class="wrapper">
+ 
+  <img class="topimg" src="images/Group 8.png" alt="img">
+  <img class="logo" src="images/Logo.png" alt="Tanafs Logo">
 
-        <div class="logo-top" aria-hidden>
-            <div class="logo-lungs"><img src="images/logon2.png" alt="logon" style="width: 280px"></div>
-        </div>
+  <nav class="auth-nav" aria-label="User navigation">
+   
+   <a class="nav-link" href="patients.php">Patients</a>
+    <a class="nav-link" href="dashboard.html">Dashboard</a>
+  <a href="profile.php" class="profile-btn">
+  <div class="profile">
+    <img class="avatar-icon" src="images/profile.png" alt="Profile">
+  </div>
+</a>
 
-        <div class="top-actions">
-            <div class="icon-round" title="Notifications">
-                <span class="material-symbols-outlined" style="font-size:20px">notifications</span>
-            </div>
-
-            <div class="profile" title="<?php echo htmlspecialchars($current_user_name); ?>">
-                <div class="avatar"><?php echo $current_user_initials; ?></div>
-                <div style="font-size:14px;color:#2b4a77"><?php echo htmlspecialchars($current_user_name); ?></div>
-            </div>
-        </div>
-    </header>
+    <button class="btn-logout">Logout</button>
+  </nav>
 
     <!-- Page Title -->
-    <main>
+<main class="main">
         <div class="title">
             <h2>History Analysis</h2>
             <div style="color: #6b7b8f; font-size: 14px;">
@@ -771,10 +731,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
         </div>
     </main>
 
-    <footer>
-        © 2025 TANAFS. All Rights Reserved.
-    </footer>
-</main>
+
 
 <script>
     // JavaScript for table functionality
@@ -826,5 +783,61 @@ if (isset($conn) && $conn) {
     $conn->close();
 }
 ?>
+<footer  id="contact" class="site-footer">
+  <div class="footer-grid">
+
+    <div class="footer-col brand">
+      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo" />
+      <p class="brand-tag">Breathe well, live well</p>
+    </div>
+
+    <!-- Social -->
+    <nav class="footer-col social" aria-label="Social media">
+      <h3 class="footer-title">Social Media</h3>
+      <ul class="social-list">
+        <li>
+          <a href="#" aria-label="Twitter">
+            <img src="images/twitter.png" alt="Twitter" />
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Instagram">
+            <img src="images/instagram.png" alt="Instagram" />
+          </a>
+        </li>
+      </ul>
+      <span class="social-handle">@official_Tanafs</span>
+    </nav>
+
+    <!-- Contact -->
+    <div class="footer-col contact">
+      <h3 class="footer-title">Contact Us</h3>
+      <ul class="contact-list">
+        <li>
+          <a href="#" class="contact-link">
+            <img src="images/whatsapp.png" alt="WhatsApp" />
+            <span>+123 165 788</span>
+          </a>
+        </li>
+        <li>
+          <a href="mailto:Appointly@gmail.com" class="contact-link">
+            <img src="images/email.png" alt="Email" />
+            <span>Tanafs@gmail.com</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bar">
+    <p class="legal">
+      <a href="#">Terms &amp; Conditions</a>
+      <span class="dot">•</span>
+      <a href="#">Privacy Policy</a>
+    </p>
+    <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
+  </div>
+</footer>
 </body>
 </html>
