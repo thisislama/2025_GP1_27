@@ -8,7 +8,8 @@ ini_set('display_errors', '1');
 ini_set('log_errors', '1');
 ini_set('error_log', __DIR__ . '/php_error.log');
 
-// FIX: ثبتي التايم زون (اختياري لكن مفيد لعرض متسق)
+session_start(); 
+
 date_default_timezone_set('Asia/Riyadh');
 
 $connection = mysqli_connect("localhost", "root", "root", "tanafs");
@@ -16,6 +17,8 @@ if (!$connection) {
     echo json_encode(["error" => "Connection failed: " . mysqli_connect_error()]);
     exit;
 }
+
+$sessionUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 
 // قراءة pid و mode
 $pid  = isset($_GET['pid'])  ? (int)$_GET['pid']  : 0;
@@ -99,25 +102,32 @@ elseif ($mode === 'comments') {
 elseif ($mode === 'add_comment') {
 
     $content = isset($_POST['content']) ? trim($_POST['content']) : '';
-    $userID  = isset($_POST['userID']) ? (int)$_POST['userID'] : 1; // مؤقتًا 1
 
-    if ($pid <= 0) { 
-        echo json_encode(["status"=>"error","message"=>"Invalid PID"]); 
-        exit; 
-    }
-    if ($content === '') { 
-        echo json_encode(["status"=>"error","message"=>"Empty comment"]); 
-        exit; 
+    // ✅ اعتمدي على user_id من السيشن فقط
+    if ($sessionUserId <= 0) {
+        echo json_encode(["status" => "error", "message" => "Not logged in"]);
+        exit;
     }
 
-    // FIX (خيار 1 - بسيط ومضمون): خلّي MySQL يعبّي الوقت بنَفسِه
+    if ($pid <= 0) {
+        echo json_encode(["status"=>"error","message"=>"Invalid PID"]);
+        exit;
+    }
+    if ($content === '') {
+        echo json_encode(["status"=>"error","message"=>"Empty comment"]);
+        exit;
+    }
+
+   
+
     $sql  = "INSERT INTO comment (userID, PID, content, `timestamp`) VALUES (?, ?, ?, NOW())";
     $stmt = mysqli_prepare($connection, $sql);
     if (!$stmt) {
         echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($connection)]);
         exit;
     }
-    mysqli_stmt_bind_param($stmt, "iis", $userID, $pid, $content);
+
+    mysqli_stmt_bind_param($stmt, "iis", $sessionUserId, $pid, $content); // ✅ هنا التغيير
     $ok  = mysqli_stmt_execute($stmt);
     $err = mysqli_error($connection);
     mysqli_stmt_close($stmt);

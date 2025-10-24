@@ -2,10 +2,8 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Expires: 0');
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
-header("Expires: 0");
 
+session_start(); // ✅ مهم
 
 date_default_timezone_set('Asia/Riyadh');
 
@@ -13,14 +11,15 @@ $conn = mysqli_connect("localhost","root","root","tanafs");
 if (!$conn) { echo json_encode(["error"=>"DB connection failed"]); exit; }
 
 $pid = isset($_GET['pid']) ? (int)$_GET['pid'] : 0;
-
+$sessionUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 // Patient name
 $pN = mysqli_fetch_assoc(mysqli_query($conn,
   "SELECT CONCAT(first_name,' ',last_name) AS name FROM patient WHERE PID=$pid "));
 
-// Doctor name (مؤقتًا أي مستخدم)
-$u = mysqli_fetch_assoc(mysqli_query($conn,
-  "SELECT CONCAT(first_name,' ',last_name) AS name FROM user LIMIT 1"));
+$u = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT CONCAT(first_name,' ',last_name) AS name FROM `user` WHERE userID = {$sessionUserId} "
+));
 
 // آخر ثلاث تحليلات + التوقيت
 $aRes = mysqli_query($conn,
