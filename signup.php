@@ -69,7 +69,6 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
 
  // valid calendar date + age >= 20
     $dob_date = DateTime::createFromFormat('Y-m-d', $dob);
-    // تأكد أن التاريخ صالح فعلاً (مثل 2024-02-30 غير صالح)
     if (!$dob_date || $dob_date->format('Y-m-d') !== $dob) {
         redirect_with_error('Invalid date of birth.');
     }
