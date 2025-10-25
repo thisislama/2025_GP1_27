@@ -22,12 +22,17 @@ $password = "root";
 $dbname = "tanafs";
 
 
+$current_user_id   = $_SESSION['user_id'];
+$current_user_role = $_SESSION['role'] ?? null;
 
-// Get current user information
-$current_user_id = $_SESSION['user_id'];
-$current_user_role = $_SESSION['role'];
-$current_user_name = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
-$current_user_initials = strtoupper(substr($_SESSION['first_name'], 0, 1) . substr($_SESSION['last_name'], 0, 1));
+$first = $docData['first_name'] ?? ($_SESSION['first_name'] ?? '');
+$last  = $docData['last_name']  ?? ($_SESSION['last_name']  ?? '');
+
+$current_user_name = trim($first . ' ' . $last);
+
+$fi = $first !== '' ? mb_substr((string)$first, 0, 1) : '';
+$li = $last  !== '' ? mb_substr((string)$last,  0, 1) : '';
+$current_user_initials = strtoupper($fi . $li);
 
 // Handle logout
 if (isset($_POST['logout'])) {
