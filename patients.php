@@ -169,24 +169,80 @@ elseif ($action === 'disconnect') {
     $response = ["type" => "info", "msg" => "Disconnected successfully!"];
 }
 
-// 🔹 Delete (آمن)
+// 🔹 Delete (حذف كامل من Tanafs فقط)
 elseif ($action === 'delete') {
     $PID = $_POST['PID'] ?? '';
-    $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
+    $confirmed = isset($_POST['confirm']) && $_POST['confirm'] === '1';
 
-    // احذف الربط أولاً
-    $del1 = $conn->prepare("DELETE FROM patient_doctor_assignments WHERE PID=?");
-    $del1->bind_param(ctype_digit($PID) ? "i" : "s", $pidParam);
-    $del1->execute();
-    $del1->close();
+    if (!$confirmed) {
+        $response = ["type" => "warn", "msg" => "Deletion not confirmed."];
+    } else {
+        // رقم/نصي؟ حضّري البراميتر
+        $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
+        $pidType  = ctype_digit($PID) ? "i" : "s";
 
-    // ثم سجّل patient
-    $del2 = $conn->prepare("DELETE FROM patient WHERE PID=?");
-    $del2->bind_param(ctype_digit($PID) ? "i" : "s", $pidParam);
-    $del2->execute();
-    $del2->close();
+        // (اختياري) تحقّق أن الطبيب الحالي مرتبط بهذا المريض أو عنده صلاحية
+        $chk = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
+        $chk->bind_param($pidType."i", $pidParam, $userID);
+        $chk->execute();
+        $hasLink = $chk->get_result()->num_rows > 0;
+        $chk->close();
 
-    $response = ["type" => "success", "msg" => "Patient deleted successfully!"];
+        if (!$hasLink) {
+            $response = ["type"=>"error","msg"=>"❌ You are not assigned to this patient."];
+        } else {
+            // ابدأ معاملة
+            $conn->begin_transaction();
+            try {
+                // احذف الروابط أولاً
+                $delLink = $conn->prepare("DELETE FROM patient_doctor_assignments WHERE PID=?");
+                $delLink->bind_param($pidType, $pidParam);
+                $delLink->execute();
+                $delLink->close();
+
+                // احذف التعليقات
+                $delC = $conn->prepare("DELETE FROM comment WHERE PID=?");
+                $delC->bind_param($pidType, $pidParam);
+                $delC->execute();
+                $delC->close();
+
+                // احذف التقارير
+                $delR = $conn->prepare("DELETE FROM report WHERE PID=?");
+                $delR->bind_param($pidType, $pidParam);
+                $delR->execute();
+                $delR->close();
+
+                // احذف تحليلات الإشارة
+                $delW = $conn->prepare("DELETE FROM waveform_analysis WHERE PID=?");
+                $delW->bind_param($pidType, $pidParam);
+                $delW->execute();
+                $delW->close();
+
+                // (إضافة اختيارية) احذف أي جداول أخرى مرتبطة بـ PID إن وجدت
+                // مثال:
+                // $delX = $conn->prepare("DELETE FROM patient_files WHERE PID=?");
+                // $delX->bind_param($pidType, $pidParam);
+                // $delX->execute();
+                // $delX->close();
+
+                // أخيراً احذف سجل المريض من Tanafs فقط
+                $delP = $conn->prepare("DELETE FROM patient WHERE PID=?");
+                $delP->bind_param($pidType, $pidParam);
+                $delP->execute();
+                $delP->close();
+
+                $conn->commit();
+                $response = ["type" => "success", "msg" => "🗑️ Patient deleted from Tanafs successfully."];
+            } catch (Throwable $e) {
+                $conn->rollback();
+                $response = ["type"=>"error","msg"=>"Delete failed: ".$e->getMessage()];
+            }
+        }
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
 }
 
 
@@ -834,6 +890,133 @@ main h2{
     </div>
   </footer>
 </div>
+<script>
+function performAction(action, pid){
+  let text = '';
+  if (action === 'disconnect') {
+    text = 'Are you sure you want to disconnect this patient from your list?\nThis will NOT delete any data.';
+  } else if (action === 'delete') {
+    text = 'WARNING: This will permanently delete the patient from Tanafs, including comments, reports, and analyses.\nProceed?';
+  } else {
+    return;
+  }
+
+  if (!confirm(text)) return;
+
+  const body = new URLSearchParams();
+  body.set('ajax', action);
+  body.set('PID', pid);
+  if (action === 'delete') body.set('confirm', '1'); // تأكيد للحذف
+
+  fetch('', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body
+  })
+  .then(r => r.json())
+  .then(res => {
+    // رسالة أعلى الجدول (عندك <p id="message">)
+    const m = document.getElementById('message');
+    if (m) {
+      m.className = 'message ' + (res.type || 'info');
+      m.textContent = res.msg || '';
+    }
+
+    if (res.type === 'success') {
+      // احذف الصف من الجدول مباشرة بدون ريفرش
+      const tr = document.getElementById('row-'+pid);
+      if (tr) tr.remove();
+    }
+  })
+  .catch(() => {
+    const m = document.getElementById('message');
+    if (m) {
+      m.className = 'message error';
+      m.textContent = 'Request failed.';
+    }
+  });
+}
+</script>
+
+<script>
+// ================== Patient table quick search by PID ==================
+(function(){
+  const input  = document.getElementById('search');          // بوكس البحث العلوي
+  const table  = document.getElementById('patientsTable');
+  if (!input || !table) return;
+
+  const rows   = Array.from(table.querySelectorAll('tbody tr'));
+
+  // تنظيف التمييز
+  function clearMarks(){
+    rows.forEach(r => { r.classList.remove('hit','dim'); });
+  }
+
+  // أفضل مطابقة: مطابق تمامًا > يبدأ بـ > يحتوي
+  function bestMatch(q){
+    if (!q) return null;
+    const qraw = q.trim();
+    if (!qraw) return null;
+
+    // خذي أول عمود كـ PID (بحسب جدولك)
+    const getPID = (tr) => (tr.querySelector('td')?.textContent || '').trim();
+
+    // 1) مطابق تمامًا
+    let exact = rows.find(tr => getPID(tr) === qraw);
+    if (exact) return exact;
+
+    // 2) يبدأ بـ
+    let starts = rows.find(tr => getPID(tr).startsWith(qraw));
+    if (starts) return starts;
+
+    // 3) يحتوي
+    let contains = rows.find(tr => getPID(tr).includes(qraw));
+    if (contains) return contains;
+
+    return null;
+  }
+
+  function focusRow(tr){
+    clearMarks();
+    // تمييز الصف وتقليل سطوع الباقيين (اختياري)
+    tr.classList.add('hit');
+    rows.forEach(r => { if (r !== tr) r.classList.add('dim'); });
+
+    // سكرول للمنتصف
+    tr.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+
+  // عند الكتابة: لمّحي ثم ابحثي عن أفضل صف وطّلعيه
+  let tmr = null;
+  input.addEventListener('input', () => {
+    clearTimeout(tmr);
+    const q = input.value;
+    if (!q.trim()){
+      clearMarks();
+      return;
+    }
+    tmr = setTimeout(() => {
+      const match = bestMatch(q);
+      if (match) focusRow(match);
+      else clearMarks();
+    }, 200);
+  });
+
+  // عند Enter: لو فيه صف مطابق انقلي مباشرة لملف المريض
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){
+      const match = bestMatch(input.value);
+      if (match){
+        const pid = (match.querySelector('td')?.textContent || '').trim();
+        if (pid) {
+          // لو تبين نفس صفحة المريض اللي عندك (بدّلي الرابط لو مختلف)
+          window.location.href = `patient.html?pid=${encodeURIComponent(pid)}`;
+        }
+      }
+    }
+  });
+})();
+</script>
 
 <script>
 const modal = document.getElementById("connectModal");
