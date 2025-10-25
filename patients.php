@@ -37,10 +37,10 @@ $docRes->close();
 if (isset($_POST['ajax'])) {
     $action = $_POST['ajax'];
     $response = ["type" => "error", "msg" => "⚠️ Unknown error."];
-// === NEW: search_patients ===
 if ($action === 'search_patients') {
-    $q = trim($_POST['q'] ?? '');
-    $like = '%' . $q . '%';
+    $q     = trim($_POST['q'] ?? '');
+    $scope = trim($_POST['scope'] ?? ''); 
+    $like  = '%' . $q . '%';
 
     $sql = "
         SELECT 
@@ -48,19 +48,24 @@ if ($action === 'search_patients') {
             CASE WHEN pda.userID IS NULL THEN 0 ELSE 1 END AS linked_to_me
         FROM patient p
         LEFT JOIN patient_doctor_assignments pda
-          ON pda.PID = p.PID AND pda.userID = ?
+            ON pda.PID = p.PID AND pda.userID = ?
         WHERE (? = '' 
                OR p.PID LIKE ? 
                OR p.first_name LIKE ? 
                OR p.last_name LIKE ?)
-        ORDER BY p.PID
-        LIMIT 50
     ";
+
+    if ($scope === 'connect') {
+        $sql .= " AND pda.userID IS NULL ";
+    }
+
+    $sql .= " ORDER BY p.PID LIMIT 50 ";
+
     $st = $conn->prepare($sql);
     $st->bind_param('issss', $userID, $q, $like, $like, $like);
     $st->execute();
     $rs = $st->get_result();
-    
+
     ob_start();
     if ($rs->num_rows > 0) {
         echo '<table class="mini-table"><thead>
@@ -95,6 +100,8 @@ if ($action === 'search_patients') {
     echo json_encode(['type'=>'success','html'=>$html]);
     exit;
 }
+
+
 
     // 🔹 Connect (simplified)
     if ($action === 'connect') {
@@ -839,8 +846,10 @@ document.getElementById("connectBtn").onclick = () => {
   resultsBox.innerHTML = "";
   input.value = "";
   msg("");
+  doSearch('connect');   
   input.focus();
 };
+
 
 function closeModal(){ modal.style.display="none"; msg(""); resultsBox.innerHTML=""; }
 window.onclick = e => { if (e.target === modal) closeModal(); };
@@ -854,17 +863,18 @@ let tmr = null;
 if (input) {
   input.addEventListener('input', () => {
     clearTimeout(tmr);
-    tmr = setTimeout(doSearch, 250);
+    tmr = setTimeout(() => doSearch('connect'), 250); // <<-- connect
   });
 }
 
-function doSearch(){
+
+function doSearch(scope = 'connect'){
   const q = input.value.trim();
   msg("⏳ Searching...","info");
   fetch("", {
     method:"POST",
     headers:{ "Content-Type":"application/x-www-form-urlencoded" },
-    body: `ajax=search_patients&q=${encodeURIComponent(q)}`
+    body: `ajax=search_patients&scope=${encodeURIComponent(scope)}&q=${encodeURIComponent(q)}`
   })
   .then(r => r.json())
   .then(res => {
@@ -878,6 +888,7 @@ function doSearch(){
   })
   .catch(() => { resultsBox.innerHTML = ""; msg("❌ Error while searching","error"); });
 }
+
 
 // يُستدعى من زر Connect داخل نتائج البحث
 function connectTo(pid){

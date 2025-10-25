@@ -64,52 +64,48 @@ elseif ($mode === 'analysis') {
 
 /* ====================== comments (list) ====================== */
 elseif ($mode === 'comments') {
-    // FIX: نعتمد عمود TIMESTAMP موحّد في جدول comment
-    // إن كان اسم العمود عندك مختلف (كان اسمه date)، إمّا تغيري SQL هنا إلى c.`date` AS ts
-    // أو تغيّري اسم العمود في القاعدة كما بالأسفل في “أوامر SQL” المقترحة.
-$sql = "
-    SELECT 
-        c.content,
-        c.`timestamp` AS ts,
-        CONCAT_WS(' ', hp.first_name, hp.last_name) AS by_name
-    FROM comment c
-    LEFT JOIN healthcareprofessional hp ON hp.userID = c.userID
-    WHERE c.PID = ?
-    ORDER BY c.`timestamp` DESC, c.CommentID DESC
-";
-
-    $result = mysqli_query($connection, $sql);
-
-    if ($result === false) {
-        echo json_encode(["status"=>"error","sql_error"=>mysqli_error($connection)]);
+    $sql = "
+        SELECT 
+            c.content,
+            c.`timestamp` AS ts,
+            CONCAT_WS(' ', hp.first_name, hp.last_name) AS by_name
+        FROM comment c
+        LEFT JOIN healthcareprofessional hp ON hp.userID = c.userID
+        WHERE c.PID = ?
+        ORDER BY c.`timestamp` DESC, c.CommentID DESC
+    ";
+    $stmt = mysqli_prepare($connection, $sql);
+    if (!$stmt) {
+        echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($connection)]);
         exit;
     }
+    mysqli_stmt_bind_param($stmt, "i", $pid);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
     $comments = [];
     while ($row = mysqli_fetch_assoc($result)) {
         $name = trim($row['by_name'] ?? '');
         $comments[] = [
             "by"   => ($name !== '' ? $name : 'Unknown'),
-            "date" => $row['ts'],       // نحافظ على المفتاح "date" توافقًا مع الواجهة
+            "date" => $row['ts'],
             "text" => $row['content'],
         ];
     }
     mysqli_free_result($result);
+    mysqli_stmt_close($stmt);
 
     echo json_encode($comments, JSON_UNESCAPED_UNICODE);
 }
 
 /* ====================== add comment ====================== */
 elseif ($mode === 'add_comment') {
-
     $content = isset($_POST['content']) ? trim($_POST['content']) : '';
 
-    // ✅ اعتمدي على user_id من السيشن فقط
     if ($sessionUserId <= 0) {
         echo json_encode(["status" => "error", "message" => "Not logged in"]);
         exit;
     }
-
     if ($pid <= 0) {
         echo json_encode(["status"=>"error","message"=>"Invalid PID"]);
         exit;
@@ -119,22 +115,20 @@ elseif ($mode === 'add_comment') {
         exit;
     }
 
-   
-
     $sql  = "INSERT INTO comment (userID, PID, content, `timestamp`) VALUES (?, ?, ?, NOW())";
     $stmt = mysqli_prepare($connection, $sql);
     if (!$stmt) {
         echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($connection)]);
         exit;
     }
-
-    mysqli_stmt_bind_param($stmt, "iis", $sessionUserId, $pid, $content); // ✅ هنا التغيير
+    mysqli_stmt_bind_param($stmt, "iis", $sessionUserId, $pid, $content);
     $ok  = mysqli_stmt_execute($stmt);
     $err = mysqli_error($connection);
     mysqli_stmt_close($stmt);
 
     echo json_encode($ok ? ["status"=>"success"] : ["status"=>"error","message"=>"Insert failed: ".$err]);
 }
+
 
 /* ====================== report (latest) ====================== */
 elseif ($mode === 'report') {
