@@ -713,6 +713,15 @@ main h2{
 .btn-mini-connect{ background:#0f65ff; color:#fff; border:0; padding:.4em .7em; border-radius:.5em; cursor:pointer; }
 .tag-linked{ background:#eef6ff; color:#0f65ff; padding:.25em .5em; border-radius:.5em; font-weight:700; }
 .empty-note{ color:#777; text-align:center; padding:.75em 0; }
+/* إبراز الصف المطابق */
+#patientsTable tbody tr.hit {
+  outline: 2px solid #0f65ff;
+  background: #eef6ff;
+}
+/* تخفيف بقية الصفوف (اختياري) */
+#patientsTable tbody tr.dim {
+  opacity: .45;
+}
 
 </style>
 </head>
@@ -773,7 +782,6 @@ main h2{
     </div>
   </main>
 
-  <!-- Connect Modal -->
 <!-- Connect Modal -->
 <div class="modal" id="connectModal">
   <div class="modal-content">

@@ -67,16 +67,17 @@ elseif ($mode === 'comments') {
     // FIX: نعتمد عمود TIMESTAMP موحّد في جدول comment
     // إن كان اسم العمود عندك مختلف (كان اسمه date)، إمّا تغيري SQL هنا إلى c.`date` AS ts
     // أو تغيّري اسم العمود في القاعدة كما بالأسفل في “أوامر SQL” المقترحة.
-    $sql = "
-        SELECT 
-            c.content,
-            c.`timestamp` AS ts,         -- FIX
-            CONCAT_WS(' ', u.first_name, u.last_name) AS by_name
-        FROM comment c
-        LEFT JOIN `user` u ON u.userID = c.userID
-        WHERE c.PID = $pid
-        ORDER BY c.`timestamp` DESC, c.CommentID DESC
-    ";
+$sql = "
+    SELECT 
+        c.content,
+        c.`timestamp` AS ts,
+        CONCAT_WS(' ', hp.first_name, hp.last_name) AS by_name
+    FROM comment c
+    LEFT JOIN healthcareprofessional hp ON hp.userID = c.userID
+    WHERE c.PID = ?
+    ORDER BY c.`timestamp` DESC, c.CommentID DESC
+";
+
     $result = mysqli_query($connection, $sql);
 
     if ($result === false) {

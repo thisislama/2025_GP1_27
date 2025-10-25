@@ -49,9 +49,9 @@ $cRes = mysqli_query($conn, "
   SELECT 
     c.content,
     c.`timestamp` AS ts,
-    CONCAT_WS(' ', u.first_name, u.last_name) AS by_name
+    CONCAT_WS(' ', hp.first_name, hp.last_name) AS by_name
   FROM comment c
-  LEFT JOIN `user` u ON u.userID = c.userID
+  LEFT JOIN healthcareprofessional hp ON hp.userID = c.userID
   WHERE c.PID = $pid
   ORDER BY c.`timestamp` DESC, c.CommentID DESC
 ");
