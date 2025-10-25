@@ -4,7 +4,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 if (empty($_SESSION['user_id'])) {
-    // إن كان الطلب AJAX رجّع 401 بدل التحويل (اختياري)
     if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
         http_response_code(401);
         exit('❌ Unauthorized. Please sign in.');
@@ -38,6 +37,64 @@ $docRes->close();
 if (isset($_POST['ajax'])) {
     $action = $_POST['ajax'];
     $response = ["type" => "error", "msg" => "⚠️ Unknown error."];
+// === NEW: search_patients ===
+if ($action === 'search_patients') {
+    $q = trim($_POST['q'] ?? '');
+    $like = '%' . $q . '%';
+
+    $sql = "
+        SELECT 
+            p.PID, p.first_name, p.last_name, p.gender, p.status, p.phone, p.DOB,
+            CASE WHEN pda.userID IS NULL THEN 0 ELSE 1 END AS linked_to_me
+        FROM patient p
+        LEFT JOIN patient_doctor_assignments pda
+          ON pda.PID = p.PID AND pda.userID = ?
+        WHERE (? = '' 
+               OR p.PID LIKE ? 
+               OR p.first_name LIKE ? 
+               OR p.last_name LIKE ?)
+        ORDER BY p.PID
+        LIMIT 50
+    ";
+    $st = $conn->prepare($sql);
+    $st->bind_param('issss', $userID, $q, $like, $like, $like);
+    $st->execute();
+    $rs = $st->get_result();
+    
+    ob_start();
+    if ($rs->num_rows > 0) {
+        echo '<table class="mini-table"><thead>
+                <tr><th>ID</th><th>First</th><th>Last</th><th>Status</th><th>Action</th></tr>
+              </thead><tbody>';
+        while ($row = $rs->fetch_assoc()) {
+            $pid   = htmlspecialchars($row['PID']);
+            $first = htmlspecialchars($row['first_name']);
+            $last  = htmlspecialchars($row['last_name']);
+            $status= htmlspecialchars($row['status'] ?? '');
+            $linked= (int)$row['linked_to_me'] === 1;
+
+            echo '<tr id="mini-'.$pid.'">
+                    <td>'.$pid.'</td>
+                    <td>'.$first.'</td>
+                    <td>'.$last.'</td>
+                    <td>'.$status.'</td>
+                    <td>';
+            if ($linked) {
+                echo '<span class="tag-linked">Linked</span>';
+            } else {
+                echo '<button class="btn-mini-connect" onclick="connectTo(\''.$pid.'\')">Connect</button>';
+            }
+            echo    '</td>
+                  </tr>';
+        }
+        echo '</tbody></table>';
+    } else {
+        echo '<div class="empty-note">No matching patients.</div>';
+    }
+    $html = ob_get_clean();
+    echo json_encode(['type'=>'success','html'=>$html]);
+    exit;
+}
 
     // 🔹 Connect (simplified)
     if ($action === 'connect') {
@@ -651,6 +708,12 @@ main h2{
     margin-top: 10em !important;
   }
 }
+.mini-table{ width:100%; border-collapse:collapse; }
+.mini-table th, .mini-table td{ padding:.5em; border-bottom:1px solid #eee; text-align:center; }
+.btn-mini-connect{ background:#0f65ff; color:#fff; border:0; padding:.4em .7em; border-radius:.5em; cursor:pointer; }
+.tag-linked{ background:#eef6ff; color:#0f65ff; padding:.25em .5em; border-radius:.5em; font-weight:700; }
+.empty-note{ color:#777; text-align:center; padding:.75em 0; }
+
 </style>
 </head>
 
@@ -711,17 +774,22 @@ main h2{
   </main>
 
   <!-- Connect Modal -->
-  <div class="modal" id="connectModal">
-    <div class="modal-content">
-      <h3>Connect to a Patient</h3>
-      <input type="text" id="patient_input" placeholder="Enter Patient ID or Name" required>
-      <div style="margin-top:10px;">
-        <button id="connectNow">Connect</button>
-        <button type="button" onclick="closeModal()">Cancel</button>
-      </div>
-      <div id="connectMsg"></div>
+<!-- Connect Modal -->
+<div class="modal" id="connectModal">
+  <div class="modal-content">
+    <h3>Connect to a Patient</h3>
+
+    <input type="text" id="patient_input" placeholder="Type ID or name..." autocomplete="off">
+    <div id="connectMsg"></div>
+
+    <div id="searchResults" style="margin-top:10px; max-height: 380px; overflow:auto;"></div>
+
+    <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
+      <button type="button" onclick="closeModal()">Close</button>
     </div>
   </div>
+</div>
+
 
   <!-- Footer -->
   <footer id="contact" class="site-footer">
@@ -754,36 +822,78 @@ main h2{
 </div>
 
 <script>
-const modal=document.getElementById("connectModal");
-document.getElementById("connectBtn").onclick=()=>modal.style.display="flex";
-function closeModal(){modal.style.display="none";msg("");}
-window.onclick=e=>{if(e.target==modal)closeModal();};
-function msg(txt,cls="info"){document.getElementById('connectMsg').innerHTML=`<span class="${cls}">${txt}</span>`;}
+const modal = document.getElementById("connectModal");
+const input = document.getElementById("patient_input");
+const resultsBox = document.getElementById("searchResults");
 
-document.getElementById("connectNow").onclick=()=>{
-  const val=document.getElementById("patient_input").value.trim();
-  if(!val)return msg("Please enter a patient ID or name.","error");
-  msg("⏳ Processing...","info");
-  fetch("",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:`ajax=connect&PID=${encodeURIComponent(val)}`})
-  .then(r=>r.json()).then(res=>{msg(res.msg,res.type);if(res.type==="success")setTimeout(()=>location.reload(),1500);});
+document.getElementById("connectBtn").onclick = () => {
+  modal.style.display = "flex";
+  resultsBox.innerHTML = "";
+  input.value = "";
+  msg("");
+  input.focus();
 };
 
-function performAction(action,pid){
-  if(!confirm(`Are you sure you want to ${action} this patient?`))return;
-  fetch("",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:`ajax=${action}&PID=${pid}`})
-  .then(r=>r.json()).then(res=>{
-    document.getElementById("message").innerHTML=`<span class="${res.type}">${res.msg}</span>`;
-    if(res.type==="success"||res.type==="info")document.getElementById('row-'+pid)?.remove();
+function closeModal(){ modal.style.display="none"; msg(""); resultsBox.innerHTML=""; }
+window.onclick = e => { if (e.target === modal) closeModal(); };
+
+function msg(txt, cls="info"){
+  document.getElementById('connectMsg').innerHTML = txt ? `<span class="${cls}">${txt}</span>` : '';
+}
+
+// debounce للبحث
+let tmr = null;
+if (input) {
+  input.addEventListener('input', () => {
+    clearTimeout(tmr);
+    tmr = setTimeout(doSearch, 250);
   });
 }
 
-document.getElementById('search').addEventListener('keyup',function(){
-  const term=this.value.toLowerCase();
-  document.querySelectorAll('#patientsTable tbody tr').forEach(row=>{
-    row.style.display=row.textContent.toLowerCase().includes(term)?'':'none';
+function doSearch(){
+  const q = input.value.trim();
+  msg("⏳ Searching...","info");
+  fetch("", {
+    method:"POST",
+    headers:{ "Content-Type":"application/x-www-form-urlencoded" },
+    body: `ajax=search_patients&q=${encodeURIComponent(q)}`
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.type === "success") {
+      resultsBox.innerHTML = res.html;
+      msg("");
+    } else {
+      resultsBox.innerHTML = "";
+      msg("❌ Error while searching","error");
+    }
+  })
+  .catch(() => { resultsBox.innerHTML = ""; msg("❌ Error while searching","error"); });
+}
+
+// يُستدعى من زر Connect داخل نتائج البحث
+function connectTo(pid){
+  msg("⏳ Connecting...","info");
+  fetch("", {
+    method:"POST",
+    headers:{ "Content-Type":"application/x-www-form-urlencoded" },
+    body:`ajax=connect&PID=${encodeURIComponent(pid)}`
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    msg(res.msg, res.type);
+    // حوّل زر Connect إلى Linked
+    const row = document.getElementById('mini-'+pid);
+    if (row && (res.type==="success" || res.type==="info")) {
+      const lastTd = row.querySelector('td:last-child');
+      if (lastTd) lastTd.innerHTML = '<span class="tag-linked">Linked</span>';
+    }
+    // حدّث جدول الصفحة الرئيسي
+    if (res.type==="success") setTimeout(()=> location.reload(), 1000);
   });
-});
+}
 </script>
+
 
 <script>
 // === Row click → go to patient.html?pid=... ===
