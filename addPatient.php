@@ -3,7 +3,6 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// يمنع دخول غير المسجّل
 if (empty($_SESSION['user_id'])) {
     if (!empty($_POST['action'])) { http_response_code(401); echo "❌ Unauthorized. Please sign in."; exit; }
     header("Location: signin.php"); exit;
@@ -30,7 +29,6 @@ if (!$docData) { session_unset(); session_destroy(); header("Location: signin.ph
 
 $_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
 
-// مسار JSON (تثبيت المسار اللي أنت حاطه)
 define('PATIENTS_JSON', 'C:/MAMP/htdocs/2025_GP_27/patients_record.json');
 
 function loadPatientsFromJson($path = PATIENTS_JSON){
@@ -93,7 +91,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'add') {
     $PID = trim($_POST['PID'] ?? '');
     if ($PID === '') { echo "❌ Missing PID."; exit; }
 
-    // 1) هل المريض موجود في DB؟ (ونجيب تفاصيله لو موجود)
     $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
     $get = $conn->prepare("SELECT PID, first_name, last_name, gender, status, phone, DOB FROM patient WHERE PID=? LIMIT 1");
     $get->bind_param(ctype_digit($PID) ? "i" : "s", $pidParam);
@@ -101,7 +98,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'add') {
     $dbPatient = $get->get_result()->fetch_assoc();
     $get->close();
 
-    // 2) هل هو مرتبط مع نفس الدكتور؟
     $dup = $conn->prepare("SELECT COUNT(*) AS c FROM patient_doctor_assignments WHERE PID=? AND userID=?");
     $dup->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
     $dup->execute();
@@ -109,7 +105,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'add') {
     $dup->close();
 
     if ($dbPatient && !empty($c['c'])) {
-        // موجود ومربوط مسبقًا → نعرض تفاصيله
         $full = sprintf(
             "👤 %s %s | PID: %s | Gender: %s | Status: %s | Phone: %s | DOB: %s",
             $dbPatient['first_name'] ?? '', $dbPatient['last_name'] ?? '',
@@ -122,11 +117,20 @@ if (isset($_POST['action']) && $_POST['action'] === 'add') {
     }
 
     if ($dbPatient && empty($c['c'])) {
-        // موجود وغير مربوط → اربطه
         $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
         $link->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
         if ($link->execute()) {
-            echo "✅ Connected successfully to existing patient!";
+echo "✅ Connected successfully to existing patient!<br>
+<a href='patients.php' style='
+  display:inline-block;
+  margin-top:12px;
+  background:#0f65ff;
+  color:white;
+  padding:8px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+'>Return to Patients</a>";
         } else {
             echo "❌ Failed to connect to existing patient.";
         }
@@ -134,14 +138,12 @@ if (isset($_POST['action']) && $_POST['action'] === 'add') {
         exit;
     }
 
-    // 3) غير موجود في DB → نحاول من JSON
     $rec = null;
     foreach (loadPatientsFromJson() as $r) {
         if ((string)$r['PID'] === (string)$PID) { $rec = $r; break; }
     }
     if (!$rec) { echo "❌ Record not found in JSON."; exit; }
 
-    // 4) جهّز أعمدة patient الفعلية ثم أضف
     $colsQ = $conn->prepare("
         SELECT COLUMN_NAME 
         FROM INFORMATION_SCHEMA.COLUMNS 
@@ -177,10 +179,20 @@ if (isset($_POST['action']) && $_POST['action'] === 'add') {
     if (!$stmt->execute()) { echo "❌ Failed to insert into patient."; $stmt->close(); exit; }
     $stmt->close();
 
-    // 5) اربطه بالدكتور
     $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
     $link->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
-    if ($link->execute()) echo "✅ Added to patient & linked successfully!";
+    if ($link->execute()) echo "✅ Added to patient & linked successfully!<br>
+<a href='patients.php' style='
+  display:inline-block;
+  margin-top:12px;
+  background:#0f65ff;
+  color:white;
+  padding:8px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+'>Return to Patients</a>";
+
     else echo "✅ Added to patient, but ❌ failed to link to doctor.";
     $link->close();
     exit;
