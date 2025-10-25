@@ -375,7 +375,7 @@ body {
         <div class="actions">
           <button type="button" class="edit-btn" id="editBtn">Edit</button>
           <button type="submit" name="save" class="save-btn">Save</button>
-          <button type="button" class="back-btn" onclick="window.location.href='dashboard.html'">Back</button>
+          <button type="button" class="back-btn" onclick="window.location.href='dashboard.php'">Back</button>
         </div>
       </form>
 
