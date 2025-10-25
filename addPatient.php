@@ -3,6 +3,13 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// يمنع دخول غير المسجّل
+if (empty($_SESSION['user_id'])) {
+    if (!empty($_POST['action'])) { http_response_code(401); echo "❌ Unauthorized. Please sign in."; exit; }
+    header("Location: signin.php"); exit;
+}
+$userID = (int)$_SESSION['user_id'];
+
 // Database connection
 $host = "localhost";
 $user = "root";
@@ -12,33 +19,69 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-// Simulated login
-if (!isset($_SESSION['userID'])) {
-    $_SESSION['userID'] = 1;
-}
-$userID = $_SESSION['userID'];
-
 // Get doctor name
 $docRes = $conn->prepare("SELECT first_name, last_name FROM healthcareprofessional WHERE userID=?");
 $docRes->bind_param("i", $userID);
 $docRes->execute();
 $docData = $docRes->get_result()->fetch_assoc();
-$_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
 $docRes->close();
 
-// Handle AJAX
+if (!$docData) { session_unset(); session_destroy(); header("Location: signin.php"); exit; }
+
+$_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
+
+// مسار JSON (تثبيت المسار اللي أنت حاطه)
+define('PATIENTS_JSON', 'C:/MAMP/htdocs/2025_GP_27/patients_record.json');
+
+function loadPatientsFromJson($path = PATIENTS_JSON){
+    if (!is_file($path)) return [];
+    $raw = file_get_contents($path);
+    if ($raw === false) return [];
+    $raw = preg_replace('/^\xEF\xBB\xBF/', '', $raw);
+    $data = json_decode($raw, true);
+    if (!is_array($data)) return [];
+
+    $rows = isset($data['hospital_records']) && is_array($data['hospital_records'])
+        ? $data['hospital_records'] : $data;
+
+    return array_map(function($r){
+        return [
+            'PID'        => (string)($r['PID'] ?? ''),
+            'first_name' => trim((string)($r['first_name'] ?? '')),
+            'last_name'  => trim((string)($r['last_name']  ?? '')),
+            'gender'     => trim((string)($r['gender']     ?? '')),
+            'status'     => trim((string)($r['status']     ?? '')),
+            'phone'      => trim((string)($r['phone']      ?? '')),
+            'DOB'        => trim((string)($r['DOB']        ?? '')),
+        ];
+    }, $rows);
+}
 if (isset($_POST['action']) && $_POST['action'] === 'search') {
-    $q = "%".trim($_POST['query'])."%";
-    // ✅ Changed from patient → hospital_record
-    $stmt = $conn->prepare("SELECT PID, first_name, last_name FROM hospital_record WHERE PID LIKE ? OR first_name LIKE ? OR last_name LIKE ? LIMIT 10");
-    $stmt->bind_param("sss", $q, $q, $q);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    if ($res->num_rows > 0) {
-        while ($row = $res->fetch_assoc()) {
+    $query = trim($_POST['query'] ?? '');
+    $results = [];
+    if ($query !== '') {
+        $all = loadPatientsFromJson();
+        $q = mb_strtolower($query, 'UTF-8');
+        foreach ($all as $row) {
+            $pid = $row['PID']; $fn = $row['first_name']; $ln = $row['last_name'];
+            if (
+                strpos(mb_strtolower($pid, 'UTF-8'), $q) !== false ||
+                strpos(mb_strtolower($fn , 'UTF-8'), $q) !== false ||
+                strpos(mb_strtolower($ln , 'UTF-8'), $q) !== false
+            ) {
+                $results[] = $row;
+                if (count($results) >= 10) break; 
+            }
+        }
+    }
+
+    if ($results) {
+        foreach ($results as $row) {
+            $pid  = htmlspecialchars($row['PID']);
+            $name = htmlspecialchars($row['first_name'].' '.$row['last_name']);
             echo "<div class='result-item'>
-                    <div><strong>{$row['PID']}</strong> - {$row['first_name']} {$row['last_name']}</div>
-                    <button class='add-btn' onclick=\"addPatient('{$row['PID']}')\">Add</button>
+                    <div><strong>{$pid}</strong> - {$name}</div>
+                    <button class='add-btn' onclick=\"addPatient('{$pid}')\">Add</button>
                   </div>";
         }
     } else {
@@ -46,39 +89,104 @@ if (isset($_POST['action']) && $_POST['action'] === 'search') {
     }
     exit;
 }
-
 if (isset($_POST['action']) && $_POST['action'] === 'add') {
-    $PID = trim($_POST['PID']);
-    // ✅ Changed from patient → hospital_record
-    $check = $conn->prepare("SELECT PID FROM hospital_record WHERE PID=?");
-    $check->bind_param("s", $PID);
-    $check->execute();
-    $exists = $check->get_result()->fetch_assoc();
-    $check->close();
+    $PID = trim($_POST['PID'] ?? '');
+    if ($PID === '') { echo "❌ Missing PID."; exit; }
 
-    if (!$exists) {
-        echo "❌ Record not found.";
-        exit;
-    }
+    // 1) هل المريض موجود في DB؟ (ونجيب تفاصيله لو موجود)
+    $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
+    $get = $conn->prepare("SELECT PID, first_name, last_name, gender, status, phone, DOB FROM patient WHERE PID=? LIMIT 1");
+    $get->bind_param(ctype_digit($PID) ? "i" : "s", $pidParam);
+    $get->execute();
+    $dbPatient = $get->get_result()->fetch_assoc();
+    $get->close();
 
-    $dup = $conn->prepare("SELECT COUNT(*) AS c FROM user_patient WHERE PID=? AND userID=?");
-    $dup->bind_param("si", $PID, $userID);
+    // 2) هل هو مرتبط مع نفس الدكتور؟
+    $dup = $conn->prepare("SELECT COUNT(*) AS c FROM patient_doctor_assignments WHERE PID=? AND userID=?");
+    $dup->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
     $dup->execute();
-    $r = $dup->get_result()->fetch_assoc();
+    $c = $dup->get_result()->fetch_assoc();
     $dup->close();
 
-    if ($r['c'] > 0) {
-        echo "⚠️ Already linked.";
+    if ($dbPatient && !empty($c['c'])) {
+        // موجود ومربوط مسبقًا → نعرض تفاصيله
+        $full = sprintf(
+            "👤 %s %s | PID: %s | Gender: %s | Status: %s | Phone: %s | DOB: %s",
+            $dbPatient['first_name'] ?? '', $dbPatient['last_name'] ?? '',
+            $dbPatient['PID'] ?? '', $dbPatient['gender'] ?? '',
+            $dbPatient['status'] ?? '', $dbPatient['phone'] ?? '',
+            $dbPatient['DOB'] ?? ''
+        );
+        echo "ℹ️ Patient is already under your care.<br>$full";
         exit;
     }
 
-    $add = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
-    $add->bind_param("si", $PID, $userID);
-    if ($add->execute()) echo "✅ Added successfully!";
-    else echo "❌ Failed to add.";
-    $add->close();
+    if ($dbPatient && empty($c['c'])) {
+        // موجود وغير مربوط → اربطه
+        $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
+        $link->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
+        if ($link->execute()) {
+            echo "✅ Connected successfully to existing patient!";
+        } else {
+            echo "❌ Failed to connect to existing patient.";
+        }
+        $link->close();
+        exit;
+    }
+
+    // 3) غير موجود في DB → نحاول من JSON
+    $rec = null;
+    foreach (loadPatientsFromJson() as $r) {
+        if ((string)$r['PID'] === (string)$PID) { $rec = $r; break; }
+    }
+    if (!$rec) { echo "❌ Record not found in JSON."; exit; }
+
+    // 4) جهّز أعمدة patient الفعلية ثم أضف
+    $colsQ = $conn->prepare("
+        SELECT COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'patient'
+    ");
+    $colsQ->execute();
+    $rs = $colsQ->get_result();
+    $tableCols = [];
+    while ($cRow = $rs->fetch_assoc()) $tableCols[] = $cRow['COLUMN_NAME'];
+    $colsQ->close();
+
+    $candidate = [
+        'PID'        => $PID,
+        'first_name' => $rec['first_name'] ?? '',
+        'last_name'  => $rec['last_name']  ?? '',
+        'gender'     => $rec['gender']     ?? '',
+        'status'     => $rec['status']     ?? '',
+        'phone'      => $rec['phone']      ?? '',
+        'DOB'        => $rec['DOB']        ?? '',
+    ];
+
+    $cols = []; $vals = [];
+    foreach ($candidate as $col => $val) {
+        if (in_array($col, $tableCols, true)) { $cols[] = "`$col`"; $vals[] = $val; }
+    }
+    if (!$cols) { echo "❌ No valid columns to insert."; exit; }
+
+    $placeholders = implode(',', array_fill(0, count($vals), '?'));
+    $sql = "INSERT INTO `patient` (".implode(',', $cols).") VALUES ($placeholders)";
+    $stmt = $conn->prepare($sql);
+    $types = str_repeat('s', count($vals));
+    $stmt->bind_param($types, ...$vals);
+    if (!$stmt->execute()) { echo "❌ Failed to insert into patient."; $stmt->close(); exit; }
+    $stmt->close();
+
+    // 5) اربطه بالدكتور
+    $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
+    $link->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
+    if ($link->execute()) echo "✅ Added to patient & linked successfully!";
+    else echo "✅ Added to patient, but ❌ failed to link to doctor.";
+    $link->close();
     exit;
 }
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -379,11 +487,16 @@ function addPatient(pid){
 <img class="logo" src="images/logo.png" alt="logo">
 <nav class="auth-nav">
   <a class="nav-link" href="patients.php">Patients</a>
-  <a class="nav-link" href="dashboard.html">Dashboard</a>
+  <a class="nav-link" href="dashboard.php">Dashboard</a>
   <a class="nav-link" href="history2.php">History</a>
-  <div class="profile"><img class="avatar-icon" src="images/profile.png" alt="Profile"></div>
-  <button class="btn-logout">Logout</button>
-</nav>
+  <a href="profile.php" class="profile-btn">
+  <div class="profile">
+    <img class="avatar-icon" src="images/profile.png" alt="Profile">
+  </div>
+</a>
+<form action="Logout.php" method="post" style="display:inline;">
+  <button type="submit" class="btn-logout">Logout</button>
+</form></nav>
 
 <main class="main">
   <h2>Add Patient from Database</h2>

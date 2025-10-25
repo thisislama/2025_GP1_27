@@ -1,6 +1,19 @@
 <?php
-// Start session and check authentication
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+if (empty($_SESSION['user_id'])) {
+    // إن كان الطلب AJAX رجّع 401 بدل التحويل (اختياري)
+    if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
+        http_response_code(401);
+        exit('❌ Unauthorized. Please sign in.');
+    }
+    header('Location: signin.php');
+    exit;
+}
+
+$userID = (int)$_SESSION['user_id'];
 
 // Database configuration
 $servername = "localhost";
@@ -9,15 +22,6 @@ $password = "root";
 $dbname = "tanafs";
 
 
-// Check if user is logged in, redirect to login if not
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
-    echo
-          "<script>
-            alert('You need to sign up as user!');
-            window.location.href = 'HomePage.html';             
-          </script>";
-    exit();
-}
 
 // Get current user information
 $current_user_id = $_SESSION['user_id'];
@@ -439,15 +443,16 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
     <img class="logo" src="images/Logo.png" alt="Tanafs Logo">
 
     <nav class="auth-nav" aria-label="User navigation">
-      <a class="nav-link" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" href="dashboard.php">Dashboard</a>
       <a class="nav-link" href="patients.php">Patients</a>
       <a href="profile.php" class="profile-btn">
         <div class="profile">
           <img class="avatar-icon" src="images/profile.png" alt="Profile">
         </div>
       </a>
-      <button class="btn-logout">Logout</button>
-    </nav>
+<form action="Logout.php" method="post" style="display:inline;">
+  <button type="submit" class="btn-logout">Logout</button>
+</form>    </nav>
 
     <main class="main">
       <div class="title">

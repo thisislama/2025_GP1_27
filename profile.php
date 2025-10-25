@@ -1,7 +1,18 @@
 <?php
 session_start();
-$_SESSION['userID'] = 1;
-$userID = $_SESSION['userID'];
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+if (empty($_SESSION['user_id'])) {
+    if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
+        http_response_code(401);
+        exit('❌ Unauthorized. Please sign in.');
+    }
+    header('Location: signin.php');
+    exit;
+}
+
+$userID = (int)$_SESSION['user_id'];
 
 // Database connection
 $host = "localhost";
@@ -12,8 +23,41 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-// Fetch user data
-$sql = "SELECT first_name, last_name, email, role, phone, DOB FROM user WHERE userID = ?";
+$success = $error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name  = trim($_POST['last_name']  ?? '');
+    $phone      = trim($_POST['phone']      ?? '');
+    $dob        = trim($_POST['dob']        ?? '');
+
+    if ($first_name === '' || $last_name === '') {
+        $error = 'Please provide first and last name.';
+    } elseif ($phone !== '' && !preg_match('/^(?:\+9665\d{8}|05\d{8})$/', $phone)) {
+        $error = 'Invalid phone number format.';
+    } elseif ($dob !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
+        $error = 'Invalid date of birth format (YYYY-MM-DD).';
+    }
+
+    if ($error === '') {
+        $update = $conn->prepare("
+            UPDATE healthcareprofessional
+            SET first_name = ?, last_name = ?, phone = ?, DOB = ?
+            WHERE userID = ?
+        ");
+        $update->bind_param("ssssi", $first_name, $last_name, $phone, $dob, $userID);
+
+        if ($update->execute()) {
+            $success = "✅ Changes saved successfully.";
+        } else {
+            $error = "❌ Error while saving changes.";
+        }
+        $update->close();
+    }
+}
+
+$sql = "SELECT first_name, last_name, email, role, phone, DOB
+        FROM healthcareprofessional
+        WHERE userID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
@@ -21,27 +65,14 @@ $result = $stmt->get_result();
 $userData = $result->fetch_assoc();
 $stmt->close();
 
-// Save edits
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
-    $first_name = trim($_POST['first_name']);
-    $last_name  = trim($_POST['last_name']);
-    $phone      = trim($_POST['phone']);
-    $dob        = trim($_POST['dob']);
-
-    $update = $conn->prepare("UPDATE user SET first_name=?, last_name=?, phone=?, DOB=? WHERE userID=?");
-    $update->bind_param("ssssi", $first_name, $last_name, $phone, $dob, $userID);
-    if ($update->execute()) {
-        $success = "✅ Changes saved successfully.";
-        $userData['first_name'] = $first_name;
-        $userData['last_name']  = $last_name;
-        $userData['phone']      = $phone;
-        $userData['DOB']        = $dob;
-    } else {
-        $error = "❌ Error while saving changes.";
-    }
-    $update->close();
+if (!$userData) {
+    session_unset();
+    session_destroy();
+    header('Location: signin.php');
+    exit;
 }
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -317,10 +348,11 @@ body {
 
   <nav class="auth-nav">
     <a class="nav-link" href="patients.php">Patients</a>
-    <a class="nav-link" href="dashboard.html">Dashboard</a>
+    <a class="nav-link" href="dashboard.php">Dashboard</a>
     <a class="nav-link" href="history2.php">History</a>
-    <button class="btn-logout">Logout</button>
-  </nav>
+<form action="Logout.php" method="post" style="display:inline;">
+  <button type="submit" class="btn-logout">Logout</button>
+</form>  </nav>
 
   <main>
     <div class="title"><h2>Doctor Profile</h2></div>

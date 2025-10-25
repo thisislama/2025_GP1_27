@@ -1,0 +1,10 @@
+[25-Oct-2025 11:39:49 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.user' doesn't exist in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:80
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(80): mysqli_query(Object(mysqli), '\r\n        SELEC...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 80
+[25-Oct-2025 11:39:54 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.user' doesn't exist in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:80
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(80): mysqli_query(Object(mysqli), '\r\n        SELEC...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 80

@@ -99,7 +99,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
         $_SESSION['role']    = $role;
         $_SESSION['name']    = $first_name . ' ' . $last_name;
 
-        header('Location: dashboard.html');
+        header('Location: dashboard.php');
         exit;
 
     } catch (Throwable $e) {

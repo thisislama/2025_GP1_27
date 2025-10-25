@@ -1,3 +1,15 @@
+<?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+if (empty($_SESSION['user_id']) && empty($_SESSION['userID'])) {
+    if (!empty($_POST['action'])) { http_response_code(401); echo "❌ Unauthorized. Please sign in."; exit; }
+    header("Location: signin.php"); 
+    exit;
+}
+$userID = (int)($_SESSION['user_id'] ?? $_SESSION['userID']);
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -310,8 +322,9 @@ body{
   </div>
 </a>
 
-    <button class="btn-logout">Logout</button>
-  </nav>
+<form action="Logout.php" method="post" style="display:inline;">
+  <button type="submit" class="btn-logout">Logout</button>
+</form>  </nav>
 
     <main class="container">
         <!-- LEFT -->

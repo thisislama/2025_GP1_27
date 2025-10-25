@@ -1,13 +1,19 @@
 <?php
 session_start();
-if (!isset($_SESSION['userID'])) {
-    header("Location: HomePage.html");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+if (empty($_SESSION['user_id'])) {
+    // إن كان الطلب AJAX رجّع 401 بدل التحويل (اختياري)
+    if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
+        http_response_code(401);
+        exit('❌ Unauthorized. Please sign in.');
+    }
+    header('Location: signin.php');
     exit;
 }
 
-session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+$userID = (int)$_SESSION['user_id'];
 
 // --- Database connection ---
 $host = "localhost";
@@ -18,9 +24,7 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-// Simulated login
-$_SESSION['userID'] = 1;
-$userID = $_SESSION['userID'];
+
 
 // --- Doctor name ---
 $docRes = $conn->prepare("SELECT first_name, last_name FROM healthcareprofessional WHERE userID=?");
@@ -48,7 +52,7 @@ if (isset($_POST['ajax'])) {
             $response = ["type" => "error", "msg" => "❌ Patient not found in Tanafs. Please add the patient through Add Patient."];
         } else {
             $PID = $patient['PID'];
-            $same = $conn->prepare("SELECT COUNT(*) AS c FROM user_patient WHERE PID=? AND userID=?");
+            $same = $conn->prepare("SELECT COUNT(*) AS c FROM patient_doctor_assignments WHERE PID=? AND userID=?");
             $same->bind_param("si", $PID, $userID);
             $same->execute();
             $sameRes = $same->get_result()->fetch_assoc();
@@ -57,8 +61,14 @@ if (isset($_POST['ajax'])) {
             if ($sameRes['c'] > 0) {
                 $response = ["type" => "info", "msg" => "⚠️ This patient is already under your care."];
             } else {
-                $check = $conn->prepare("SELECT u.first_name, u.last_name FROM user_patient up INNER JOIN user u ON up.userID = u.userID WHERE up.PID = ?");
-                $check->bind_param("s", $PID);
+               $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
+
+$check = $conn->prepare("SELECT hp.first_name, hp.last_name
+    FROM patient_doctor_assignments up
+    INNER JOIN healthcareprofessional hp ON up.userID = hp.userID
+    WHERE up.PID = ?");
+$check->bind_param(ctype_digit($PID) ? "i" : "s", $pidParam);
+
                 $check->execute();
                 $linked = $check->get_result()->fetch_all(MYSQLI_ASSOC);
                 $check->close();
@@ -66,13 +76,13 @@ if (isset($_POST['ajax'])) {
                 if ($linked && count($linked) > 0) {
                     $docs = array_map(fn($d) => "{$d['first_name']} {$d['last_name']}", $linked);
                     $docList = implode(", ", $docs);
-                    $add = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
+                    $add = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
                     $add->bind_param("si", $PID, $userID);
                     $add->execute();
                     $add->close();
                     $response = ["type" => "success", "msg" => "⚕️ This patient is under care of: $docList — connected successfully!"];
                 } else {
-                    $add = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
+                    $add = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
                     $add->bind_param("si", $PID, $userID);
                     $add->execute();
                     $add->close();
@@ -82,20 +92,39 @@ if (isset($_POST['ajax'])) {
         }
     }
 
-    // 🔹 Disconnect
-    elseif ($action === 'disconnect') {
-        $PID = $_POST['PID'];
-        $conn->query("DELETE FROM user_patient WHERE PID='$PID' AND userID='$userID'");
-        $response = ["type" => "info", "msg" => "Disconnected successfully!"];
-    }
+// 🔹 Disconnect (آمن)
+elseif ($action === 'disconnect') {
+    $PID = $_POST['PID'] ?? '';
+    $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
 
-    // 🔹 Delete
-    elseif ($action === 'delete') {
-        $PID = $_POST['PID'];
-        $conn->query("DELETE FROM user_patient WHERE PID='$PID'");
-        $conn->query("DELETE FROM patient WHERE PID='$PID'");
-        $response = ["type" => "success", "msg" => "️Patient deleted successfully!"];
-    }
+    $del = $conn->prepare("DELETE FROM patient_doctor_assignments WHERE PID=? AND userID=?");
+    $del->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
+    $del->execute();
+    $del->close();
+
+    $response = ["type" => "info", "msg" => "Disconnected successfully!"];
+}
+
+// 🔹 Delete (آمن)
+elseif ($action === 'delete') {
+    $PID = $_POST['PID'] ?? '';
+    $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
+
+    // احذف الربط أولاً
+    $del1 = $conn->prepare("DELETE FROM patient_doctor_assignments WHERE PID=?");
+    $del1->bind_param(ctype_digit($PID) ? "i" : "s", $pidParam);
+    $del1->execute();
+    $del1->close();
+
+    // ثم سجّل patient
+    $del2 = $conn->prepare("DELETE FROM patient WHERE PID=?");
+    $del2->bind_param(ctype_digit($PID) ? "i" : "s", $pidParam);
+    $del2->execute();
+    $del2->close();
+
+    $response = ["type" => "success", "msg" => "Patient deleted successfully!"];
+}
+
 
     header('Content-Type: application/json');
     echo json_encode($response);
@@ -105,7 +134,7 @@ if (isset($_POST['ajax'])) {
 // --- Get patients linked to current doctor ---
 $sql = "SELECT p.PID, p.first_name, p.last_name, p.gender, p.status, p.phone, p.DOB
         FROM patient p
-        INNER JOIN user_patient up ON p.PID = up.PID
+        INNER JOIN patient_doctor_assignments up ON p.PID = up.PID
         WHERE up.userID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userID);
@@ -632,7 +661,7 @@ main h2{
   <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
   <nav class="auth-nav" aria-label="User navigation">
-    <a class="nav-link" href="dashboard.html">dashboard</a>
+    <a class="nav-link" href="dashboard.php">dashboard</a>
     <a class="nav-link" href="history2.php">History</a>
         <a class="nav-link" href="report.php">report</a>
   <a href="profile.php" class="profile-btn">
@@ -640,9 +669,9 @@ main h2{
     <img class="avatar-icon" src="images/profile.png" alt="Profile">
   </div>
 </a>
-<a href="Logout.php">
-  <button class="btn-logout">Logout</button>
-</a>  </nav>
+<form action="Logout.php" method="post" style="display:inline;">
+  <button type="submit" class="btn-logout">Logout</button>
+</form>  </nav>
 
   <!-- Page Content -->
   <main style="margin-top:130px; text-align:center;">
