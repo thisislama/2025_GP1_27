@@ -330,7 +330,12 @@ body{
         <!-- LEFT -->
         <section class="left-column">
            
- <h2 style="color:#1f45b5; font-size:1.6em;margin:40px 0 0px 1.2em;">Welcome back <br><span style="color:rgba(90,98,120,0.76);font-size: .81em; margin-left: 10px">Mark Johnson</span></h2>
+<h2 style="color:#1f45b5; font-size:1.6em;margin:40px 0 0px 1.2em;">
+  Welcome back <br>
+  <span style="color:rgba(90,98,120,0.76);font-size: .81em; margin-left: 10px">
+    <?php echo htmlspecialchars($_SESSION['name'] ?? 'User'); ?>
+  </span>
+</h2>
             <label class="upload-card" for="fileUpload">
                 <input id="fileUpload" type="file" accept=".wav,.txt,.csv,.png,.jpg"/>
                 <div class="upload-drop" id="dropzone">
