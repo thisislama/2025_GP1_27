@@ -1,5 +1,7 @@
 # TANAFS – Ventilator Waveform Anomaly Detection
-
+<p align="center">
+  <img src="images/tanafspic.jpg" alt="TANAFS"/>
+</p>
 
 ##  Introduction
 This project addresses the challenge of manually monitoring and interpreting ventilator waveforms, 
