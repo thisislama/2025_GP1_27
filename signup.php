@@ -9,9 +9,27 @@ require_once __DIR__ . '/db_connection.php';
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 function redirect_with_error(string $msg) {
-    header('Location: signup.php?error=' . urlencode($msg));
+    $form_data = $_POST;
+
+    if (stripos($msg, 'email') !== false) {
+        unset($form_data['email']);
+    } elseif (stripos($msg, 'phone') !== false) {
+        unset($form_data['phone']);
+    } elseif (stripos($msg, 'password') !== false) {
+        unset($form_data['password']);
+    } elseif (stripos($msg, 'role') !== false) {
+        unset($form_data['role']);
+    } elseif (stripos($msg, 'birth') !== false || stripos($msg, 'age') !== false) {
+        unset($form_data['dob']);
+    }
+
+    $_SESSION['form_data'] = $form_data;
+    $_SESSION['error'] = $msg;
+
+    header('Location: signup.php');
     exit;
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = trim($_POST['first_name'] ?? '');
@@ -51,7 +69,6 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
 
  // valid calendar date + age >= 20
     $dob_date = DateTime::createFromFormat('Y-m-d', $dob);
-    // تأكد أن التاريخ صالح فعلاً (مثل 2024-02-30 غير صالح)
     if (!$dob_date || $dob_date->format('Y-m-d') !== $dob) {
         redirect_with_error('Invalid date of birth.');
     }
@@ -62,7 +79,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
     }
 
     try {
-        $check = $conn->prepare('SELECT userID FROM user WHERE email = ? LIMIT 1');
+        $check = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE email = ? LIMIT 1');
         $check->bind_param('s', $email);
         $check->execute();
         $check->store_result();
@@ -71,7 +88,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
             redirect_with_error('This email is already registered.');
         }
         $check->close();
-         $checkPhone = $conn->prepare('SELECT userID FROM user WHERE phone = ? LIMIT 1');
+         $checkPhone = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE phone = ? LIMIT 1');
          $checkPhone->bind_param('s', $phone);
          $checkPhone->execute();
         $checkPhone->store_result();
@@ -84,7 +101,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $conn->prepare('
-            INSERT INTO user (first_name, last_name, role, email, phone, password, DOB)
+            INSERT INTO healthcareprofessional (first_name, last_name, role, email, phone, password, DOB)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ');
         $stmt->bind_param('sssssss', $first_name, $last_name, $role, $email, $phone, $hashed_password, $dob);
@@ -92,14 +109,13 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
         $new_user_id = $stmt->insert_id;
         $stmt->close();
 
-        // 5) بدء الجلسة والتحويل
         session_regenerate_id(true);
         $_SESSION['user_id'] = $new_user_id;
         $_SESSION['email']   = $email;
         $_SESSION['role']    = $role;
         $_SESSION['name']    = $first_name . ' ' . $last_name;
 
-        header('Location: dashboard.html');
+        header('Location: dashboard.php');
         exit;
 
     } catch (Throwable $e) {
@@ -107,8 +123,18 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
     }
 }
 
-// --- GET: عرض النموذج مع رسالة الخطأ إن وجدت ---
-$error = isset($_GET['error']) ? $_GET['error'] : '';
+$error = $_SESSION['error'] ?? '';
+$form_data = $_SESSION['form_data'] ?? [];
+
+unset($_SESSION['error'], $_SESSION['form_data']);
+
+$old_first = htmlspecialchars($form_data['first_name'] ?? '', ENT_QUOTES, 'UTF-8');
+$old_last  = htmlspecialchars($form_data['last_name']  ?? '', ENT_QUOTES, 'UTF-8');
+$old_role  = htmlspecialchars($form_data['role']       ?? '', ENT_QUOTES, 'UTF-8');
+$old_email = htmlspecialchars($form_data['email']      ?? '', ENT_QUOTES, 'UTF-8');
+$old_phone = htmlspecialchars($form_data['phone']      ?? '', ENT_QUOTES, 'UTF-8');
+$old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8');
+
 ?>
 
 <!doctype html>
@@ -177,66 +203,77 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
       <?php if (!empty($error)): ?>
         <div class="error"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
       <?php endif; ?>
+<div class="grid">
+  <div>
+    <label for="first_name">First Name</label>
+    <div class="field">
+      <input class="input" id="first_name" name="first_name" type="text"
+             placeholder="Enter your first name" required
+             value="<?php echo $old_first; ?>">
+    </div>
+  </div>
+  <div>
+    <label for="last_name">Last Name</label>
+    <div class="field">
+      <input class="input" id="last_name" name="last_name" type="text"
+             placeholder="Enter your last name" required
+             value="<?php echo $old_last; ?>">
+    </div>
+  </div>
+</div>
 
-      <div class="grid">
-        <div>
-          <label for="first_name">First Name</label>
-          <div class="field">
-            <input class="input" id="first_name" name="first_name" type="text" placeholder="Enter your first name" required>
-          </div>
-        </div>
-        <div>
-          <label for="last_name">Last Name</label>
-          <div class="field">
-            <input class="input" id="last_name" name="last_name" type="text" placeholder="Enter your last name" required>
-          </div>
-        </div>
-      </div>
+<div class="grid-full">
+  <div>
+    <label for="role">Role</label>
+    <div class="field">
+      <select class="input" id="role" name="role" required>
+        <option value="">Select your role</option>
+        <option value="ICU nurse" <?php if ($old_role==='ICU nurse') echo 'selected'; ?>>ICU nurse</option>
+        <option value="Respiratory therapist" <?php if ($old_role==='Respiratory therapist') echo 'selected'; ?>>Respiratory therapist</option>
+        <option value="Intensivists" <?php if ($old_role==='Intensivists') echo 'selected'; ?>>Intensivists</option>
+        <option value="Pulmonologist" <?php if ($old_role==='Pulmonologist') echo 'selected'; ?>>Pulmonologist</option>
+      </select>
+    </div>
+  </div>
+</div>
 
-      <div class="grid-full">
-        <div>
-          <label for="role">Role</label>
-          <div class="field">
-           <select class="input" id="role" name="role" required>
-              <option value="">Select your role</option>
-              <option value="ICU nurse">ICU nurse</option>
-              <option value="Respiratory therapist">Respiratory therapist</option>
-              <option value="Intensivists">Intensivists</option>
-               <option value="Pulmonologist">Pulmonologist</option>
-            </select>
-          </div>
-        </div>
-      </div>
+<div class="grid">
+  <div>
+    <label for="email">Email</label>
+    <div class="field">
+      <input class="input" id="email" name="email" type="email"
+             placeholder="Enter your email" required
+             value="<?php echo $old_email; ?>">
+    </div>
+  </div>
+  <div>
+    <label for="phone">Phone Number</label>
+    <div class="field">
+      <input class="input" id="phone" name="phone" type="tel"
+             placeholder="+966 5xxxxxxxx" required
+             value="<?php echo $old_phone; ?>">
+    </div>
+  </div>
+</div>
 
-      <div class="grid">
-        <div>
-          <label for="email">Email</label>
-          <div class="field">
-            <input class="input" id="email" name="email" type="email" placeholder="Enter your email" required>
-          </div>
-        </div>
-        <div>
-          <label for="phone">Phone Number</label>
-          <div class="field">
-            <input class="input" id="phone" name="phone" type="tel" placeholder="+966 5xxxxxxxx" required>
-          </div>
-        </div>
-      </div>
+<div class="grid">
+  <div>
+    <label for="password">Password</label>
+    <div class="field">
+      <input class="input" id="password" name="password" type="password"
+             placeholder="Enter password" required minlength="8">
+      <!-- ملاحظة: لا نعيد عرض كلمة المرور حفاظًا على الأمان -->
+    </div>
+  </div>
+  <div>
+    <label for="dob">Date of Birth</label>
+    <div class="field">
+      <input class="input" id="dob" name="dob" type="date" required
+             value="<?php echo $old_dob; ?>">
+    </div>
+  </div>
+</div>
 
-      <div class="grid">
-        <div>
-          <label for="password">Password</label>
-          <div class="field">
-            <input class="input" id="password" name="password" type="password" placeholder="Enter password" required minlength="8">
-          </div>
-        </div>
-        <div>
-          <label for="dob">Date of Birth</label>
-          <div class="field">
-            <input class="input" id="dob" name="dob" type="date" required>
-          </div>
-        </div>
-      </div>
 
       <div class="actions">
         <button class="btn primary" type="submit">Sign Up</button>

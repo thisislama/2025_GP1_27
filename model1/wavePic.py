@@ -12,9 +12,6 @@ def analyze_middle_segment(file_path, patient_id, start_row=5000, end_row=8000):
 
     middle_segment = df.iloc[start_row:end_row].copy()
 
-  #  print(f"=== Patient {patient_id} - Analysis ===")
-  #   print(f"Analyzing rows {start_row} to {end_row} ({len(middle_segment)} points)")
- #    print(f"Time range: {middle_segment['time'].min():.2f} to {middle_segment['time'].max():.2f}")
 
     # visualization
     signals = ['flow', 'paw', 'vol', 'pmus']

@@ -3,6 +3,12 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+if (empty($_SESSION['user_id'])) {
+    if (!empty($_POST['action'])) { http_response_code(401); echo "❌ Unauthorized. Please sign in."; exit; }
+    header("Location: signin.php"); exit;
+}
+$userID = (int)$_SESSION['user_id'];
+
 // Database connection
 $host = "localhost";
 $user = "root";
@@ -12,33 +18,68 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-// Simulated login
-if (!isset($_SESSION['userID'])) {
-    $_SESSION['userID'] = 1;
-}
-$userID = $_SESSION['userID'];
-
 // Get doctor name
-$docRes = $conn->prepare("SELECT first_name, last_name FROM user WHERE userID=?");
+$docRes = $conn->prepare("SELECT first_name, last_name FROM healthcareprofessional WHERE userID=?");
 $docRes->bind_param("i", $userID);
 $docRes->execute();
 $docData = $docRes->get_result()->fetch_assoc();
-$_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
 $docRes->close();
 
-// Handle AJAX
+if (!$docData) { session_unset(); session_destroy(); header("Location: signin.php"); exit; }
+
+$_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
+
+define('PATIENTS_JSON', 'C:/MAMP/htdocs/2025_GP_27/patients_record.json');
+
+function loadPatientsFromJson($path = PATIENTS_JSON){
+    if (!is_file($path)) return [];
+    $raw = file_get_contents($path);
+    if ($raw === false) return [];
+    $raw = preg_replace('/^\xEF\xBB\xBF/', '', $raw);
+    $data = json_decode($raw, true);
+    if (!is_array($data)) return [];
+
+    $rows = isset($data['hospital_records']) && is_array($data['hospital_records'])
+        ? $data['hospital_records'] : $data;
+
+    return array_map(function($r){
+        return [
+            'PID'        => (string)($r['PID'] ?? ''),
+            'first_name' => trim((string)($r['first_name'] ?? '')),
+            'last_name'  => trim((string)($r['last_name']  ?? '')),
+            'gender'     => trim((string)($r['gender']     ?? '')),
+            'status'     => trim((string)($r['status']     ?? '')),
+            'phone'      => trim((string)($r['phone']      ?? '')),
+            'DOB'        => trim((string)($r['DOB']        ?? '')),
+        ];
+    }, $rows);
+}
 if (isset($_POST['action']) && $_POST['action'] === 'search') {
-    $q = "%".trim($_POST['query'])."%";
-    // ✅ Changed from patient → hospital_record
-    $stmt = $conn->prepare("SELECT PID, first_name, last_name FROM hospital_record WHERE PID LIKE ? OR first_name LIKE ? OR last_name LIKE ? LIMIT 10");
-    $stmt->bind_param("sss", $q, $q, $q);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    if ($res->num_rows > 0) {
-        while ($row = $res->fetch_assoc()) {
+    $query = trim($_POST['query'] ?? '');
+    $results = [];
+    if ($query !== '') {
+        $all = loadPatientsFromJson();
+        $q = mb_strtolower($query, 'UTF-8');
+        foreach ($all as $row) {
+            $pid = $row['PID']; $fn = $row['first_name']; $ln = $row['last_name'];
+            if (
+                strpos(mb_strtolower($pid, 'UTF-8'), $q) !== false ||
+                strpos(mb_strtolower($fn , 'UTF-8'), $q) !== false ||
+                strpos(mb_strtolower($ln , 'UTF-8'), $q) !== false
+            ) {
+                $results[] = $row;
+                if (count($results) >= 10) break; 
+            }
+        }
+    }
+
+    if ($results) {
+        foreach ($results as $row) {
+            $pid  = htmlspecialchars($row['PID']);
+            $name = htmlspecialchars($row['first_name'].' '.$row['last_name']);
             echo "<div class='result-item'>
-                    <div><strong>{$row['PID']}</strong> - {$row['first_name']} {$row['last_name']}</div>
-                    <button class='add-btn' onclick=\"addPatient('{$row['PID']}')\">Add</button>
+                    <div><strong>{$pid}</strong> - {$name}</div>
+                    <button class='add-btn' onclick=\"addPatient('{$pid}')\">Add</button>
                   </div>";
         }
     } else {
@@ -46,39 +87,118 @@ if (isset($_POST['action']) && $_POST['action'] === 'search') {
     }
     exit;
 }
-
 if (isset($_POST['action']) && $_POST['action'] === 'add') {
-    $PID = trim($_POST['PID']);
-    // ✅ Changed from patient → hospital_record
-    $check = $conn->prepare("SELECT PID FROM hospital_record WHERE PID=?");
-    $check->bind_param("s", $PID);
-    $check->execute();
-    $exists = $check->get_result()->fetch_assoc();
-    $check->close();
+    $PID = trim($_POST['PID'] ?? '');
+    if ($PID === '') { echo "❌ Missing PID."; exit; }
 
-    if (!$exists) {
-        echo "❌ Record not found.";
-        exit;
-    }
+    $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
+    $get = $conn->prepare("SELECT PID, first_name, last_name, gender, status, phone, DOB FROM patient WHERE PID=? LIMIT 1");
+    $get->bind_param(ctype_digit($PID) ? "i" : "s", $pidParam);
+    $get->execute();
+    $dbPatient = $get->get_result()->fetch_assoc();
+    $get->close();
 
-    $dup = $conn->prepare("SELECT COUNT(*) AS c FROM user_patient WHERE PID=? AND userID=?");
-    $dup->bind_param("si", $PID, $userID);
+    $dup = $conn->prepare("SELECT COUNT(*) AS c FROM patient_doctor_assignments WHERE PID=? AND userID=?");
+    $dup->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
     $dup->execute();
-    $r = $dup->get_result()->fetch_assoc();
+    $c = $dup->get_result()->fetch_assoc();
     $dup->close();
 
-    if ($r['c'] > 0) {
-        echo "⚠️ Already linked.";
+    if ($dbPatient && !empty($c['c'])) {
+        $full = sprintf(
+            "👤 %s %s | PID: %s | Gender: %s | Status: %s | Phone: %s | DOB: %s",
+            $dbPatient['first_name'] ?? '', $dbPatient['last_name'] ?? '',
+            $dbPatient['PID'] ?? '', $dbPatient['gender'] ?? '',
+            $dbPatient['status'] ?? '', $dbPatient['phone'] ?? '',
+            $dbPatient['DOB'] ?? ''
+        );
+        echo "ℹ️ Patient is already under your care.<br>$full";
         exit;
     }
 
-    $add = $conn->prepare("INSERT INTO user_patient (PID, userID) VALUES (?, ?)");
-    $add->bind_param("si", $PID, $userID);
-    if ($add->execute()) echo "✅ Added successfully!";
-    else echo "❌ Failed to add.";
-    $add->close();
+    if ($dbPatient && empty($c['c'])) {
+        $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
+        $link->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
+        if ($link->execute()) {
+echo "✅ Connected successfully to existing patient!<br>
+<a href='patients.php' style='
+  display:inline-block;
+  margin-top:12px;
+  background:#0f65ff;
+  color:white;
+  padding:8px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+'>Return to Patients</a>";
+        } else {
+            echo "❌ Failed to connect to existing patient.";
+        }
+        $link->close();
+        exit;
+    }
+
+    $rec = null;
+    foreach (loadPatientsFromJson() as $r) {
+        if ((string)$r['PID'] === (string)$PID) { $rec = $r; break; }
+    }
+    if (!$rec) { echo "❌ Record not found in JSON."; exit; }
+
+    $colsQ = $conn->prepare("
+        SELECT COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'patient'
+    ");
+    $colsQ->execute();
+    $rs = $colsQ->get_result();
+    $tableCols = [];
+    while ($cRow = $rs->fetch_assoc()) $tableCols[] = $cRow['COLUMN_NAME'];
+    $colsQ->close();
+
+    $candidate = [
+        'PID'        => $PID,
+        'first_name' => $rec['first_name'] ?? '',
+        'last_name'  => $rec['last_name']  ?? '',
+        'gender'     => $rec['gender']     ?? '',
+        'status'     => $rec['status']     ?? '',
+        'phone'      => $rec['phone']      ?? '',
+        'DOB'        => $rec['DOB']        ?? '',
+    ];
+
+    $cols = []; $vals = [];
+    foreach ($candidate as $col => $val) {
+        if (in_array($col, $tableCols, true)) { $cols[] = "`$col`"; $vals[] = $val; }
+    }
+    if (!$cols) { echo "❌ No valid columns to insert."; exit; }
+
+    $placeholders = implode(',', array_fill(0, count($vals), '?'));
+    $sql = "INSERT INTO `patient` (".implode(',', $cols).") VALUES ($placeholders)";
+    $stmt = $conn->prepare($sql);
+    $types = str_repeat('s', count($vals));
+    $stmt->bind_param($types, ...$vals);
+    if (!$stmt->execute()) { echo "❌ Failed to insert into patient."; $stmt->close(); exit; }
+    $stmt->close();
+
+    $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
+    $link->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
+    if ($link->execute()) echo "✅ Added to patient & linked successfully!<br>
+<a href='patients.php' style='
+  display:inline-block;
+  margin-top:12px;
+  background:#0f65ff;
+  color:white;
+  padding:8px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+'>Return to Patients</a>";
+
+    else echo "✅ Added to patient, but ❌ failed to link to doctor.";
+    $link->close();
     exit;
 }
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -106,7 +226,6 @@ body {
   display: flex;
 }
 
-/* HEADER like History */
 .wrapper { position: relative; width: 100%; min-height: 100vh; }
 img.topimg { position: absolute; top: -3.6%; left: 48%; transform: translateX(-50%); max-width: 90%; z-index: 10; pointer-events: none; }
 img.logo { position: absolute; top: 4.5%; left: 14%; width: clamp(100px, 12vw, 180px); height: auto; z-index: 20; }
@@ -114,7 +233,7 @@ img.logo { position: absolute; top: 4.5%; left: 14%; width: clamp(100px, 12vw, 1
 .nav-link { color: #0876FA; font-weight: 600; text-decoration: none; font-size: 1em; transition: all 0.3s ease; position: relative; }
 .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0876FA, #78C1F5); transition: width 0.3s ease; border-radius: 2px; }
 .nav-link:hover::after { width: 100%; }
-.profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff); padding: 0.375em 0.625em; }
+.profile { display: flex; gap: 0.625em; align-items: center;  padding: 0.375em 0.625em; }
 .avatar-icon { width:30px; height:30px; display:block; }
 .btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em; font-weight: 400; border: none; cursor: pointer; font-size: 0.875em; }
 
@@ -122,33 +241,239 @@ img.logo { position: absolute; top: 4.5%; left: 14%; width: clamp(100px, 12vw, 1
 .main { flex: 1; padding: 36px; display: flex; flex-direction: column; align-items: center; margin-top: 120px; }
 .main h2 { color: #0B83FE; margin-bottom: 30px; }
 
-.search-card {
-  background: #fff;
+.search-card{
+  width: min(92vw, 560px);         
+  padding: 24px 22px;
   border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  padding: 30px;
-  width: 480px;
-  text-align: center;
+  background: linear-gradient(180deg, #ffffff, #fdfefe);
+  box-shadow: var(--panel-shadow);
+  border: 1px solid rgba(15,101,255,0.08);
 }
+
 .search-card input {
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   margin-bottom: 20px;
+    margin-top: 20px;
 }
-.result-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
-.add-btn { background: #0f65ff; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
-.add-btn:hover { background: #094dcf; }
+#results{
+  max-height: 320px;                
+  overflow: auto;                 
+  padding: 6px 2px 2px;
+  margin-top: 6px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  display: grid;
+  gap: 8px;
+}
+.result-item{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 10px;
+  background: #fff;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .2s ease;
+}
+.add-btn{
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+.search-card { overflow: hidden; }
 
-/* FOOTER */
-.site-footer { background: #F6F6F6; color: #0b1b2b; margin-top: 3em; }
-.footer-grid { max-width: 75em; margin: 0 auto; padding: 2.5em 1.25em; display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 2em; }
-.footer-logo { height: 5.5em; margin-left: -3em; }
-.footer-title { margin-bottom: 1em; color: #0B83FE; text-transform: uppercase; }
-.contact-link { display: flex; align-items: center; gap: 0.6em; text-decoration: none; color: #0B83FE; }
-.footer-bar { border-top: 0.06em solid rgba(11,45,92,0.12); text-align: center; padding: 1em; }
-.copy { color: #0B83FE; font-size: 0.85em; }
+.search-card input{
+  box-sizing: border-box;
+  width: 100%;
+  outline: none;                 
+  border-radius: 12px;
+  -webkit-appearance: none;
+}
+
+.search-card input:focus{
+  border-color: rgba(15,101,255,.35);
+  box-shadow: 0 0 0 4px rgba(15,101,255,.08);
+}
+.add-btn:hover { background: #094dcf; }
+.site-footer {
+  background: #F6F6F6;
+  color: #0b1b2b;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 6em; 
+}
+
+.footer-grid {
+  max-width: 75em;
+  margin: 0 auto;
+  padding: 2.5em 1.25em; 
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 2em; 
+  align-items: start;
+}
+.footer-grid {
+  direction: ltr; 
+}
+
+.footer-col.brand {
+  text-align: left;  
+}
+
+.footer-logo {
+  margin-left: 0;
+  margin-right: 0; 
+}
+/* Brand */
+.footer-logo {
+  height: 5.5em;
+  width: auto;
+  display: block;
+  margin-left: -3em;
+}
+.brand-tag {
+  margin-top: 0.75em;
+  color: #4c5d7a;
+  font-size: 0.95em;
+}
+
+/* Headings */
+.footer-title {
+  margin: 0 0 1em 0;
+  font-size: 1.05em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0B83FE;
+  text-transform: uppercase;
+}
+
+/* Social */
+.social-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 0.75em;
+  align-items: center;
+}
+.social-list li a {
+  display: inline-flex;
+  width: auto;   
+  height: auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  background: none; 
+  box-shadow: none; 
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.social-list li a:hover {
+  transform: translateY(-0.2em);
+  box-shadow: 0 0.6em 1.4em rgba(0, 0, 0, 0.08);
+}
+.social-list img {
+  width: 1.2em;
+  height: 1.2em;
+}
+.social-handle {
+  display: block;
+  margin-top: 0.6em;
+  color: #0B83FE;
+  font-size: 0.95em;
+}
+
+/* Contact */
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.25em 0 0 0;
+  display: grid;
+  gap: 0.6em;
+}
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  text-decoration: none;
+  color: #0B83FE;
+  padding: 0.5em 0.6em;
+  border-radius: 0.6em;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.contact-link:hover {
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateX(0.2em);
+}
+.contact-link img {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+/* Bottom bar */
+.footer-bar {
+  border-top: 0.06em solid rgba(11, 45, 92, 0.12);
+  text-align: center;
+  padding: 0.9em 1em 1.2em;
+}
+.legal {
+  margin: 0.2em 0;
+  color: #4c5d7a;
+  font-size: 0.9em;
+}
+.legal a {
+  color: #27466e;
+  text-decoration: none;
+}
+.legal a:hover {
+  text-decoration: underline;
+}
+.legal .dot {
+  margin: 0 0.5em;
+  color: rgba(11, 45, 92, 0.6);
+}
+.copy {
+  margin: 0.2em 0 0;
+  color: #0B83FE;
+  font-size: 0.85em;
+}
+img.topimg { top: -3.6vh; }
+img.logo   { top: 4.9vh; }
+.auth-nav  { top: 6vh; }
+
+.main {
+  margin-top: clamp(120px, 24vh, 340px); 
+}
+
+@media (max-width: 1000px) {
+  img.topimg { top: -2vh; max-width: 100%; }
+  img.logo   { top: 3.2vh; left: 12%; }
+  .auth-nav  { top: 3.8vh; right: 10%; gap: .9em; }
+  .main      { margin-top: clamp(150px, 26vh, 300px); }
+}
+
+@media (max-width: 720px) {
+  .auth-nav {
+    position: static;
+    padding: .5rem 1rem;
+    justify-content: flex-end;
+    gap: .6em;
+    row-gap: .4em;
+  }
+  img.topimg {
+    position: relative;
+    top: 0; left: 0; transform: none;
+    width: 100%; height: auto; display: block;
+  }
+  img.logo { top: 2.2vh; } 
+  .main { margin-top: 120px; } 
+}
+
 </style>
 <script>
 function searchPatient(val){
@@ -174,11 +499,16 @@ function addPatient(pid){
 <img class="logo" src="images/logo.png" alt="logo">
 <nav class="auth-nav">
   <a class="nav-link" href="patients.php">Patients</a>
-  <a class="nav-link" href="dashboard.html">Dashboard</a>
-  <a class="nav-link" href="history.html">History</a>
-  <div class="profile"><img class="avatar-icon" src="images/profile.png" alt="Profile"></div>
-  <button class="btn-logout">Logout</button>
-</nav>
+  <a class="nav-link" href="dashboard.php">Dashboard</a>
+  <a class="nav-link" href="history2.php">History</a>
+  <a href="profile.php" class="profile-btn">
+  <div class="profile">
+    <img class="avatar-icon" src="images/profile.png" alt="Profile">
+  </div>
+</a>
+<form action="Logout.php" method="post" style="display:inline;">
+  <button type="submit" class="btn-logout">Logout</button>
+</form></nav>
 
 <main class="main">
   <h2>Add Patient from Database</h2>
@@ -189,28 +519,59 @@ function addPatient(pid){
   </div>
 </main>
 
-<footer class="site-footer">
+<footer  id="contact" class="site-footer">
   <div class="footer-grid">
+
     <div class="footer-col brand">
-      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo"/>
-      <p>Breathe well, live well</p>
+      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo" />
+      <p class="brand-tag">Breathe well, live well</p>
     </div>
-    <nav class="footer-col social">
+
+    <!-- Social -->
+    <nav class="footer-col social" aria-label="Social media">
       <h3 class="footer-title">Social Media</h3>
       <ul class="social-list">
-        <li><a href="#"><img src="images/twitter.png" alt="Twitter"></a></li>
-        <li><a href="#"><img src="images/instagram.png" alt="Instagram"></a></li>
+        <li>
+          <a href="#" aria-label="Twitter">
+            <img src="images/twitter.png" alt="Twitter" />
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Instagram">
+            <img src="images/instagram.png" alt="Instagram" />
+          </a>
+        </li>
       </ul>
+      <span class="social-handle">@official_Tanafs</span>
     </nav>
+
+    <!-- Contact -->
     <div class="footer-col contact">
       <h3 class="footer-title">Contact Us</h3>
       <ul class="contact-list">
-        <li><a href="#" class="contact-link"><img src="images/whatsapp.png" alt="WhatsApp"/><span>+123 165 788</span></a></li>
-        <li><a href="mailto:Tanafs@gmail.com" class="contact-link"><img src="images/email.png" alt="Email"/><span>Tanafs@gmail.com</span></a></li>
+        <li>
+          <a href="#" class="contact-link">
+            <img src="images/whatsapp.png" alt="WhatsApp" />
+            <span>+123 165 788</span>
+          </a>
+        </li>
+        <li>
+          <a href="mailto:Appointly@gmail.com" class="contact-link">
+            <img src="images/email.png" alt="Email" />
+            <span>Tanafs@gmail.com</span>
+          </a>
+        </li>
       </ul>
     </div>
+
   </div>
+
   <div class="footer-bar">
+    <p class="legal">
+      <a href="#">Terms &amp; Conditions</a>
+      <span class="dot">•</span>
+      <a href="#">Privacy Policy</a>
+    </p>
     <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
   </div>
 </footer>

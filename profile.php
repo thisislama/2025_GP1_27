@@ -1,7 +1,18 @@
 <?php
 session_start();
-$_SESSION['userID'] = 1;
-$userID = $_SESSION['userID'];
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+if (empty($_SESSION['user_id'])) {
+    if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
+        http_response_code(401);
+        exit('❌ Unauthorized. Please sign in.');
+    }
+    header('Location: signin.php');
+    exit;
+}
+
+$userID = (int)$_SESSION['user_id'];
 
 // Database connection
 $host = "localhost";
@@ -12,8 +23,41 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8mb4");
 
-// Fetch user data
-$sql = "SELECT first_name, last_name, email, role, phone, DOB FROM user WHERE userID = ?";
+$success = $error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name  = trim($_POST['last_name']  ?? '');
+    $phone      = trim($_POST['phone']      ?? '');
+    $dob        = trim($_POST['dob']        ?? '');
+
+    if ($first_name === '' || $last_name === '') {
+        $error = 'Please provide first and last name.';
+    } elseif ($phone !== '' && !preg_match('/^(?:\+9665\d{8}|05\d{8})$/', $phone)) {
+        $error = 'Invalid phone number format.';
+    } elseif ($dob !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
+        $error = 'Invalid date of birth format (YYYY-MM-DD).';
+    }
+
+    if ($error === '') {
+        $update = $conn->prepare("
+            UPDATE healthcareprofessional
+            SET first_name = ?, last_name = ?, phone = ?, DOB = ?
+            WHERE userID = ?
+        ");
+        $update->bind_param("ssssi", $first_name, $last_name, $phone, $dob, $userID);
+
+        if ($update->execute()) {
+            $success = "✅ Changes saved successfully.";
+        } else {
+            $error = "❌ Error while saving changes.";
+        }
+        $update->close();
+    }
+}
+
+$sql = "SELECT first_name, last_name, email, role, phone, DOB
+        FROM healthcareprofessional
+        WHERE userID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
@@ -21,27 +65,14 @@ $result = $stmt->get_result();
 $userData = $result->fetch_assoc();
 $stmt->close();
 
-// Save edits
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
-    $first_name = trim($_POST['first_name']);
-    $last_name  = trim($_POST['last_name']);
-    $phone      = trim($_POST['phone']);
-    $dob        = trim($_POST['dob']);
-
-    $update = $conn->prepare("UPDATE user SET first_name=?, last_name=?, phone=?, DOB=? WHERE userID=?");
-    $update->bind_param("ssssi", $first_name, $last_name, $phone, $dob, $userID);
-    if ($update->execute()) {
-        $success = "✅ Changes saved successfully.";
-        $userData['first_name'] = $first_name;
-        $userData['last_name']  = $last_name;
-        $userData['phone']      = $phone;
-        $userData['DOB']        = $dob;
-    } else {
-        $error = "❌ Error while saving changes.";
-    }
-    $update->close();
+if (!$userData) {
+    session_unset();
+    session_destroy();
+    header('Location: signin.php');
+    exit;
 }
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -76,8 +107,8 @@ body {
   min-height: 100vh;
 }
 img.topimg { position: absolute; top: -3%; left: 48%; transform: translateX(-50%); height: auto; width: auto; max-width: 90%; z-index: 10; pointer-events: none; }
-img.logo { position: absolute; top: 3%; left: 14%; width: clamp(100px, 12vw, 180px); z-index: 20; pointer-events: none; }
-.auth-nav { position: absolute; top: 3.4%; right: 16.2%; display: flex; align-items: center; gap: 1.6em; z-index: 30; }
+img.logo { position: absolute; top: 2.9%; left: 14%; width: clamp(100px, 12vw, 180px); z-index: 20; pointer-events: none; }
+.auth-nav { position: absolute; top: 3.9%; right: 16.2%; display: flex; align-items: center; gap: 1.6em; z-index: 30; }
 .nav-link { color: #0876FA; font-weight: 600; text-decoration: none; font-size: 1em; transition: all 0.3s ease; position: relative; }
 .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0876FA, #78C1F5); transition: width 0.3s ease; border-radius: 2px; }
 .nav-link:hover::after { width: 100%; }
@@ -85,14 +116,39 @@ img.logo { position: absolute; top: 3%; left: 14%; width: clamp(100px, 12vw, 180
 .profile { display: flex; gap: 0.625em; align-items: center; background: linear-gradient(90deg, #f7fbff, #fff); padding: 0.375em 0.625em; }
 .avatar-icon { width: 30px; height: 30px; display: block; }
 .btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em; font-weight: 400; border: none; box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14); cursor: pointer; font-size: 0.875em; }
+profile-card{
+  width: 100%;
+  max-width: 34rem;                 
+  margin-inline: auto;
+  padding: 1.25rem 1.25rem;
+}
 
+.profile-card input{
+  box-sizing: border-box;
+  padding-inline: 0.9rem;
+  text-align: left;
+  direction: ltr;                 
+}
+.profile-card input[type="date"]::-webkit-date-and-time-value{
+  text-align: left;
+}
+
+.actions{
+  display: flex;
+  gap: .75rem;
+  justify-content: space-between;
+}
+.actions button{
+  flex: 1 1 0;                      
+  min-width: 7rem;               
+}
 /* ===== Main ===== */
 main {
   flex: 1;
   background-color: #f9faff;
   border-top-left-radius: 30px;
   padding: 36px;
-  padding-top: 140px;
+  padding-top: 130px;
   overflow-y: auto;
 }
 .title {
@@ -153,12 +209,14 @@ main {
 .save-btn { background-color: #0a77e3; color: white; }
 .back-btn { background-color: #eef6ff; color: #0a77e3; }
 
-/* ===== Footer ===== */
+/* ========== Footer ========== */
 .site-footer {
   background: #F6F6F6;
   color: #0b1b2b;
-  margin-top: 3em;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 0;
 }
+
 .footer-grid {
   max-width: 75em;
   margin: 0 auto;
@@ -167,28 +225,134 @@ main {
   grid-template-columns: 1.2fr 1fr 1fr;
   gap: 2em;
   align-items: start;
+  direction: ltr;
 }
-.footer-logo { height: 5.5em; margin-left: -3em; }
-.footer-title { color: #0B83FE; font-weight: 700; margin-bottom: 1em; }
-.social-list { list-style: none; display: flex; gap: .8em; }
-.social-list img { width: 1.2em; }
-.contact-link { display: flex; gap: .6em; color: #0B83FE; text-decoration: none; }
-.footer-bar { text-align: center; border-top: 1px solid rgba(11,45,92,0.12); padding: 1em; color: #4c5d7a; }
-.copy { color: #0B83FE; font-size: 0.85em; }
-</style>
+
+.footer-col.brand { text-align: left; }
+
+.footer-logo { height: 5.5em; width: auto; display: block; margin-left: -3em; }
+
+.brand-tag { margin-top: 0.75em; color: #4c5d7a; font-size: 0.95em; }
+
+.footer-title {
+  margin: 0 0 1em 0;
+  font-size: 1.05em;
+  font-weight: 700;
+  letter-spacing: 0.0125em; 
+  color: #0B83FE;
+  text-transform: uppercase;
+}
+
+.social-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 0.75em;
+  align-items: center;
+}
+
+.social-list li a {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.social-list li a:hover {
+  transform: translateY(-0.2em);
+  box-shadow: 0 0.6em 1.4em rgba(0, 0, 0, 0.08);
+}
+
+.social-list img { width: 1.2em; height: 1.2em; }
+
+.social-handle { display: block; margin-top: 0.6em; color: #0B83FE; font-size: 0.95em; }
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.25em 0 0 0;
+  display: grid;
+  gap: 0.6em;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  text-decoration: none;
+  color: #0B83FE;
+  padding: 0.5em 0.6em;
+  border-radius: 0.6em;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.contact-link:hover { background: rgba(255, 255, 255, 0.7); transform: translateX(0.2em); }
+
+.contact-link img { width: 1.15em; height: 1.15em; }
+
+.footer-bar {
+  border-top: 0.06em solid rgba(11, 45, 92, 0.12);
+  text-align: center;
+  padding: 0.9em 1em 1.2em;
+}
+
+.legal { margin: 0.2em 0; color: #4c5d7a; font-size: 0.9em; }
+
+.legal a { color: #27466e; text-decoration: none; }
+.legal a:hover { text-decoration: underline; }
+
+.legal .dot { margin: 0 0.5em; color: rgba(11, 45, 92, 0.6); }
+
+.copy { margin: 0.2em 0 0; color: #0B83FE; font-size: 0.85em; }
+.actions{ display:flex; justify-content:space-between; gap:.6em; margin-top:20px; }
+.actions button{ padding:10px 14px; border:none; border-radius:12px; font-weight:700; cursor:pointer; }
+.save-btn{ background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; box-shadow:0 8px 16px rgba(15,101,255,.18); }
+.edit-btn{ background:#f0f3f8; color:#15314b; }
+.back-btn{ background:#eef6ff; color:#0f65ff; border:1px solid rgba(15,101,255,.15); }
+body {
+  margin: 0;
+  background: #f9faff; 
+}
+  @media (min-width: 768px) and (max-width: 1024px) {
+  .auth-nav {
+    top: 4%;
+    right: 11%;
+    gap: 1.2em;
+  }
+
+  img.logo {
+    top: 3%;
+    left: 11%;
+    width: clamp(5em, 14vw, 10em);
+  }
+
+  img.topimg {
+    top: -1%;
+    max-width: 100%;
+  }}
+
+    </style>
 </head>
 <body>
+
+
 <div class="wrapper">
   <img class="topimg" src="images/Group 8.png" alt="">
   <img class="logo" src="images/logo.png" alt="Logo">
 
   <nav class="auth-nav">
     <a class="nav-link" href="patients.php">Patients</a>
-    <a class="nav-link" href="dashboard.html">Dashboard</a>
-    <a class="nav-link" href="history.html">History</a>
-    <button class="profile-btn"><div class="profile"><img class="avatar-icon" src="images/profile.png" alt="Profile"></div></button>
-    <button class="btn-logout">Logout</button>
-  </nav>
+    <a class="nav-link" href="dashboard.php">Dashboard</a>
+    <a class="nav-link" href="history2.php">History</a>
+<form action="Logout.php" method="post" style="display:inline;">
+  <button type="submit" class="btn-logout">Logout</button>
+</form>  </nav>
 
   <main>
     <div class="title"><h2>Doctor Profile</h2></div>
@@ -211,7 +375,7 @@ main {
         <div class="actions">
           <button type="button" class="edit-btn" id="editBtn">Edit</button>
           <button type="submit" name="save" class="save-btn">Save</button>
-          <button type="button" class="back-btn" onclick="window.location.href='dashboard.html'">Back</button>
+          <button type="button" class="back-btn" onclick="window.location.href='dashboard.php'">Back</button>
         </div>
       </form>
 
@@ -223,11 +387,12 @@ main {
     </div>
   </main>
 
-  <footer class="site-footer">
+ <!-- Footer -->
+  <footer id="contact" class="site-footer">
     <div class="footer-grid">
       <div class="footer-col brand">
         <img src="images/logo.png" alt="Tanafs logo" class="footer-logo" />
-        <p>Breathe well, live well</p>
+        <p class="brand-tag">Breathe well, live well</p>
       </div>
       <nav class="footer-col social">
         <h3 class="footer-title">Social Media</h3>
@@ -235,16 +400,20 @@ main {
           <li><a href="#"><img src="images/twitter.png" alt="Twitter" /></a></li>
           <li><a href="#"><img src="images/instagram.png" alt="Instagram" /></a></li>
         </ul>
+        <span class="social-handle">@official_Tanafs</span>
       </nav>
       <div class="footer-col contact">
         <h3 class="footer-title">Contact Us</h3>
         <ul class="contact-list">
-          <li><a href="#" class="contact-link"><img src="images/whatsapp.png" alt="WhatsApp"/><span>+123 165 788</span></a></li>
-          <li><a href="mailto:Tanafs@gmail.com" class="contact-link"><img src="images/email.png" alt="Email"/><span>Tanafs@gmail.com</span></a></li>
+          <li><a href="#" class="contact-link"><img src="images/whatsapp.png" alt="WhatsApp" /><span>+123 165 788</span></a></li>
+          <li><a href="mailto:Tanafs@gmail.com" class="contact-link"><img src="images/email.png" alt="Email" /><span>Tanafs@gmail.com</span></a></li>
         </ul>
       </div>
     </div>
-    <div class="footer-bar"><p class="copy">© 2025 Tanafs Company. All rights reserved.</p></div>
+    <div class="footer-bar">
+      <p class="legal"><a href="#">Terms &amp; Conditions</a><span class="dot">•</span><a href="#">Privacy Policy</a></p>
+      <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
+    </div>
   </footer>
 </div>
 

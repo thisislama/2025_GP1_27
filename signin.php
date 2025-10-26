@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-           $sql  = "SELECT userID, password FROM user WHERE email = ?";
+           $sql  = "SELECT userID, password FROM healthcareprofessional WHERE email = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('s', $email);
         $stmt->execute();
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-        header('Location: dashboard.html');
+        header('Location: dashboard.php');
         exit;
 
     } catch (Throwable $e) {

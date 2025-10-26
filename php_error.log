@@ -1,0 +1,26 @@
+[25-Oct-2025 11:39:49 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.user' doesn't exist in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:80
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(80): mysqli_query(Object(mysqli), '\r\n        SELEC...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 80
+[25-Oct-2025 11:39:54 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.user' doesn't exist in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:80
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(80): mysqli_query(Object(mysqli), '\r\n        SELEC...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 80
+[25-Oct-2025 12:29:09 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.user' doesn't exist in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:80
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(80): mysqli_query(Object(mysqli), '\r\n        SELEC...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 80
+[25-Oct-2025 12:29:28 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.user' doesn't exist in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:80
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(80): mysqli_query(Object(mysqli), '\r\n        SELEC...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 80
+[25-Oct-2025 13:27:47 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?
+    ORDER BY c.`timestamp` DESC, c.CommentID DESC' at line 7 in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:81
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(81): mysqli_query(Object(mysqli), '\r\n    SELECT \r\n...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 81
