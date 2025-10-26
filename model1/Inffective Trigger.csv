@@ -1,0 +1,372 @@
+sample_id,time,anomaly,anomaly_type,data_mode,description,volume,flow,paw
+Trigger Asynchrony,0.0,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-16.149253731343265,9.184615384615398
+Trigger Asynchrony,0.4276985743380868,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-11.850746268656737,9.184615384615398
+Trigger Asynchrony,0.7637474541751539,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-9.701492537313412,9.184615384615398
+Trigger Asynchrony,1.1608961303462315,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-7.552238805970148,9.184615384615398
+Trigger Asynchrony,1.3747454175152756,1,Trigger Asynchrony,flow,Trigger Asynchrony,,7.4925373134328765,11.030769230769238
+Trigger Asynchrony,1.4052953156822818,1,Trigger Asynchrony,flow,Trigger Asynchrony,,26.83582089552243,15.092307692307712
+Trigger Asynchrony,1.5885947046843176,1,Trigger Asynchrony,flow,Trigger Asynchrony,,45.1044776119403,23.584615384615404
+Trigger Asynchrony,1.7413441955193472,1,Trigger Asynchrony,flow,Trigger Asynchrony,,27.910447761194064,23.584615384615404
+Trigger Asynchrony,2.230142566191448,1,Trigger Asynchrony,flow,Trigger Asynchrony,,22.537313432835845,23.95384615384617
+Trigger Asynchrony,2.7494908350305503,1,Trigger Asynchrony,flow,Trigger Asynchrony,,18.238805970149254,9.184615384615398
+Trigger Asynchrony,2.7494908350305503,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-3.2537313432835617,9.184615384615398
+Trigger Asynchrony,2.7800407331975565,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-21.522388059701484,9.184615384615398
+Trigger Asynchrony,3.3604887983706737,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-14.0,9.184615384615398
+Trigger Asynchrony,4.0020366598778,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-8.62686567164178,9.184615384615398
+Trigger Asynchrony,4.338085539714867,1,Trigger Asynchrony,flow,Trigger Asynchrony,,8.567164179104509,9.184615384615398
+Trigger Asynchrony,4.582484725050917,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-7.552238805970148,9.184615384615398
+Trigger Asynchrony,5.162932790224031,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-4.328358208955251,9.184615384615398
+Trigger Asynchrony,6.109979633401221,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-0.0298507462686643,9.184615384615398
+Trigger Asynchrony,6.873727087576374,1,Trigger Asynchrony,flow,Trigger Asynchrony,,1.044776119402968,9.184615384615398
+Trigger Asynchrony,6.995926680244399,1,Trigger Asynchrony,flow,Trigger Asynchrony,,15.01492537313436,14.353846153846176
+Trigger Asynchrony,7.026476578411407,1,Trigger Asynchrony,flow,Trigger Asynchrony,,28.985074626865696,14.353846153846176
+Trigger Asynchrony,7.118126272912423,1,Trigger Asynchrony,flow,Trigger Asynchrony,,48.32835820895525,19.15384615384616
+Trigger Asynchrony,7.240325865580448,1,Trigger Asynchrony,flow,Trigger Asynchrony,,63.37313432835828,23.95384615384617
+Trigger Asynchrony,7.362525458248473,1,Trigger Asynchrony,flow,Trigger Asynchrony,,48.32835820895525,23.95384615384617
+Trigger Asynchrony,7.4236252545824835,1,Trigger Asynchrony,flow,Trigger Asynchrony,,31.13432835820896,23.95384615384617
+Trigger Asynchrony,7.912423625254582,1,Trigger Asynchrony,flow,Trigger Asynchrony,,24.68656716417911,23.95384615384617
+Trigger Asynchrony,8.370672097759673,1,Trigger Asynchrony,flow,Trigger Asynchrony,,20.38805970149258,19.52307692307693
+Trigger Asynchrony,8.370672097759673,1,Trigger Asynchrony,flow,Trigger Asynchrony,,3.19402985074629,19.52307692307693
+Trigger Asynchrony,8.40122199592668,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-17.223880597014897,19.52307692307693
+Trigger Asynchrony,8.920570264765782,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-11.850746268656737,9.184615384615398
+Trigger Asynchrony,9.745417515274948,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-6.477611940298516,9.184615384615398
+Trigger Asynchrony,9.959266802443992,1,Trigger Asynchrony,flow,Trigger Asynchrony,,8.567164179104509,8.446153846153862
+Trigger Asynchrony,9.989816700610998,1,Trigger Asynchrony,flow,Trigger Asynchrony,,21.46268656716421,14.353846153846176
+Trigger Asynchrony,10.05091649694501,1,Trigger Asynchrony,flow,Trigger Asynchrony,,35.43283582089555,19.892307692307696
+Trigger Asynchrony,10.203665987780042,1,Trigger Asynchrony,flow,Trigger Asynchrony,,46.17910447761193,23.95384615384617
+Trigger Asynchrony,10.325865580448063,1,Trigger Asynchrony,flow,Trigger Asynchrony,,27.910447761194064,23.95384615384617
+Trigger Asynchrony,10.814663951120163,1,Trigger Asynchrony,flow,Trigger Asynchrony,,23.61194029850748,23.95384615384617
+Trigger Asynchrony,11.364562118126273,1,Trigger Asynchrony,flow,Trigger Asynchrony,,18.238805970149254,9.184615384615398
+Trigger Asynchrony,11.364562118126273,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-4.328358208955251,9.184615384615398
+Trigger Asynchrony,11.364562118126273,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-20.44776119402985,9.184615384615398
+Trigger Asynchrony,11.883910386965375,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-14.0,9.184615384615398
+Trigger Asynchrony,12.617107942973522,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-8.62686567164178,9.184615384615398
+Trigger Asynchrony,12.80040733197556,1,Trigger Asynchrony,flow,Trigger Asynchrony,,9.64179104477614,7.7076923076923265
+Trigger Asynchrony,13.228105906313644,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-7.552238805970148,9.184615384615398
+Trigger Asynchrony,13.991853360488795,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-3.2537313432835617,9.184615384615398
+Trigger Asynchrony,14.96945010183299,1,Trigger Asynchrony,flow,Trigger Asynchrony,,-1.1044776119402968,9.184615384615398
+Ineffective Effort,2.021220159151193,1,Ineffective Effort,flow,Ineffective Effort,,-251.0982658959537,4.971098265895961
+Ineffective Effort,2.13262599469496,1,Ineffective Effort,flow,Ineffective Effort,,-249.2485549132948,4.971098265895961
+Ineffective Effort,2.387267904509283,1,Ineffective Effort,flow,Ineffective Effort,,-243.69942196531787,4.27745664739885
+Ineffective Effort,2.753315649867374,1,Ineffective Effort,flow,Ineffective Effort,,-241.84971098265896,4.27745664739885
+Ineffective Effort,3.0079575596816976,1,Ineffective Effort,flow,Ineffective Effort,,-238.15028901734104,4.27745664739885
+Ineffective Effort,3.071618037135278,1,Ineffective Effort,flow,Ineffective Effort,,-233.52601156069363,4.27745664739885
+Ineffective Effort,3.087533156498673,1,Ineffective Effort,flow,Ineffective Effort,,-224.2774566473988,4.27745664739885
+Ineffective Effort,3.119363395225464,1,Ineffective Effort,flow,Ineffective Effort,,-208.5549132947977,5.6647398843930645
+Ineffective Effort,3.135278514588859,1,Ineffective Effort,flow,Ineffective Effort,,-198.3815028901734,5.6647398843930645
+Ineffective Effort,3.167108753315649,1,Ineffective Effort,flow,Ineffective Effort,,-185.43352601156067,5.6647398843930645
+Ineffective Effort,3.437665782493368,1,Ineffective Effort,flow,Ineffective Effort,,-194.68208092485548,31.329479768786133
+Ineffective Effort,3.6286472148541113,1,Ineffective Effort,flow,Ineffective Effort,,-202.08092485549128,32.71676300578035
+Ineffective Effort,3.819628647214853,1,Ineffective Effort,flow,Ineffective Effort,,-209.47976878612712,32.71676300578035
+Ineffective Effort,3.9946949602122,1,Ineffective Effort,flow,Ineffective Effort,,-216.87861271676297,34.45086705202313
+Ineffective Effort,4.217506631299735,1,Ineffective Effort,flow,Ineffective Effort,,-242.77456647398844,36.1849710982659
+Ineffective Effort,4.217506631299735,1,Ineffective Effort,flow,Ineffective Effort,,-259.42196531791905,36.1849710982659
+Ineffective Effort,4.217506631299735,1,Ineffective Effort,flow,Ineffective Effort,,-266.8208092485549,36.1849710982659
+Ineffective Effort,4.23342175066313,1,Ineffective Effort,flow,Ineffective Effort,,-226.12716763005776,36.1849710982659
+Ineffective Effort,4.312997347480105,1,Ineffective Effort,flow,Ineffective Effort,,-255.72254335260112,14.682080924855498
+Ineffective Effort,4.312997347480105,1,Ineffective Effort,flow,Ineffective Effort,,-266.8208092485549,14.682080924855498
+Ineffective Effort,4.312997347480105,1,Ineffective Effort,flow,Ineffective Effort,,-291.7919075144508,14.682080924855498
+Ineffective Effort,4.328912466843501,1,Ineffective Effort,flow,Ineffective Effort,,-276.0693641618497,8.439306358381508
+Ineffective Effort,4.328912466843501,1,Ineffective Effort,flow,Ineffective Effort,,-283.46820809248555,8.439306358381508
+Ineffective Effort,4.328912466843501,1,Ineffective Effort,flow,Ineffective Effort,,-300.11560693641616,8.439306358381508
+Ineffective Effort,4.328912466843501,1,Ineffective Effort,flow,Ineffective Effort,,-307.514450867052,8.439306358381508
+Ineffective Effort,4.376657824933687,1,Ineffective Effort,flow,Ineffective Effort,,-267.7456647398844,8.439306358381508
+Ineffective Effort,4.392572944297082,1,Ineffective Effort,flow,Ineffective Effort,,-261.271676300578,8.439306358381508
+Ineffective Effort,4.488063660477453,1,Ineffective Effort,flow,Ineffective Effort,,-257.5722543352601,5.317919075144509
+Ineffective Effort,4.615384615384615,1,Ineffective Effort,flow,Ineffective Effort,,-252.94797687861268,5.317919075144509
+Ineffective Effort,4.806366047745358,1,Ineffective Effort,flow,Ineffective Effort,,-248.32369942196527,4.27745664739885
+Ineffective Effort,4.96551724137931,1,Ineffective Effort,flow,Ineffective Effort,,-245.54913294797683,4.27745664739885
+Ineffective Effort,5.092838196286471,1,Ineffective Effort,flow,Ineffective Effort,,-243.69942196531787,4.27745664739885
+Ineffective Effort,5.2201591511936325,1,Ineffective Effort,flow,Ineffective Effort,,-239.0751445086705,3.583815028901739
+Ineffective Effort,5.299734748010609,1,Ineffective Effort,flow,Ineffective Effort,,-233.52601156069363,3.583815028901739
+Ineffective Effort,5.347480106100795,1,Ineffective Effort,flow,Ineffective Effort,,-227.97687861271675,5.6647398843930645
+Ineffective Effort,5.379310344827586,1,Ineffective Effort,flow,Ineffective Effort,,-233.52601156069363,5.6647398843930645
+Ineffective Effort,5.442970822281166,1,Ineffective Effort,flow,Ineffective Effort,,-242.77456647398844,3.236994219653184
+Ineffective Effort,5.633952254641909,1,Ineffective Effort,flow,Ineffective Effort,,-239.0751445086705,4.27745664739885
+Ineffective Effort,5.824933687002652,1,Ineffective Effort,flow,Ineffective Effort,,-237.2254335260116,4.27745664739885
+Ineffective Effort,6.015915119363394,1,Ineffective Effort,flow,Ineffective Effort,,-236.300578034682,4.27745664739885
+Ineffective Effort,6.159151193633952,1,Ineffective Effort,flow,Ineffective Effort,,-235.3757225433526,3.583815028901739
+Ineffective Effort,6.254641909814322,1,Ineffective Effort,flow,Ineffective Effort,,-229.8265895953757,3.583815028901739
+Ineffective Effort,6.270557029177717,1,Ineffective Effort,flow,Ineffective Effort,,-222.42774566473983,3.583815028901739
+Ineffective Effort,6.286472148541113,1,Ineffective Effort,flow,Ineffective Effort,,-215.02890173410407,3.583815028901739
+Ineffective Effort,6.30238726790451,1,Ineffective Effort,flow,Ineffective Effort,,-207.63005780346825,3.583815028901739
+Ineffective Effort,6.318302387267903,1,Ineffective Effort,flow,Ineffective Effort,,-200.2312138728324,3.583815028901739
+Ineffective Effort,6.3342175066312985,1,Ineffective Effort,flow,Ineffective Effort,,-192.8323699421965,11.213872832369944
+Ineffective Effort,6.366047745358089,1,Ineffective Effort,flow,Ineffective Effort,,-187.28323699421964,11.213872832369944
+Ineffective Effort,6.620689655172412,1,Ineffective Effort,flow,Ineffective Effort,,-196.53179190751445,31.329479768786133
+Ineffective Effort,6.938992042440318,1,Ineffective Effort,flow,Ineffective Effort,,-209.47976878612712,32.02312138728324
+Ineffective Effort,7.225464190981431,1,Ineffective Effort,flow,Ineffective Effort,,-219.65317919075147,33.75722543352602
+Ineffective Effort,7.416445623342175,1,Ineffective Effort,flow,Ineffective Effort,,-227.97687861271675,27.167630057803468
+Ineffective Effort,7.432360742705568,1,Ineffective Effort,flow,Ineffective Effort,,-246.4739884393064,27.167630057803468
+Ineffective Effort,7.4482758620689635,1,Ineffective Effort,flow,Ineffective Effort,,-263.12138728323697,27.167630057803468
+Ineffective Effort,7.4482758620689635,1,Ineffective Effort,flow,Ineffective Effort,,-285.3179190751445,27.167630057803468
+Ineffective Effort,7.464190981432361,1,Ineffective Effort,flow,Ineffective Effort,,-298.2658959537572,20.23121387283237
+Ineffective Effort,7.464190981432361,1,Ineffective Effort,flow,Ineffective Effort,,-309.3641618497109,20.23121387283237
+Ineffective Effort,7.496021220159151,1,Ineffective Effort,flow,Ineffective Effort,,-281.6184971098266,8.439306358381508
+Ineffective Effort,7.511936339522545,1,Ineffective Effort,flow,Ineffective Effort,,-274.21965317919074,8.439306358381508
+Ineffective Effort,7.511936339522545,1,Ineffective Effort,flow,Ineffective Effort,,-254.79768786127164,8.439306358381508
+Ineffective Effort,7.607427055702916,1,Ineffective Effort,flow,Ineffective Effort,,-263.12138728323697,8.439306358381508
+Ineffective Effort,7.782493368700263,1,Ineffective Effort,flow,Ineffective Effort,,-253.87283236994224,5.6647398843930645
+Ineffective Effort,7.909814323607427,1,Ineffective Effort,flow,Ineffective Effort,,-248.32369942196527,4.971098265895961
+Ineffective Effort,8.116710875331563,1,Ineffective Effort,flow,Ineffective Effort,,-245.54913294797683,4.971098265895961
+Ineffective Effort,8.403183023872678,1,Ineffective Effort,flow,Ineffective Effort,,-242.77456647398844,4.624277456647405
+Ineffective Effort,8.657824933687003,1,Ineffective Effort,flow,Ineffective Effort,,-240.0,4.624277456647405
+Ineffective Effort,8.721485411140584,1,Ineffective Effort,flow,Ineffective Effort,,-233.52601156069363,3.236994219653184
+Ineffective Effort,8.753315649867375,1,Ineffective Effort,flow,Ineffective Effort,,-213.17919075144505,3.236994219653184
+Ineffective Effort,8.785145888594162,1,Ineffective Effort,flow,Ineffective Effort,,-198.3815028901734,3.236994219653184
+Ineffective Effort,8.816976127320956,1,Ineffective Effort,flow,Ineffective Effort,,-186.35838150289013,6.3583815028901824
+Ineffective Effort,8.944297082228115,1,Ineffective Effort,flow,Ineffective Effort,,-190.9826589595376,30.982658959537574
+Ineffective Effort,9.119363395225465,1,Ineffective Effort,flow,Ineffective Effort,,-197.45664739884387,30.982658959537574
+Ineffective Effort,9.294429708222811,1,Ineffective Effort,flow,Ineffective Effort,,-203.9306358381503,30.982658959537574
+Ineffective Effort,9.421750663129972,1,Ineffective Effort,flow,Ineffective Effort,,-209.47976878612712,30.982658959537574
+Ineffective Effort,9.564986737400533,1,Ineffective Effort,flow,Ineffective Effort,,-214.10404624277453,30.982658959537574
+Ineffective Effort,9.644562334217508,1,Ineffective Effort,flow,Ineffective Effort,,-218.72832369942196,30.982658959537574
+Ineffective Effort,9.867374005305038,1,Ineffective Effort,flow,Ineffective Effort,,-227.0520231213873,30.982658959537574
+Ineffective Trigger 1,0.0523560209424101,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-40.68965517241384,8.999999999999972
+Ineffective Trigger 1,0.2617801047120451,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-31.034482758620697,8.999999999999972
+Ineffective Trigger 1,0.4712041884816766,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-22.75862068965523,6.499999999999972
+Ineffective Trigger 1,0.8376963350785349,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-11.724137931034534,6.499999999999972
+Ineffective Trigger 1,1.0994764397905763,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,6.499999999999972
+Ineffective Trigger 1,1.4136125654450264,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,4.999999999999972
+Ineffective Trigger 1,1.6230366492146615,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,4.999999999999972
+Ineffective Trigger 1,2.1465968586387465,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,4.999999999999972
+Ineffective Trigger 1,2.2513089005235614,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,21.37931034482756,4.999999999999972
+Ineffective Trigger 1,2.3036649214659697,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,8.965517241379246,4.999999999999972
+Ineffective Trigger 1,2.356020942408378,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,29.65517241379308,4.999999999999972
+Ineffective Trigger 1,2.5654450261780117,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,22.75862068965517,3.5
+Ineffective Trigger 1,2.670157068062828,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,15.86206896551721,3.5
+Ineffective Trigger 1,2.984293193717278,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,11.724137931034477,3.5
+Ineffective Trigger 1,2.984293193717278,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-7.586206896551744,3.5
+Ineffective Trigger 1,2.984293193717278,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-21.379310344827672,3.5
+Ineffective Trigger 1,3.036649214659686,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-28.27586206896558,3.5
+Ineffective Trigger 1,3.036649214659686,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-35.17241379310349,3.5
+Ineffective Trigger 1,3.193717277486913,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-26.89655172413802,3.5
+Ineffective Trigger 1,3.403141361256546,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-18.62068965517244,3.5
+Ineffective Trigger 1,3.61256544502618,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-10.344827586206918,1.999999999999972
+Ineffective Trigger 1,3.926701570680629,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,1.999999999999972
+Ineffective Trigger 1,4.240837696335079,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,11.5
+Ineffective Trigger 1,4.607329842931938,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,2.068965517241338,16.49999999999997
+Ineffective Trigger 1,4.921465968586388,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-2.068965517241452,16.49999999999997
+Ineffective Trigger 1,5.130890052356024,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-8.96551724137936,18.5
+Ineffective Trigger 1,5.392670157068066,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,10.0
+Ineffective Trigger 1,5.706806282722512,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,6.499999999999972
+Ineffective Trigger 1,5.916230366492149,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,3.448275862068897,6.499999999999972
+Ineffective Trigger 1,5.916230366492149,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,14.482758620689594,6.499999999999972
+Ineffective Trigger 1,5.916230366492149,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,28.275862068965463,6.499999999999972
+Ineffective Trigger 1,5.968586387434554,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,33.793103448275815,6.499999999999972
+Ineffective Trigger 1,5.968586387434554,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,39.31034482758616,6.499999999999972
+Ineffective Trigger 1,6.073298429319374,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,42.06896551724134,6.499999999999972
+Ineffective Trigger 1,6.335078534031412,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,36.55172413793099,4.5
+Ineffective Trigger 1,6.492146596858641,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,26.896551724137908,4.5
+Ineffective Trigger 1,6.701570680628274,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,22.75862068965517,4.5
+Ineffective Trigger 1,6.858638743455499,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,17.241379310344826,4.5
+Ineffective Trigger 1,6.963350785340316,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,8.965517241379246,4.5
+Ineffective Trigger 1,7.120418848167541,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,6.206896551724128,4.5
+Ineffective Trigger 1,7.120418848167541,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-3.4482758620690106,4.5
+Ineffective Trigger 1,7.120418848167541,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-13.103448275862092,4.5
+Ineffective Trigger 1,7.225130890052357,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-26.89655172413802,4.5
+Ineffective Trigger 1,7.225130890052357,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-40.68965517241384,4.5
+Ineffective Trigger 1,7.225130890052357,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-50.34482758620692,4.5
+Ineffective Trigger 1,7.382198952879582,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-40.68965517241384,4.5
+Ineffective Trigger 1,7.591623036649215,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-26.89655172413802,4.5
+Ineffective Trigger 1,7.591623036649215,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-26.89655172413802,4.5
+Ineffective Trigger 1,7.905759162303665,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-15.862068965517269,2.499999999999972
+Ineffective Trigger 1,8.219895287958115,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-6.206896551724185,1.999999999999972
+Ineffective Trigger 1,8.429319371727749,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,1.999999999999972
+Ineffective Trigger 1,8.429319371727749,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,1.999999999999972
+Ineffective Trigger 1,9.00523560209424,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,5.499999999999972
+Ineffective Trigger 1,9.267015706806284,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-13.103448275862092,4.0
+Ineffective Trigger 1,9.738219895287957,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,4.0
+Ineffective Trigger 1,9.895287958115183,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,3.448275862068897,4.0
+Ineffective Trigger 1,9.895287958115183,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,13.103448275862036,4.0
+Ineffective Trigger 1,9.895287958115183,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,24.137931034482733,4.0
+Ineffective Trigger 1,9.947643979057592,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,31.03448275862064,4.0
+Ineffective Trigger 1,10.05235602094241,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,42.06896551724134,4.0
+Ineffective Trigger 1,10.314136125654452,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,35.17241379310343,1.999999999999972
+Ineffective Trigger 1,10.523560209424083,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,25.51724137931029,1.999999999999972
+Ineffective Trigger 1,10.732984293193718,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,22.75862068965517,13.5
+Ineffective Trigger 1,10.890052356020943,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,14.482758620689594,13.5
+Ineffective Trigger 1,10.99476439790576,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,7.586206896551687,19.49999999999997
+Ineffective Trigger 1,11.204188481675397,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-21.379310344827672,19.49999999999997
+Ineffective Trigger 1,11.204188481675397,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-37.93103448275872,19.49999999999997
+Ineffective Trigger 1,11.204188481675397,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-51.72413793103453,19.49999999999997
+Ineffective Trigger 1,11.2565445026178,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-3.4482758620690106,19.49999999999997
+Ineffective Trigger 1,11.361256544502618,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-37.93103448275872,19.49999999999997
+Ineffective Trigger 1,11.62303664921466,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-26.89655172413802,25.0
+Ineffective Trigger 1,11.937172774869111,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-15.862068965517269,25.0
+Ineffective Trigger 1,12.251308900523563,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,30.0
+Ineffective Trigger 1,12.61780104712042,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,30.0
+Ineffective Trigger 1,12.827225130890056,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,8.965517241379246,27.0
+Ineffective Trigger 1,12.879581151832465,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,24.137931034482733,23.5
+Ineffective Trigger 1,12.931937172774868,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,32.413793103448256,18.0
+Ineffective Trigger 1,13.036649214659684,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,25.51724137931029,10.0
+Ineffective Trigger 1,13.193717277486911,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,15.86206896551721,8.0
+Ineffective Trigger 1,13.298429319371731,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,11.724137931034477,8.0
+Ineffective Trigger 1,13.455497382198956,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,2.068965517241338,8.0
+Ineffective Trigger 1,13.455497382198956,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-8.96551724137936,8.0
+Ineffective Trigger 1,13.507853403141365,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,11.724137931034477,8.0
+Ineffective Trigger 1,13.507853403141365,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-20.000000000000057,8.0
+Ineffective Trigger 1,13.560209424083771,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-35.17241379310349,8.0
+Ineffective Trigger 1,13.7696335078534,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-20.000000000000057,4.999999999999972
+Ineffective Trigger 1,13.979057591623038,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-14.482758620689708,4.999999999999972
+Ineffective Trigger 1,14.24083769633508,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-7.586206896551744,4.999999999999972
+Ineffective Trigger 1,14.397905759162308,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-0.6896551724138362,4.999999999999972
+Ineffective Trigger 1,14.81675392670157,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,4.0
+Ineffective Trigger 1,15.078534031413612,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,2.068965517241338,4.0
+Ineffective Trigger 1,15.28795811518325,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,4.0
+Ineffective Trigger 1,15.44502617801047,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-11.724137931034534,4.0
+Ineffective Trigger 1,15.759162303664924,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-6.206896551724185,2.999999999999972
+Ineffective Trigger 1,15.968586387434554,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-2.068965517241452,2.999999999999972
+Ineffective Trigger 1,16.2303664921466,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,6.206896551724128,5.499999999999972
+Ineffective Trigger 1,16.2303664921466,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,28.275862068965463,5.499999999999972
+Ineffective Trigger 1,16.282722513089006,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,35.17241379310343,5.499999999999972
+Ineffective Trigger 1,16.33507853403141,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,42.06896551724134,5.499999999999972
+Ineffective Trigger 1,16.596858638743456,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,35.17241379310343,5.499999999999972
+Ineffective Trigger 1,16.80628272251309,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,28.275862068965463,4.0
+Ineffective Trigger 1,17.12041884816754,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,19.999999999999943,4.0
+Ineffective Trigger 1,17.32984293193718,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,10.34482758620686,4.0
+Ineffective Trigger 1,17.434554973821996,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,4.8275862068965125,4.0
+Ineffective Trigger 1,17.434554973821996,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-7.586206896551744,4.0
+Ineffective Trigger 1,17.4869109947644,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-14.482758620689708,1.4999999999999716
+Ineffective Trigger 1,17.4869109947644,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-29.65517241379314,1.4999999999999716
+Ineffective Trigger 1,17.4869109947644,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-42.0689655172414,1.4999999999999716
+Ineffective Trigger 1,17.4869109947644,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-50.34482758620692,1.4999999999999716
+Ineffective Trigger 1,17.591623036649217,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-42.0689655172414,1.4999999999999716
+Ineffective Trigger 1,17.80104712041885,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-31.034482758620697,7.0
+Ineffective Trigger 1,18.062827225130896,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-21.379310344827672,12.499999999999972
+Ineffective Trigger 1,18.324607329842934,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-13.103448275862092,18.99999999999997
+Ineffective Trigger 1,18.58638743455497,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,25.0
+Ineffective Trigger 1,18.90052356020943,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,25.0
+Ineffective Trigger 1,19.267015706806284,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,28.0
+Ineffective Trigger 1,19.47643979057592,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-11.724137931034534,28.0
+Ineffective Trigger 1,19.790575916230367,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-6.206896551724185,31.0
+Ineffective Trigger 1,20.052356020942405,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,24.0
+Ineffective Trigger 1,20.261780104712045,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,3.448275862068897,10.0
+Ineffective Trigger 1,20.31413612565445,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,15.86206896551721,10.0
+Ineffective Trigger 1,20.31413612565445,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,26.896551724137908,10.0
+Ineffective Trigger 1,20.47120418848168,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,37.93103448275855,8.0
+Ineffective Trigger 1,20.523560209424083,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,26.896551724137908,8.0
+Ineffective Trigger 1,20.73298429319372,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,19.999999999999943,8.0
+Ineffective Trigger 1,20.837696335078533,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,13.103448275862036,8.0
+Ineffective Trigger 1,20.890052356020945,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,3.448275862068897,8.0
+Ineffective Trigger 1,20.890052356020945,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-13.103448275862092,8.0
+Ineffective Trigger 1,20.94240837696335,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-32.41379310344831,8.0
+Ineffective Trigger 1,21.09947643979058,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-22.75862068965523,5.499999999999972
+Ineffective Trigger 1,21.41361256544502,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-11.724137931034534,5.499999999999972
+Ineffective Trigger 1,21.780104712041883,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-3.4482758620690106,4.0
+Ineffective Trigger 1,22.146596858638745,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,4.0
+Ineffective Trigger 1,22.670157068062828,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,1.999999999999972
+Ineffective Trigger 1,22.722513089005236,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,17.241379310344826,1.999999999999972
+Ineffective Trigger 1,22.722513089005236,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,31.03448275862064,1.999999999999972
+Ineffective Trigger 1,22.87958115183246,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,37.93103448275855,1.999999999999972
+Ineffective Trigger 1,23.24607329842932,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,31.03448275862064,11.5
+Ineffective Trigger 1,23.560209424083773,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,19.999999999999943,17.0
+Ineffective Trigger 1,23.769633507853406,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,10.34482758620686,17.0
+Ineffective Trigger 1,23.926701570680628,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,6.206896551724128,18.5
+Ineffective Trigger 1,23.926701570680628,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-14.482758620689708,18.5
+Ineffective Trigger 1,23.979057591623032,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,18.5
+Ineffective Trigger 1,23.979057591623032,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-28.27586206896558,18.5
+Ineffective Trigger 1,23.979057591623032,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-39.31034482758628,18.5
+Ineffective Trigger 1,24.031413612565444,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-54.48275862068971,18.5
+Ineffective Trigger 1,24.188481675392666,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-40.68965517241384,7.5
+Ineffective Trigger 1,24.34554973821989,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-29.65517241379314,7.5
+Ineffective Trigger 1,24.60732984293194,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-21.379310344827672,7.5
+Ineffective Trigger 1,24.81675392670157,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-14.482758620689708,4.999999999999972
+Ineffective Trigger 1,25.183246073298427,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-7.586206896551744,4.999999999999972
+Ineffective Trigger 1,25.49738219895288,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,4.999999999999972
+Ineffective Trigger 1,25.70680628272252,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,2.999999999999972
+Ineffective Trigger 1,25.96858638743456,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,0.6896551724137794,2.999999999999972
+Ineffective Trigger 1,26.17801047120419,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-4.827586206896569,2.999999999999972
+Ineffective Trigger 1,26.28272251308901,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-11.724137931034534,2.999999999999972
+Ineffective Trigger 1,26.701570680628272,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-3.4482758620690106,1.999999999999972
+Ineffective Trigger 1,26.910994764397905,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-3.4482758620690106,1.999999999999972
+Ineffective Trigger 1,27.225130890052355,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-2.068965517241452,1.999999999999972
+Ineffective Trigger 1,27.591623036649217,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,3.448275862068897,5.499999999999972
+Ineffective Trigger 1,27.643979057591626,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,15.86206896551721,4.0
+Ineffective Trigger 1,27.643979057591626,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,25.51724137931029,4.0
+Ineffective Trigger 1,27.643979057591626,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,39.31034482758616,4.0
+Ineffective Trigger 1,27.80104712041885,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,43.4482758620689,4.0
+Ineffective Trigger 1,28.06282722513089,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,36.55172413793099,4.0
+Ineffective Trigger 1,28.167539267015705,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,28.275862068965463,4.0
+Ineffective Trigger 1,28.481675392670155,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,19.999999999999943,4.0
+Ineffective Trigger 1,28.69109947643979,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,8.965517241379246,4.0
+Ineffective Trigger 1,28.84816753926701,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-20.000000000000057,1.999999999999972
+Ineffective Trigger 1,28.84816753926701,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-37.93103448275872,1.999999999999972
+Ineffective Trigger 1,28.90052356020942,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-0.6896551724138362,1.999999999999972
+Ineffective Trigger 1,28.90052356020942,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-50.34482758620692,1.999999999999972
+Ineffective Trigger 1,29.05759162303665,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-37.93103448275872,1.999999999999972
+Ineffective Trigger 1,29.31937172774869,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-26.89655172413802,15.0
+Ineffective Trigger 1,29.581151832460733,1,Ineffective Trigger 1,flow,Ineffective Trigger 1,,-15.862068965517269,22.0
+Ineffective Trigger 2,0.0733496332518344,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0179104477611939,5.669291338582681
+Ineffective Trigger 2,0.1222493887530564,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.1253731343283584,6.929133858267718
+Ineffective Trigger 2,0.1711491442542794,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2059701492537318,8.818897637795288
+Ineffective Trigger 2,0.1955990220048908,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2776119402985073,11.181102362204726
+Ineffective Trigger 2,0.2444987775061129,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3492537313432833,13.385826771653557
+Ineffective Trigger 2,0.3178484107579464,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3940298507462687,14.803149606299217
+Ineffective Trigger 2,0.3911980440097808,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3492537313432833,14.803149606299217
+Ineffective Trigger 2,0.4645476772616135,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3134328358208957,14.803149606299217
+Ineffective Trigger 2,0.5134474327628364,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3492537313432833,14.803149606299217
+Ineffective Trigger 2,0.8068459657701705,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2865671641791043,15.433070866141732
+Ineffective Trigger 2,1.0513447432762837,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2149253731343283,16.37795275590551
+Ineffective Trigger 2,1.3447432762836176,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.1432835820895523,17.007874015748044
+Ineffective Trigger 2,1.4669926650366758,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.1074626865671644,9.763779527559066
+Ineffective Trigger 2,1.4914425427872864,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0,9.763779527559066
+Ineffective Trigger 2,1.4914425427872864,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.1432835820895519,9.763779527559066
+Ineffective Trigger 2,1.4914425427872864,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2686567164179103,9.763779527559066
+Ineffective Trigger 2,1.4914425427872864,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.3492537313432837,9.763779527559066
+Ineffective Trigger 2,1.515892420537897,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.4746268656716417,9.763779527559066
+Ineffective Trigger 2,1.515892420537897,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.3940298507462683,9.763779527559066
+Ineffective Trigger 2,1.5403422982885075,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.3134328358208953,9.763779527559066
+Ineffective Trigger 2,1.6381418092909534,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2597014925373133,8.031496062992133
+Ineffective Trigger 2,1.8826405867970664,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2149253731343283,6.771653543307096
+Ineffective Trigger 2,2.0782396088019564,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.1970149253731339,6.771653543307096
+Ineffective Trigger 2,2.4205378973105134,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.1343283582089549,5.984251968503955
+Ineffective Trigger 2,2.616136919315404,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0985074626865674,5.984251968503955
+Ineffective Trigger 2,2.9095354523227392,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0716417910447759,5.511811023622045
+Ineffective Trigger 2,3.1051344743276275,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0179104477611939,5.039370078740163
+Ineffective Trigger 2,3.2518337408312963,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0089552238805974,5.039370078740163
+Ineffective Trigger 2,3.3985330073349638,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0,4.409448818897644
+Ineffective Trigger 2,3.471882640586797,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0895522388059699,5.669291338582681
+Ineffective Trigger 2,3.52078239608802,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.1970149253731343,8.661417322834652
+Ineffective Trigger 2,3.5696821515892427,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2865671641791043,11.338582677165364
+Ineffective Trigger 2,3.6919315403422974,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3761194029850747,14.488188976377955
+Ineffective Trigger 2,3.863080684596577,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3134328358208957,15.433070866141732
+Ineffective Trigger 2,4.180929095354523,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2328358208955223,16.22047244094489
+Ineffective Trigger 2,4.52322738386308,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.1611940298507463,16.69291338582677
+Ineffective Trigger 2,4.816625916870414,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.1164179104477614,17.007874015748044
+Ineffective Trigger 2,4.841075794621027,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0447761194029849,11.96850393700788
+Ineffective Trigger 2,4.841075794621027,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0,11.96850393700788
+Ineffective Trigger 2,4.865525672371637,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0895522388059699,10.236220472440948
+Ineffective Trigger 2,4.865525672371637,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2686567164179103,10.236220472440948
+Ineffective Trigger 2,4.865525672371637,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.4119402985074627,10.236220472440948
+Ineffective Trigger 2,4.865525672371637,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.5283582089552237,10.236220472440948
+Ineffective Trigger 2,4.88997555012225,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.1432835820895519,10.236220472440948
+Ineffective Trigger 2,4.88997555012225,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.3492537313432837,10.236220472440948
+Ineffective Trigger 2,4.963325183374083,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2686567164179103,8.503937007874015
+Ineffective Trigger 2,5.158924205378972,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2328358208955223,7.244094488188978
+Ineffective Trigger 2,5.378973105134474,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2059701492537313,7.244094488188978
+Ineffective Trigger 2,5.647921760391197,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.1343283582089549,5.826771653543304
+Ineffective Trigger 2,5.941320293398531,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0626865671641789,5.354330708661422
+Ineffective Trigger 2,6.28361858190709,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0089552238805974,4.724409448818904
+Ineffective Trigger 2,6.552567237163814,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0358208955223879,5.511811023622045
+Ineffective Trigger 2,6.821515892420537,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0716417910447759,6.141732283464577
+Ineffective Trigger 2,7.188264058679705,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0537313432835819,5.826771653543304
+Ineffective Trigger 2,7.555012224938876,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0089552238805969,5.354330708661422
+Ineffective Trigger 2,8.044009779951098,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0089552238805974,4.251968503937022
+Ineffective Trigger 2,8.141809290953544,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0985074626865669,6.299212598425214
+Ineffective Trigger 2,8.215158924205378,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2238805970149253,6.299212598425214
+Ineffective Trigger 2,8.2640586797066,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3044776119402987,8.818897637795288
+Ineffective Trigger 2,8.361858190709047,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3850746268656717,14.803149606299217
+Ineffective Trigger 2,8.557457212713937,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.3223880597014927,15.118110236220474
+Ineffective Trigger 2,8.728606356968212,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2865671641791043,16.062992125984252
+Ineffective Trigger 2,9.046454767726162,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.2059701492537318,16.062992125984252
+Ineffective Trigger 2,9.364303178484109,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.1522388059701489,16.69291338582677
+Ineffective Trigger 2,9.657701711491445,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.1164179104477614,17.007874015748044
+Ineffective Trigger 2,9.657701711491445,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,0.0,17.007874015748044
+Ineffective Trigger 2,9.682151589242052,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.0716417910447759,12.91338582677166
+Ineffective Trigger 2,9.682151589242052,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2238805970149253,12.91338582677166
+Ineffective Trigger 2,9.682151589242052,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.3761194029850743,12.91338582677166
+Ineffective Trigger 2,9.682151589242052,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.3134328358208953,12.91338582677166
+Ineffective Trigger 2,9.706601466992664,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.5104477611940297,10.078740157480324
+Ineffective Trigger 2,9.706601466992664,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.4477611940298502,10.078740157480324
+Ineffective Trigger 2,9.902200488997552,1,Ineffective Trigger 2,flow,Ineffective Trigger 2,,-0.2507462686567163,7.8740157480315105
