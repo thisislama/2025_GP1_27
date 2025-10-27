@@ -256,7 +256,7 @@
 </footer>
 
 <script>
-// Helper: احضري pid من الاستعلام ?pid=...
+// pid=...
 function getPidFromURL() {
   const pidStr = new URLSearchParams(location.search).get('pid');
   const pidNum = parseInt(pidStr, 10);
@@ -264,7 +264,7 @@ function getPidFromURL() {
 }
 </script>
 
-<!-- ====== نفس سكربتاتك بالضبط (بدون تغيير) ====== -->
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const pid = getPidFromURL();
@@ -419,13 +419,66 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   }
 });
 </script>
-
 <script>
-document.querySelector('.btn-generate')?.addEventListener('click', () => {
-  const pid = getPidFromURL();              
-  pid ? location.href = `ReportPage.html?pid=${pid}` : alert('Invalid patient id');
-});
+(function () {
+  const btn = document.querySelector('.btn-generate');
+  if (!btn) return;
+
+  
+  const normalize = (raw) => {
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    if (raw.status === "empty") return [];
+    return [];
+  };
+
+  const showMessage = (msg) => {
+    alert(msg); 
+  };
+
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const pid = getPidFromURL();
+    if (!pid) {
+      alert("Invalid patient ID");
+      return;
+    }
+
+    try {
+      const [anRes, cmRes] = await Promise.all([
+        fetch(`PHPpatient.php?mode=analysis&pid=${pid}`),
+        fetch(`PHPpatient.php?mode=comments&pid=${pid}`)
+      ]);
+
+      const [anData, cmData] = await Promise.all([anRes.json(), cmRes.json()]);
+      const analysis = normalize(anData);
+      const comments = normalize(cmData);
+
+      
+      console.log({analysis, comments});
+
+      if (analysis.length === 0 && comments.length === 0) {
+        showMessage("Unable to generate the report: this patient has no analyzed waveforms or comments available.");
+        return;
+      }
+
+      
+      location.href = `ReportPage.html?pid=${pid}`;
+
+    } catch (err) {
+      console.error(err);
+      showMessage("تعذر التحقق من بيانات المريض.");
+    }
+  });
+})();
 </script>
+
+
+
+
+
 
 </body>
 </html>

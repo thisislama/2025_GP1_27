@@ -422,5 +422,27 @@ document.getElementById('editBtn').addEventListener('click', () => {
   document.querySelectorAll('input[name]').forEach(i => i.disabled = false);
 });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+ 
+  document.getElementById('editBtn').addEventListener('click', () => {
+    document.querySelectorAll('.profile-card form input[name]').forEach(i => i.disabled = false);
+  });
+
+  const profileForm = document.querySelector('.profile-card form');
+  profileForm.addEventListener('submit', function(e) {
+    const first = profileForm.querySelector('input[name="first_name"]').value.trim();
+    const last  = profileForm.querySelector('input[name="last_name"]').value.trim();
+    const phone = profileForm.querySelector('input[name="phone"]').value.trim();
+    const dob   = profileForm.querySelector('input[name="dob"]').value.trim();
+
+    if (first === '' || last === '' || phone === '' || dob === '') {
+      e.preventDefault();
+      alert('Please fill in all required fields before saving.');
+    }
+  });
+});
+</script>
 </body>
 </html>
