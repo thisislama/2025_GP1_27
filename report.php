@@ -18,7 +18,7 @@ $pN = mysqli_fetch_assoc(mysqli_query($conn,
 
 $u = mysqli_fetch_assoc(mysqli_query(
   $conn,
-  "SELECT CONCAT(first_name,' ',last_name) AS name FROM `user` WHERE userID = {$sessionUserId} "
+  "SELECT CONCAT(first_name,' ',last_name) AS name FROM `healthcareprofessional` WHERE userID = {$sessionUserId} "
 ));
 
 // آخر ثلاث تحليلات + التوقيت
