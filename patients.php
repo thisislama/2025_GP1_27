@@ -922,9 +922,14 @@ function performAction(action, pid){
       m.textContent = res.msg || '';
     }
 
-    if (res.type === 'success') {
-      // احذف الصف من الجدول مباشرة بدون ريفرش
-      const tr = document.getElementById('row-'+pid);
+    if (action === 'disconnect' && (res.type === 'info' || res.type === 'success')) {
+      const tr = document.getElementById('row-' + pid);
+      if (tr) tr.remove();
+      return;
+    }
+
+    if (action === 'delete' && res.type === 'success') {
+      const tr = document.getElementById('row-' + pid);
       if (tr) tr.remove();
     }
   })
