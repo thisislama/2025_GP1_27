@@ -3,11 +3,12 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+$_SESSION['user_id']=1;
+
 if (empty($_SESSION['user_id'])) {
-    // إن كان الطلب AJAX رجّع 401 بدل التحويل (اختياري)
     if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
         http_response_code(401);
-        exit('❌ Unauthorized. Please sign in.');
+        exit(' Unauthorized. Please sign in.');
     }
     header('Location: signin.php');
     exit;
@@ -23,10 +24,10 @@ $dbname = "tanafs";
 
 
 $current_user_id   = $_SESSION['user_id'];
-$current_user_role = $_SESSION['role'] ?? null;
+$current_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
 
-$first = $docData['first_name'] ?? ($_SESSION['first_name'] ?? '');
-$last  = $docData['last_name']  ?? ($_SESSION['last_name']  ?? '');
+$first = isset($docData['first_name']) ? $docData['first_name'] : ($_SESSION['first_name'] ?? '');
+$last  = isset($docData['last_name']) ? $docData['last_name'] : ($_SESSION['last_name'] ?? '');
 
 $current_user_name = trim($first . ' ' . $last);
 
@@ -472,7 +473,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
       <div class="table-container">
         <form method="get" class="table-actions">
           <div class="filter-section">
-            <input type="text" name="search" style="width:33em" placeholder="Search by name or phone..."
+            <input type="text" name="search" style="width:33em" placeholder="Search by patient id..."
                    value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
             <select name="status">
               <option value="all">All Status</option>
