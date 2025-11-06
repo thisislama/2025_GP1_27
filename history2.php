@@ -719,8 +719,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
         }
 
         img.logo {
-            position: absolute;
-            top: -7.1%;
+            position: fixed;
             left: 14%;
             width: clamp(100px, 12vw, 180px);
             height: auto;
@@ -729,8 +728,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
         }
 
         .auth-nav {
-            position: absolute;
-            top: -6%;
+            position: fixed;
             right: 16.2%;
             display: flex;
             align-items: center;
@@ -1016,15 +1014,17 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
     <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
     <nav class="auth-nav" aria-label="User navigation">
-        <div class="search" role="search" aria-label="Site search">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"></path>
-                <circle cx="11" cy="11" r="5.2" stroke="#6b7b8f" stroke-width="1.6"></circle>
-            </svg>
-            <input placeholder="Search ..." aria-label="Search">
-        </div>
+        <!--  <div class="search" role="search" aria-label="Site search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"></path>
+                  <circle cx="11" cy="11" r="5.2" stroke="#6b7b8f" stroke-width="1.6"></circle>
+              </svg>
+              <input placeholder="Search ..." aria-label="Search">
+        </div>-->
+        <a class="nav-link" href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
-        <a class="nav-link" href="history2.php">history</a>
+        <a class="nav-link" href="history2.php">History</a>
+
         <a href="profile.php" class="profile-btn">
             <div class="profile">
                 <img class="avatar-icon" src="images/profile.png" alt="Profile">
