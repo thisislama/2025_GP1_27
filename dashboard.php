@@ -19,7 +19,14 @@ $password = "root";
 $dbname = "tanafs";
 
 $userID = (int)($_SESSION['user_id'] ?? $_SESSION['userID']);
-$userName = $_SESSION['name'] ?? 'User';
+
+
+$first = isset($docData['first_name']) ? $docData['first_name'] : ($_SESSION['first_name'] ?? '');
+$last = isset($docData['last_name']) ? $docData['last_name'] : ($_SESSION['last_name'] ?? '');
+
+$userName = trim($first . ' ' . $last);
+//$userName = $_SESSION['name'] ?? 'User';
+
 
 // Initialize variables
 $stats = [
