@@ -29,7 +29,7 @@ if (!$docData) { session_unset(); session_destroy(); header("Location: signin.ph
 
 $_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
 
-define('PATIENTS_JSON', 'C:/MAMP/htdocs/2025_GP_27/patients_record.json');
+define('PATIENTS_JSON', 'C:/MAMP/htdocs/2025_GP_27/data/patients_record.json');
 
 function loadPatientsFromJson($path = PATIENTS_JSON){
     if (!is_file($path)) return [];

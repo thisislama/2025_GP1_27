@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 if (empty($_SESSION['user_id'])) {
     if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
         http_response_code(401);
-        exit('❌ Unauthorized. Please sign in.');
+        exit('Unauthorized. Please sign in.');
     }
     header('Location: signin.php');
     exit;

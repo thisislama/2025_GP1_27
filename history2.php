@@ -1139,7 +1139,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
                         <th>Date</th>
                         <th>Status</th>
                         <th>Severity level</th>
-                        <th> </th>
+                        <th>Anomaly type </th>
                     </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -1154,6 +1154,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
                             $date       = date('Y-m-d', strtotime($row['analysis_date']));
                             $status     = $row['status'];
                             $severity   = $row['severity_level'] ?: 'N/A';
+                            $anomaly_type=$row['anomaly_type'] ?: 'N/A';
 
                             $status_class = strtolower($status);
                             if (!in_array($status_class, ['normal','abnormal'])) {
@@ -1171,6 +1172,7 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
                         <td>{$date}</td>
                         <td><span class='status {$status_class}'>".ucfirst($status). "</span></td>
                         <td><span class='severity {$severity}'>{$severity}</td>
+                        <td>{$anomaly_type}</td>
                       <!--  <td><span style='color:#1a6dfd;'class='material-symbols-outlined'>delete</span></td>-->
                     
 
