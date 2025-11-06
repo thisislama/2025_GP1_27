@@ -2,7 +2,7 @@
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-$_SESSION['user_id'] = 1;
+
 if (empty($_SESSION['user_id']) && empty($_SESSION['userID'])) {
     if (!empty($_POST['action'])) {
         http_response_code(401);
@@ -801,6 +801,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
         }
 
         .upload-drop {
+            width: 30em;
             background: #fff;
             border: 2px dashed rgba(68, 110, 170, 0.7);
             color: #2b4a77;
@@ -808,6 +809,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
 
         .upload-drop .hint {
             color: #2b4a77;
+
         }
 
         .small-item {
@@ -945,9 +947,10 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                         <div style="font-size:13px;color:#0b84feb3;margin-top:8px">Drag &amp; drop or click to
                             select a file
                         </div>
+                        <div style="font-size:13px;color:rgba(145,148,151,0.7);margin-top:8px">Only Only CSV, PNG, JPG files are allowed. </div>
                     </div>
                     <?php if (!empty($upload_message)): ?>
-                        <div class="upload-message <?php echo strpos($upload_message, '❌') !== false ? 'upload-error' : 'upload-success'; ?>">
+                        <div class="upload-message <?php echo strpos($upload_message, '') !== false ? 'upload-error' : 'upload-success'; ?>">
                             <?php echo htmlspecialchars($upload_message); ?>
                         </div>
                     <?php endif; ?>
@@ -988,7 +991,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             <div class="stats-grid">
                 <div class="stat">
                     <div>
-                        <div class="value"><?php echo $stats['anomaly']; ?></div>
+                        <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
                         <div class="label">Anomaly</div>
                     </div>
                     <div style="background:linear-gradient(150deg,rgb(218,35,35),rgb(214,103,103));padding:10px;border-radius:8px;color:#fff;font-weight:700">
