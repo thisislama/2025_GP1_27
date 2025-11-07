@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-CSV_PATH = Path(r"C:\Tanafas_Dataset\digitizewaves\double_trigger-D.csv")
+CSV_PATH = Path(r"C:\Tanafas_Dataset\digitizewaves\margeAll.csv")
 
 # ---------- قراءة الملف الصارم ----------
 def load_df(path):
