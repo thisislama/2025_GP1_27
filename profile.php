@@ -346,13 +346,20 @@ body {
   <img class="topimg" src="images/Group 8.png" alt="">
   <img class="logo" src="images/logo.png" alt="Logo">
 
-  <nav class="auth-nav">
-    <a class="nav-link" href="patients.php">Patients</a>
-    <a class="nav-link" href="dashboard.php">Dashboard</a>
-    <a class="nav-link" href="history2.php">History</a>
-<form action="Logout.php" method="post" style="display:inline;">
-  <button type="submit" class="btn-logout">Logout</button>
-</form>  </nav>
+   <nav class="auth-nav" aria-label="User navigation">
+        <a class="nav-link" href="dashboard.php">Dashboard</a>
+        <a class="nav-link" href="patients.php">Patients</a>
+        <a class="nav-link" href="history2.php">History</a>
+        <a href="profile.php" class="profile-btn">
+            <div class="profile">
+                <img class="avatar-icon" src="images/profile.png" alt="Profile">
+            </div>
+        </a>
+
+        <form action="Logout.php" method="post" style="display:inline;">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </nav>
 
   <main>
     <div class="title"><h2>Doctor Profile</h2></div>

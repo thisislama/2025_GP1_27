@@ -442,18 +442,20 @@ img.logo {
 
   <nav class="auth-nav" aria-label="User navigation">
     
-    <a class="nav-link" href="patients.php">Patients</a>
-    <a class="nav-link" href="history2.php">history</a>
-    <a class="nav-link" href="dashboard.php">Dashboard</a>
-   <button class="profile-btn" onclick="window.location.href='profile.php'">
-    <img class="avatar-icon" src="images/profile.png" alt="Profile" />
-</button>
+   <nav class="auth-nav" aria-label="User navigation">
+        <a class="nav-link" href="dashboard.php">Dashboard</a>
+        <a class="nav-link" href="patients.php">Patients</a>
+        <a class="nav-link" href="history2.php">History</a>
+        <a href="profile.php" class="profile-btn">
+            <div class="profile">
+                <img class="avatar-icon" src="images/profile.png" alt="Profile">
+            </div>
+        </a>
 
-
-<form action="Logout.php" method="post" style="display:inline;">
-  <button type="submit" class="btn-logout">Logout</button>
-</form>
-  </nav>
+        <form action="Logout.php" method="post" style="display:inline;">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </nav>
 
 <!-- MAIN -->
 <main class="main">

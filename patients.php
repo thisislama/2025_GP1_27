@@ -795,17 +795,20 @@ main h2{
   <img class="topimg" src="Images/Group 8.png" alt="img">
   <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
-  <nav class="auth-nav" aria-label="User navigation">
-    <a class="nav-link" href="dashboard.php">dashboard</a>
-    <a class="nav-link" href="history2.php">History</a>
-  <a href="profile.php" class="profile-btn">
-  <div class="profile">
-    <img class="avatar-icon" src="images/profile.png" alt="Profile">
-  </div>
-</a>
-<form action="Logout.php" method="post" style="display:inline;">
-  <button type="submit" class="btn-logout">Logout</button>
-</form>  </nav>
+   <nav class="auth-nav" aria-label="User navigation">
+        <a class="nav-link" href="dashboard.php">Dashboard</a>
+        <a class="nav-link" href="patients.php">Patients</a>
+        <a class="nav-link" href="history2.php">History</a>
+        <a href="profile.php" class="profile-btn">
+            <div class="profile">
+                <img class="avatar-icon" src="images/profile.png" alt="Profile">
+            </div>
+        </a>
+
+        <form action="Logout.php" method="post" style="display:inline;">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </nav>
 
   <!-- Page Content -->
   <main style="margin-top:130px; text-align:center;">

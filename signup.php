@@ -58,6 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (mb_strlen($password) < 8) {
         redirect_with_error('Password must be at least 8 characters.');
     }
+    if (!preg_match('/[^\w\s]/', $password)) redirect_with_error('Password must include at least one symbol (e.g., !@#$%).');
+
         // phone format (+9665xxxxxxxx OR 05xxxxxxxx)
     if (!preg_match('/^(?:\+9665\d{8}|05\d{8})$/', $phone)) {
         redirect_with_error('Invalid phone number format.');
@@ -195,7 +197,9 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
 <body>
   <div class="wrap">
     <form class="card" action="signup.php" method="post" novalidate>
-      <header class="card-head">
+    <header class="card-head" style="position: relative;">
+  <img src="images/logo.png" alt="TANAFS logo" 
+       style="position: absolute; left: -5px; top: -50px; width: 100px; height: 100px; object-fit: contain;">
         <h1 class="title">Create Account</h1>
         <p class="subtitle">Please fill in your information to sign up.</p>
       </header>
@@ -256,14 +260,20 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   </div>
 </div>
 
+
 <div class="grid">
-  <div>
-    <label for="password">Password</label>
-    <div class="field">
-      <input class="input" id="password" name="password" type="password"
-             placeholder="Enter password" required minlength="8">
-      <!-- ملاحظة: لا نعيد عرض كلمة المرور حفاظًا على الأمان -->
-    </div>
+ <div>
+  <label for="password">Password</label>
+  <div class="field">
+    <input class="input" id="password" name="password" type="password"
+           placeholder="Enter password" required minlength="8"
+           pattern="(?=.*[!@#$%^&*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}"
+           title="At least 8 characters and include at least one symbol (e.g., !@#$%)">
+  </div>
+  <p style="color:#6b7280; font-size:0.85rem; margin-top:6px;">
+    Must be at least <strong>8 characters</strong> and include <strong>one symbol</strong> (e.g., !@#$%).
+  </p>
+
   </div>
   <div>
     <label for="dob">Date of Birth</label>

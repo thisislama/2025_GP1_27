@@ -158,8 +158,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
 
 <body>
   <form class="card" action="signin.php" method="post" autocomplete="on" novalidate>
-    <header>
-      <h1 class="title">Welcome Back!</h1>
+    <header class="card-head" style="position: relative;">
+  <img src="images/logo.png" alt="TANAFS logo" 
+       style="position: absolute; left: -5px; top: -50px; width: 100px; height: 100px; object-fit: contain;">      <h1 class="title">Welcome Back!</h1>
       <p class="subtitle">Please enter your details.</p>
     </header>
 
