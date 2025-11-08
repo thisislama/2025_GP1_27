@@ -301,22 +301,23 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
 
 
         .upload-card {
-            border-radius: 14px;
-            padding: 36px;
+            border: none;
+            padding: 37px;
             min-height: 230px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            border-radius: 12px ;
             backdrop-filter: blur(4px);
-            box-shadow: var(--soft-shadow);
+            box-shadow: #505867 1px 1px 1px;
         }
 
         .upload-card input[type=file] {
             display: none
         }
-
+/*dashed*/
         .upload-drop {
             width: 100%;
             height: 230px;
@@ -372,7 +373,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--soft-shadow)
+            box-shadow: #4c5d7a 1px 1px 1px;
         }
 
         .stat .value {
@@ -381,15 +382,21 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
         }
 
         .stat .label {
-            color: #195695;
-            font-weight: 600
+            color: rgba(255, 0, 0, 0.93);
+            font-weight: 700;
+        }
+
+        .stat .under{
+            font-size: 0.8em;
+            font-weight: 600;
+            color: #4c5d7a;
         }
 
         .result-card {
             padding: 22px;
             border-radius: 10px;
             min-height: 260px;
-            box-shadow: var(--soft-shadow)
+            box-shadow: #4c5d7a 1px 1px 1px;
         }
 
         .result-card .title {
@@ -806,12 +813,19 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             border: 1px solid #e9eef6;
             box-shadow: 0 1px 6px rgba(0, 0, 0, .05);
         }
+        .upload-card{
+            border: none;
+            box-shadow: none;
+
+        }
+
 
         .upload-drop {
             width: 30em;
             background: #fff;
             border: 2px dashed rgba(68, 110, 170, 0.7);
             color: #2b4a77;
+            cursor: pointer;
         }
 
         .upload-drop .hint {
@@ -913,9 +927,15 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
     <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
     <nav class="auth-nav" aria-label="User navigation">
-        <a class="nav-link" href="dashboard.php">Dashboard</a>
+        <div class="search" role="search" aria-label="Site search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path d="M21 21l-4.35-4.35" stroke="#6b7b8f" stroke-width="1.6" stroke-linecap="round"></path>
+                <circle cx="11" cy="11" r="5.2" stroke="#6b7b8f" stroke-width="1.6"></circle>
+            </svg>
+            <input placeholder="Search ..." aria-label="Search">
+        </div>
         <a class="nav-link" href="patients.php">Patients</a>
-        <a class="nav-link" href="history2.php">History</a>
+        <a class="nav-link" href="history2.php">history</a>
         <a href="profile.php" class="profile-btn">
             <div class="profile">
                 <img class="avatar-icon" src="images/profile.png" alt="Profile">
@@ -939,7 +959,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             </h2>
             <label class="upload-card" for="fileUpload">
                 <form method="post" enctype="multipart/form-data" class="upload-card">
-                    <input id="fileUpload" type="file" accept=".wav,.txt,.csv,.png,.jpg"/>
+                    <input id="fileUpload" type="file" accept=".csv,.png,.jpg"/>
                     <div class="upload-drop" id="dropzone">
                         <div style="font-size:28px;opacity:0.95">
                             <span class="material-symbols-outlined">upload</span>
@@ -948,7 +968,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                         <div style="font-size:13px;color:#0b84feb3;margin-top:8px">Drag &amp; drop or click to
                             select a file
                         </div>
-                        <div style="font-size:13px;color:rgba(145,148,151,0.7);margin-top:8px">Only Only CSV, PNG, JPG files are allowed. </div>
+                        <div style="font-size:13px;color:rgba(145,148,151,0.7);margin-top:8px"> Only CSV, PNG, JPG files are allowed. </div>
                     </div>
                     <?php if (!empty($upload_message)): ?>
                         <div class="upload-message <?php echo strpos($upload_message, '') !== false ? 'upload-error' : 'upload-success'; ?>">
@@ -992,43 +1012,49 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             <div class="stats-grid">
                 <div class="stat">
                     <div>
+                        <div class="label" style="margin-bottom:8px;color: #232735">Anomaly</div>
                         <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
-                        <div class="label">Anomaly</div>
+                        <div class="under"><span class="material-symbols-outlined" style="margin-top: 8px;margin-right: 6px; color: #14b530">trending_up</span><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
                     </div>
+
                     <div style="background:linear-gradient(150deg,rgb(218,35,35),rgb(214,103,103));padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span class="material-symbols-outlined">warning</span>
+                        <span style="font-size: 1.75em;text-align: center" class="material-symbols-outlined">warning</span>
                     </div>
                 </div>
 
                 <div class="stat">
                     <div>
+                        <div class="label"  style="margin-bottom:8px;color: #232735">Scans</div>
                         <div class="value"><?php echo $stats['total_scans']; ?></div>
-                        <div class="label">Total scans</div>
+                        <div class="under"><?php echo $stats['total_scans']; ?> scans applied</div>
                     </div>
                     <div style="background:linear-gradient(150deg,rgb(151,255,2),#5b8c2f);padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span class="material-symbols-outlined">scan</span>
+                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
                     </div>
                 </div>
 
-                <div class="stat">
+                <div class="stat" style="width: 205%">
                     <div>
+                        <div class="label"  style="margin-bottom:8px;color: #232735">Patients</div>
                         <div class="value"><?php echo $stats['patients']; ?></div>
-                        <div class="label">Patients</div>
+                        <div class="under"><?php echo $stats['total_scans']; ?>  total patients assigned to you</div>
+
                     </div>
                     <div style="background:linear-gradient(150deg,rgb(101,0,255),#7750b8);padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span class="material-symbols-outlined">group</span>
+                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">group</span>
                     </div>
                 </div>
 
-                <div class="stat">
-                    <div>
-                        <div class="value"><?php echo $stats['confidence']; ?>%</div>
+                <!--    <div class="stat">
+                  <div>
                         <div class="label">AI confidence</div>
+                        <div class="value"><?php echo $stats['confidence']; ?>%</div>
+                        <div class="under"><?php echo $stats['total_scans']; ?> completed</div>
                     </div>
                     <div style="background:linear-gradient(150deg,rgb(0,255,140),#6b9a85);padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span class="material-symbols-outlined">check_circle</span>
+                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">check_circle</span>
                     </div>
-                </div>
+                </div>-->
             </div>
 
             <div class="result-card">
@@ -1036,7 +1062,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                 <div class="result-output" id="resultArea">
                     <?php echo $stats['total_scans'] > 0 ?
                         "Total analyses: {$stats['total_scans']} | Anomalies detected: {$stats['anomaly']}" :
-                        "Upload files to see analysis results";
+                        "You're result will show here!";
                     ?>
                 </div>
                 <div class="chart-container">
