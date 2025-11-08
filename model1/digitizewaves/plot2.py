@@ -1,11 +1,13 @@
-# try3_split_by_id.py
+# try3_split_by_wavecount.py
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-CSV_PATH = Path("digitizewaves/Normal_waves1.csv")
+# <<< عدّلي المسار على ملفك الموحّد بعد المعالجة >>>
+CSV_PATH = Path("digitizewaves/margeAllAfterPreprocess.csv")
+# لو ترسمين من ملف ثاني، عدّلي السطر أعلاه
 
 # ---------- قراءة الملف الصارم ----------
 def load_df(path):
@@ -13,7 +15,7 @@ def load_df(path):
     df.columns = [c.strip().lower() for c in df.columns]
 
     # تحويل الأعمدة الرقمية فقط
-    for col in ["volume","flow","paw","pressure","time"]:
+    for col in ["volume","flow","paw","pressure","time","wave_count"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
@@ -21,12 +23,25 @@ def load_df(path):
     if "paw" not in df.columns and "pressure" in df.columns:
         df = df.rename(columns={"pressure":"paw"})
 
+    # تأكدنا من وجود wave_count
+    if "wave_count" not in df.columns:
+        raise ValueError("الملف لا يحتوي على عمود wave_count. تأكد أنك تستخدم ملف margeAllAfter.csv الناتج من التقسيم.")
+
     return df
 
 # ---------- إعادة أخذ العينات + تمليس (للرسم فقط) ----------
-def resample_and_smooth(one, dt=0.02, smooth_win=7):
+def resample_and_smooth(one, dt=None, smooth_win=7):
     one = one.dropna(subset=["time"]).sort_values("time")
+
+    # إذا ما أعطينا dt، قدّرناه من الداتا نفسها
+    if dt is None:
+        tvals = one["time"].to_numpy()
+        diffs = np.diff(tvals)
+        diffs = diffs[np.isfinite(diffs) & (diffs > 0)]
+        dt = float(np.median(diffs)) if diffssize(diffs:=diffs).sum() else 0.02  # fallback
+
     tmin, tmax = float(one["time"].min()), float(one["time"].max())
+    # شبكة منتظمة
     grid = np.arange(tmin, tmax + dt/2, dt)
     grid_idx = pd.Index(grid, name="time")
 
@@ -87,9 +102,9 @@ def make_ventilator_fig(sample, sid):
                 row=i, col=1
             )
 
-    # تنسيقات عامة (بدون range ثابت -> autorange تلقائي)
+    # تنسيقات عامة
     fig.update_layout(
-        title=dict(text=f"VENTILATOR MONITOR - {sid}", x=0.5,
+        title=dict(text=f"VENTILATOR MONITOR - wave_count={sid}", x=0.5,
                    font=dict(size=24, color='white', family='Arial Black')),
         height=800, width=1200,
         plot_bgcolor='black', paper_bgcolor='black',
@@ -104,29 +119,31 @@ def make_ventilator_fig(sample, sid):
                      tickfont=dict(color='white', size=10))
     return fig
 
-def find_id_column(df):
-    candidates = ["sample_id","id","wave_id","label","wave","name","case","group"]
-    for c in candidates:
-        if c in df.columns:
-            return c
-    return None
-
 # --------- تشغيل ----------
 df = load_df(CSV_PATH)
-id_col = find_id_column(df)
 
-if id_col:
-    # نرسم لكل ID شكل مستقل
-    for sid in df[id_col].dropna().astype(str).unique():
-        one = df[df[id_col].astype(str) == sid][["time","volume","flow","paw"]]
-        one_r = resample_and_smooth(one, dt=0.02, smooth_win=7)
-        fig = make_ventilator_fig(one_r, sid)
-        fig.show()
-        # لو حابة تحفظين كل رسمة كصفحة HTML:
-        # fig.write_html(f"vent_{sid}.html")
-else:
-    # بدون عمود هوية -> موجة واحدة
-    one = df[["time","volume","flow","paw"]]
-    one_r = resample_and_smooth(one, dt=0.02, smooth_win=7)
-    fig = make_ventilator_fig(one_r, "N/A")
+# نستخدم wave_count كمُعرّف للرسم
+id_col = "wave_count"
+
+# نرتّب القيم تصاعدياً (ويتأكد أنها رقمية)
+unique_ids = sorted(pd.to_numeric(df[id_col], errors="coerce").dropna().astype(int).unique())
+
+for wid in unique_ids:
+    # كل نافذة لها نفس wave_count (1200 صف غالباً)
+    cols = ["time","volume","flow","paw"]
+    cols = [c for c in cols if c in df.columns]
+    one = df.loc[df[id_col] == wid, cols]
+
+    # تقدير خطوة الزمن لهذه النافذة (غالباً ثابتة 0..12s بخطوة 1/SAMPLE_RATE)
+    if "time" in one.columns and len(one) > 2:
+        diffs = np.diff(one["time"].to_numpy())
+        diffs = diffs[np.isfinite(diffs) & (diffs > 0)]
+        dt_guess = float(np.median(diffs)) if diffs.size else 0.02
+    else:
+        dt_guess = 0.02
+
+    one_r = resample_and_smooth(one, dt=dt_guess, smooth_win=7)
+    fig = make_ventilator_fig(one_r, wid)
     fig.show()
+    # اختياري: حفظ كل نافذة كـ HTML
+    # fig.write_html(f"vent_wavecount_{wid:05d}.html")
