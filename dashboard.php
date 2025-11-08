@@ -368,7 +368,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
         }
 
         .stat {
-            padding: 16px;
+            padding: 14px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
@@ -390,6 +390,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             font-size: 0.8em;
             font-weight: 600;
             color: #4c5d7a;
+            margin-top: 0.77em;
         }
 
         .result-card {
@@ -1024,7 +1025,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
 
                 <div class="stat">
                     <div>
-                        <div class="label"  style="margin-bottom:8px;color: #232735">Scans</div>
+                        <div class="label" style="margin-bottom:8px;color: #232735">Scans</div>
                         <div class="value"><?php echo $stats['total_scans']; ?></div>
                         <div class="under"><?php echo $stats['total_scans']; ?> scans applied</div>
                     </div>
