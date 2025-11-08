@@ -130,9 +130,29 @@
  
 .PName {
   position: relative;
-  top: 85px;         /* تنزليه لتحت - غيري الرقم لين يناسبك */
-  left: 40px;        /* تحريكه يسار أو يمين */
+  top: 60px;      
+  left: 40px;        
 }
+
+.PName h2 {
+  margin: 0;
+  padding: 0;
+}
+
+.PName .pid {
+ 
+  color: #2b4a77;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.analysis-title {
+  font-weight: 700;
+  color: #2b4a77;
+  margin-bottom: .5em;
+  font-size: 1.15rem;    /* نفس حجم Title الخاص بالتعليقات */
+}
+
 
   </style>
 </head>
@@ -165,12 +185,19 @@
 
   <!-- Page Title: قللنا الـpadding علشان الهيدر -->
   <section style="display:flex;align-items:flex-end;gap:12px;justify-content:space-between;padding:70px 30px;">
-    <div class="PName"><h2 style="color:#1f46b6"></h2></div>
+   <div class="PName">
+    <h2 id="patientName" style="color:#1f46b6"></h2>
+    <h2 id="patientID" class="pid" style="color:#1f46b6"></h2>
+</div>
+
+
+     
     <div style="border-radius:12px;text-align:right;"></div>
   </section>
 
   <!-- ===== Patient Detail Section ===== -->
   <section class="panel" aria-label="Patient detail">
+      <div class="analysis-title">Aِِnalyzed waveforms</div>
     <div class="panel-body">
       <div class="table-scroll">
         <table class="analysis-table">
@@ -277,6 +304,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const pid = getPidFromURL();
+
+  document.getElementById("patientID").textContent =
+      pid ? `ID: ${pid}` : "";
+});
+</script>
+
+
+
 
 <script>
 function fmtDateTime(mysqlTs, locale='en-GB'){

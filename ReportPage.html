@@ -74,7 +74,7 @@ body {
   grid-template-columns:1fr 1fr 1fr; 
   margin-bottom:1.125em;
   white-space: nowrap; /*to avoid go to next line in created by*/ 
- column-gap: 9em; 
+ column-gap: 8em; 
 }
 
 .info-row{ display:flex;  align-items:center; }
@@ -167,7 +167,7 @@ body {
   position: relative;
   width: 100%;
   min-height: 100vh; 
-  height: auto;
+ 
   overflow: visible;
 }
 
@@ -426,6 +426,13 @@ img.logo {
 
 .value { font-weight: strong; }
 
+
+
+
+
+
+
+
     </style>
 
 
@@ -433,16 +440,13 @@ img.logo {
 </head>
 
 <body>
-
 <div class="wrapper">
 
-
-  <img class="topimg" src="Images/Group 8.png" alt="img">
-  <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
-
-  <nav class="auth-nav" aria-label="User navigation">
     
-   <nav class="auth-nav" aria-label="User navigation">
+    <img class="topimg" src="Images/Group 8.png" alt="img">
+    <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
+
+     <nav class="auth-nav" aria-label="User navigation">
         <a class="nav-link" href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
         <a class="nav-link" href="history2.php">History</a>
@@ -457,6 +461,8 @@ img.logo {
         </form>
     </nav>
 
+
+
 <!-- MAIN -->
 <main class="main">
 
@@ -470,37 +476,51 @@ img.logo {
   
 
   <div class="report-sheet">
-    <div class="sheet-heading"style="color: #1f46b6">Waveform Analysis Summary Report</div>
+    <div class="sheet-heading" style="color: #1f46b6">Waveform Analysis Summary Report</div>
 
     <!--info box-->
     <div class="info-box">
-      <div class="info-row">
-        <div class="info-label">Patient name:</div>
-        <div class="info-value" id="r-patient"></div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Created by:</div>
-        <div class="info-value" id="r-created-by"></div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Date of creation:</div>
-        <div class="info-value" id="r-date"></div>
-      </div>
-        
-        <div class="info-row">
-  <div class="info-label">Gender:</div>
-  <div class="info-value" id="r-gender">Male</div>
-</div>
-<div class="info-row">
-  <div class="info-label">Phone number:</div>
-  <div class="info-value" id="r-phone">0504444444</div>
-</div>
-<div class="info-row">
-  <div class="info-label">Date of Birth:</div>
-  <div class="info-value" id="r-dob">7/7/1990</div>
+  <div class="info-row">
+    <div class="info-label">Patient name:</div>
+    <div class="info-value" id="r-patient"></div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-label">Id:</div>
+    <div class="info-value" id="r-id"></div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-label">Datcreation:</div>
+    <div class="info-value" id="r-date"></div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-label">Gender:</div>
+    <div class="info-value" id="r-gender"></div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-label">Phone number:</div>
+    <div class="info-value" id="r-phone"></div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-label">Date of Birth:</div>
+    <div class="info-value" id="r-dob"></div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-label">Created by:</div>
+    <div class="info-value" id="r-created-by"></div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-label">Professional Role:</div>
+    <div class="info-value" id="r-role"></div>
+  </div>
 </div>
 
-    </div>
 
     <!-- field-->
   
@@ -594,8 +614,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const pid = getPidFromURL();
   if (!pid) { alert("Invalid patient id"); return; }
 
-  const wavesList   = document.getElementById("waves-list");
-  const commentsUl  = document.getElementById("comments-list");
+  const wavesList  = document.getElementById("waves-list");
+  const commentsUl = document.getElementById("comments-list");
+
   const getSeverityClass = (level = "") => {
     const s = String(level).trim().toLowerCase();
     if (s.includes("high") || s.includes("critical")) return "critical";
@@ -607,13 +628,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const res  = await fetch(`report.php?pid=${encodeURIComponent(pid)}&_=${Date.now()}`, { cache:'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    if (data.status !== 'success') throw new Error('bad payload');
 
-    // header info
-    document.getElementById("r-patient").textContent    = data.patient ?? "Unknown";
+    // تعبئة معلومات الرأس
+    document.getElementById("r-patient").textContent  = data.patient ?? "Unknown";
+    document.getElementById("r-id").textContent       = data.patientId ?? "-";
+    document.getElementById("r-gender").textContent   = data.gender ?? "-";
+    document.getElementById("r-phone").textContent    = data.phone ?? "-";
+    document.getElementById("r-dob").textContent      = data.dob ? fmtDate(data.dob) : "-";
     document.getElementById("r-created-by").textContent = data.createdBy ?? "System";
-    document.getElementById("r-date").textContent       = fmtDateTime(data.date);
+    document.getElementById("r-role").textContent     = data.creatorRole ?? "-";
+    document.getElementById("r-date").textContent     = fmtDateTime(data.date);
 
-    // waves
+    // الموجات
     if (wavesList) {
       wavesList.innerHTML = "";
       (data.waves || []).forEach(w => {
@@ -627,38 +654,32 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="right">
             <span class="status ${getSeverityClass(w.level)}">${w.level || '-'}</span>
             <time datetime="${w.timestamp}" title="${w.timestamp}">${fmtDateTime(w.timestamp)}</time>
-          </div>
-        `;
+          </div>`;
         wavesList.appendChild(li);
       });
     }
 
-    // comments
+    // التعليقات
     if (commentsUl) {
       commentsUl.innerHTML = "";
       (data.comments || []).forEach(c => {
         const li = document.createElement("li");
         li.className = "item";
         li.innerHTML = `
-          <div class="meta">
-            <span class="material-symbols-outlined">person</span>
-            ${c.by ? c.by : 'Unknown'}
-          </div>
-          <div class="right">
-            <time datetime="${c.timestamp}" title="${c.timestamp}">${fmtDateTime(c.timestamp)}</time>
-          </div>
-          <div class="text">${(c.text ?? '').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-        `;
+          <div class="meta"><span class="material-symbols-outlined">person</span>${c.by || 'Unknown'}</div>
+          <div class="right"><time datetime="${c.timestamp}" title="${c.timestamp}">${fmtDateTime(c.timestamp)}</time></div>
+          <div class="text">${(c.text ?? '').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
         commentsUl.appendChild(li);
       });
     }
 
   } catch (e) {
     console.error(e);
-    alert("cannot appload the report information");
+    alert("cannot upload the report information");
   }
 });
 </script>
+
 
 
 
@@ -721,7 +742,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   </div>
 </footer>
 
-
+</div>
 
 </body>
 </html>
