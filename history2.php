@@ -1037,7 +1037,7 @@ main.main{
     <img class="topimg" src="Images/Group 8.png" alt="img">
     <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
-     <nav class="auth-nav" aria-label="User navigation">
+    <nav class="auth-nav" aria-label="User navigation">
         <a class="nav-link" href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
         <a class="nav-link" href="history2.php">History</a>
@@ -1051,6 +1051,7 @@ main.main{
             <button type="submit" class="btn-logout">Logout</button>
         </form>
     </nav>
+
 
     <main class="main">
         <div class="title">
@@ -1188,7 +1189,7 @@ main.main{
                         <td>{$date}</td>
                         <td><span class='status {$status_class}'>".ucfirst($status). "</span></td>
                         <td><span class='severity {$severity}'>{$severity}</td>
-                        <td>{$anomaly_type}</td>
+                        <td>".ucfirst($anomaly_type)."</td>
                       <!--  <td><span style='color:#1a6dfd;'class='material-symbols-outlined'>delete</span></td>-->
                     
 
