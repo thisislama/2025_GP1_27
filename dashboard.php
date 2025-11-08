@@ -3,29 +3,34 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-if (empty($_SESSION['user_id']) && empty($_SESSION['userID'])) {
-    if (!empty($_POST['action'])) {
+
+if (empty($_SESSION['user_id'])) {
+    if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
         http_response_code(401);
-        echo "Unauthorized. Please sign in.";
-        exit;
+        exit('Unauthorized. Please sign in.');
     }
-    header("Location: signin.php");
+    header('Location: signin.php');
     exit;
 }
-// Database configuration
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "tanafs";
 
-$userID = (int)($_SESSION['user_id'] ?? $_SESSION['userID']);
+$userID = (int)$_SESSION['user_id'];
 
+// --- Database connection ---
+$host = "localhost";
+$user = "root";
+$pass = "root";
+$db   = "tanafs";
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
+$conn->set_charset("utf8mb4");
 
-$first = isset($docData['first_name']) ? $docData['first_name'] : ($_SESSION['first_name'] ?? '');
-$last = isset($docData['last_name']) ? $docData['last_name'] : ($_SESSION['last_name'] ?? '');
-
-$userName = trim($first . ' ' . $last);
-//$userName = $_SESSION['name'] ?? 'User';
+// --- Doctor name ---
+$docRes = $conn->prepare("SELECT first_name, last_name FROM healthcareprofessional WHERE userID=?");
+$docRes->bind_param("i", $userID);
+$docRes->execute();
+$docData = $docRes->get_result()->fetch_assoc();
+$_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
+$docRes->close();
 
 
 // Initialize variables
@@ -38,8 +43,6 @@ $stats = [
 $recent_patients = [];
 $upload_message = '';
 
-// Create database connection
-$conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
     $error_message = "Database connection failed: " . $conn->connect_error;
@@ -952,13 +955,13 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
         <!-- LEFT -->
         <section class="left-column">
 
-            <h2 style="color:#1f45b5; font-size:1.6em;margin:40px 0 0px 1.2em;">
+            <h2 style="color:#1f45b5; font-size:1.65em;margin:40px 0 0px 1.2em;">
                 Welcome back <br>
-                <span style="color:rgba(90,98,120,0.76);font-size: .81em; margin-left: 10px">
-    <?php echo htmlspecialchars($_SESSION['name'] ?? 'User'); ?>
+                <span style="color:rgba(89,115,195,0.76);font-size: .80em;margin-left: 1.7em">
+    <?php echo  $_SESSION['doctorName'] ?>
   </span>
             </h2>
-            <label class="upload-card" for="fileUpload">
+            <label class="upload-card" for="fileUpload" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">
                 <form method="post" enctype="multipart/form-data" class="upload-card">
                     <input id="fileUpload" type="file" accept=".csv,.png,.jpg"/>
                     <div class="upload-drop" id="dropzone">
