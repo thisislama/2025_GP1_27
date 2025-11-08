@@ -1024,7 +1024,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                     <div>
                         <div class="label" style="margin-bottom:8px;color: #232735">Scans</div>
                         <div class="value"><?php echo $stats['total_scans']; ?></div>
-                        <div class="under"><?php echo $stats['total_scans']; ?> scans applied</div>
+                        <div class="under"><?php echo $stats['total_scans']; ?> scans you applied for</div>
                     </div>
                     <div style="background:linear-gradient(150deg,rgb(151,255,2),#5b8c2f);padding:10px;border-radius:8px;color:#fff;font-weight:700">
                         <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
