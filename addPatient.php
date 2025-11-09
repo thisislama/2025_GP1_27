@@ -197,6 +197,50 @@ echo "✅ Connected successfully to existing patient!<br>
     $link->close();
     exit;
 }
+/* ---------- CONNECT ---------- */
+if (isset($_POST['action']) && $_POST['action'] === 'connect') {
+    header('Content-Type: application/json');
+    $PID = trim($_POST['PID'] ?? '');
+    if ($PID === '') {
+        echo json_encode(['type'=>'error','msg'=>'❌ Please enter a valid Patient ID.']);
+        exit;
+    }
+
+    // تحقق من وجود المريض في Tanafs
+    $get = $conn->prepare("SELECT PID, first_name, last_name FROM patient WHERE PID=? LIMIT 1");
+    $get->bind_param("s", $PID);
+    $get->execute();
+    $patient = $get->get_result()->fetch_assoc();
+    $get->close();
+
+    if (!$patient) {
+        echo json_encode(['type'=>'error','msg'=>'❌ No patient found with this ID in Tanafs. Please use <strong>Add</strong> to import from hospital data.']);
+        exit;
+    }
+
+    // تحقق إذا كان المريض مرتبط مسبقاً
+    $chk = $conn->prepare("SELECT COUNT(*) AS c FROM patient_doctor_assignments WHERE PID=? AND userID=?");
+    $chk->bind_param("si", $PID, $userID);
+    $chk->execute();
+    $found = $chk->get_result()->fetch_assoc();
+    $chk->close();
+
+    if ($found['c'] > 0) {
+        echo json_encode(['type'=>'info','msg'=>'⚠️ This patient is already under your care.']);
+        exit;
+    }
+
+    // ربط المريض بالدكتور
+    $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
+    $link->bind_param("si", $PID, $userID);
+    if ($link->execute()) {
+        echo json_encode(['type'=>'success','msg'=>"✅ Connected successfully to <strong>{$patient['first_name']} {$patient['last_name']}</strong> (ID: {$patient['PID']})."]);
+    } else {
+        echo json_encode(['type'=>'error','msg'=>'❌ Failed to connect due to a system error.']);
+    }
+    $link->close();
+    exit;
+}
 
 
 ?>
@@ -473,25 +517,137 @@ img.logo   { top: 4.9vh; }
   img.logo { top: 2.2vh; } 
   .main { margin-top: 120px; } 
 }
+/* ====== Modal for Connect ====== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45);
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  padding: 28px 32px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  animation: popup .25s ease;
+}
+@keyframes popup {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.modal-content h3 {
+  margin-top: 0;
+  color: #0B83FE;
+  margin-bottom: 20px;
+}
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.add-btn.cancel {
+  background: #aaa;
+}
+.add-btn.cancel:hover {
+  background: #888;
+}
 
 </style>
 <script>
 function searchPatient(val){
-    if(val.trim()===''){document.getElementById('results').innerHTML='';return;}
-    const xhr=new XMLHttpRequest();
-    xhr.open('POST','',true);
-    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-    xhr.onload=function(){document.getElementById('results').innerHTML=this.responseText;}
-    xhr.send('action=search&query='+encodeURIComponent(val));
+  if(val.trim()===''){document.getElementById('results').innerHTML='';return;}
+  const xhr=new XMLHttpRequest();
+  xhr.open('POST','',true);
+  xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+  xhr.onload=function(){document.getElementById('results').innerHTML=this.responseText;}
+  xhr.send('action=search&query='+encodeURIComponent(val));
 }
+
 function addPatient(pid){
-    const xhr=new XMLHttpRequest();
-    xhr.open('POST','',true);
-    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-    xhr.onload=function(){document.getElementById('message').innerHTML=this.responseText;}
-    xhr.send('action=add&PID='+encodeURIComponent(pid));
+  const xhr=new XMLHttpRequest();
+  xhr.open('POST','',true);
+  xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+  xhr.onload=function(){document.getElementById('message').innerHTML=this.responseText;}
+  xhr.send('action=add&PID='+encodeURIComponent(pid));
 }
+
+document.addEventListener("DOMContentLoaded", function(){
+  const modal = document.getElementById("connectModal");
+  const connectBtn = document.getElementById("connectBtn");
+  const cancelBtn = document.getElementById("cancelConnect");
+  const confirmBtn = document.getElementById("confirmConnect");
+  const inputPID = document.getElementById("connectPID");
+
+  
+  const modalMsg = document.createElement("p");
+  modalMsg.id = "modalMessage";
+  modalMsg.style.marginTop = "12px";
+  modalMsg.style.fontWeight = "600";
+  modalMsg.style.color = "#0B83FE";
+  document.querySelector(".modal-content").appendChild(modalMsg);
+
+ 
+  connectBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+    inputPID.value = "";
+    modalMsg.innerHTML = "";
+    inputPID.focus();
+  });
+
+  
+  cancelBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  
+  confirmBtn.addEventListener("click", () => {
+    const pid = inputPID.value.trim();
+    if (!pid) {
+      modalMsg.style.color = "red";
+      modalMsg.innerHTML = "Please enter a valid Patient ID.";
+      return;
+    }
+
+    fetch('', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'action=connect&PID=' + encodeURIComponent(pid)
+    })
+    .then(r => r.json())
+    .then(res => {
+      modalMsg.style.color =
+        res.type === "success" ? "green" :
+        res.type === "info" ? "#e0a800" : "red";
+      modalMsg.innerHTML = res.msg;
+    })
+    .catch(() => {
+      modalMsg.style.color = "red";
+      modalMsg.innerHTML = 'Connection failed. Please try again.';
+    });
+  });
+
+  window.addEventListener("click", e => {
+    if (e.target === modal) modal.style.display = "none";
+  });
+});
 </script>
+
+
+
 </head>
 <body>
 <div class="wrapper">
@@ -513,12 +669,26 @@ function addPatient(pid){
     </nav>
 
 <main class="main">
-  <h2>Add Patient from Database</h2>
+  <h2>Add Patient from Hospital Database</h2>
   <div class="search-card">
-      <input type="text" placeholder="Search by Name or ID..." onkeyup="searchPatient(this.value)">
+      <input type="text" placeholder="Search by ID..." onkeyup="searchPatient(this.value)">
       <div id="results"></div>
       <p id="message" style="margin-top:15px;font-weight:600;"></p>
+      <button class="add-btn" id="connectBtn" style="margin-top:10px;">Connect</button>
+      
   </div>
+  <!-- Popup for Connect -->
+<div id="connectModal" class="modal">
+  <div class="modal-content">
+    <h3>Connect Patient</h3>
+    <input type="text" id="connectPID" placeholder="Enter Patient ID">
+    <div class="modal-buttons">
+      <button id="confirmConnect" class="add-btn">Confirm</button>
+      <button id="cancelConnect" class="add-btn cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <footer  id="contact" class="site-footer">
@@ -581,3 +751,4 @@ function addPatient(pid){
 </body>
 </html>
 <?php $conn->close(); ?>
+
