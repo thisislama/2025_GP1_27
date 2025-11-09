@@ -34,8 +34,6 @@ $li = $last !== '' ? mb_substr((string)$last, 0, 1) : '';
 $current_user_initials = strtoupper($fi . $li);
 
 
-
-
 // Handle logout
 if (isset($_POST['logout'])) {
     session_destroy();
@@ -59,12 +57,18 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     $error_message = "Database connection failed: " . $conn->connect_error;
 } else {
-    // Handle search filter - Search by patient ID and analysis ID
+    //search handle
     $search_filter = "";
-    if (isset($_GET['search']) && !empty($_GET['search'])) {
+    if (isset($_GET['search']) && $_GET['search'] !== '') {
         $search_term = $conn->real_escape_string($_GET['search']);
-        $search_filter = " AND (p.PID LIKE '%$search_term%' OR wa.waveAnalysisID LIKE '%$search_term%')";
+        $search_filter = " AND (
+        p.PID LIKE '%$search_term%' 
+        OR wa.waveAnalysisID LIKE '%$search_term%' 
+        OR p.first_name LIKE '%$search_term%' 
+        OR p.last_name LIKE '%$search_term%'
+    )";
     }
+
 
     // Handle status filter
     $status_filter = "";
@@ -74,34 +78,27 @@ if ($conn->connect_error) {
     }
 
     // Handle delete functionality
-    if (isset($_POST['delete']) && isset($_POST['selected_rows']) && $conn && !$conn->connect_error) {
-        $selected_ids = $_POST['selected_rows'];
+    if (isset($_POST['delete']) && !empty($_POST['selected_rows'])) {
+        $selected_ids = array_filter($_POST['selected_rows'], 'is_numeric');
 
-        // Validate and sanitize selected IDs
-        $valid_ids = [];
-        foreach ($selected_ids as $id) {
-            if (is_numeric($id)) {
-                $valid_ids[] = $conn->real_escape_string($id);
-            }
-        }
+        if (!empty($selected_ids)) {
+            $ids_string = implode(',', $selected_ids);
+            $delete_sql = "DELETE FROM waveform_analysis WHERE waveAnalysisID IN ($ids_string)";
 
-        if (!empty($valid_ids)) {
-            $ids_string = implode(',', $valid_ids);
-
-            // Delete selected records
-            $delete_sql = "DELETE FROM Waveform_analysis WHERE waveAnalysisID IN ($ids_string)";
-
-            if ($conn->query($delete_sql)) {
-                $success_message = "Successfully deleted " . count($valid_ids) . " record(s).";
-
-                // Redirect to avoid form resubmission
-                header("Location: " . $_SERVER['PHP_SELF'] . "?" . http_build_query($_GET));
-                exit();
+            if ($conn->query($delete_sql) === TRUE) {
+                $_SESSION['success_message'] = "Successfully deleted " . count($selected_ids) . " record(s).";
             } else {
-                $error_message = "Error deleting records: " . $conn->error;
+                $_SESSION['error_message'] = "Error deleting records: " . $conn->error;
             }
+
+            // redirect to same page to clear POST data
+            header("Location: " . $_SERVER['PHP_SELF'] . '?' . http_build_query($_GET));
+            exit();
+        } else {
+            $_SESSION['error_message'] = "Invalid selection.";
         }
     }
+
 
     // Handle category filter
     $category_filter = "";
@@ -174,62 +171,6 @@ if ($conn->connect_error) {
     }
 }
 
-// Handle download functionality
-if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$conn->connect_error) {
-    $selected_ids = $_POST['selected_rows'];
-
-    // Validate and sanitize selected IDs
-    $valid_ids = [];
-    foreach ($selected_ids as $id) {
-        if (is_numeric($id)) {
-            $valid_ids[] = $conn->real_escape_string($id);
-        }
-    }
-
-    if (!empty($valid_ids)) {
-        $ids_string = implode(',', $valid_ids);
-
-        $download_sql = "
-            SELECT 
-                p.PID,
-                CONCAT(p.first_name, ' ', p.last_name) as patient_name,
-                p.phone,
-                wa.timestamp as analysis_date,
-                wa.status,
-                wa.severity_level,
-                wa.anomaly_type
-            FROM Waveform_analysis wa
-            JOIN Patient p ON wa.PID = p.PID
-            WHERE wa.waveAnalysisID IN ($ids_string)
-        ";
-
-        $download_result = $conn->query($download_sql);
-        if ($download_result && $download_result->num_rows > 0) {
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="analysis_history_' . date('Y-m-d') . '.csv"');
-
-            $output = fopen('php://output', 'w');
-
-            // Add CSV headers
-            fputcsv($output, ['Patient ID', 'Patient Name', 'Phone', 'Analysis Date', 'Status', 'Severity', 'Anomaly Type']);
-
-            while ($row = $download_result->fetch_assoc()) {
-                fputcsv($output, [
-                    "P" . substr($row['PID'], -4),
-                    $row['patient_name'],
-                    $row['phone'],
-                    $row['analysis_date'],
-                    $row['status'],
-                    $row['severity_level'],
-                    $row['anomaly_type']
-                ]);
-            }
-
-            fclose($output);
-            exit();
-        }
-    }
-}
 ?>
 <!doctype html>
 <html lang="en">
@@ -289,57 +230,109 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
 
 
         /* ===== Layout ===== */
-        .wrapper{
-            position:relative;
-            width:100%;
-            min-height:100vh;
-            overflow:visible;
+        .wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            overflow: visible;
         }
 
-        .main{
-            flex:1;
-            display:flex;
-            flex-direction:column;
-            height:50em;
-            margin-top:clamp(133px,11vh,340px);
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 50em;
+            margin-top: clamp(133px, 11vh, 340px);
         }
 
-        main{
-            flex:1;
-            border-top-left-radius:30px;
-            padding:36px;
-            overflow-y:auto;
+        main {
+            flex: 1;
+            border-top-left-radius: 30px;
+            padding: 36px;
+            overflow-y: auto;
         }
 
         /* ===== Header visuals ===== */
-        img.topimg{
-            position:absolute; top:-3%; left:48%; transform:translateX(-50%);
-            max-width:90%; height:auto; width:auto; z-index:10; pointer-events:none;
-        }
-        img.logo{
-            position:absolute; top:2.2%; left:14%;
-            width:clamp(100px,12vw,180px); height:auto; z-index:20; pointer-events:none;
-        }
-
-        .auth-nav{
-            position:absolute; top:3.2%; right:16.2%;
-            display:flex; align-items:center; gap:1.6em; z-index:30;
+        img.topimg {
+            position: absolute;
+            top: -3%;
+            left: 48%;
+            transform: translateX(-50%);
+            max-width: 90%;
+            height: auto;
+            width: auto;
+            z-index: 10;
+            pointer-events: none;
         }
 
-        .nav-link{
-            color:#0876FA; font-weight:600; text-decoration:none; font-size:1em;
-            transition:all .3s ease; position:relative;
+        img.logo {
+            position: absolute;
+            top: 2.2%;
+            left: 14%;
+            width: clamp(100px, 12vw, 180px);
+            height: auto;
+            z-index: 20;
+            pointer-events: none;
         }
-        .nav-link::after{
-            content:""; position:absolute; bottom:-4px; left:0; width:0; height:2px;
-            background:linear-gradient(90deg,#0876FA,#78C1F5); transition:width .3s ease; border-radius:2px;
-        }
-        .nav-link:hover{ transform:translateY(-2px); color:#055ac0; }
-        .nav-link:hover::after{ width:100%; }
 
-        .profile{ display:flex; gap:.625em; align-items:center; padding:.375em .625em; }
-        .avatar-icon{ width:30px; height:30px; display:block; }
-        .profile-btn{ all:unset; cursor:pointer; display:inline-block; }
+        .auth-nav {
+            position: absolute;
+            top: 3.2%;
+            right: 16.2%;
+            display: flex;
+            align-items: center;
+            gap: 1.6em;
+            z-index: 30;
+        }
+
+        .nav-link {
+            color: #0876FA;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1em;
+            transition: all .3s ease;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0876FA, #78C1F5);
+            transition: width .3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            color: #055ac0;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .profile {
+            display: flex;
+            gap: .625em;
+            align-items: center;
+            padding: .375em .625em;
+        }
+
+        .avatar-icon {
+            width: 30px;
+            height: 30px;
+            display: block;
+        }
+
+        .profile-btn {
+            all: unset;
+            cursor: pointer;
+            display: inline-block;
+        }
 
         .btn-logout {
             background: linear-gradient(90deg, #0f65ff, #5aa6ff);
@@ -354,14 +347,26 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
         }
 
         /* ===== Title ===== */
-        .title{
-            display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;
+        .title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .title h2{ color:#1f46b6; font-size:1.5rem; }
 
-        .success-message{
-            background:#e2f5e9; color:#15803d; padding:12px; border-radius:8px; margin-bottom:15px;
-            text-align:center; border:1px solid #bbf7d0;
+        .title h2 {
+            color: #1f46b6;
+            font-size: 1.5rem;
+        }
+
+        .success-message {
+            background: #e2f5e9;
+            color: #15803d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #bbf7d0;
         }
 
         /* ===== Advanced Filters Popup ===== */
@@ -501,37 +506,103 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
         }
 
         /* ===== Table Card ===== */
-        .table-container{
-            background:#fff; border-radius:16px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,.05);
+        .table-container {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
         }
 
-        .table-actions{
-            display:flex; justify-content:space-between; margin-bottom:15px; gap:15px;
+        .table-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            gap: 15px;
         }
 
-        .filter-section{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
         .table-actions input,
-        .table-actions select{
-            padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-size:14px;
+        .table-actions select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
         }
 
-        .table-actions button{
-            padding:8px 14px; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px;
+        #searchInput{
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
         }
 
-        .download-btn{ background: rgba(184, 33, 33, 0.85); color:#fff; }
-        .download-btn:disabled{ background: #b0bcc1; cursor:not-allowed; }
-        .filter-btn{ background:rgba(196,216,220,.51); color:#1b2250; border-radius:8px; }
-        .delete-btn{ background: rgba(184, 33, 33, 0.85); color:#fff; }
-        .delete-btn:disabled{ background: #b0bcc1; cursor:not-allowed; }
-        .delete-btn:hover:not(:disabled) { background: rgba(184, 33, 33, 1); }
+        .table-actions button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+
+
+        #searchButton{
+            background: rgba(196, 216, 220, .51);
+            color: #1b2250;
+            border-radius: 8px;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+
+        }
+
+        #searchButton:hover {
+
+        }
+
+
+
+        .filter-btn {
+            background: rgba(196, 216, 220, .51);
+            color: #1b2250;
+            border-radius: 8px;
+        }
+
+        .delete-btn {
+            background: rgba(184, 33, 33, 0.85);
+            color: #fff;
+            display: flex;
+            position: relative;
+            top: -5em;
+            right: -70em;
+
+        }
+
+        .delete-btn:disabled {
+            background: #b0bcc1;
+            cursor: not-allowed;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background: rgba(184, 33, 33, 1);
+
+        }
 
         .advanced-filter-btn {
             background: #1f46b6;
             color: #fff;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 15px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
@@ -540,131 +611,373 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
             align-items: center;
             gap: 8px;
             transition: background 0.2s;
+            position: relative;
+            top: -2.4em;
+            right: -58em;
         }
 
         .advanced-filter-btn:hover {
             background: #0f3a9e;
         }
 
-        table{
-            width:100%; border-collapse:collapse; text-align:center; margin-top:30px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            margin-top: 30px;
         }
-        th,td{
-            padding:12px; text-align:center; border-bottom:1px solid #f0f0f0;
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
         }
-        th{ background:#f4f6fc; color:#1f46b6; font-weight:600; }
-        tr:hover{ background:#f9fbff; }
+
+        th {
+            background: #f4f6fc;
+            color: #1f46b6;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f9fbff;
+        }
 
         /* ===== Status Pills ===== */
-        .status{
-            padding:6px 12px; border-radius:12px; font-size:.85rem; font-weight:500;
-            display:inline-block; min-width:80px;
-        }
-        .status.Abnormal{ background:#fee2e2; color:#b91c1c; }
-        .status.abnormal{ background:#fee2e2; color:#b91c1c; }
-        .status.normal{ background:#e2f5e9; color:#15803d; }
-
-        .severity{
-            padding:6px 12px; border-radius:12px; font-size:.85rem; font-weight:500;
-            display:inline-block; min-width:80px;
+        .status {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: .85rem;
+            font-weight: 500;
+            display: inline-block;
+            min-width: 80px;
         }
 
-        .severity.High{ background:#fee2e2; color:#b91c1c; }
-        .severity.Mild{ background: #feede2; color: #b9581c; }
-        .severity.Low{ background:#e2f5e9; color:#15803d;}
-        .severity{ background: #e2e9fe; color: #1c1fb9; }
+        .status.Abnormal {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status.abnormal {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status.normal {
+            background: #e2f5e9;
+            color: #15803d;
+        }
+
+        .severity {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: .85rem;
+            font-weight: 500;
+            display: inline-block;
+            min-width: 80px;
+        }
+
+        .severity.High {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .severity.Mild {
+            background: #feede2;
+            color: #b9581c;
+        }
+
+        .severity.Low {
+            background: #e2f5e9;
+            color: #15803d;
+        }
+
+        .severity {
+            background: #e2e9fe;
+            color: #1c1fb9;
+        }
 
 
         /* ===== Pagination ===== */
-        .pagination{
-            display:flex; gap:8px; justify-content:center; align-items:center; margin-top:20px;
+        .pagination {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
         }
+
         .pagination button,
-        .pagination a{
-            border:none; background:#f3f6fb; padding:6px 12px; border-radius:6px; cursor:pointer;
-            text-decoration:none; color:inherit; display:inline-block; font-size:14px;
+        .pagination a {
+            border: none;
+            background: #f3f6fb;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: inline-block;
+            font-size: 14px;
         }
-        .pagination .active{ background:#1976d2; color:#fff; }
+
+        .pagination .active {
+            background: #1976d2;
+            color: #fff;
+        }
+
         .pagination button:disabled,
-        .pagination a:disabled{ background:#f3f6fb; color:#ccc; cursor:not-allowed; }
+        .pagination a:disabled {
+            background: #f3f6fb;
+            color: #ccc;
+            cursor: not-allowed;
+        }
 
         /* ===== Messages ===== */
-        .error-message{
-            background:#fee2e2; color:#b91c1c; padding:12px; border-radius:8px; margin-bottom:15px;
-            text-align:center; border:1px solid #fecaca;
+        .error-message {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #fecaca;
         }
-        .no-data{ text-align:center; padding:40px; color:#6b7b8f; font-style:italic; }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #6b7b8f;
+            font-style: italic;
+        }
 
         /* ===== Footer===== */
-        .site-footer{
-            background:#F6F6F6; color:#0b1b2b; font-family:'Montserrat',sans-serif; margin-top:auto;
-        }
-        .footer-grid{
-            max-width:75em; margin:0 auto; padding:2.5em 1.25em;
-            display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:2em; align-items:start; direction:ltr;
-        }
-        .footer-col.brand{ text-align:left; }
-        .footer-logo{ height:5.5em; width:auto; display:block; margin-left:-3em; }
-        .brand-tag{ margin-top:.75em; color:#4c5d7a; font-size:.95em; }
-
-        .footer-title{
-            margin:0 0 1em 0; font-size:1.05em; font-weight:700; letter-spacing:.0125em; color:#0B83FE; text-transform:uppercase;
+        .site-footer {
+            background: #F6F6F6;
+            color: #0b1b2b;
+            font-family: 'Montserrat', sans-serif;
+            margin-top: auto;
         }
 
-        .social-list{ list-style:none; padding:0; margin:0; display:flex; gap:.75em; align-items:center; }
-        .social-list li a{
-            display:inline-flex; align-items:center; justify-content:center;
-            transition:transform .2s ease, opacity .2s ease;
+        .footer-grid {
+            max-width: 75em;
+            margin: 0 auto;
+            padding: 2.5em 1.25em;
+            display: grid;
+            grid-template-columns:1.2fr 1fr 1fr;
+            gap: 2em;
+            align-items: start;
+            direction: ltr;
         }
-        .social-list li a:hover{ transform:translateY(-.2em); }
-        .social-list img{ width:1.2em; height:1.2em; }
-        .social-handle{ display:block; margin-top:.6em; color:#0B83FE; font-size:.95em; }
 
-        .contact-list{ list-style:none; padding:0; margin:.25em 0 0 0; display:grid; gap:.6em; }
-        .contact-link{
-            display:flex; align-items:center; gap:.6em; text-decoration:none; color:#0B83FE;
-            padding:.5em .6em; border-radius:.6em; transition:background .2s ease, transform .2s ease;
+        .footer-col.brand {
+            text-align: left;
         }
-        .contact-link:hover{ background:rgba(255,255,255,.7); transform:translateX(.2em); }
-        .contact-link img{ width:1.15em; height:1.15em; }
 
-        .footer-bar{ border-top:.06em solid rgba(11,45,92,.12); text-align:center; padding:.9em 1em 1.2em; }
-        .legal{ margin:.2em 0; color:#4c5d7a; font-size:.9em; }
-        .legal a{ color:#27466e; text-decoration:none; }
-        .legal a:hover{ text-decoration:underline; }
-        .legal .dot{ margin:0 .5em; color:rgba(11,45,92,.6); }
-        .copy{ margin:.2em 0 0; color:#0B83FE; font-size:.85em; }
+        .footer-logo {
+            height: 5.5em;
+            width: auto;
+            display: block;
+            margin-left: -3em;
+        }
+
+        .brand-tag {
+            margin-top: .75em;
+            color: #4c5d7a;
+            font-size: .95em;
+        }
+
+        .footer-title {
+            margin: 0 0 1em 0;
+            font-size: 1.05em;
+            font-weight: 700;
+            letter-spacing: .0125em;
+            color: #0B83FE;
+            text-transform: uppercase;
+        }
+
+        .social-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: .75em;
+            align-items: center;
+        }
+
+        .social-list li a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .2s ease, opacity .2s ease;
+        }
+
+        .social-list li a:hover {
+            transform: translateY(-.2em);
+        }
+
+        .social-list img {
+            width: 1.2em;
+            height: 1.2em;
+        }
+
+        .social-handle {
+            display: block;
+            margin-top: .6em;
+            color: #0B83FE;
+            font-size: .95em;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: .25em 0 0 0;
+            display: grid;
+            gap: .6em;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: .6em;
+            text-decoration: none;
+            color: #0B83FE;
+            padding: .5em .6em;
+            border-radius: .6em;
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .contact-link:hover {
+            background: rgba(255, 255, 255, .7);
+            transform: translateX(.2em);
+        }
+
+        .contact-link img {
+            width: 1.15em;
+            height: 1.15em;
+        }
+
+        .footer-bar {
+            border-top: .06em solid rgba(11, 45, 92, .12);
+            text-align: center;
+            padding: .9em 1em 1.2em;
+        }
+
+        .legal {
+            margin: .2em 0;
+            color: #4c5d7a;
+            font-size: .9em;
+        }
+
+        .legal a {
+            color: #27466e;
+            text-decoration: none;
+        }
+
+        .legal a:hover {
+            text-decoration: underline;
+        }
+
+        .legal .dot {
+            margin: 0 .5em;
+            color: rgba(11, 45, 92, .6);
+        }
+
+        .copy {
+            margin: .2em 0 0;
+            color: #0B83FE;
+            font-size: .85em;
+        }
 
         /* ===== Responsive ===== */
-        @media (max-width:1280px){
-            .search{ width:240px; }
+        @media (max-width: 1280px) {
+            .search {
+                width: 240px;
+            }
         }
-        @media (max-width:1024px){
-            main{ padding:20px; }
-            .table-actions{ flex-direction:column; }
-            .filter-section{ justify-content:center; }
+
+        @media (max-width: 1024px) {
+            main {
+                padding: 20px;
+            }
+
+            .table-actions {
+                flex-direction: column;
+            }
+
+            .filter-section {
+                justify-content: center;
+            }
         }
-        @media (max-width:768px){
-            body{ flex-direction:column; }
-            .main{ margin-left:0; }
-            .table-actions{ flex-direction:column; }
-            .filter-section{ flex-direction:column; align-items:stretch; }
-            .filter-section input, .filter-section select{ width:100%; }
-            .filter-grid { grid-template-columns: 1fr; }
-            .filter-popup { width: 95%; padding: 20px; }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .table-actions {
+                flex-direction: column;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-section input, .filter-section select {
+                width: 100%;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-popup {
+                width: 95%;
+                padding: 20px;
+            }
         }
-        @media (max-width:480px){
-            .search{ display:none; }
-            th,td{ padding:8px 4px; font-size:12px; }
-            .table-actions button{ padding:6px 10px; font-size:12px; }
+
+        @media (max-width: 480px) {
+            .search {
+                display: none;
+            }
+
+            th, td {
+                padding: 8px 4px;
+                font-size: 12px;
+            }
+
+            .table-actions button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
         }
 
         /* Footer grid to single column on mobile */
-        @media (max-width:56.25em){
-            .footer-grid{ grid-template-columns:1fr; gap:1.5em; text-align:center; }
-            .social-list{ justify-content:center; }
-            .contact-link{ justify-content:center; }
-            .brand{ display:flex; flex-direction:column; align-items:center; }
+        @media (max-width: 56.25em) {
+            .footer-grid {
+                grid-template-columns:1fr;
+                gap: 1.5em;
+                text-align: center;
+            }
+
+            .social-list {
+                justify-content: center;
+            }
+
+            .contact-link {
+                justify-content: center;
+            }
+
+            .brand {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
         }
 
         @media (min-width: 768px) and (max-width: 1024px) {
@@ -797,18 +1110,6 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
             font-size: 0.875em;
         }
 
-        .search {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            width: min(320px, 40vw);
-            background: #ffffff;
-            border: 1px solid #e7eef8;
-            border-radius: 14px;
-            box-shadow: 0 6px 20px rgba(20, 40, 80, 0.06);
-            transition: box-shadow .2s ease, border-color .2s ease, transform .08s ease;
-        }
 
         .search svg {
             flex: 0 0 18px;
@@ -1003,29 +1304,30 @@ if (isset($_POST['download']) && isset($_POST['selected_rows']) && $conn && !$co
         .welcome, .welcome h1, .welcome p {
             color: #2b4a77;
         }
-img.logo{
-  position: absolute !important;
-  top: -10.2% !important;
-  left: 14% !important;
-  width: clamp(100px, 12vw, 180px) !important;
-  height: auto !important;
-  z-index: 20 !important;
-  pointer-events: none;
-}
 
-.auth-nav{
-  position: absolute !important;
-  top: -9% !important;
-  right: 16.2% !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 1.6em !important;
-  z-index: 30 !important;
-}
+        img.logo {
+            position: absolute !important;
+            top: -10.2% !important;
+            left: 14% !important;
+            width: clamp(100px, 12vw, 180px) !important;
+            height: auto !important;
+            z-index: 20 !important;
+            pointer-events: none;
+        }
 
-main.main{
-  margin-top: clamp(133px, 11vh, 340px) !important;
-}
+        .auth-nav {
+            position: absolute !important;
+            top: -9% !important;
+            right: 16.2% !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 1.6em !important;
+            z-index: 30 !important;
+        }
+
+        main.main {
+            margin-top: clamp(133px, 11vh, 340px) !important;
+        }
 
     </style>
 
@@ -1074,29 +1376,47 @@ main.main{
                     <h3>Customize Filters</h3>
                     <button type="button" class="close-popup" id="closePopup">&times;</button>
                 </div>
-
-                <form method="get" id="filterForm">
+                <!--Custom Filter-->
+                <form method="GET" id="filterForm">
                     <div class="filter-grid">
                         <div class="filter-group">
                             <label for="status">Status</label>
                             <select name="status" id="status">
                                 <option value="all">All Statuses</option>
-                                <option value="Normal" <?php echo (isset($_GET['status']) && $_GET['status']=='Normal')?'selected':''; ?>>Normal</option>
-                                <option value="Abnormal" <?php echo (isset($_GET['status']) && $_GET['status']=='Abnormal')?'selected':''; ?>>Abnormal</option>
+                                <option value="Normal" <?php echo (isset($_GET['status']) && $_GET['status'] == 'Normal') ? 'selected' : ''; ?>>
+                                    Normal
+                                </option>
+                                <option value="Abnormal" <?php echo (isset($_GET['status']) && $_GET['status'] == 'Abnormal') ? 'selected' : ''; ?>>
+                                    Abnormal
+                                </option>
                             </select>
                         </div>
 
                         <div class="filter-group">
                             <label for="category">Anomaly type</label>
                             <select name="category" id="category">
-                                <option value="all">All Categories</option>
-                                <option value="double trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type']=='double trigger')?'selected':''; ?>>double trigger</option>
-                                <option value="auto trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type']=='auto trigger')?'selected':''; ?>>auto trigger</option>
-                                <option value="ineffective trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type']=='ineffective trigger')?'selected':''; ?>>ineffective trigger</option>
-                                <option value="delayed cycling" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type']=='delayed cycling')?'selected':''; ?>>delayed cycling</option>
-                                <option value="reverse trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type']=='reverse trigger')?'selected':''; ?>>reverse trigger</option>
-                                <option value="flow limited" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type']=='flow limited')?'selected':''; ?>>flow limited</option>
-                                <option value="early cycling" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type']=='early cycling')?'selected':''; ?>>early cycling</option>
+                                <option value="all">All Anomaly</option>
+                                <option value="double trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'double trigger') ? 'selected' : ''; ?>>
+                                    double trigger
+                                </option>
+                                <option value="auto trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'auto trigger') ? 'selected' : ''; ?>>
+                                    auto trigger
+                                </option>
+                                <option value="ineffective trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'ineffective trigger') ? 'selected' : ''; ?>>
+                                    ineffective trigger
+                                </option>
+                                <option value="delayed cycling" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'delayed cycling') ? 'selected' : ''; ?>>
+                                    delayed cycling
+                                </option>
+                                <option value="reverse trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'reverse trigger') ? 'selected' : ''; ?>>
+                                    reverse trigger
+                                </option>
+                                <option value="flow limited" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'flow limited') ? 'selected' : ''; ?>>
+                                    flow limited
+                                </option>
+                                <option value="early cycling" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'early cycling') ? 'selected' : ''; ?>>
+                                    early cycling
+                                </option>
                             </select>
                         </div>
 
@@ -1104,20 +1424,28 @@ main.main{
                             <label for="severity">Severity</label>
                             <select name="severity" id="severity">
                                 <option value="all">All Severities</option>
-                                <option value="low" <?php echo (isset($_GET['severity']) && $_GET['severity']=='low')?'selected':''; ?>>Low</option>
-                                <option value="mild" <?php echo (isset($_GET['severity']) && $_GET['severity']=='mild')?'selected':''; ?>>Mild</option>
-                                <option value="high" <?php echo (isset($_GET['severity']) && $_GET['severity']=='high')?'selected':''; ?>>High</option>
+                                <option value="low" <?php echo (isset($_GET['severity']) && $_GET['severity'] == 'low') ? 'selected' : ''; ?>>
+                                    Low
+                                </option>
+                                <option value="mild" <?php echo (isset($_GET['severity']) && $_GET['severity'] == 'mild') ? 'selected' : ''; ?>>
+                                    Mild
+                                </option>
+                                <option value="high" <?php echo (isset($_GET['severity']) && $_GET['severity'] == 'high') ? 'selected' : ''; ?>>
+                                    High
+                                </option>
                             </select>
                         </div>
 
                         <div class="filter-group">
                             <label for="date_from">From Date</label>
-                            <input type="date" name="date_from" id="date_from" value="<?php echo isset($_GET['date_from'])?htmlspecialchars($_GET['date_from']):''; ?>">
+                            <input type="date" name="date_from" id="date_from"
+                                   value="<?php echo isset($_GET['date_from']) ? htmlspecialchars($_GET['date_from']) : ''; ?>">
                         </div>
 
                         <div class="filter-group">
                             <label for="date_to">To Date</label>
-                            <input type="date" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to'])?htmlspecialchars($_GET['date_to']):''; ?>">
+                            <input type="date" name="date_to" id="date_to"
+                                   value="<?php echo isset($_GET['date_to']) ? htmlspecialchars($_GET['date_to']) : ''; ?>">
                         </div>
                     </div>
 
@@ -1130,19 +1458,32 @@ main.main{
         </div>
 
         <div class="table-container">
-            <form method="post" id="downloadForm">
-                <div class="table-actions">
+           <!-- <form method="POST" id="downloadForm">-->
+            <!-- <div class="table-actions">-->
                     <div class="filter-section">
-                        <input style="width: 50em" type="text" name="search" placeholder="Search by Patient ID or Analysis ID..."
-                               value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                        <button type="submit" class="filter-btn">Search</button>
-                        <button type="button" class="advanced-filter-btn" id="openFilters">
-                            <span class="material-symbols-outlined">filter_list</span>
-                            Custom Filters
+                        <form name="search" method="GET" action="history2.php" id="searchForm">
+                            <input id="searchInput" style="width: 50em"
+                                   type="text"
+                                   name="search"
+                                   placeholder="Search by Patient ID or Analysis ID..."
+                                   value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                            <button type="submit" id="searchButton" class="filter-btn">Search</button>
+                            <button type="button" class="advanced-filter-btn" id="openFilters">
+                                <span class="material-symbols-outlined">filter_list</span> Custom Filters
+                            </button>
+                        </form>
+                    </div>
+                   <!-- <div>
+                        <button type="submit" name="delete" class="delete-btn" id="deleteBtn"
+                                onclick="return confirmDelete()">Delete Selected
                         </button>
                     </div>
+                </div>-->
+            <form method="POST" id="deleteForm">
+                <div class="table-actions">
                     <div>
-                        <button type="submit" name="delete" class="delete-btn" id="deleteBtn" onclick="return confirmDelete()">Delete Selected</button>
+                        <button type="submit" name="delete" class="delete-btn" id="deleteBtn"
+                                onclick="return confirmDelete()">Delete Selected</button>
                     </div>
                 </div>
 
@@ -1156,7 +1497,7 @@ main.main{
                         <th>Date</th>
                         <th>Status</th>
                         <th>Severity level</th>
-                        <th>Anomaly type </th>
+                        <th>Anomaly type</th>
                     </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -1164,20 +1505,19 @@ main.main{
                     if (!empty($results)) {
                         foreach ($results as $row) {
                             // $patient_id = "P".substr($row['PID'],-4)."A".substr($row['waveAnalysisID'],-2);
-                            $patient_id=$row['PID'];
-                            $analysis_id=$row['waveAnalysisID'];
-                            $full_name  = htmlspecialchars($row['first_name']." ".$row['last_name']);
-                            $phone      = htmlspecialchars($row['phone']);
-                            $date       = date('Y-m-d', strtotime($row['analysis_date']));
-                            $status     = $row['status'];
-                            $severity   = $row['severity_level'] ?: 'N/A';
-                            $anomaly_type=$row['anomaly_type'] ?: 'N/A';
+                            $patient_id = $row['PID'];
+                            $analysis_id = $row['waveAnalysisID'];
+                            $full_name = htmlspecialchars($row['first_name'] . " " . $row['last_name']);
+                            $phone = htmlspecialchars($row['phone']);
+                            $date = date('Y-m-d', strtotime($row['analysis_date']));
+                            $status = $row['status'];
+                            $severity = $row['severity_level'] ?: 'N/A';
+                            $anomaly_type = $row['anomaly_type'] ?: 'N/A';
 
                             $status_class = strtolower($status);
-                            if (!in_array($status_class, ['normal','abnormal'])) {
+                            if (!in_array($status_class, ['normal', 'abnormal'])) {
                                 $status_class = 'normal';
                             }
-
 
 
                             echo "
@@ -1187,9 +1527,9 @@ main.main{
                         <td>{$analysis_id}</td>
                         <td>{$full_name}</td>
                         <td>{$date}</td>
-                        <td><span class='status {$status_class}'>".ucfirst($status). "</span></td>
+                        <td><span class='status {$status_class}'>" . ucfirst($status) . "</span></td>
                         <td><span class='severity {$severity}'>{$severity}</td>
-                        <td>".ucfirst($anomaly_type)."</td>
+                        <td>" . ucfirst($anomaly_type) . "</td>
                       <!--  <td><span style='color:#1a6dfd;'class='material-symbols-outlined'>delete</span></td>-->
                     
 
@@ -1206,19 +1546,20 @@ main.main{
                 <?php if ($total_pages > 1): ?>
                     <div class="pagination">
                         <?php if ($page > 1): ?>
-                            <a href="?<?php echo http_build_query(array_merge($_GET, ['page'=>$page-1])); ?>">Previous</a>
+                            <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>">Previous</a>
                         <?php endif; ?>
 
-                        <?php for ($i=1; $i<=$total_pages; $i++): ?>
-                            <?php if ($i==1 || $i==$total_pages || ($i >= $page-2 && $i <= $page+2)): ?>
-                                <a href="?<?php echo http_build_query(array_merge($_GET, ['page'=>$i])); ?>" class="<?php echo $i==$page?'active':''; ?>"><?php echo $i; ?></a>
-                            <?php elseif ($i==$page-3 || $i==$page+3): ?>
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <?php if ($i == 1 || $i == $total_pages || ($i >= $page - 2 && $i <= $page + 2)): ?>
+                                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"
+                                   class="<?php echo $i == $page ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                            <?php elseif ($i == $page - 3 || $i == $page + 3): ?>
                                 <span>...</span>
                             <?php endif; ?>
                         <?php endfor; ?>
 
                         <?php if ($page < $total_pages): ?>
-                            <a href="?<?php echo http_build_query(array_merge($_GET, ['page'=>$page+1])); ?>">Next</a>
+                            <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>">Next</a>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
@@ -1297,15 +1638,17 @@ main.main{
     }
 
     // Update delete button state
-    function updateDeleteButton(){
+    function updateDeleteButton() {
         const checked = document.querySelectorAll('.row-checkbox:checked');
         document.getElementById('deleteBtn').disabled = (checked.length === 0);
     }
 
     // Update all event listeners to use updateDeleteButton instead of updateDownloadButton
-    document.getElementById('selectAll').addEventListener('click', function(){
+    document.getElementById('selectAll').addEventListener('click', function () {
         const boxes = document.getElementsByClassName('row-checkbox');
-        for (let b of boxes){ b.checked = this.checked; }
+        for (let b of boxes) {
+            b.checked = this.checked;
+        }
         updateDeleteButton();
     });
 
@@ -1316,48 +1659,24 @@ main.main{
     // Initialize delete button state
     updateDeleteButton();
 
-    // Add this JavaScript for search functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchForm = document.querySelector('form[method="get"]');
-        const searchInput = document.querySelector('input[name="search"]');
 
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                // Auto-submit form after typing stops (optional)
-                clearTimeout(window.searchTimeout);
-                window.searchTimeout = setTimeout(() => {
-                    searchForm.submit();
-                }, 800);
-            });
-        }
-    });
 </script>
 <script>
     // Select All functionality
-    document.getElementById('selectAll').addEventListener('click', function(){
+    document.getElementById('selectAll').addEventListener('click', function () {
         const boxes = document.getElementsByClassName('row-checkbox');
-        for (let b of boxes){ b.checked = this.checked; }
-        updateDownloadButton();
+        for (let b of boxes) {
+            b.checked = this.checked;
+        }
+        updateDeleteButton();
     });
 
-    // Update download button state
-    function updateDownloadButton(){
-        const checked = document.querySelectorAll('.row-checkbox:checked');
-        document.getElementById('downloadBtn').disabled = (checked.length === 0);
-    }
 
     // Add event listeners to row checkboxes
     document.querySelectorAll('.row-checkbox').forEach(cb => {
-        cb.addEventListener('change', updateDownloadButton);
+        cb.addEventListener('change', updateDeleteButton);
     });
 
-    // Prevent form submission if no rows are selected for download
-    document.getElementById('downloadForm').addEventListener('submit', function(e){
-        if (document.querySelectorAll('.row-checkbox:checked').length === 0 && e.submitter.name === 'download'){
-            e.preventDefault();
-            alert('Please select at least one record to download.');
-        }
-    });
 
     // Filter popup functionality
     const filterPopup = document.getElementById('filterPopup');
@@ -1365,24 +1684,24 @@ main.main{
     const closePopupBtn = document.getElementById('closePopup');
 
     // Open filter popup
-    openFiltersBtn.addEventListener('click', function() {
+    openFiltersBtn.addEventListener('click', function () {
         filterPopup.style.display = 'flex';
     });
 
     // Close filter popup
-    closePopupBtn.addEventListener('click', function() {
+    closePopupBtn.addEventListener('click', function () {
         filterPopup.style.display = 'none';
     });
 
     // Close popup when clicking outside
-    filterPopup.addEventListener('click', function(e) {
+    filterPopup.addEventListener('click', function (e) {
         if (e.target === filterPopup) {
             filterPopup.style.display = 'none';
         }
     });
 
     // Reset filters to default values
-    document.getElementById('resetFilters').addEventListener('click', function(){
+    document.getElementById('resetFilters').addEventListener('click', function () {
         document.getElementById('status').value = 'all';
         document.getElementById('category').value = 'all';
         document.getElementById('severity').value = 'all';
@@ -1390,8 +1709,41 @@ main.main{
         document.getElementById('date_to').value = '';
     });
 
-    // Initialize download button state
-    updateDownloadButton();
+    updateDeleteButton();
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+
+        if (searchForm && searchInput && searchButton) {
+            // Submit search form when clicking Search
+            searchButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                const searchTerm = searchInput.value.trim();
+                const params = new URLSearchParams(window.location.search);
+                if (searchTerm) {
+                    params.set('search', searchTerm);
+                    params.set('page', 1);
+                } else {
+                    params.delete('search');
+                    params.set('page', 1);
+                }
+                window.location.href = window.location.pathname + '?' + params.toString();
+            });
+
+            // Allow pressing Enter key to trigger search
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchButton.click();
+                }
+            });
+        }
+    });
+</script>
+
 </script>
 
 <?php ?>
