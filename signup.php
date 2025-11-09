@@ -153,6 +153,16 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
       --field-h:3.25rem; --field-r:12px; --gap:16px; --pad:36px; --maxw:800px;
     }
     *{box-sizing:border-box} html,body{height:100%}
+html {
+  overflow-y: scroll;            
+  scroll-behavior: smooth;       
+}
+
+body {
+  overflow-y: visible;           
+  -webkit-overflow-scrolling: touch; 
+}
+
     body{
       margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
@@ -191,6 +201,22 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
       background:#fde8e8; color:#991b1b; border:1px solid #f8c7c7;
       padding:12px 14px; border-radius:12px; margin:0 0 14px 0; font-size:.95rem;
     }
+@media (max-width:1024px){
+  .grid{ grid-template-columns: 1fr !important; }
+
+  header.card-head{ min-height: 72px; }
+  header.card-head img[alt="TANAFS logo"]{
+    left: 0; top: -6px; width: 72px; height: 72px; object-fit: contain;
+  }
+
+  .input, select.input{ font-size: 16px; }
+}
+
+@media (max-width:480px){
+  body{ padding: 32px 16px; }
+  .card{ padding: 20px; }
+}
+
   </style>
 </head>
 
