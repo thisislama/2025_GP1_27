@@ -179,9 +179,7 @@ echo "✅ Connected successfully to existing patient!<br>
     if (!$stmt->execute()) { echo "❌ Failed to insert into patient."; $stmt->close(); exit; }
     $stmt->close();
 
-    $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
-    $link->bind_param(ctype_digit($PID) ? "ii" : "si", $pidParam, $userID);
-    if ($link->execute()) echo "✅ Added to patient & linked successfully!<br>
+echo "✅ Added to patient successfully!<br>
 <a href='patients.php' style='
   display:inline-block;
   margin-top:12px;
@@ -192,55 +190,88 @@ echo "✅ Connected successfully to existing patient!<br>
   text-decoration:none;
   font-weight:600;
 '>Return to Patients</a>";
+exit;
 
-    else echo "✅ Added to patient, but ❌ failed to link to doctor.";
-    $link->close();
-    exit;
 }
-/* ---------- CONNECT ---------- */
-if (isset($_POST['action']) && $_POST['action'] === 'connect') {
-    header('Content-Type: application/json');
-    $PID = trim($_POST['PID'] ?? '');
-    if ($PID === '') {
-        echo json_encode(['type'=>'error','msg'=>'❌ Please enter a valid Patient ID.']);
-        exit;
-    }
+// ========== AJAX HANDLERS ==========
+if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_patients') {
+    $q = trim($_POST['q'] ?? '');
+    $like = '%' . $q . '%';
+    $stmt = $conn->prepare("
+        SELECT p.PID, p.first_name, p.last_name, p.status,
+               CASE WHEN pda.userID IS NULL THEN 0 ELSE 1 END AS linked
+        FROM patient p
+        LEFT JOIN patient_doctor_assignments pda 
+          ON p.PID = pda.PID AND pda.userID = ?
+        WHERE (? = '' OR p.PID LIKE ? OR p.first_name LIKE ? OR p.last_name LIKE ?)
+        ORDER BY p.PID
+            LIMIT 50
+    ");
+    $stmt->bind_param('issss', $userID, $q, $like, $like, $like);
+    $stmt->execute();
+    $res = $stmt->get_result();
 
-    // تحقق من وجود المريض في Tanafs
-    $get = $conn->prepare("SELECT PID, first_name, last_name FROM patient WHERE PID=? LIMIT 1");
-    $get->bind_param("s", $PID);
-    $get->execute();
-    $patient = $get->get_result()->fetch_assoc();
-    $get->close();
-
-    if (!$patient) {
-        echo json_encode(['type'=>'error','msg'=>'❌ No patient found with this ID in Tanafs. Please use <strong>Add</strong> to import from hospital data.']);
-        exit;
-    }
-
-    // تحقق إذا كان المريض مرتبط مسبقاً
-    $chk = $conn->prepare("SELECT COUNT(*) AS c FROM patient_doctor_assignments WHERE PID=? AND userID=?");
-    $chk->bind_param("si", $PID, $userID);
-    $chk->execute();
-    $found = $chk->get_result()->fetch_assoc();
-    $chk->close();
-
-    if ($found['c'] > 0) {
-        echo json_encode(['type'=>'info','msg'=>'⚠️ This patient is already under your care.']);
-        exit;
-    }
-
-    // ربط المريض بالدكتور
-    $link = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
-    $link->bind_param("si", $PID, $userID);
-    if ($link->execute()) {
-        echo json_encode(['type'=>'success','msg'=>"✅ Connected successfully to <strong>{$patient['first_name']} {$patient['last_name']}</strong> (ID: {$patient['PID']})."]);
+    ob_start();
+    echo '<table class="mini-table"><thead><tr>
+          <th>ID</th><th>First</th><th>Last</th><th>Status</th><th>Action</th>
+          </tr></thead><tbody>';
+    if ($res->num_rows > 0) {
+        while ($r = $res->fetch_assoc()) {
+            $pid = htmlspecialchars($r['PID']);
+            $fn = htmlspecialchars($r['first_name']);
+            $ln = htmlspecialchars($r['last_name']);
+            $st = htmlspecialchars($r['status']);
+            $linked = (int)$r['linked'] === 1;
+            echo "<tr id='mini-$pid'>
+                    <td>$pid</td>
+                    <td>$fn</td>
+                    <td>$ln</td>
+                    <td>$st</td>
+                    <td>";
+            if ($linked) {
+                echo "<span class='tag-linked'>Linked</span>";
+            } else {
+                echo "<button class='btn-mini-connect' onclick=\"connectTo('$pid')\">Connect</button>";
+            }
+            echo "</td></tr>";
+        }
     } else {
-        echo json_encode(['type'=>'error','msg'=>'❌ Failed to connect due to a system error.']);
+        echo "<tr><td colspan='5' class='empty-note'>No patients found.</td></tr>";
     }
-    $link->close();
+    echo "</tbody></table>";
+    echo json_encode(['type' => 'success', 'html' => ob_get_clean()]);
     exit;
 }
+
+if (isset($_POST['ajax']) && $_POST['ajax'] === 'connect') {
+    $PID = trim($_POST['PID'] ?? '');
+    if ($PID === '') { echo json_encode(['type'=>'error','msg'=>'❌ Missing PID']); exit; }
+
+    $check = $conn->prepare("SELECT PID FROM patient WHERE PID=?");
+    $check->bind_param("s", $PID);
+    $check->execute();
+    $exists = $check->get_result()->fetch_assoc();
+    $check->close();
+    if (!$exists) { echo json_encode(['type'=>'error','msg'=>'❌ Patient not found']); exit; }
+
+    $dup = $conn->prepare("SELECT COUNT(*) c FROM patient_doctor_assignments WHERE PID=? AND userID=?");
+    $dup->bind_param("si", $PID, $userID);
+    $dup->execute();
+    $c = $dup->get_result()->fetch_assoc()['c'] ?? 0;
+    $dup->close();
+    if ($c > 0) { echo json_encode(['type'=>'info','msg'=>'⚠️ Already linked']); exit; }
+
+    $add = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
+    $add->bind_param("si", $PID, $userID);
+    if ($add->execute()) {
+        echo json_encode(['type'=>'success','msg'=>'✅ Linked successfully!']);
+    } else {
+        echo json_encode(['type'=>'error','msg'=>'❌ Failed to link']); 
+    }
+    $add->close();
+    exit;
+}
+
 
 
 ?>
@@ -517,138 +548,78 @@ img.logo   { top: 4.9vh; }
   img.logo { top: 2.2vh; } 
   .main { margin-top: 120px; } 
 }
-/* ====== Modal for Connect ====== */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.45);
-  align-items: center;
-  justify-content: center;
+/* ===== Connect Modal Style ===== */
+.modal{
+  display:none; position:fixed; inset:0; z-index:999;
+  background: rgba(19,32,56,.35);
+  backdrop-filter: blur(0.125em);
+  justify-content:center; align-items:center;
 }
-.modal-content {
-  background: #fff;
-  padding: 28px 32px;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  text-align: center;
-  width: 90%;
-  max-width: 400px;
-  animation: popup .25s ease;
+.modal-content{
+  background:#fff; width:min(92vw,26.25em);
+  padding:1.375em 1.25em;
+  border-radius:1em;
+  box-shadow:0 1.25em 2.5em rgba(17,24,39,.18);
+  border:1px solid rgba(15,101,255,.08);
+  text-align:center;
 }
-@keyframes popup {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.modal-content h3{margin:0 0 0.5em;color:#0B83FE;}
+.modal-content input{
+  width:100%;padding:0.75em 0.875em;
+  border-radius:0.75em;
+  border:0.0625em solid rgba(0,0,0,.12);
+  outline:none;transition:border-color .2s,box-shadow .2s;
 }
-.modal-content h3 {
-  margin-top: 0;
-  color: #0B83FE;
-  margin-bottom: 20px;
+.modal-content input:focus{
+  border-color:rgba(15,101,255,.35);
+  box-shadow:0 0 0 0.25em rgba(15,101,255,.08);
 }
-.modal-content input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 20px;
+.modal-content button{
+  border-radius:0.75em;padding:0.625em 0.875em;
+  font-weight:700;border:0;cursor:pointer;
 }
-.modal-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+.modal-content button[type="button"]{
+  background:#eef6ff;color:#0f65ff;margin-left:0.375em;
 }
-.add-btn.cancel {
-  background: #aaa;
+#connectMsg{margin-top:0.625em;font-weight:600;}
+.success{color:#0a7e1e;} .error{color:#c00;}
+.warn{color:#b97900;} .info{color:#0b65d9;}
+.mini-table{width:100%;border-collapse:collapse;}
+.mini-table th,.mini-table td{
+  padding:.5em;border-bottom:1px solid #eee;text-align:center;
 }
-.add-btn.cancel:hover {
-  background: #888;
+.btn-mini-connect{
+  background:#0f65ff;color:#fff;border:0;
+  padding:.4em .7em;border-radius:.5em;cursor:pointer;
 }
+.tag-linked{
+  background:#eef6ff;color:#0f65ff;
+  padding:.25em .5em;border-radius:.5em;font-weight:700;
+}
+.empty-note{color:#777;text-align:center;padding:.75em 0;}
 
 </style>
 <script>
 function searchPatient(val){
-  if(val.trim()===''){document.getElementById('results').innerHTML='';return;}
-  const xhr=new XMLHttpRequest();
-  xhr.open('POST','',true);
-  xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-  xhr.onload=function(){document.getElementById('results').innerHTML=this.responseText;}
-  xhr.send('action=search&query='+encodeURIComponent(val));
+    if(val.trim()===''){document.getElementById('results').innerHTML='';return;}
+    const xhr=new XMLHttpRequest();
+    xhr.open('POST','',true);
+    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhr.onload=function(){document.getElementById('results').innerHTML=this.responseText;}
+    xhr.send('action=search&query='+encodeURIComponent(val));
 }
-
 function addPatient(pid){
-  const xhr=new XMLHttpRequest();
-  xhr.open('POST','',true);
-  xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-  xhr.onload=function(){document.getElementById('message').innerHTML=this.responseText;}
-  xhr.send('action=add&PID='+encodeURIComponent(pid));
+    const xhr=new XMLHttpRequest();
+    xhr.open('POST','',true);
+    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhr.onload=function(){document.getElementById('message').innerHTML=this.responseText;}
+    xhr.send('action=add&PID='+encodeURIComponent(pid));
 }
-
-document.addEventListener("DOMContentLoaded", function(){
-  const modal = document.getElementById("connectModal");
-  const connectBtn = document.getElementById("connectBtn");
-  const cancelBtn = document.getElementById("cancelConnect");
-  const confirmBtn = document.getElementById("confirmConnect");
-  const inputPID = document.getElementById("connectPID");
-
-  
-  const modalMsg = document.createElement("p");
-  modalMsg.id = "modalMessage";
-  modalMsg.style.marginTop = "12px";
-  modalMsg.style.fontWeight = "600";
-  modalMsg.style.color = "#0B83FE";
-  document.querySelector(".modal-content").appendChild(modalMsg);
-
- 
-  connectBtn.addEventListener("click", () => {
-    modal.style.display = "flex";
-    inputPID.value = "";
-    modalMsg.innerHTML = "";
-    inputPID.focus();
-  });
-
-  
-  cancelBtn.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
-  
-  confirmBtn.addEventListener("click", () => {
-    const pid = inputPID.value.trim();
-    if (!pid) {
-      modalMsg.style.color = "red";
-      modalMsg.innerHTML = "Please enter a valid Patient ID.";
-      return;
-    }
-
-    fetch('', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: 'action=connect&PID=' + encodeURIComponent(pid)
-    })
-    .then(r => r.json())
-    .then(res => {
-      modalMsg.style.color =
-        res.type === "success" ? "green" :
-        res.type === "info" ? "#e0a800" : "red";
-      modalMsg.innerHTML = res.msg;
-    })
-    .catch(() => {
-      modalMsg.style.color = "red";
-      modalMsg.innerHTML = 'Connection failed. Please try again.';
-    });
-  });
-
-  window.addEventListener("click", e => {
-    if (e.target === modal) modal.style.display = "none";
-  });
-});
 </script>
 
 
-
 </head>
+
 <body>
 <div class="wrapper">
 <img class="topimg" src="images/Group 8.png" alt="bg">
@@ -674,21 +645,27 @@ document.addEventListener("DOMContentLoaded", function(){
       <input type="text" placeholder="Search by ID..." onkeyup="searchPatient(this.value)">
       <div id="results"></div>
       <p id="message" style="margin-top:15px;font-weight:600;"></p>
-      <button class="add-btn" id="connectBtn" style="margin-top:10px;">Connect</button>
-      
-  </div>
-  <!-- Popup for Connect -->
-<div id="connectModal" class="modal">
-  <div class="modal-content">
-    <h3>Connect Patient</h3>
-    <input type="text" id="connectPID" placeholder="Enter Patient ID">
-    <div class="modal-buttons">
-      <button id="confirmConnect" class="add-btn">Confirm</button>
-      <button id="cancelConnect" class="add-btn cancel">Cancel</button>
-    </div>
-  </div>
-</div>
+          
 
+      <!-- 🔹 Connect Button تحت البحث على اليمين -->
+      <div style="text-align:right; margin-top:15px;">
+        <button id="connectBtn" class="add-btn" style="background:#eef6ff;color:#0f65ff;border:1px solid rgba(15,101,255,.15);box-shadow:none;">Connect</button>
+      </div>
+
+      <!-- 🔹 Connect Modal -->
+      <div class="modal" id="connectModal">
+        <div class="modal-content">
+          <h3>Connect to a Patient</h3>
+          <input type="text" id="patient_input" placeholder="Type ID or name..." autocomplete="off">
+          <div id="connectMsg"></div>
+          <div id="searchResults" style="margin-top:10px; max-height:380px; overflow:auto;"></div>
+          <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
+            <button type="button" onclick="closeModal()">Close</button>
+          </div>
+        </div>
+      </div>
+
+  </div>
 </main>
 
 <footer  id="contact" class="site-footer">
@@ -748,7 +725,101 @@ document.addEventListener("DOMContentLoaded", function(){
   </div>
 </footer>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById("connectModal");
+  const input = document.getElementById("patient_input");
+  const resultsBox = document.getElementById("searchResults");
+  const msgBox = document.getElementById("connectMsg");
+  const btn = document.getElementById("connectBtn");
+
+  // فتح المودال
+  btn.addEventListener('click', () => {
+    modal.style.display = "flex";
+    resultsBox.innerHTML = "";
+    input.value = "";
+    msg("");
+    input.focus();
+
+    // 🟢 إظهار كل المرضى مباشرة عند فتح المودال
+    doSearch("");
+  });
+
+  // إغلاق المودال
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  function closeModal() {
+    modal.style.display = "none";
+    msg("");
+    resultsBox.innerHTML = "";
+  }
+
+  function msg(txt, cls = "info") {
+    msgBox.innerHTML = txt ? `<span class="${cls}">${txt}</span>` : '';
+  }
+
+  // البحث داخل المودال
+  let tmr = null;
+  if (input) {
+    input.addEventListener('input', () => {
+      clearTimeout(tmr);
+      tmr = setTimeout(() => doSearch(input.value.trim()), 300);
+    });
+  }
+
+  // دالة البحث — تجيب الكل إذا q فاضي
+  function doSearch(q) {
+    msg("⏳ Loading patients...", "info");
+    fetch("", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "ajax=search_patients&q=" + encodeURIComponent(q)
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (res.type === "success") {
+          resultsBox.innerHTML = res.html;
+          msg("");
+        } else {
+          resultsBox.innerHTML = "";
+          msg("❌ Error while loading patients", "error");
+        }
+      })
+      .catch(() => {
+        resultsBox.innerHTML = "";
+        msg("❌ Network error", "error");
+      });
+  }
+
+  // تنفيذ عملية connect
+  window.connectTo = function (pid) {
+    msg("⏳ Connecting...", "info");
+    fetch("", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "ajax=connect&PID=" + encodeURIComponent(pid)
+    })
+      .then(r => r.json())
+      .then(res => {
+        msg(res.msg, res.type);
+        if (res.type === "success" || res.type === "info") {
+          const row = document.getElementById("mini-" + pid);
+          if (row) {
+            const lastTd = row.querySelector("td:last-child");
+            if (lastTd) lastTd.innerHTML = '<span class="tag-linked">Linked</span>';
+          }
+        }
+      })
+      .catch(() => msg("❌ Connection error", "error"));
+  }
+
+  const closeBtn = modal.querySelector('button[type="button"]');
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+});
+</script>
+
 </body>
 </html>
 <?php $conn->close(); ?>
-
