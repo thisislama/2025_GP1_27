@@ -362,37 +362,37 @@ body {
     </nav>
 
   <main>
-    <div class="title"><h2>Doctor Profile</h2></div>
+  <div class="title"><h2>Healthcare Professional Profile</h2></div>
 
-    <div class="profile-card">
-      <form method="POST">
-        <label>First Name</label>
-        <input type="text" name="first_name" value="<?= htmlspecialchars($userData['first_name']); ?>" disabled>
-        <label>Last Name</label>
-        <input type="text" name="last_name" value="<?= htmlspecialchars($userData['last_name']); ?>" disabled>
-        <label>Email</label>
-        <input type="email" value="<?= htmlspecialchars($userData['email']); ?>" disabled>
-        <label>Role</label>
-        <input type="text" value="<?= htmlspecialchars($userData['role']); ?>" disabled>
-        <label>Phone</label>
-        <input type="text" name="phone" value="<?= htmlspecialchars($userData['phone']); ?>" disabled>
-        <label>Date of Birth</label>
-        <input type="date" name="dob" value="<?= htmlspecialchars($userData['DOB']); ?>" disabled>
+  <div class="profile-card">
+    <form method="POST">
+      <label>First Name</label>
+      <input type="text" name="first_name" value="<?= htmlspecialchars($userData['first_name']); ?>" disabled>
+      <label>Last Name</label>
+      <input type="text" name="last_name" value="<?= htmlspecialchars($userData['last_name']); ?>" disabled>
+      <label>Email</label>
+      <input type="email" value="<?= htmlspecialchars($userData['email']); ?>" disabled>
+      <label>Role</label>
+      <input type="text" value="<?= htmlspecialchars($userData['role']); ?>" disabled>
+      <label>Phone</label>
+      <input type="text" name="phone" value="<?= htmlspecialchars($userData['phone']); ?>" disabled>
+      <label>Date of Birth</label>
+      <input type="date" name="dob" value="<?= htmlspecialchars($userData['DOB']); ?>" disabled>
 
-        <div class="actions">
-          <button type="button" class="edit-btn" id="editBtn">Edit</button>
-          <button type="submit" name="save" class="save-btn">Save</button>
-          <button type="button" class="back-btn" onclick="window.location.href='dashboard.php'">Back</button>
-        </div>
-      </form>
+      <div class="actions" style="justify-content:center; gap:1.5rem;">
+        <button type="button" class="edit-btn" id="editBtn" style="min-width:110px;">Edit</button>
+        <button type="submit" name="save" class="save-btn" style="min-width:110px;">Save</button>
+      </div>
+    </form>
 
-      <?php if (!empty($success)): ?>
-        <p style="color:green;font-weight:bold;margin-top:10px;"><?= $success ?></p>
-      <?php elseif (!empty($error)): ?>
-        <p style="color:red;font-weight:bold;margin-top:10px;"><?= $error ?></p>
-      <?php endif; ?>
-    </div>
-  </main>
+    <?php if (!empty($success)): ?>
+      <p style="color:green;font-weight:bold;margin-top:10px;"><?= $success ?></p>
+    <?php elseif (!empty($error)): ?>
+      <p style="color:red;font-weight:bold;margin-top:10px;"><?= $error ?></p>
+    <?php endif; ?>
+  </div>
+</main>
+
 
  <!-- Footer -->
   <footer id="contact" class="site-footer">
