@@ -177,6 +177,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
     <div class="field">
       <input class="input" id="password" name="password" type="password" placeholder="Enter password" required>
     </div>
+<div class="row">
+  <div></div> 
+  <a class="link" href="forgot_password.php">Forgot password?</a>
+</div>
 
     <button class="btn" type="submit">Sign in</button>
 
