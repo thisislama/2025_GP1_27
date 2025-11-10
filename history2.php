@@ -509,34 +509,36 @@ if ($conn->connect_error) {
         .table-container {
             background: #fff;
             border-radius: 16px;
-            padding: 20px;
+            padding: 1.5em;
             box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+            height:fit-content;
         }
 
         .table-actions {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 15px;
-            gap: 15px;
+            gap: 1em;
         }
 
         .filter-section {
             display: flex;
-            gap: 10px;
+            gap: 10%;
             align-items: center;
-            flex-wrap: wrap;
+            align-self: start;
+            align-content: center; 
+            flex-wrap: wrap; 
         }
 
         .table-actions input,
         .table-actions select {
-            padding: 8px 12px;
+            padding: 8px 20px;
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 14px;
         }
 
         #searchInput{
-            padding: 8px 12px;
+            padding: 8px 10px;
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 14px;
@@ -567,7 +569,8 @@ if ($conn->connect_error) {
         }
 
         #searchButton:hover {
-
+            background: rgba(26, 125, 255, 0.8);
+            color: #fff;
         }
 
 
@@ -609,7 +612,7 @@ if ($conn->connect_error) {
             font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             transition: background 0.2s;
             position: relative;
             top: -2.4em;
@@ -624,7 +627,9 @@ if ($conn->connect_error) {
             width: 100%;
             border-collapse: collapse;
             text-align: center;
-            margin-top: 30px;
+            margin-top: 1em;
+            position: relative;
+            top: -3em;
         }
 
         th, td {
@@ -745,8 +750,11 @@ if ($conn->connect_error) {
 
         .no-data {
             text-align: center;
-            padding: 40px;
+            padding: 4.2em;
             color: #6b7b8f;
+            text-align: center;
+            margin:0 auto;
+            max-width: 600px;
             font-style: italic;
         }
 

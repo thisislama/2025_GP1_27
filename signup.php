@@ -291,7 +291,7 @@ body {
  <div>
   <label for="password">Password</label>
   <div class="field">
-    <input class="input" id="password" name="password" type="password"
+    <input class="input" id="password" autocomplete="new-password" name="password" type="password"
            placeholder="Enter password" required minlength="8"
            pattern="(?=.*[!@#$%^&*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}"
            title="At least 8 characters and include at least one symbol (e.g., !@#$%)">
