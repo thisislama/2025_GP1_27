@@ -1466,8 +1466,7 @@ if ($conn->connect_error) {
         </div>
 
         <div class="table-container">
-           <!-- <form method="POST" id="downloadForm">-->
-            <!-- <div class="table-actions">-->
+        <!--Filter & Search Card-->
                     <div class="filter-section">
                         <form name="search" method="GET" action="history2.php" id="searchForm">
                             <input id="searchInput" style="width: 50em"
@@ -1481,12 +1480,7 @@ if ($conn->connect_error) {
                             </button>
                         </form>
                     </div>
-                   <!-- <div>
-                        <button type="submit" name="delete" class="delete-btn" id="deleteBtn"
-                                onclick="return confirmDelete()">Delete Selected
-                        </button>
-                    </div>
-                </div>-->
+                         <!--Delete & Table Card-->
             <form method="POST" id="deleteForm">
                 <div class="table-actions">
                     <div>
