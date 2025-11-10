@@ -640,7 +640,7 @@ function addPatient(pid){
     </nav>
 
 <main class="main">
-  <h2>Add Patient from Hospital Database</h2>
+  <h2 style="text-align:center;">Add Patients to your account <br>from Patient Management System</h2>
   <div class="search-card">
       <input type="text" placeholder="Search by ID..." onkeyup="searchPatient(this.value)">
       <div id="results"></div>
