@@ -215,6 +215,9 @@ $result = $stmt->get_result();
 <?php include 'dashboard-style.css';  ?>
 
 .wrapper { position: relative; width: 100%; min-height: 100vh; }
+.nav-link.active::after {
+    width: 100%;
+}
 
 img.topimg {
   position: absolute;
@@ -734,7 +737,7 @@ main h2{
 
    <nav class="auth-nav" aria-label="User navigation">
         <a class="nav-link" href="dashboard.php">Dashboard</a>
-        <a class="nav-link" href="patients.php">Patients</a>
+        <a class="nav-link active" href="patients.php">Patients</a>
         <a class="nav-link" href="history2.php">History</a>
         <a href="profile.php" class="profile-btn">
             <div class="profile">
