@@ -1015,7 +1015,7 @@ main h2{
 
     <div class="table-card">
      <div class="table-actions">
-  <input type="text" id="search" placeholder="Search patient...">
+  <input type="text" id="search" placeholder="Search your patients...">
   
   <div class="patient-buttons">
       <button class="btn-import" id="openImportModal">🏥 Add from Hospital</button>
