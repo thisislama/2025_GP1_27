@@ -211,6 +211,9 @@ if ($conn->connect_error) {
             --pad: 36px;
             --maxw: 800px;
         }
+        .nav-link.active::after {
+    width: 100%;
+}
 
 
         * {
@@ -224,8 +227,16 @@ if ($conn->connect_error) {
             font-size: 20px
         }
 
+        .info {
+         color:  #848484a0;
+         cursor: pointer;
+         font-size:0.2em;
+         margin-left: 4%;        
+        }
+
+
         .material-symbols-outlined:hover {
-            transform: translateX(4px)
+          /*  transform: translateX(4px)*/
         }
 
 
@@ -348,15 +359,22 @@ if ($conn->connect_error) {
 
         /* ===== Title ===== */
         .title {
-            display: flex;
+            display: block;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
         }
 
         .title h2 {
             color: #1f46b6;
-            font-size: 1.5rem;
+            font-size: 1.68rem;
+        }
+
+       .title .heading{
+            margin-left: 1em;
+            font-weight: 700;
+            position: relative;
+            top: 0.4em;
+            margin-bottom: 0.25em;
         }
 
         .success-message {
@@ -1337,6 +1355,16 @@ if ($conn->connect_error) {
             margin-top: clamp(133px, 11vh, 340px) !important;
         }
 
+        .heading2 {
+            color: #6b7b8f;
+            font-size: 0.87em;
+            padding: 1em 0;
+            margin-left: 1em;
+            text-indent:1em;
+            line-height: 1.9em;
+            max-width:35em ;
+        }
+
     </style>
 
 </head>
@@ -1350,7 +1378,7 @@ if ($conn->connect_error) {
     <nav class="auth-nav" aria-label="User navigation">
         <a class="nav-link" href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
-        <a class="nav-link" href="history2.php">History</a>
+        <a class="nav-link active" href="history2.php">History</a>
         <a href="profile.php" class="profile-btn">
             <div class="profile">
                 <img class="avatar-icon" src="images/profile.png" alt="Profile">
@@ -1365,9 +1393,13 @@ if ($conn->connect_error) {
 
     <main class="main">
         <div class="title">
-            <h2>History Analysis</h2>
-            <div style="color:#6b7b8f; font-size:14px;">Total Records: <?php echo $total_records; ?></div>
+            <h2 class="heading">History Analysis</h2>
+            <p class="heading2">Track and review the status and output for every analysis request submitted to the model.</p>
+           <div style="color:#6b7b8f; text-align:right; position:relative; top:-2em; font-size:14px;">Total Records: <?php echo $total_records; ?></div>
+
+       
         </div>
+
 
         <?php if (!empty($error_message)): ?>
             <div class="error-message"><?php echo htmlspecialchars($error_message); ?></div>
@@ -1497,6 +1529,7 @@ if ($conn->connect_error) {
                         <th>Analysis ID</th>
                         <th>Patient Name</th>
                         <th>Date</th>
+                        <th>Time</th>
                         <th>Status</th>
                         <th>Severity level</th>
                         <th>Anomaly type</th>
@@ -1512,6 +1545,7 @@ if ($conn->connect_error) {
                             $full_name = htmlspecialchars($row['first_name'] . " " . $row['last_name']);
                             $phone = htmlspecialchars($row['phone']);
                             $date = date('Y-m-d', strtotime($row['analysis_date']));
+                            $time = date('H:i', strtotime($row['analysis_date']));
                             $status = $row['status'];
                             $severity = $row['severity_level'] ?: 'N/A';
                             $anomaly_type = $row['anomaly_type'] ?: 'N/A';
@@ -1521,6 +1555,34 @@ if ($conn->connect_error) {
                                 $status_class = 'normal';
                             }
 
+$tooltip_data = [
+    // Trigger Dyssynchrony Sub-category
+    'Trigger Dyssynchrony' => 'Problems related to the initiation of a breath, either the ventilator failing to sense a patient\'s effort, or triggering a breath without patient effort.',
+    'Ineffective Trigger' => 'The patient attempts to breathe, but the ventilator fails to detect the effort and does not deliver a breath. This increases patient work of breathing.',
+    'Auto Trigger' => 'The ventilator delivers a breath without any patient inspiratory effort, often due to high sensitivity, leaks, or cardiac oscillations.',
+
+    // Flow Dyssynchrony Sub-category
+    'Flow Dyssynchrony' => 'A mismatch between the inspiratory flow demand of the patient and the inspiratory flow delivered by the ventilator.',
+    'Flow Limited' => 'The inspiratory flow delivered by the ventilator is insufficient to meet the patient\'s inspiratory demand, leading to increased work of breathing and patient discomfort.',
+
+    // Cycling Dyssynchrony Sub-category
+    'Cycling Dyssynchrony' => 'Problems related to the termination of the inspiratory phase of the breath, leading to either premature or delayed cycling off.',
+    'Double Trigger' => 'The patient attempts a second breath before the ventilator has completed the first, often due to a short inspiratory time set on the ventilator. This can lead to larger tidal volumes.',
+    'Delayed Cycling' => 'The ventilator\'s inspiratory time is longer than the patient\'s inspiratory effort, causing the patient to actively exhale against the ongoing inspiration. This can lead to breath stacking.',
+    'Early Cycling' => 'The ventilator cycles off prematurely (shorter inspiratory time) compared to the patient\'s inspiratory effort, leading to incomplete patient inspiration and increased inspiratory work.',
+    'Reverse Trigger' => 'The ventilator initiates a breath, which then triggers a subsequent diaphragmatic contraction from the patient. This is an entrainment phenomenon, often seen with sedation.',
+];
+
+/* Define the display names for the column headers (what the user actually sees)
+$column_display_names = [
+    'request_id' => 'Request ID',
+    'status_code' => 'Status Code',
+    'latency_ms' => 'Latency (ms)',
+    'payload_size' => 'Payload Size',
+    'timestamp' => 'Timestamp',
+    'user_id' => 'User ID'
+];*/
+
 
                             echo "
                       <tr>
@@ -1529,11 +1591,14 @@ if ($conn->connect_error) {
                         <td>{$analysis_id}</td>
                         <td>{$full_name}</td>
                         <td>{$date}</td>
+                        <td>{$time}</td>
                         <td><span class='status {$status_class}'>" . ucfirst($status) . "</span></td>
-                        <td><span class='severity {$severity}'>{$severity}</td>
-                        <td>" . ucfirst($anomaly_type) . "</td>
-                      <!--  <td><span style='color:#1a6dfd;'class='material-symbols-outlined'>delete</span></td>-->
-                    
+                        <td><span class='severity {$severity}'>{$severity}</span></td>
+                        <td>" . ucfirst($anomaly_type) .
+                        "<span class='tooltip-container'>
+                        <span class='material-symbols-outlined info'>info</span>
+                        </span>
+                        <span class='tooltiptext'>Some tooltip text</span></td>
 
                       </tr>
                     ";
