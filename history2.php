@@ -676,17 +676,17 @@ if ($conn->connect_error) {
             min-width: 80px;
         }
 
-        .status.Abnormal {
+        .status .Abnormal {
             background: #fee2e2;
             color: #b91c1c;
         }
 
-        .status.abnormal {
+        .status .abnormal {
             background: #fee2e2;
             color: #b91c1c;
         }
 
-        .status.normal {
+        .status .normal {
             background: #e2f5e9;
             color: #15803d;
         }
@@ -698,26 +698,28 @@ if ($conn->connect_error) {
             font-weight: 500;
             display: inline-block;
             min-width: 80px;
-        }
-
-        .severity.High {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .severity.Mild {
-            background: #feede2;
-            color: #b9581c;
-        }
-
-        .severity.Low {
-            background: #e2f5e9;
-            color: #15803d;
+            cursor: pointer;
         }
 
         .severity {
             background: #e2e9fe;
             color: #1c1fb9;
+        }
+        
+
+        .severity.high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .severity.mild {
+            background: #feede2;
+            color: #b95c1c;
+        }
+
+        .severity.low {
+            background: #e2f5e9;
+            color: #15803d;
         }
 
 
@@ -776,144 +778,7 @@ if ($conn->connect_error) {
             font-style: italic;
         }
 
-        /* ===== Footer===== */
-        .site-footer {
-            background: #F6F6F6;
-            color: #0b1b2b;
-            font-family: 'Montserrat', sans-serif;
-            margin-top: auto;
-        }
-
-        .footer-grid {
-            max-width: 75em;
-            margin: 0 auto;
-            padding: 2.5em 1.25em;
-            display: grid;
-            grid-template-columns:1.2fr 1fr 1fr;
-            gap: 2em;
-            align-items: start;
-            direction: ltr;
-        }
-
-        .footer-col.brand {
-            text-align: left;
-        }
-
-        .footer-logo {
-            height: 5.5em;
-            width: auto;
-            display: block;
-            margin-left: -3em;
-        }
-
-        .brand-tag {
-            margin-top: .75em;
-            color: #4c5d7a;
-            font-size: .95em;
-        }
-
-        .footer-title {
-            margin: 0 0 1em 0;
-            font-size: 1.05em;
-            font-weight: 700;
-            letter-spacing: .0125em;
-            color: #0B83FE;
-            text-transform: uppercase;
-        }
-
-        .social-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            gap: .75em;
-            align-items: center;
-        }
-
-        .social-list li a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform .2s ease, opacity .2s ease;
-        }
-
-        .social-list li a:hover {
-            transform: translateY(-.2em);
-        }
-
-        .social-list img {
-            width: 1.2em;
-            height: 1.2em;
-        }
-
-        .social-handle {
-            display: block;
-            margin-top: .6em;
-            color: #0B83FE;
-            font-size: .95em;
-        }
-
-        .contact-list {
-            list-style: none;
-            padding: 0;
-            margin: .25em 0 0 0;
-            display: grid;
-            gap: .6em;
-        }
-
-        .contact-link {
-            display: flex;
-            align-items: center;
-            gap: .6em;
-            text-decoration: none;
-            color: #0B83FE;
-            padding: .5em .6em;
-            border-radius: .6em;
-            transition: background .2s ease, transform .2s ease;
-        }
-
-        .contact-link:hover {
-            background: rgba(255, 255, 255, .7);
-            transform: translateX(.2em);
-        }
-
-        .contact-link img {
-            width: 1.15em;
-            height: 1.15em;
-        }
-
-        .footer-bar {
-            border-top: .06em solid rgba(11, 45, 92, .12);
-            text-align: center;
-            padding: .9em 1em 1.2em;
-        }
-
-        .legal {
-            margin: .2em 0;
-            color: #4c5d7a;
-            font-size: .9em;
-        }
-
-        .legal a {
-            color: #27466e;
-            text-decoration: none;
-        }
-
-        .legal a:hover {
-            text-decoration: underline;
-        }
-
-        .legal .dot {
-            margin: 0 .5em;
-            color: rgba(11, 45, 92, .6);
-        }
-
-        .copy {
-            margin: .2em 0 0;
-            color: #0B83FE;
-            font-size: .85em;
-        }
-
+       
         /* ===== Responsive ===== */
         @media (max-width: 1280px) {
             .search {
@@ -1365,6 +1230,32 @@ if ($conn->connect_error) {
             max-width:35em ;
         }
 
+        
+.tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  font-size: 12px;
+  width:37em;
+  background-color: #757575ff;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 3.2em;
+  left: -7%;
+  transform: translateX(-50%);
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
     </style>
 
 </head>
@@ -1567,25 +1458,16 @@ $tooltip_data = [
 
     // Cycling Dyssynchrony Sub-category
     'Cycling Dyssynchrony' => 'Problems related to the termination of the inspiratory phase of the breath, leading to either premature or delayed cycling off.',
-    'Double Trigger' => 'The patient attempts a second breath before the ventilator has completed the first, often due to a short inspiratory time set on the ventilator. This can lead to larger tidal volumes.',
+    'Double Trigger' => 'type of patient-ventilator asynchrony where a patient initiates two breaths in succession, and the ventilator delivers two breaths in response.',
     'Delayed Cycling' => 'The ventilator\'s inspiratory time is longer than the patient\'s inspiratory effort, causing the patient to actively exhale against the ongoing inspiration. This can lead to breath stacking.',
     'Early Cycling' => 'The ventilator cycles off prematurely (shorter inspiratory time) compared to the patient\'s inspiratory effort, leading to incomplete patient inspiration and increased inspiratory work.',
     'Reverse Trigger' => 'The ventilator initiates a breath, which then triggers a subsequent diaphragmatic contraction from the patient. This is an entrainment phenomenon, often seen with sedation.',
 ];
-
-/* Define the display names for the column headers (what the user actually sees)
-$column_display_names = [
-    'request_id' => 'Request ID',
-    'status_code' => 'Status Code',
-    'latency_ms' => 'Latency (ms)',
-    'payload_size' => 'Payload Size',
-    'timestamp' => 'Timestamp',
-    'user_id' => 'User ID'
-];*/
+$tooltip_text = $tooltip_data[ucfirst($anomaly_type)] ?? 'No additional information available.';
 
 
                             echo "
-                      <tr>
+                       <tr>
                         <td><input type='checkbox' name='selected_rows[]' value='{$row['waveAnalysisID']}' class='row-checkbox'></td>
                         <td>{$patient_id}</td>
                         <td>{$analysis_id}</td>
@@ -1594,11 +1476,11 @@ $column_display_names = [
                         <td>{$time}</td>
                         <td><span class='status {$status_class}'>" . ucfirst($status) . "</span></td>
                         <td><span class='severity {$severity}'>{$severity}</span></td>
-                        <td>" . ucfirst($anomaly_type) .
+                        <td class='tooltip'>" . ucfirst($anomaly_type) .
                         "<span class='tooltip-container'>
                         <span class='material-symbols-outlined info'>info</span>
                         </span>
-                        <span class='tooltiptext'>Some tooltip text</span></td>
+                        <span class='tooltiptext'>$tooltip_text</span></td>
 
                       </tr>
                     ";
