@@ -35,9 +35,10 @@ $_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last
 $docRes->close();
 
 // --- Handle AJAX actions ---
-if (isset($_POST['ajax'])) {
+if (isset($_POST['ajax']) && !in_array($_POST['ajax'], ['search_hospital', 'import_hospital', 'search_connect', 'connect_existing'])) {
     $action = $_POST['ajax'];
     $response = ["type" => "error", "msg" => "⚠️ Unknown error."];
+
 if ($action === 'search_patients') {
     $q     = trim($_POST['q'] ?? '');
     $scope = trim($_POST['scope'] ?? ''); 
@@ -201,6 +202,166 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
+
+// ======================= AJAX: Search + Import from Hospital =======================
+if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_hospital') {
+    $PID = trim($_POST['PID'] ?? '');
+    if ($PID === '') {
+        echo json_encode(['type'=>'error','msg'=>'Missing Hospital ID.']); exit;
+    }
+
+    // 1️⃣ Check if exists in Tanafs
+    $check = $conn->prepare("SELECT PID FROM patient WHERE PID=? LIMIT 1");
+    $check->bind_param("s", $PID);
+    $check->execute();
+    $exists = $check->get_result()->fetch_assoc();
+    $check->close();
+
+    if ($exists) {
+
+        // ✅ تحقق إضافي: هل هذا المريض مرتبط بالفعل بنفس الدكتور؟
+        $chkLink = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
+        $chkLink->bind_param("si", $PID, $userID);
+        $chkLink->execute();
+        $linked = $chkLink->get_result()->num_rows > 0;
+        $chkLink->close();
+
+        if ($linked) {
+            echo json_encode(['type'=>'linked','msg'=>'This patient is already in your patient list.']);
+        } else {
+            echo json_encode(['type'=>'exists','msg'=>'This patient already exists in Tanafs. You can connect them instead.']); 
+        }
+        exit;
+    }
+
+    // 2️⃣ If not found in Tanafs, search Hospital JSON
+    $jsonPath = "C:/MAMP/htdocs/2025_GP_27/data/patients_record.json";
+    if (!is_file($jsonPath)) {
+        echo json_encode(['type'=>'error','msg'=>'Hospital record file not found.']); exit;
+    }
+
+    $data = json_decode(file_get_contents($jsonPath), true);
+    $records = $data['hospital_records'] ?? [];
+    $found = null;
+    foreach ($records as $r) {
+        if ((string)$r['PID'] === $PID) { $found = $r; break; }
+    }
+
+    if (!$found) {
+        echo json_encode(['type'=>'error','msg'=>'No patient found with this Hospital ID.']); exit;
+    }
+
+    echo json_encode(['type'=>'found','data'=>$found]);
+    exit;
+}
+
+
+if (isset($_POST['ajax']) && $_POST['ajax'] === 'import_hospital') {
+    $PID = trim($_POST['PID'] ?? '');
+    if ($PID === '') { echo json_encode(['type'=>'error','msg'=>'Missing Hospital ID.']); exit; }
+
+    $jsonPath = "C:/MAMP/htdocs/2025_GP_27/data/patients_record.json";
+    $data = json_decode(file_get_contents($jsonPath), true);
+    $records = $data['hospital_records'] ?? [];
+    $rec = null;
+    foreach ($records as $r) {
+        if ((string)$r['PID'] === $PID) { $rec = $r; break; }
+    }
+    if (!$rec) { echo json_encode(['type'=>'error','msg'=>'Record not found in Hospital data.']); exit; }
+
+    $stmt = $conn->prepare("INSERT INTO patient (PID, first_name, last_name, gender, status, phone, DOB) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssss",
+        $rec['PID'], $rec['first_name'], $rec['last_name'],
+        $rec['gender'], $rec['status'], $rec['phone'], $rec['DOB']
+    );
+    if ($stmt->execute()) {
+        echo json_encode(['type'=>'success','msg'=>'Patient imported successfully into Tanafs.']);
+    } else {
+        echo json_encode(['type'=>'error','msg'=>'Failed to import patient.']);
+    }
+    $stmt->close();
+    exit;
+}
+
+// ======================= AJAX: Connect Patient =======================
+if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_connect') {
+    header('Content-Type: application/json; charset=utf-8');
+    $q = trim($_POST['q'] ?? '');
+    if ($q === '') { echo json_encode(['type'=>'error','msg'=>'Please enter a Patient ID or Name.']); exit; }
+
+    $like = '%' . $q . '%';
+    $stmt = $conn->prepare("
+        SELECT p.PID, p.first_name, p.last_name, 
+               CASE WHEN pda.userID IS NULL THEN 0 ELSE 1 END AS linked
+        FROM patient p
+        LEFT JOIN patient_doctor_assignments pda 
+          ON p.PID = pda.PID AND pda.userID = ?
+        WHERE p.PID LIKE ? OR p.first_name LIKE ? OR p.last_name LIKE ?
+        LIMIT 10
+    ");
+    $stmt->bind_param("isss", $userID, $like, $like, $like);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    if ($res->num_rows === 0) { echo json_encode(['type'=>'error','msg'=>'No matching patients found in Tanafs.']); exit; }
+
+    ob_start();
+    echo "<table class='mini-table'><thead><tr><th>ID</th><th>Name</th><th>Action</th></tr></thead><tbody>";
+    while ($r = $res->fetch_assoc()) {
+        $pid = htmlspecialchars($r['PID']);
+        $name = htmlspecialchars($r['first_name'].' '.$r['last_name']);
+        if ((int)$r['linked'] === 1) {
+            echo "<tr><td>$pid</td><td>$name</td><td><span class='tag-linked'>Linked</span></td></tr>";
+        } else {
+            echo "<tr><td>$pid</td><td>$name</td>
+                  <td><button class='btn-mini-connect' onclick=\"connectNow('$pid')\">Connect</button></td></tr>";
+        }
+    }
+    echo "</tbody></table>";
+    $html = ob_get_clean();
+
+    echo json_encode(['type'=>'success','html'=>$html]);
+    exit;
+}
+
+if (isset($_POST['ajax']) && $_POST['ajax'] === 'connect_existing') {
+    header('Content-Type: application/json; charset=utf-8');
+    $PID = trim($_POST['PID'] ?? '');
+    if ($PID === '') { echo json_encode(['type'=>'error','msg'=>'Missing Patient ID.']); exit; }
+
+    $chk = $conn->prepare("SELECT PID FROM patient WHERE PID=? LIMIT 1");
+    $chk->bind_param("s", $PID);
+    $chk->execute();
+    $exists = $chk->get_result()->fetch_assoc();
+    $chk->close();
+
+    if (!$exists) {
+        echo json_encode(['type'=>'error','msg'=>'This patient doesn’t exist in Tanafs. Please import them first.']);
+        exit;
+    }
+
+    $dup = $conn->prepare("SELECT COUNT(*) c FROM patient_doctor_assignments WHERE PID=? AND userID=?");
+    $dup->bind_param("si", $PID, $userID);
+    $dup->execute();
+    $count = $dup->get_result()->fetch_assoc()['c'] ?? 0;
+    $dup->close();
+
+    if ($count > 0) {
+        echo json_encode(['type'=>'warn','msg'=>'This patient is already linked to your account.']);
+        exit;
+    }
+
+    $add = $conn->prepare("INSERT INTO patient_doctor_assignments (PID, userID) VALUES (?, ?)");
+    $add->bind_param("si", $PID, $userID);
+    if ($add->execute()) {
+        echo json_encode(['type'=>'success','msg'=>'Patient connected successfully.']);
+    } else {
+        echo json_encode(['type'=>'error','msg'=>'Failed to connect patient.']);
+    }
+    $add->close();
+    exit;
+}
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -722,6 +883,104 @@ main h2{
 #patientsTable tbody tr.dim {
   opacity: .45;
 }
+.patient-buttons {
+  display: flex;
+  gap: 10px;
+}
+/* 🏥 Add from Hospital Button */
+.btn-import {
+  background-color: #0f65ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.btn-import :hover {
+  background-color: #084dcc;
+}
+
+/* 🔗 Connect Button */
+.btn-connect {
+  background-color: #e8f0fe;
+  color: #0f65ff;
+  border: 1px solid #c9dcff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.btn-connect:hover {
+  background-color: #dbe7ff;
+}
+
+/* 🔗 Connect Modal specific design */
+.connect-modal {
+  max-height: 480px;                /* يثبت الحجم الكلي للمودال */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.connect-result {
+  flex: 1;
+  overflow-y: auto;                 /* سكرول داخلي */
+  margin-top: 10px;
+  padding-right: 6px;
+  max-height: 320px;                /* منطقة النتائج */
+}
+
+.connect-result::-webkit-scrollbar {
+  width: 6px;
+}
+.connect-result::-webkit-scrollbar-thumb {
+  background: rgba(15,101,255,0.3);
+  border-radius: 3px;
+}
+
+/* تعديل الجدول داخل النتائج */
+.connect-result table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+.connect-result th, .connect-result td {
+  padding: 0.55em;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+.connect-result th {
+  background: #f4f8ff;
+  color: #1f46b6;
+  font-weight: 700;
+  position: sticky;
+  top: 0; /* يبقى رأس الجدول ثابت */
+  z-index: 1;
+}
+
+.btn-mini-connect {
+  background: #0f65ff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-mini-connect:hover { background: #084dcc; }
+.tag-linked {
+  background: #eef6ff;
+  color: #0f65ff;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-weight: 700;
+}
 
 </style>
 </head>
@@ -752,12 +1011,15 @@ main h2{
     <h2>Patients List</h2>
 
     <div class="table-card">
-      <div class="table-actions">
-        <input type="text" id="search" placeholder="Search patient...">
-        <div>
-          <button class="add-btn" onclick="window.location.href='addPatient.php'">Add</button>
-        </div>
-      </div>
+     <div class="table-actions">
+  <input type="text" id="search" placeholder="Search patient...">
+  
+  <div class="patient-buttons">
+      <button class="btn-import" id="openImportModal">🏥 Add from Hospital</button>
+    <button class="btn-connect" id="openConnectModal">🔗 Connect Patient</button>
+  </div>
+</div>
+
 
       <table id="patientsTable">
         <thead><tr><th>ID</th><th>First</th><th>Last</th><th>Gender</th><th>Status</th><th>Phone</th><th>DOB</th><th>Actions</th></tr></thead>
@@ -982,7 +1244,226 @@ if (tbody) {
     }
   });
 }
+
+
 </script>
+<script>
+document.getElementById("openConnectModal").addEventListener("click", function() {
+  const modal = document.getElementById("connectModal");
+  if (modal) modal.style.display = "flex";
+});
+
+document.getElementById("openImportModal").addEventListener("click", function() {
+  const modal = document.getElementById("importModal");
+  if (modal) modal.style.display = "flex";
+});
+</script>
+<!-- ======================== 🏥 Add from Hospital Modal ======================== -->
+<div class="modal" id="importModal">
+  <div class="modal-content">
+    <h3>🏥 Import Patient from Hospital</h3>
+    <p style="margin-bottom:10px;color:#666;">Enter the Hospital ID of the patient to verify and add them the Tanafs system.</p>
+
+    <!-- Step 1: Search -->
+    <div id="importStep1">
+      <input type="text" id="hospitalID" placeholder="Search by Hospital ID..." autocomplete="off">
+      <button id="btnSearchHospital" style="margin-top:10px;background:#0f65ff;color:white;">Search</button>
+    </div>
+
+    <!-- Step 2: Show Result -->
+    <div id="importResult" style="display:none;margin-top:15px;text-align:left;"></div>
+
+    <!-- Step 3: Action Buttons -->
+    <div style="margin-top:15px;text-align:right;">
+      <button type="button" id="closeImport" style="background:#eef6ff;color:#0f65ff;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== 🧠 Add from Hospital Logic ====================
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("importModal");
+  const openBtn = document.getElementById("openImportModal");
+  const closeBtn = document.getElementById("closeImport");
+  const searchBtn = document.getElementById("btnSearchHospital");
+  const hospitalInput = document.getElementById("hospitalID");
+  const resultDiv = document.getElementById("importResult");
+
+  // Open modal
+  openBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+    hospitalInput.value = "";
+    resultDiv.innerHTML = "";
+    resultDiv.style.display = "none";
+    hospitalInput.focus();
+  });
+
+  // Close modal
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+  window.addEventListener("click", e => { if (e.target === modal) modal.style.display = "none"; });
+
+  // Step 1: Search in Tanafs and Hospital JSON
+  searchBtn.addEventListener("click", () => {
+    const pid = hospitalInput.value.trim();
+    if (pid === "") {
+      resultDiv.innerHTML = "<p style='color:#c00;'>❌ Please enter a Hospital ID.</p>";
+      resultDiv.style.display = "block";
+      return;
+    }
+
+    resultDiv.innerHTML = "<p style='color:#0b65d9;'>⏳ Searching...</p>";
+    resultDiv.style.display = "block";
+
+    fetch("", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "ajax=search_hospital&PID=" + encodeURIComponent(pid)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.type === "exists") {
+          resultDiv.innerHTML = `<p style='color:#b97900;'>⚠️ ${data.msg}</p>`;
+        } else if (data.type === "found") {
+          resultDiv.innerHTML = `
+            <p><strong>Patient found:</strong></p>
+            <ul style='line-height:1.7em;'>
+              <li><b>ID:</b> ${data.data.PID}</li>
+              <li><b>Name:</b> ${data.data.first_name} ${data.data.last_name}</li>
+              <li><b>Gender:</b> ${data.data.gender}</li>
+              <li><b>DOB:</b> ${data.data.DOB}</li>
+            </ul>
+            <button id="confirmImport" style="background:#0f65ff;color:white;padding:8px 14px;border-radius:8px;border:0;">Import Patient</button>
+          `;
+
+          // Step 2: Confirm Import
+          document.getElementById("confirmImport").addEventListener("click", () => {
+            resultDiv.innerHTML = "<p style='color:#0b65d9;'>⏳ Importing...</p>";
+            fetch("patients.php", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: "ajax=import_hospital&PID=" + encodeURIComponent(data.data.PID)
+            })
+              .then(r => r.json())
+              .then(res => {
+                if (res.type === "success") {
+                  resultDiv.innerHTML = `<p style='color:#0a7e1e;'>✅ ${res.msg}</p>`;
+                } else {
+                  resultDiv.innerHTML = `<p style='color:#c00;'>❌ ${res.msg}</p>`;
+                }
+              });
+          });
+        } else {
+          resultDiv.innerHTML = `<p style='color:#c00;'>❌ ${data.msg}</p>`;
+        }
+      })
+      .catch(() => {
+        resultDiv.innerHTML = "<p style='color:#c00;'>❌ Network error while searching.</p>";
+      });
+  });
+});
+</script>
+<!-- ======================== 🔗 Connect Patient Modal ======================== -->
+<div class="modal" id="connectModal">
+  <div class="modal-content connect-modal">
+    <h3>🔗 Connect to a Patient</h3>
+    <p style="margin-bottom:10px;color:#666;">
+      Start typing the patient ID or name to find and connect them instantly.
+    </p>
+
+    <input type="text" id="connectInput" placeholder="Search by ID or Name..." autocomplete="off">
+
+    <div id="connectResult" class="connect-result"></div>
+
+    <div style="margin-top:15px;text-align:right;">
+      <button type="button" id="closeConnect" style="background:#eef6ff;color:#0f65ff;">Close</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ==================== 🔗 Connect Patient Logic (Live Search) ====================
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("connectModal");
+  const openBtn = document.getElementById("openConnectModal");
+  const closeBtn = document.getElementById("closeConnect");
+  const input = document.getElementById("connectInput");
+  const resultDiv = document.getElementById("connectResult");
+  let typingTimer;
+
+  // فتح المودال
+  openBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+    input.value = "";
+    resultDiv.innerHTML = "";
+    resultDiv.style.display = "none";
+    input.focus();
+  });
+
+  // إغلاق المودال
+  closeBtn.addEventListener("click", () => modal.style.display = "none");
+  window.addEventListener("click", e => { if (e.target === modal) modal.style.display = "none"; });
+
+  // 🔍 البحث الحي أثناء الكتابة
+  input.addEventListener("input", () => {
+    clearTimeout(typingTimer);
+    const query = input.value.trim();
+    if (query.length < 1) {
+      resultDiv.style.display = "none";
+      resultDiv.innerHTML = "";
+      return;
+    }
+
+    typingTimer = setTimeout(() => {
+      resultDiv.innerHTML = "<p style='color:#0b65d9;'>⏳ Searching...</p>";
+      resultDiv.style.display = "block";
+
+      fetch("", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "ajax=search_connect&q=" + encodeURIComponent(query)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.type === "success") {
+            resultDiv.innerHTML = data.html;
+          } else {
+            resultDiv.innerHTML = `<p style='color:#c00;'>❌ ${data.msg}</p>`;
+          }
+        })
+        .catch(() => {
+          resultDiv.innerHTML = "<p style='color:#c00;'>❌ Network error while searching.</p>";
+        });
+    }, 300); // ⏱ تأخير بسيط بعد آخر حرف
+  });
+
+  
+  window.connectNow = function(pid) {
+    resultDiv.innerHTML = "<p style='color:#0b65d9;'>⏳ Connecting...</p>";
+    fetch("", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "ajax=connect_existing&PID=" + encodeURIComponent(pid)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.type === "success") {
+          resultDiv.innerHTML = `<p style='color:#0a7e1e;'>✅ ${data.msg}</p>`;
+        } else {
+          resultDiv.innerHTML = `<p style='color:#b97900;'>⚠️ ${data.msg}</p>`;
+        }
+      })
+      .catch(() => {
+        resultDiv.innerHTML = "<p style='color:#c00;'>❌ Network error while connecting.</p>";
+      });
+  };
+});
+
+</script>
+
 </body>
 </html>
 <?php $conn->close(); ?>
