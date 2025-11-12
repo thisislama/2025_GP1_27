@@ -676,17 +676,12 @@ if ($conn->connect_error) {
             min-width: 80px;
         }
 
-        .status .Abnormal {
+        .status.anomaly {
             background: #fee2e2;
             color: #b91c1c;
         }
 
-        .status .abnormal {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .status .normal {
+        .status.normal {
             background: #e2f5e9;
             color: #15803d;
         }
@@ -701,11 +696,7 @@ if ($conn->connect_error) {
             cursor: pointer;
         }
 
-        .severity {
-            background: #e2e9fe;
-            color: #1c1fb9;
-        }
-        
+      
 
         .severity.high {
             background: #fee2e2;
@@ -1234,6 +1225,7 @@ if ($conn->connect_error) {
 .tooltip {
   position: relative;
   cursor: pointer;
+  font-size:.95rem;
 }
 
 .tooltiptext {
@@ -1285,7 +1277,7 @@ if ($conn->connect_error) {
     <main class="main">
         <div class="title">
             <h2 class="heading">History Analysis</h2>
-            <p class="heading2">Track and review the status and output for every analysis request submitted to the model.</p>
+            <p class="heading2">Track and review the status and output for every analysis request submitted to TANAFS.</p>
            <div style="color:#6b7b8f; text-align:right; position:relative; top:-2em; font-size:14px;">Total Records: <?php echo $total_records; ?></div>
 
        
@@ -1441,10 +1433,7 @@ if ($conn->connect_error) {
                             $severity = $row['severity_level'] ?: 'N/A';
                             $anomaly_type = $row['anomaly_type'] ?: 'N/A';
 
-                            $status_class = strtolower($status);
-                            if (!in_array($status_class, ['normal', 'abnormal'])) {
-                                $status_class = 'normal';
-                            }
+                          
 
 $tooltip_data = [
     // Trigger Dyssynchrony Sub-category
@@ -1474,11 +1463,11 @@ $tooltip_text = $tooltip_data[ucfirst($anomaly_type)] ?? 'No additional informat
                         <td>{$full_name}</td>
                         <td>{$date}</td>
                         <td>{$time}</td>
-                        <td><span class='status {$status_class}'>" . ucfirst($status) . "</span></td>
+                        <td><span class='status {$status}'>{$status}</span></td>
                         <td><span class='severity {$severity}'>{$severity}</span></td>
                         <td class='tooltip'>" . ucfirst($anomaly_type) .
                         "<span class='tooltip-container'>
-                        <span class='material-symbols-outlined info'>info</span>
+                        <span style='font-size:.7rem; margin-right:4px;' class='material-symbols-outlined info'>info</span>
                         </span>
                         <span class='tooltiptext'>$tooltip_text</span></td>
 
