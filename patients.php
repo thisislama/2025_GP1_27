@@ -1265,7 +1265,8 @@ document.getElementById("openImportModal").addEventListener("click", function() 
 <div class="modal" id="importModal">
   <div class="modal-content">
     <h3>🏥 Import Patient from Hospital</h3>
-    <p style="margin-bottom:10px;color:#666;">Enter the Hospital ID of the patient to verify and add them the Tanafs system.</p>
+    <p style="margin-bottom:10px;color:#666;">Enter the patient's Hospital ID to fetch their record from the Hospital Management System and add them to Tanafs.
+</p>
 
     <!-- Step 1: Search -->
     <div id="importStep1">
