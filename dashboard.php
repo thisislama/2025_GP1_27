@@ -229,6 +229,9 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             --pad: 36px;
             --maxw: 800px;
         }
+        .nav-link.active::after {
+    width: 100%;
+}
 
 
         * {
@@ -931,7 +934,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
     <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
     <nav class="auth-nav" aria-label="User navigation">
-        <a class="nav-link" href="dashboard.php">Dashboard</a>
+<a class="nav-link active" href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
         <a class="nav-link" href="history2.php">History</a>
         <a href="profile.php" class="profile-btn">
