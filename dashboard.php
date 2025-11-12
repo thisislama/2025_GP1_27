@@ -71,15 +71,12 @@ if ($conn->connect_error) {
 
     // Get recent patients
     $recent_sql = "
-        SELECT DISTINCT p.PID, p.first_name, p.last_name, p.status,
-               MAX(wa.timestamp) as last_analysis
-        FROM Patient p
-        JOIN Waveform_analysis wa ON p.PID = wa.PID
-        WHERE wa.waveAnalysisID = wa.PID
-        GROUP BY p.PID, p.first_name, p.last_name, p.status
-        ORDER BY last_analysis DESC
-        LIMIT 2
+        SELECT p.PID, p.first_name, p.last_name, p.status
+        FROM patient p
+        ORDER BY p.PID DESC
+        LIMIT 3
     ";
+    
 
     $recent_result = $conn->query($recent_sql);
     if ($recent_result) {
@@ -983,7 +980,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                 <?php if (!empty($recent_patients)): ?>
                     <?php foreach ($recent_patients as $patient): ?>
                         <div class="small-item"
-                             onclick="window.location.href='patient_details.php?id=<?php echo $patient['PID']; ?>'">
+                             onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>'">
                             <div>
                                 <div class="id">P<?php echo substr($patient['PID'], -4); ?></div>
                                 <div class="muted" style="font-size:13px">
@@ -991,7 +988,8 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                                     <br>Status: <?php echo htmlspecialchars($patient['status']); ?>
                                 </div>
                             </div>
-                            <div style="background:#8fa3bf2f;padding:8px;border-radius:8px">
+                            <div style="background:#8fa3bf2f;padding:8px;border-radius:8px;cursor:pointer"><a href="patient.html?pid=<?php echo $patient['PID']; ?>">
+                                    ️</a>
                                 <span class="material-symbols-outlined"
                                       style="color: rgba(18,36,51,0.65)">arrow_forward</span>
                             </div>
@@ -1000,8 +998,20 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                 <?php else: ?>
                     <div class="small-item">
                         <div>
-                            <div class="id">No Recent Patients</div>
-                            <div class="muted" style="font-size:13px">Upload files to see patient data</div>
+                            <?php
+                            // Display a message when there are no recent patients
+                            if(empty($recent_patients)){
+                                echo "<div class='id'>No Recent Patients</div>";
+                                echo "<div class='muted' style='font-size:13px'>Add patient through patients page to see patient data</div>";
+                            }
+                            else{
+                                foreach ($recent_patients as $patient) {
+                                    echo "<div class='id'>P" . substr($patient['PID'], -4) . "</div>";
+                                    echo "<div class='muted' style='font-size:14px; '>" . htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) . "<br>Status: " . htmlspecialchars($patient['status']) . "</div>";
+                                }
+
+                            }
+                            ?>
                         </div>
                     </div>
                 <?php endif; ?>
