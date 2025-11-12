@@ -984,6 +984,15 @@ main h2{
   border-radius: 8px;
   font-weight: 700;
 }
+tr.no-result-row td {
+  background: #ffe6e6;     
+  color: #b30000;          
+  border: 1px solid #fc888873;
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 600;
+  text-align: center;
+}
 
 </style>
 </head>
@@ -1139,11 +1148,30 @@ function performAction(action, pid){
   if (!input || !table) return;
 
   const rows = Array.from(table.querySelectorAll('tbody tr'));
+const tbody    = table.querySelector('tbody');
+const colCount = table.querySelectorAll('thead th').length || 8;
 
-  // تنظيف التمييز
-  function clearMarks(){
-    rows.forEach(r => { r.classList.remove('hit','dim'); });
-  }
+function removeNoResultRow(){
+  const old = tbody.querySelector('tr.no-result-row');
+  if (old) old.remove();
+}
+
+function showNoResultRow(msg){
+  removeNoResultRow();
+  const tr = document.createElement('tr');
+  tr.className = 'no-result-row';
+  const td = document.createElement('td');
+  td.colSpan = colCount;
+  td.textContent = msg || 'No matches in your list.';
+  tr.appendChild(td);
+  tbody.appendChild(tr);
+}
+
+ function clearMarks(){
+  rows.forEach(r => { r.classList.remove('hit','dim'); });
+  removeNoResultRow();
+}
+
 
   // نحصل النصوص من الأعمدة الأربعة (PID, First, Last, Phone)
   function getRowText(tr){
@@ -1202,22 +1230,27 @@ function performAction(action, pid){
     tmr = setTimeout(() => {
       const match = bestMatch(q);
       if (match) focusRow(match);
-      else clearMarks();
+      else { clearMarks(); showNoResultRow('No matches in your list.'); }
+
     }, 200);
   });
 
-  // عند الضغط Enter يفتح صفحة المريض
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter'){
-      const match = bestMatch(input.value);
-      if (match){
-        const pid = (match.querySelector('td')?.textContent || '').trim();
-        if (pid) {
-          window.location.href = `patient.html?pid=${encodeURIComponent(pid)}`;
-        }
+ input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter'){
+    const match = bestMatch(input.value);
+    if (match){
+      const pid = (match.querySelector('td')?.textContent || '').trim();
+      if (pid) {
+        window.location.href = `patient.html?pid=${encodeURIComponent(pid)}`;
+      } else {
+        clearMarks(); showNoResultRow('No matches in your list.');
       }
+    } else {
+      clearMarks(); showNoResultRow('No matches in your list.'); 
     }
-  });
+  }
+});
+
 })();
 </script>
 
