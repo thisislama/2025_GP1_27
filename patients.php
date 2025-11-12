@@ -382,7 +382,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'connect_existing') {
 
 img.topimg {
   position: absolute;
-  top: -3.6%;
+  top: -5.9%;
   left: 48%;
   transform: translateX(-50%);
   max-width: 90%;
@@ -392,7 +392,7 @@ img.topimg {
 
 img.logo {
   position: absolute;
-  top: 4.9%;
+  top: 2.9%;
   left: 14%;
   width: clamp(6.25em, 12vw, 11.25em);
   height: auto;
@@ -401,7 +401,7 @@ img.logo {
 
 .auth-nav {
   position: absolute;
-  top: 6.5%;
+  top: 4.5%;
   right: 16.2%;
   display: flex;
   align-items: center;
