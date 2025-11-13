@@ -48,25 +48,33 @@ if ($conn->connect_error) {
     $error_message = "Database connection failed: " . $conn->connect_error;
 } else {
     // Get statistics
+    // This query returns the total number of unique patients assigned to the current doctor,
+    // the total number of waveform analyses (scans), and the number of analyses marked as anomalies.
     $stats_sql = "
-        SELECT 
-            COUNT(DISTINCT wa.PID) as total_patients,
-            COUNT(wa.waveAnalysisID) as total_scans,
-            SUM(CASE WHEN wa.status = 'critical' OR wa.status = 'abnormal' THEN 1 ELSE 0 END) as anomalies,
-            AVG(CASE WHEN wa.severity_level = 'high' THEN 0.95 
-                     WHEN wa.severity_level = 'medium' THEN 0.85 
-                     WHEN wa.severity_level = 'low' THEN 0.75 
-                     ELSE 0.65 END) as avg_confidence
-        FROM Waveform_analysis wa
-        WHERE wa.waveAnalysisID = wa.PID
+        SELECT
+            COUNT(DISTINCT da.PID) AS total_patients,
+            COUNT(wa.waveAnalysisID) AS total_scans,
+            SUM(CASE WHEN wa.status = 'anomaly' THEN 1 ELSE 0 END) AS anomalies
+        FROM
+            patient_doctor_assignments da
+            JOIN Waveform_analysis wa ON da.PID = wa.PID
+        WHERE
+            da.userID = ?
     ";
 
-    $stats_result = $conn->query($stats_sql);
-    if ($stats_result && $stats_row = $stats_result->fetch_assoc()) {
-        $stats['patients'] = $stats_row['total_patients'];
-        $stats['total_scans'] = $stats_row['total_scans'];
-        $stats['anomaly'] = $stats_row['anomalies'];
-        $stats['confidence'] = round(($stats_row['avg_confidence'] ?? 0.85) * 100, 1);
+    $stats_stmt = $conn->prepare($stats_sql);
+    if (!$stats_stmt) {
+        $error_message = "Prepare failed: " . $conn->error;
+    } else {
+        $stats_stmt->bind_param("i", $userID);
+        $stats_stmt->execute();
+        $stats_result = $stats_stmt->get_result();
+        if ($stats_result && $stats_row = $stats_result->fetch_assoc()) {
+            $stats['patients'] = $stats_row['total_patients'] ?? 0;
+            $stats['total_scans'] = $stats_row['total_scans'] ?? 0;
+            $stats['anomaly'] = $stats_row['anomalies'] ?? 0;
+        }
+        $stats_stmt->close();
     }
 
     // Get recent patients
@@ -243,7 +251,8 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
         }
 
         .material-symbols-outlined:hover {
-            transform: translateX(4px)
+
+            color: #eae8e8ff;
         }
 
         .btn-logout {
@@ -1035,9 +1044,9 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
 
                 <div class="stat">
                     <div>
-                        <div class="label" style="margin-bottom:8px;color: #232735">Scans</div>
+                        <div class="label" style="margin-bottom:8px;color: #232735">Analysis</div>
                         <div class="value"><?php echo $stats['total_scans']; ?></div>
-                        <div class="under"><?php echo $stats['total_scans']; ?> scans you applied for</div>
+                        <div class="under"><?php echo $stats['total_scans']; ?> analyses you applied for</div>
                     </div>
                     <div style="background:linear-gradient(150deg,rgb(151,255,2),#5b8c2f);padding:10px;border-radius:8px;color:#fff;font-weight:700">
                         <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
@@ -1048,7 +1057,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                     <div>
                         <div class="label"  style="margin-bottom:8px;color: #232735">Patients</div>
                         <div class="value"><?php echo $stats['patients']; ?></div>
-                        <div class="under"><?php echo $stats['total_scans']; ?>  total patients assigned to you</div>
+                        <div class="under"><?php echo $stats['patients']; ?>  total patients assigned to you</div>
 
                     </div>
                     <div style="background:linear-gradient(150deg,rgb(101,0,255),#7750b8);padding:10px;border-radius:8px;color:#fff;font-weight:700">
