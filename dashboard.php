@@ -498,7 +498,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
 
         img.logo {
             position: absolute;
-            top: -7.1%;
+            top: -8.1%;
             left: 14%;
             width: clamp(100px, 12vw, 180px);
             height: auto;
@@ -508,7 +508,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
 
         .auth-nav {
             position: absolute;
-            top: -6%;
+            top: -7%;
             right: 16.2%;
             display: flex;
             align-items: center;

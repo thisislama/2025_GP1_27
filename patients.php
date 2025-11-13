@@ -382,7 +382,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'connect_existing') {
 
 img.topimg {
   position: absolute;
-  top: -3.6%;
+  top: -5.9%;
   left: 48%;
   transform: translateX(-50%);
   max-width: 90%;
@@ -392,7 +392,7 @@ img.topimg {
 
 img.logo {
   position: absolute;
-  top: 4.9%;
+  top: 2.9%;
   left: 14%;
   width: clamp(6.25em, 12vw, 11.25em);
   height: auto;
@@ -401,7 +401,7 @@ img.logo {
 
 .auth-nav {
   position: absolute;
-  top: 6.5%;
+  top: 4.5%;
   right: 16.2%;
   display: flex;
   align-items: center;
@@ -994,6 +994,21 @@ tr.no-result-row td {
   text-align: center;
 }
 
+/* 🔹 شريط التنبيه الرمادي */
+.no-result-bar {
+  background: #f1f3f6;
+  border: 1px solid #d0d6de;
+  border-radius: 10px;
+  color: #1a1a1a;
+  font-weight: 600;
+  padding: 16px;
+  margin: 10px auto;
+  text-align: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  width: 95%;
+}
+
 </style>
 </head>
 
@@ -1031,7 +1046,6 @@ tr.no-result-row td {
     <button class="btn-connect" id="openConnectModal">🔗 Connect Patient</button>
   </div>
 </div>
-
 
       <table id="patientsTable">
         <thead><tr><th>ID</th><th>First</th><th>Last</th><th>Gender</th><th>Status</th><th>Phone</th><th>DOB</th><th>Actions</th></tr></thead>
@@ -1143,74 +1157,64 @@ function performAction(action, pid){
 <script>
 // ================== Patient table quick search by PID / Name / Phone ==================
 (function(){
-  const input  = document.getElementById('search');          // حقل البحث العلوي
+  const input  = document.getElementById('search');
   const table  = document.getElementById('patientsTable');
+  const tableCard = document.querySelector('.table-card');
   if (!input || !table) return;
 
   const rows = Array.from(table.querySelectorAll('tbody tr'));
-const tbody    = table.querySelector('tbody');
-const colCount = table.querySelectorAll('thead th').length || 8;
+  const tbody = table.querySelector('tbody');
 
-function removeNoResultRow(){
-  const old = tbody.querySelector('tr.no-result-row');
-  if (old) old.remove();
-}
+  // 🔹 إظهار شريط رمادي واضح بدل الجدول
+  function showNoResultBar(msg) {
+    hideNoResultBar(); // نحذف أي بار قديم
+    if (table) table.style.display = 'none';
 
-function showNoResultRow(msg){
-  removeNoResultRow();
-  const tr = document.createElement('tr');
-  tr.className = 'no-result-row';
-  const td = document.createElement('td');
-  td.colSpan = colCount;
-  td.textContent = msg || 'No matches in your list.';
-  tr.appendChild(td);
-  tbody.appendChild(tr);
-}
+    const bar = document.createElement('div');
+    bar.className = 'no-result-bar';
+    bar.textContent = msg || 'No results found.';
+    tableCard.insertAdjacentElement('afterbegin', bar);
+  }
 
- function clearMarks(){
-  rows.forEach(r => { r.classList.remove('hit','dim'); });
-  removeNoResultRow();
-}
+  // 🔹 إخفاء الشريط الرمادي وإرجاع الجدول
+  function hideNoResultBar() {
+    const bar = document.querySelector('.no-result-bar');
+    if (bar) bar.remove();
+    if (table) table.style.display = '';
+  }
 
+  // 🔹 مسح التنسيقات السابقة
+  function clearMarks(){
+    hideNoResultBar();
+    rows.forEach(r => { r.classList.remove('hit','dim'); });
+  }
 
-  // نحصل النصوص من الأعمدة الأربعة (PID, First, Last, Phone)
+  // 🔹 استخراج النصوص من الصف
   function getRowText(tr){
     const cells = tr.querySelectorAll('td');
     return Array.from(cells)
-      .slice(0, 6) // ناخذ أول 6 أعمدة: PID / First / Last / Gender / Status / Phone (لو تبين)
+      .slice(0, 6)
       .map(td => (td.textContent || '').trim().toLowerCase());
   }
 
-  // أفضل مطابقة: مطابق تمامًا > يبدأ بـ > يحتوي
+  // 🔹 تحديد أفضل تطابق
   function bestMatch(q){
-    if (!q) return null;
     const qraw = q.trim().toLowerCase();
     if (!qraw) return null;
 
-    // 1) مطابق تمامًا
-    let exact = rows.find(tr => {
-      const vals = getRowText(tr);
-      return vals.some(v => v === qraw);
-    });
+    let exact = rows.find(tr => getRowText(tr).some(v => v === qraw));
     if (exact) return exact;
 
-    // 2) يبدأ بـ
-    let starts = rows.find(tr => {
-      const vals = getRowText(tr);
-      return vals.some(v => v.startsWith(qraw));
-    });
+    let starts = rows.find(tr => getRowText(tr).some(v => v.startsWith(qraw)));
     if (starts) return starts;
 
-    // 3) يحتوي
-    let contains = rows.find(tr => {
-      const vals = getRowText(tr);
-      return vals.some(v => v.includes(qraw));
-    });
+    let contains = rows.find(tr => getRowText(tr).some(v => v.includes(qraw)));
     if (contains) return contains;
 
     return null;
   }
 
+  // 🔹 تمييز الصف
   function focusRow(tr){
     clearMarks();
     tr.classList.add('hit');
@@ -1218,41 +1222,78 @@ function showNoResultRow(msg){
     tr.scrollIntoView({ behavior:'smooth', block:'center' });
   }
 
-  // التفاعل مع الكتابة
+  // 🔹 وظيفة البحث التلقائي
   let tmr = null;
   input.addEventListener('input', () => {
     clearTimeout(tmr);
-    const q = input.value;
-    if (!q.trim()){
+    const q = input.value.trim();
+    if (!q) {
       clearMarks();
       return;
     }
+
     tmr = setTimeout(() => {
       const match = bestMatch(q);
-      if (match) focusRow(match);
-      else { clearMarks(); showNoResultRow('No matches in your list.'); }
-
-    }, 200);
+      if (match) {
+        focusRow(match);
+      } else {
+        clearMarks();
+        checkPatientInSystem(q).then(exists => {
+          if (exists) {
+            showNoResultBar('No patient found in your list. You can connect with this patient.');
+          } else {
+            showNoResultBar('No patient found in the system.');
+          }
+        });
+      }
+    }, 300);
   });
 
- input.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter'){
-    const match = bestMatch(input.value);
-    if (match){
-      const pid = (match.querySelector('td')?.textContent || '').trim();
-      if (pid) {
-        window.location.href = `patient.html?pid=${encodeURIComponent(pid)}`;
+  // 🔹 البحث عند الضغط Enter
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){
+      const q = input.value.trim();
+      const match = bestMatch(q);
+      if (match){
+        const pid = (match.querySelector('td')?.textContent || '').trim();
+        if (pid) {
+          window.location.href = `patient.html?pid=${encodeURIComponent(pid)}`;
+        }
       } else {
-        clearMarks(); showNoResultRow('No matches in your list.');
+        clearMarks();
+        checkPatientInSystem(q).then(exists => {
+          if (exists) {
+            showNoResultBar('No patient found in your list. You can connect with this patient.');
+          } else {
+            showNoResultBar('No patient found in the system.');
+          }
+        });
       }
-    } else {
-      clearMarks(); showNoResultRow('No matches in your list.'); 
+    }
+  });
+
+  // ✅ 🔍 التحقق من وجود المريض داخل TANAFS
+  async function checkPatientInSystem(query) {
+    try {
+      const res = await fetch("", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "ajax=search_connect&q=" + encodeURIComponent(query)
+      });
+      const data = await res.json();
+      if (data.type === "success" && data.html.includes("<table")) {
+        return true; // ✅ موجود في النظام
+      } else {
+        return false; // ❌ غير موجود
+      }
+    } catch {
+      return false;
     }
   }
-});
 
-})();
+})(); // ← ختام السكربت
 </script>
+
 
 
 <script>
@@ -1298,7 +1339,7 @@ document.getElementById("openImportModal").addEventListener("click", function() 
 <div class="modal" id="importModal">
   <div class="modal-content">
     <h3>🏥 Import Patient from Hospital</h3>
-    <p style="margin-bottom:10px;color:#666;">Enter the patient's Hospital ID to fetch their record from the Hospital Management System and add them to Tanafs.
+    <p style="margin-bottom:10px;color:#666;">Enter the patient's ID to import the patient record from the PMS into TANAFS.
 </p>
 
     <!-- Step 1: Search -->
@@ -1500,7 +1541,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 </script>
-
 </body>
 </html>
 <?php $conn->close(); ?>
