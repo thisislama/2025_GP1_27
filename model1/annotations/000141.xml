@@ -1,0 +1,38 @@
+<annotation>
+	<folder>JPGimg</folder>
+	<filename>000141.jpg</filename>
+	<path>F:\COCOdata\JPGimg\000141.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>413</width>
+		<height>209</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Accumulation Flow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>66</xmin>
+			<ymin>32</ymin>
+			<xmax>384</xmax>
+			<ymax>95</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Volume</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>54</xmin>
+			<ymin>121</ymin>
+			<xmax>390</xmax>
+			<ymax>184</ymax>
+		</bndbox>
+	</object>
+</annotation>

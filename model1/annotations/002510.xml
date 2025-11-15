@@ -1,0 +1,38 @@
+<annotation>
+	<folder>JPGimg</folder>
+	<filename>002510.jpg</filename>
+	<path>F:\COCOdata\JPGimg\002510.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>489</width>
+		<height>312</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Normal Flow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>49</xmin>
+			<ymin>60</ymin>
+			<xmax>488</xmax>
+			<ymax>139</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Normal Volume</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2</xmin>
+			<ymin>198</ymin>
+			<xmax>468</xmax>
+			<ymax>267</ymax>
+		</bndbox>
+	</object>
+</annotation>

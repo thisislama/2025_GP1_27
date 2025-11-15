@@ -1,0 +1,38 @@
+<annotation>
+	<folder>JPGimg</folder>
+	<filename>001753.jpg</filename>
+	<path>F:\COCOdata\JPGimg\001753.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>979</width>
+		<height>584</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Double_Triggering Flow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>22</xmin>
+			<ymin>183</ymin>
+			<xmax>966</xmax>
+			<ymax>319</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Double_Triggering Volume</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>27</xmin>
+			<ymin>421</ymin>
+			<xmax>849</xmax>
+			<ymax>545</ymax>
+		</bndbox>
+	</object>
+</annotation>

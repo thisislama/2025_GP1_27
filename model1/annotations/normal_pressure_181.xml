@@ -1,0 +1,38 @@
+<annotation>
+	<folder>preprocessed4</folder>
+	<filename>	316.png</filename>
+	<path>F:\preprocessed4\	316.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>797</width>
+		<height>311</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Normal Pressure</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>108</xmin>
+			<ymin>32</ymin>
+			<xmax>782</xmax>
+			<ymax>102</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Normal Flow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>103</xmin>
+			<ymin>192</ymin>
+			<xmax>789</xmax>
+			<ymax>294</ymax>
+		</bndbox>
+	</object>
+</annotation>

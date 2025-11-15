@@ -1,0 +1,50 @@
+<annotation>
+	<folder>preprocessed4</folder>
+	<filename>	345.png</filename>
+	<path>F:\preprocessed4\	345.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1126</width>
+		<height>648</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Normal Pressure</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>76</xmin>
+			<ymin>28</ymin>
+			<xmax>906</xmax>
+			<ymax>126</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Normal Flow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>83</xmin>
+			<ymin>219</ymin>
+			<xmax>908</xmax>
+			<ymax>355</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Normal Volume</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>99</xmin>
+			<ymin>417</ymin>
+			<xmax>959</xmax>
+			<ymax>542</ymax>
+		</bndbox>
+	</object>
+</annotation>

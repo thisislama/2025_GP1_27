@@ -1,0 +1,38 @@
+<annotation>
+	<folder>JPGimg</folder>
+	<filename>000668.jpg</filename>
+	<path>F:\COCOdata\JPGimg\000668.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>729</width>
+		<height>326</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Flow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>106</xmin>
+			<ymin>27</ymin>
+			<xmax>712</xmax>
+			<ymax>128</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Leakage Volume</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>41</xmin>
+			<ymin>166</ymin>
+			<xmax>712</xmax>
+			<ymax>307</ymax>
+		</bndbox>
+	</object>
+</annotation>
