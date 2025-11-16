@@ -1,0 +1,26 @@
+<annotation>
+	<folder>preprocessed4</folder>
+	<filename>	188.png</filename>
+	<path>F:\preprocessed4\	188.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>767</width>
+		<height>319</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Normal Pressure</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>94</xmin>
+			<ymin>43</ymin>
+			<xmax>716</xmax>
+			<ymax>109</ymax>
+		</bndbox>
+	</object>
+</annotation>
