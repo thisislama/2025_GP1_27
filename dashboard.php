@@ -37,8 +37,7 @@ $docRes->close();
 $stats = [
     'anomaly' => 0,
     'total_scans' => 0,
-    'patients' => 0,
-    'confidence' => 0
+    'patients' => 0
 ];
 $recent_patients = [];
 $upload_message = '';
@@ -47,6 +46,10 @@ $upload_message = '';
 if ($conn->connect_error) {
     $error_message = "Database connection failed: " . $conn->connect_error;
 } else {
+    // Clear upload message after displaying once
+    if (isset($_SESSION['upload_message'])) {
+        unset($_SESSION['upload_message']);
+    }
     // Get statistics
     // This query returns the total number of unique patients assigned to the current doctor,
     // the total number of waveform analyses (scans), and the number of analyses marked as anomalies.
@@ -77,7 +80,6 @@ if ($conn->connect_error) {
         $stats_stmt->close();
     }
 
-    // Get recent patients
    // Get recent patients with details
     $recent_sql = "
     SELECT p.PID, p.first_name, p.last_name, p.status
@@ -96,13 +98,21 @@ if ($recent_result) {
     $recent_patients = $recent_result->fetch_all(MYSQLI_ASSOC);
 }
 
-    // Handle file upload
+
+         // Handle file upload
+        $upload_result = [];
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['waveform_file'])) {
-        $upload_message = handleFileUpload($conn, $userID);
+    $upload_result = handleFileUpload($conn, $userID);
+    if (isset($upload_result['success'])) {
+        $upload_message = $upload_result['success'];
+        $_SESSION['last_uploaded_image'] = $upload_result['file_path'];
+    } else {
+        $upload_message = $upload_result['error'];
     }
 }
+}
 
-// File upload handler function
+
 function handleFileUpload($conn, $userID)
 {
     $target_dir = "uploads/";
@@ -117,12 +127,12 @@ function handleFileUpload($conn, $userID)
     // Check file type
     $allowed_types = ['png', 'jpg', 'jpeg'];
     if (!in_array($fileType, $allowed_types)) {
-        return "Error: Only PNG, JPG, JPEG files are allowed.";
+        return ['error' => "Error: Only PNG, JPG, JPEG files are allowed."];
     }
 
     // Check file size (10MB max)
     if ($_FILES["waveform_file"]["size"] > 10000000) {
-        return "Error: File is too large. Maximum size is 10MB.";
+        return ['error' => "Error: File is too large. Maximum size is 10MB."];
     }
 
     // Upload file
@@ -134,8 +144,8 @@ function handleFileUpload($conn, $userID)
 
         // Insert into Waveform_Img table
         $waveform_sql = "
-            INSERT INTO Waveform_Img (userID, filePath, waveformType, date, timestamp) 
-            VALUES (?, ?, ?, CURDATE(), NOW())
+            INSERT INTO Waveform_Img (userID, filePath, waveformType, timestamp) 
+            VALUES (?, ?, ?, NOW())
         ";
         $stmt = $conn->prepare($waveform_sql);
         $waveform_type = getWaveformType($fileType);
@@ -145,14 +155,18 @@ function handleFileUpload($conn, $userID)
             $wave_img_id = $stmt->insert_id;
 
             // Create analysis entry
-            $analysis_result = createWaveformAnalysis($conn, $wave_img_id, $patient_id);
+          //  $analysis_result = createWaveformAnalysis($conn, $wave_img_id, $patient_id);
 
-            return "File uploaded successfully! Analysis ID: " . $analysis_result;
+            return [
+                'success' => "File uploaded successfully! Analysis ID: ",
+                'file_path' => $target_file,
+                'file_name' => $filename
+            ];
         } else {
-            return " Error saving file information to database.";
+            return ['error' => "Error saving file information to database."];
         }
     } else {
-        return "Error uploading file.";
+        return ['error' => "Error uploading file."];
     }
 }
 
@@ -309,7 +323,7 @@ function getWaveformType($fileType)
         .upload-card input[type=file] {
             display: none
         }
-/*dashed*/
+    /*dashed*/
         .upload-drop {
             width: 100%;
             height: 230px;
@@ -799,6 +813,32 @@ function getWaveformType($fileType)
 
        
 
+    .uploaded-image-container {
+        background: #f8fafd;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #e9eef6;
+        width: 50%;
+    }
+
+    .upload-success {
+        color: #28a745;
+        background: #d4edda;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10em;
+        width: 50%;
+    }
+
+    .upload-error {
+        color: #dc3545;
+        background: #f8d7da;
+        padding: 10px;
+        border-radius: 5px;
+        width: 50%;
+        margin-top: 10em;
+    }
+
     </style>
 </head>
 <body>
@@ -810,7 +850,7 @@ function getWaveformType($fileType)
     <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
     <nav class="auth-nav" aria-label="User navigation">
-<a class="nav-link active" href="dashboard.php">Dashboard</a>
+        <a class="nav-link active" href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
         <a class="nav-link" href="history2.php">History</a>
         <a href="profile.php" class="profile-btn">
@@ -824,6 +864,12 @@ function getWaveformType($fileType)
         </form>
     </nav>
 
+    <?php if (!empty($upload_message)): ?>
+                <div class="upload-message <?php echo strpos($upload_message, '') !== false ? 'upload-error' : 'upload-success'; ?>">
+                    <?php echo htmlspecialchars($upload_message); ?>
+                </div>
+            <?php endif; ?>
+
     <main class="container">
         <!-- LEFT -->
         <section class="left-column">
@@ -831,27 +877,23 @@ function getWaveformType($fileType)
             <h2 style="color:#1f45b5; font-size:1.65em;margin:40px 0 0px 1.2em;">
                 Welcome back <br>
                 <span style="color:rgba(89,115,195,0.76);font-size: .80em;margin-left: 1.7em">
-    <?php echo  $_SESSION['doctorName'] ?>
-  </span>
+                 <?php echo  $_SESSION['doctorName'] ?>
+                </span>
             </h2>
+            
+            <!-- UPLOAD CARD -->
             <label class="upload-card" for="fileUpload" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">
                 <form method="post" enctype="multipart/form-data" class="upload-card">
-                    <input id="fileUpload" type="file" accept=".csv,.png,.jpg"/>
-                    <div class="upload-drop" id="dropzone">
-                        <div style="font-size:28px;opacity:0.95">
-                            <span class="material-symbols-outlined">upload</span>
+                    <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
+                        <div class="upload-drop" id="dropzone">
+                            <div style="font-size:28px;opacity:0.95">
+                                <span class="material-symbols-outlined">upload</span>
+                            </div>
+
+                            <div class="hint">Upload your waveform, Here!</div>
+                            <div style="font-size:13px;color:#0b84feb3;margin-top:8px">Drag &amp; drop or click to select a file</div>
+                            <div style="font-size:13px;color:rgba(145,148,151,0.7);margin-top:8px"> Only JPEG, PNG, JPG files are allowed. </div>
                         </div>
-                        <div class="hint">Upload your waveform, Here!</div>
-                        <div style="font-size:13px;color:#0b84feb3;margin-top:8px">Drag &amp; drop or click to
-                            select a file
-                        </div>
-                        <div style="font-size:13px;color:rgba(145,148,151,0.7);margin-top:8px"> Only CSV, PNG, JPG files are allowed. </div>
-                    </div>
-                    <?php if (!empty($upload_message)): ?>
-                        <div class="upload-message <?php echo strpos($upload_message, '') !== false ? 'upload-error' : 'upload-success'; ?>">
-                            <?php echo htmlspecialchars($upload_message); ?>
-                        </div>
-                    <?php endif; ?>
                 </form>
             </label>
 
@@ -888,7 +930,6 @@ function getWaveformType($fileType)
                                     echo "<div class='id'>P" . substr($patient['PID'], -4) . "</div>";
                                     echo "<div class='muted' style='font-size:14px; '>" . htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) . "<br>Status: " . htmlspecialchars($patient['status']) . "</div>";
                                 }
-
                             }
                             ?>
                         </div>
@@ -939,15 +980,22 @@ function getWaveformType($fileType)
 
             <div class="result-card">
                 <div class="title">Analysis Overview</div>
+                <?php
+                $last = $_SESSION['last_uploaded_image'] ?? null;
+                // try server-side check (uploads path relative to this file)
+                $exists = $last && (file_exists(__DIR__ . '/' . $last) || file_exists($last));
+                if ($exists): ?>
+                    <div style="text-align:center;margin-top:12px">
+                        <img src="<?php echo htmlspecialchars($last); ?>" alt="Last Uploaded Waveform" style="max-width:100%;margin-top:12px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.1)"/>
+                    </div>
+                <?php endif; ?>
+                
                 <div class="result-output" id="resultArea">
                     <?php echo $stats['total_scans'] > 0 ?
                         "Total analyses: {$stats['total_scans']} | Anomalies detected: {$stats['anomaly']}" :
                         "You're result will show here!";
                     ?>
-                </div>
-                <div class="chart-container">
-                    <canvas id="analysisChart"></canvas>
-                </div>
+                </div>    
             </div>
             </div>
         </section>
@@ -1011,6 +1059,136 @@ function getWaveformType($fileType)
         <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
     </div>
 </footer>
+<script>
+
+    // Show loading when form is submitted
+    document.querySelector('form').addEventListener('submit', function() {
+        this.classList.add('uploading');
+    });
+        // Tab switching (visual only)
+    document.querySelectorAll('.nav button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        })
+    });
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileUpload');
+    const resultArea = document.getElementById('resultArea');
+
+    function showResult(text) {
+        resultArea.textContent = text;
+    }
+
+    // File selection
+    fileInput.addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        
+        // Show immediate preview for images
+        if (f.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Create temporary preview
+                const preview = document.createElement('img');
+                preview.src = e.target.result;
+                preview.style.maxWidth = '100%';
+                preview.style.maxHeight = '150px';
+                preview.style.borderRadius = '8px';
+                preview.style.marginTop = '10px';
+                preview.style.border = '2px solid #e9eef6';
+                
+                // Remove existing preview if any
+                const existingPreview = dropzone.querySelector('.temp-preview');
+                if (existingPreview) {
+                    existingPreview.remove();
+                }
+                
+                preview.className = 'temp-preview';
+                dropzone.appendChild(preview);
+            };
+            reader.readAsDataURL(f);
+        }
+        
+        showResult('Ready to upload: ' + f.name);
+        
+        // Auto-submit the form when file is selected
+        fileInput.closest('form').submit();
+    });
+
+    // Drag & drop
+    ['dragenter', 'dragover'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'rgba(68, 110, 170, 1)';
+            dropzone.style.backgroundColor = 'rgba(15, 101, 255, 0.05)';
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'rgba(68, 110, 170, 0.7)';
+            dropzone.style.backgroundColor = '#fff';
+        });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        const f = e.dataTransfer.files[0];
+        if (!f) return;
+        
+        // Check if it's an image file
+        if (!f.type.startsWith('image/')) {
+            showResult('Error: Please upload only image files (PNG, JPG, JPEG)');
+            return;
+        }
+        
+        // Assign to file input
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(f);
+        fileInput.files = dataTransfer.files;
+        
+        // Show preview
+        if (f.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.createElement('img');
+                preview.src = e.target.result;
+                preview.style.maxWidth = '100%';
+                preview.style.maxHeight = '150px';
+                preview.style.borderRadius = '8px';
+                preview.style.marginTop = '10px';
+                preview.style.border = '2px solid #e9eef6';
+                
+                const existingPreview = dropzone.querySelector('.temp-preview');
+                if (existingPreview) {
+                    existingPreview.remove();
+                }
+                
+                preview.className = 'temp-preview';
+                dropzone.appendChild(preview);
+            };
+            reader.readAsDataURL(f);
+        }
+        
+        showResult('Ready to upload: ' + f.name);
+        
+        // Auto-submit the form
+        fileInput.closest('form').submit();
+    });
+
+    // Make the label clickable to open file dialog
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    // Clear temporary preview on page load (in case of form submission)
+    window.addEventListener('load', () => {
+        const tempPreview = dropzone.querySelector('.temp-preview');
+        if (tempPreview) {
+            tempPreview.remove();
+        }
+    });
+</script>
 </body>
 </html>
 
