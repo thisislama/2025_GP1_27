@@ -51,34 +51,36 @@ if ($conn->connect_error) {
         unset($_SESSION['upload_message']);
     }
     // Get statistics
-    // This query returns the total number of unique patients assigned to the current doctor,
-    // the total number of waveform analyses (scans), and the number of analyses marked as anomalies.
-    $stats_sql = "
-        SELECT
-            COUNT(DISTINCT da.PID) AS total_patients,
+
+    // Get total patients assigned to this doctor
+    $patients_sql = "SELECT COUNT(DISTINCT PID) AS total_patients FROM patient_doctor_assignments WHERE userID = ?";
+    $patients_stmt = $conn->prepare($patients_sql);
+    $patients_stmt->bind_param("i", $userID);
+    $patients_stmt->execute();
+    $patients_result = $patients_stmt->get_result();
+    if ($patients_result && $patients_row = $patients_result->fetch_assoc()) {
+        $stats['patients'] = $patients_row['total_patients'] ?? 0;
+    }
+    $patients_stmt->close();
+
+        // Get scans and anomalies for assigned patients
+    $scans_sql = "
+        SELECT 
             COUNT(wa.waveAnalysisID) AS total_scans,
             SUM(CASE WHEN wa.status = 'anomaly' THEN 1 ELSE 0 END) AS anomalies
-        FROM
-            patient_doctor_assignments da
-            JOIN Waveform_analysis wa ON da.PID = wa.PID
-        WHERE
-            da.userID = ?
+        FROM Waveform_analysis wa
+        WHERE wa.PID IN (SELECT PID FROM patient_doctor_assignments WHERE userID = ?)
     ";
 
-    $stats_stmt = $conn->prepare($stats_sql);
-    if (!$stats_stmt) {
-        $error_message = "Prepare failed: " . $conn->error;
-    } else {
-        $stats_stmt->bind_param("i", $userID);
-        $stats_stmt->execute();
-        $stats_result = $stats_stmt->get_result();
-        if ($stats_result && $stats_row = $stats_result->fetch_assoc()) {
-            $stats['patients'] = $stats_row['total_patients'] ?? 0;
-            $stats['total_scans'] = $stats_row['total_scans'] ?? 0;
-            $stats['anomaly'] = $stats_row['anomalies'] ?? 0;
+        $scans_stmt = $conn->prepare($scans_sql);
+        $scans_stmt->bind_param("i", $userID);
+        $scans_stmt->execute();
+        $scans_result = $scans_stmt->get_result();
+        if ($scans_result && $scans_row = $scans_result->fetch_assoc()) {
+            $stats['total_scans'] = $scans_row['total_scans'] ?? 0;
+            $stats['anomaly'] = $scans_row['anomalies'] ?? 0;
         }
-        $stats_stmt->close();
-    }
+        $scans_stmt->close();
 
    // Get recent patients with details
     $recent_sql = "
@@ -967,8 +969,8 @@ function getWaveformType($fileType)
                 <div class="stat" style="width: 205%">
                     <div>
                         <div class="label"  style="margin-bottom:8px;color: #232735">Patients</div>
-                        <div class="value"><?php echo $stats['patients']; ?></div>
-                        <div class="under"><?php echo $stats['patients']; ?>  total patients assigned to you</div>
+                        <div class="value"><?php echo $stats['patients'] ?></div>
+                        <div class="under"><?php echo $stats['patients'] ?>  total patients assigned to you</div>
 
                     </div>
                     <div style="background:linear-gradient(150deg,rgb(101,0,255),#7750b8);padding:10px;border-radius:8px;color:#fff;font-weight:700">
