@@ -78,18 +78,23 @@ if ($conn->connect_error) {
     }
 
     // Get recent patients
+   // Get recent patients with details
     $recent_sql = "
-        SELECT p.PID, p.first_name, p.last_name, p.status
-        FROM patient p
-        ORDER BY p.PID DESC
-        LIMIT 3
+    SELECT p.PID, p.first_name, p.last_name, p.status
+    FROM Patient p
+    INNER JOIN patient_doctor_assignments pda ON p.PID = pda.PID
+    WHERE pda.userID = ?
+    LIMIT 3
     ";
-    
 
-    $recent_result = $conn->query($recent_sql);
-    if ($recent_result) {
-        $recent_patients = $recent_result->fetch_all(MYSQLI_ASSOC);
-    }
+    $stmt = $conn->prepare($recent_sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $recent_result = $stmt->get_result();
+
+if ($recent_result) {
+    $recent_patients = $recent_result->fetch_all(MYSQLI_ASSOC);
+}
 
     // Handle file upload
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['waveform_file'])) {
@@ -110,9 +115,9 @@ function handleFileUpload($conn, $userID)
     $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
     // Check file type
-    $allowed_types = ['wav', 'txt', 'csv', 'png', 'jpg', 'jpeg'];
+    $allowed_types = ['png', 'jpg', 'jpeg'];
     if (!in_array($fileType, $allowed_types)) {
-        return "Error: Only WAV, TXT, CSV, PNG, JPG files are allowed.";
+        return "Error: Only PNG, JPG, JPEG files are allowed.";
     }
 
     // Check file size (10MB max)
@@ -154,46 +159,11 @@ function handleFileUpload($conn, $userID)
 function getWaveformType($fileType)
 {
     $types = [
-        'wav' => 'Audio',
-        'txt' => 'Text',
-        'csv' => 'CSV',
         'png' => 'Image',
         'jpg' => 'Image',
         'jpeg' => 'Image'
     ];
     return $types[$fileType] ?? 'Unknown';
-}
-
-function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
-{
-    // Simulate analysis results
-    $statuses = ['normal', 'abnormal', 'critical'];
-    $severities = ['low', 'medium', 'high'];
-    $anomalies = ['Double Trigger', 'Auto Trigger', 'Flow Dysnchrony', 'Ineffective Trigger'];
-
-    $status = $statuses[array_rand($statuses)];
-    $severity = $severities[array_rand($severities)];
-    $anomaly = $anomalies[array_rand($anomalies)];
-
-    $analysis_sql = "
-        INSERT INTO Waveform_analysis 
-        (waveImg_id, PID, flow, volume, pressure, status, severity_level, anomaly_type, finding_notes, timestamp) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-    ";
-
-    $stmt = $conn->prepare($analysis_sql);
-    $flow = rand(80, 120);
-    $volume = rand(400, 800);
-    $pressure = rand(100, 140);
-    $notes = "Automated analysis completed. Status: $status, Severity: $severity";
-
-    $stmt->bind_param("iidddssss", $wave_img_id, $patient_id, $flow, $volume, $pressure,
-        $status, $severity, $anomaly, $notes);
-
-    if ($stmt->execute()) {
-        return $stmt->insert_id;
-    }
-    return "Unknown";
 }
 
 ?>
@@ -208,6 +178,11 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
 
     <style>
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         html, body {
             height: 100%;
         }
@@ -223,6 +198,17 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             display: block;
         }
 
+            :root {
+            --bg: #f2f6fb;
+            --accent: #0f65ff;
+            --muted: #9aa6c0;
+        }
+
+        body {
+            background: var(--bg);
+            color: #15314b;
+        }
+
         :root {
             --bg: #f2f6fb;
             --accent: #0f65ff;
@@ -235,15 +221,9 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             --maxw: 800px;
         }
         .nav-link.active::after {
-    width: 100%;
-}
+          width: 100%;
+       }
 
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
 
         .material-symbols-outlined {
             font-variation-settings: 'wght' 500;
@@ -427,43 +407,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             opacity: 0.55
         }
 
-        @media (max-width: 1000px) {
-            .container {
-                grid-template-columns:1fr;
-            }
-
-            .container {
-                max-width: 920px;
-                grid-template-columns:1fr;
-            }
-
-            .upload-drop {
-                height: 160px
-            }
-
-            .stats-grid {
-                grid-template-columns:repeat(2, 1fr)
-            }
-        }
-
-        @media (max-width: 720px) {
-            .topbar {
-                padding: 10px
-            }
-
-            .container {
-                padding: 8px
-            }
-
-            .welcome h1 {
-                font-size: 22px
-            }
-
-            .upload-drop {
-                height: 140px
-            }
-        }
-
+        
         .muted {
             color: var(--muted)
         }
@@ -762,62 +706,6 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             font-size: 0.85em;
         }
 
-        @media (max-width: 56.25em) {
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5em;
-                text-align: center;
-            }
-
-            .social-list {
-                justify-content: center;
-            }
-
-            .contact-link {
-                justify-content: center;
-            }
-
-            .brand {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-
-        /* ===== Responsive ===== */
-        @media (max-width: 56.25em) {
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5em;
-                text-align: center;
-            }
-
-            .social-list {
-                justify-content: center;
-            }
-
-            .contact-link {
-                justify-content: center;
-            }
-
-            .brand {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-
-        :root {
-            --bg: #f2f6fb;
-            --accent: #0f65ff;
-            --muted: #9aa6c0;
-        }
-
-        body {
-            background: var(--bg);
-            color: #15314b;
-        }
-
         .upload-card,
         .small-cards,
         .stat,
@@ -909,25 +797,7 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             color: #2b4a77;
         }
 
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .auth-nav {
-                top: -5%;
-                right: 11%;
-                gap: 1.2em;
-            }
-
-            img.logo {
-                top: -5.1%;
-                left: 11%;
-                width: clamp(5em, 14vw, 10em);
-            }
-
-            img.topimg {
-                top: -9%;
-                max-width: 100%;
-            }
-        }
-
+       
 
     </style>
 </head>
@@ -1065,16 +935,6 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
                     </div>
                 </div>
 
-                <!--    <div class="stat">
-                  <div>
-                        <div class="label">AI confidence</div>
-                        <div class="value"><?php echo $stats['confidence']; ?>%</div>
-                        <div class="under"><?php echo $stats['total_scans']; ?> completed</div>
-                    </div>
-                    <div style="background:linear-gradient(150deg,rgb(0,255,140),#6b9a85);padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">check_circle</span>
-                    </div>
-                </div>-->
             </div>
 
             <div class="result-card">
@@ -1092,7 +952,6 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
             </div>
         </section>
     </main>
-
 </div>
 
 
@@ -1152,110 +1011,6 @@ function createWaveformAnalysis($conn, $wave_img_id, $patient_id)
         <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
     </div>
 </footer>
-
-<script>
-    // Tab switching (visual only)
-    document.querySelectorAll('.nav button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        })
-    });
-
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.getElementById('fileUpload');
-    const resultArea = document.getElementById('resultArea');
-
-    function showResult(text) {
-        resultArea.textContent = text;
-    }
-
-    // File selection
-    fileInput.addEventListener('change', (e) => {
-        const f = e.target.files[0];
-        if (!f) return;
-        showResult('Uploaded: ' + f.name);
-    });
-
-    // Drag & drop
-    ['dragenter', 'dragover'].forEach(evt => {
-        dropzone.addEventListener(evt, (e) => {
-            e.preventDefault();
-            dropzone.style.borderColor = 'rgba(255,255,255,0.4)'
-        });
-    });
-    ['dragleave', 'drop'].forEach(evt => {
-        dropzone.addEventListener(evt, (e) => {
-            e.preventDefault();
-            dropzone.style.borderColor = 'rgba(255,255,255,0.12)'
-        });
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-        const f = e.dataTransfer.files[0];
-        if (!f) return;
-        // assign to file input (so subsequent clicks show same file selected)
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(f);
-        fileInput.files = dataTransfer.files;
-        showResult('Uploaded: ' + f.name);
-    });
-
-    // Make the label clickable to open file dialog
-    dropzone.addEventListener('click', () => fileInput.click());
-
-
-
-    function showResult(text) {
-        resultArea.textContent = text;
-    }
-
-    // Chart.js for analytics
-    const ctx = document.getElementById('analysisChart').getContext('2d');
-    const analysisChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Normal', 'Abnormal', 'Critical'],
-            datasets: [{
-                data: [<?php echo max(0, $stats['total_scans'] - $stats['anomaly']); ?>,
-                    <?php echo $stats['anomaly']; ?>,
-                    <?php echo min($stats['anomaly'], 2); ?>],
-                backgroundColor: [
-                    '#4CAF50',
-                    '#FF9800',
-                    '#F44336'
-                ],
-                borderWidth: 2,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        padding: 20,
-                        usePointStyle: true
-                    }
-                }
-            },
-            cutout: '70%'
-        }
-    });
-
-    // Global search functionality
-    document.getElementById('globalSearch').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            const searchTerm = this.value.trim();
-            if (searchTerm) {
-                window.location.href = `patients.php?search=${encodeURIComponent(searchTerm)}`;
-            }
-        }
-    });
-</script>
-
 </body>
 </html>
 
