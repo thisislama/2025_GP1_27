@@ -993,10 +993,7 @@ function getWaveformType($fileType)
                 <?php endif; ?>
                 
                 <div class="result-output" id="resultArea">
-                    <?php echo $stats['total_scans'] > 0 ?
-                        "Total analyses: {$stats['total_scans']} | Anomalies detected: {$stats['anomaly']}" :
-                        "You're result will show here!";
-                    ?>
+                    
                 </div>    
             </div>
             </div>
