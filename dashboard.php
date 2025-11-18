@@ -325,7 +325,7 @@ function getWaveformType($fileType)
         .upload-card input[type=file] {
             display: none
         }
-    /*dashed*/
+         /*dashed*/
         .upload-drop {
             width: 100%;
             height: 230px;
@@ -815,7 +815,7 @@ function getWaveformType($fileType)
 
        
 
-    .uploaded-image-container {
+     .uploaded-image-container {
         background: #f8fafd;
         padding: 15px;
         border-radius: 10px;
