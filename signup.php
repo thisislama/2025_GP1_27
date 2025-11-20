@@ -63,8 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!in_array($role, $allowed_roles, true)) redirect_with_error('Invalid role selected.');
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Invalid email format.');
     if (mb_strlen($password) < 8) redirect_with_error('Password must be at least 8 characters.');
-    if (!preg_match('/^(?:\+9665\d{8}|05\d{8})$/', $phone)) redirect_with_error('Invalid phone number format.');
-    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) redirect_with_error('Invalid date of birth format (YYYY-MM-DD).');
+if (!preg_match('/^\+?[0-9]{8,15}$/', $phone)) {
+    redirect_with_error('Invalid phone number format.');
+}    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) redirect_with_error('Invalid date of birth format (YYYY-MM-DD).');
     $dob_date = DateTime::createFromFormat('Y-m-d', $dob);
     if (!$dob_date || $dob_date->format('Y-m-d') !== $dob) redirect_with_error('Invalid date of birth.');
     if ((new DateTime())->diff($dob_date)->y < 20) redirect_with_error('You must be at least 20 years old to register.');
@@ -122,7 +123,6 @@ $up->execute();
     }
 }
 
-// قيم العرض (لازم ترجعها لأنك تستخدم $error و $old_*)
 $error = $_SESSION['error'] ?? '';
 $form_data = $_SESSION['form_data'] ?? [];
 unset($_SESSION['error'], $_SESSION['form_data']);
@@ -134,7 +134,6 @@ $old_email = htmlspecialchars($form_data['email']      ?? '', ENT_QUOTES, 'UTF-8
 $old_phone = htmlspecialchars($form_data['phone']      ?? '', ENT_QUOTES, 'UTF-8');
 $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8');
 ?>
-<!-- HTML حق صفحة التسجيل كما كتبته أنت (أبقِه كما هو) -->
 
 
 <!doctype html>
