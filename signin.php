@@ -1,10 +1,10 @@
 <?php
+// signin.php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 require_once __DIR__ . '/db_connection.php';
-
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 function redirect_with_error(string $msg) {
@@ -13,31 +13,22 @@ function redirect_with_error(string $msg) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email    = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if ($email === '' || $password === '') {
-        redirect_with_error('Please enter your email and password.');
-    }
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        redirect_with_error('Invalid email format.');
-    }
+    if ($email === '' || $password === '') redirect_with_error('Please enter your email and password.');
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Invalid email format.');
 
     try {
-        $sql  = "SELECT userID, password FROM healthcareprofessional WHERE email = ?";
+        $sql  = "SELECT userID, password, is_verified FROM healthcareprofessional WHERE email = ? LIMIT 1";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $stmt->store_result();
 
+        if ($stmt->num_rows !== 1) { $stmt->close(); redirect_with_error('Incorrect login credentials.'); }
 
-        if ($stmt->num_rows !== 1) {
-            $stmt->close();
-            redirect_with_error('Incorrect login credentials.');
-        }
-
-        $stmt->bind_result($user_id, $password_hash);
+        $stmt->bind_result($user_id, $password_hash, $is_verified);
         $stmt->fetch();
         $stmt->close();
 
@@ -45,22 +36,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect_with_error('Incorrect login credentials.');
         }
 
+        if ((int)$is_verified !== 1) {
+            redirect_with_error('Please verify your email before logging in.');
+        }
+
         session_regenerate_id(true);
         $_SESSION['user_id'] = $user_id;
         $_SESSION['email']   = $email;
 
-
-
         header('Location: dashboard.php');
         exit;
-
     } catch (Throwable $e) {
         redirect_with_error('An unexpected error occurred. Please try again later.');
     }
 }
 
-$error = isset($_GET['error']) ? $_GET['error'] : '';
+$error = $_GET['error'] ?? '';
 ?>
+<!-- HTML صفحة الدخول كما عندك (أبقِ التصميم) -->
+
 <!doctype html>
 <html >
 <head>

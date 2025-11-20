@@ -881,7 +881,7 @@ main h2{
   cursor: pointer;
   transition: 0.2s ease;
 }
-.btn-import :hover {
+.btn-import:hover {
   background-color: #084dcc;
 }
 

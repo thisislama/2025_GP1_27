@@ -24,3 +24,8 @@ Stack trace:
 #0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(81): mysqli_query(Object(mysqli), '\r\n    SELECT \r\n...')
 #1 {main}
   thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 81
+[21-Nov-2025 01:55:52 Asia/Riyadh] PHP Warning:  require_once(C:\MAMP\htdocs\2025_GP_27/connection.php): Failed to open stream: No such file or directory in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 15
+[21-Nov-2025 01:55:52 Asia/Riyadh] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\MAMP\htdocs\2025_GP_27/connection.php' (include_path='.;C:\php\pear') in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:15
+Stack trace:
+#0 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 15

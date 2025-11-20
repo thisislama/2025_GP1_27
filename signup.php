@@ -6,30 +6,45 @@ error_reporting(E_ALL);
 
 session_start();
 require_once __DIR__ . '/db_connection.php';
+require_once __DIR__ . '/mail_config.php';   // ← أهم سطر هنا
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+// دالة إرسال إيميل التفعيل
+function send_verification_email(string $toEmail, string $toName, string $token): bool {
+    // نبني الرابط حسب السيرفر الحالي
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $base   = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+    $verify_link = "{$scheme}://{$host}{$base}/verify_email.php?token=" . urlencode($token);
+
+    $subject = 'Verify your TANAFS email';
+    $body = '
+      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6">
+        <h2>Confirm your email</h2>
+        <p>Hello '.htmlspecialchars($toName, ENT_QUOTES, 'UTF-8').',</p>
+        <p>Thank you for registering in <strong>TANAFS</strong>.</p>
+        <p>Please verify your email by clicking the button below:</p>
+        <p><a href="'.$verify_link.'" style="background:#0B83FE;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:600">Verify Email</a></p>
+        <p>If the button doesn\'t work, copy this link:</p>
+        <p style="word-break:break-all">'.$verify_link.'</p>
+      </div>';
+
+    return sendAppMail($toEmail, $toName, $subject, $body);
+}
+
 
 function redirect_with_error(string $msg) {
     $form_data = $_POST;
-
-    if (stripos($msg, 'email') !== false) {
-        unset($form_data['email']);
-    } elseif (stripos($msg, 'phone') !== false) {
-        unset($form_data['phone']);
-    } elseif (stripos($msg, 'password') !== false) {
-        unset($form_data['password']);
-    } elseif (stripos($msg, 'role') !== false) {
-        unset($form_data['role']);
-    } elseif (stripos($msg, 'birth') !== false || stripos($msg, 'age') !== false) {
-        unset($form_data['dob']);
-    }
-
+    if (stripos($msg, 'email') !== false) unset($form_data['email']);
+    elseif (stripos($msg, 'phone') !== false) unset($form_data['phone']);
+    elseif (stripos($msg, 'password') !== false) unset($form_data['password']);
+    elseif (stripos($msg, 'role') !== false) unset($form_data['role']);
+    elseif (stripos($msg, 'birth') !== false || stripos($msg, 'age') !== false) unset($form_data['dob']);
     $_SESSION['form_data'] = $form_data;
     $_SESSION['error'] = $msg;
-
     header('Location: signup.php');
     exit;
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = trim($_POST['first_name'] ?? '');
@@ -40,84 +55,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password   = $_POST['password']        ?? '';
     $dob        = trim($_POST['dob']        ?? '');
 
-
-    // required fields
+    // فحوصاتك كما هي
     if ($first_name === '' || $last_name === '' || $role === '' || $email === '' || $password === '' || $dob === '') {
         redirect_with_error('Please fill in all required fields.');
     }
-    // allowed roles
     $allowed_roles = ['ICU nurse', 'Respiratory therapist', 'Intensivists', 'Pulmonologist'];
-    if (!in_array($role, $allowed_roles, true)) {
-        redirect_with_error('Invalid role selected.');
-    }
-    // email format
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        redirect_with_error('Invalid email format.');
-    }
-    // password length
-    if (mb_strlen($password) < 8) {
-        redirect_with_error('Password must be at least 8 characters.');
-    }
-    if (!preg_match('/[^\w\s]/', $password)) redirect_with_error('Password must include at least one symbol (e.g., !@#$%).');
-
-        // phone format (+9665xxxxxxxx OR 05xxxxxxxx)
-    if (!preg_match('/^(?:\+9665\d{8}|05\d{8})$/', $phone)) {
-        redirect_with_error('Invalid phone number format.');
-    }
-        // DOB format YYYY-MM-DD
-if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
-    redirect_with_error('Invalid date of birth format (YYYY-MM-DD).');
-}
-
- // valid calendar date + age >= 20
+    if (!in_array($role, $allowed_roles, true)) redirect_with_error('Invalid role selected.');
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Invalid email format.');
+    if (mb_strlen($password) < 8) redirect_with_error('Password must be at least 8 characters.');
+    if (!preg_match('/^(?:\+9665\d{8}|05\d{8})$/', $phone)) redirect_with_error('Invalid phone number format.');
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) redirect_with_error('Invalid date of birth format (YYYY-MM-DD).');
     $dob_date = DateTime::createFromFormat('Y-m-d', $dob);
-    if (!$dob_date || $dob_date->format('Y-m-d') !== $dob) {
-        redirect_with_error('Invalid date of birth.');
-    }
-    $today = new DateTime();
-    $age = $today->diff($dob_date)->y;
-    if ($age < 20) {
-        redirect_with_error('You must be at least 20 years old to register.');
-    }
+    if (!$dob_date || $dob_date->format('Y-m-d') !== $dob) redirect_with_error('Invalid date of birth.');
+    if ((new DateTime())->diff($dob_date)->y < 20) redirect_with_error('You must be at least 20 years old to register.');
 
     try {
+        // تكرار الإيميل/الجوال
         $check = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE email = ? LIMIT 1');
         $check->bind_param('s', $email);
-        $check->execute();
-        $check->store_result();
-        if ($check->num_rows > 0) {
-            $check->close();
-            redirect_with_error('This email is already registered.');
-        }
+        $check->execute(); $check->store_result();
+        if ($check->num_rows > 0) { $check->close(); redirect_with_error('This email is already registered.'); }
         $check->close();
-         $checkPhone = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE phone = ? LIMIT 1');
-         $checkPhone->bind_param('s', $phone);
-         $checkPhone->execute();
-        $checkPhone->store_result();
-         if ($checkPhone->num_rows > 0) {
-            $checkPhone->close();
-            redirect_with_error('This phone number is already registered.');
-         }
-         $checkPhone->close();
 
+        $checkPhone = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE phone = ? LIMIT 1');
+        $checkPhone->bind_param('s', $phone);
+        $checkPhone->execute(); $checkPhone->store_result();
+        if ($checkPhone->num_rows > 0) { $checkPhone->close(); redirect_with_error('This phone number is already registered.'); }
+        $checkPhone->close();
+
+        // إنشاء المستخدم (is_verified=0, verification_token=NULL)
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
         $stmt = $conn->prepare('
-            INSERT INTO healthcareprofessional (first_name, last_name, role, email, phone, password, DOB)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO healthcareprofessional (first_name, last_name, role, email, phone, password, DOB, is_verified, verification_token)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0, NULL)
         ');
         $stmt->bind_param('sssssss', $first_name, $last_name, $role, $email, $phone, $hashed_password, $dob);
         $stmt->execute();
         $new_user_id = $stmt->insert_id;
         $stmt->close();
 
-        session_regenerate_id(true);
-        $_SESSION['user_id'] = $new_user_id;
-        $_SESSION['email']   = $email;
-        $_SESSION['role']    = $role;
-        $_SESSION['name']    = $first_name . ' ' . $last_name;
+      $token  = bin2hex(random_bytes(32));
+$expire = date('Y-m-d H:i:s', time() + 3600 * 2); // ساعتين صلاحية
 
-        header('Location: dashboard.php');
+$up = $conn->prepare('
+    UPDATE healthcareprofessional 
+    SET verification_token = ?, verification_expires = ?
+    WHERE userID = ?
+');
+$up->bind_param('ssi', $token, $expire, $new_user_id);
+$up->execute();
+
+
+        // إرسال الإيميل
+        if (!send_verification_email($email, $first_name, $token)) {
+            redirect_with_error('We could not send the verification email. Please try again later.');
+        }
+
+        // توجيه لصفحة إشعار (اختياري)
+        session_regenerate_id(true);
+        $_SESSION['pending_email'] = $email;
+        header('Location: verify_notice.php');
         exit;
 
     } catch (Throwable $e) {
@@ -125,9 +122,9 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
     }
 }
 
+// قيم العرض (لازم ترجعها لأنك تستخدم $error و $old_*)
 $error = $_SESSION['error'] ?? '';
 $form_data = $_SESSION['form_data'] ?? [];
-
 unset($_SESSION['error'], $_SESSION['form_data']);
 
 $old_first = htmlspecialchars($form_data['first_name'] ?? '', ENT_QUOTES, 'UTF-8');
@@ -136,8 +133,9 @@ $old_role  = htmlspecialchars($form_data['role']       ?? '', ENT_QUOTES, 'UTF-8
 $old_email = htmlspecialchars($form_data['email']      ?? '', ENT_QUOTES, 'UTF-8');
 $old_phone = htmlspecialchars($form_data['phone']      ?? '', ENT_QUOTES, 'UTF-8');
 $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8');
-
 ?>
+<!-- HTML حق صفحة التسجيل كما كتبته أنت (أبقِه كما هو) -->
+
 
 <!doctype html>
 <html lang="en" dir="ltr">

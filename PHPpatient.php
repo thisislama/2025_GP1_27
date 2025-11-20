@@ -12,14 +12,27 @@ session_start();
 
 date_default_timezone_set('Asia/Riyadh');
 
-$connection = mysqli_connect("localhost", "root", "root", "tanafs");
-if (!$connection) {
-    echo json_encode(["error" => "Connection failed: " . mysqli_connect_error()]);
+require_once __DIR__ . '/connection.php';
+
+$sessionUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+if ($sessionUserId <= 0) {
+    echo json_encode(["status" => "error", "message" => "Unauthorized"]);
     exit;
 }
 
-$sessionUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+$docCheckSql = "SELECT email_verified FROM healthcareprofessional WHERE userID = ?";
+$docStmt = mysqli_prepare($connection, $docCheckSql);
+mysqli_stmt_bind_param($docStmt, "i", $sessionUserId);
+mysqli_stmt_execute($docStmt);
+$docRes = mysqli_stmt_get_result($docStmt);
+$docRow = mysqli_fetch_assoc($docRes);
+if ($docRes) mysqli_free_result($docRes);
+mysqli_stmt_close($docStmt);
 
+if (!$docRow || (int)$docRow['email_verified'] !== 1) {
+    echo json_encode(["status" => "error", "message" => "Email not verified"]);
+    exit;
+}
 // قراءة pid و mode
 $pid  = isset($_GET['pid'])  ? (int)$_GET['pid']  : 0;
 $mode = isset($_GET['mode']) ? $_GET['mode']      : 'patient';
