@@ -212,8 +212,8 @@ if ($conn->connect_error) {
             --maxw: 800px;
         }
         .nav-link.active::after {
-    width: 100%;
-}
+            width: 100%;
+        }
 
 
         * {
@@ -1222,31 +1222,31 @@ if ($conn->connect_error) {
         }
 
         
-.tooltip {
-  position: relative;
-  cursor: pointer;
-  font-size:.95rem;
-}
+        .tooltip {
+        position: relative;
+        cursor: pointer;
+        font-size:.95rem;
+        }
 
-.tooltiptext {
-  visibility: hidden;
-  font-size: 12px;
-  width:37em;
-  background-color: #757575ff;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  top: 3.2em;
-  left: -7%;
-  transform: translateX(-50%);
-}
+        .tooltiptext {
+        visibility: hidden;
+        font-size: 12px;
+        width:37em;
+        background-color: #757575ff;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        top: 3.2em;
+        left: -7%;
+        transform: translateX(-50%);
+        }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
+        .tooltip:hover .tooltiptext {
+        visibility: visible;
+        }
 
     </style>
 
@@ -1278,9 +1278,7 @@ if ($conn->connect_error) {
         <div class="title">
             <h2 class="heading">History Analysis</h2>
             <p class="heading2">Track and review the status and output for every analysis request submitted to TANAFS.</p>
-           <div style="color:#6b7b8f; text-align:right; position:relative; top:-2em; font-size:14px;">Total Records: <?php echo $total_records; ?></div>
-
-       
+           <div style="color:#6b7b8f; text-align:right; position:relative; top:-2em; font-size:14px;">Total Records: <?php echo $total_records; ?></div>       
         </div>
 
 
@@ -1408,7 +1406,7 @@ if ($conn->connect_error) {
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="selectAll"></th>
-                        <th>Patient ID</th>
+                        <th>File Number</th>
                         <th>Analysis ID</th>
                         <th>Patient Name</th>
                         <th>Date</th>
@@ -1451,14 +1449,14 @@ $tooltip_data = [
     'Delayed Cycling' => 'The ventilator\'s inspiratory time is longer than the patient\'s inspiratory effort, causing the patient to actively exhale against the ongoing inspiration. This can lead to breath stacking.',
     'Early Cycling' => 'The ventilator cycles off prematurely (shorter inspiratory time) compared to the patient\'s inspiratory effort, leading to incomplete patient inspiration and increased inspiratory work.',
     'Reverse Trigger' => 'The ventilator initiates a breath, which then triggers a subsequent diaphragmatic contraction from the patient. This is an entrainment phenomenon, often seen with sedation.',
-];
-$tooltip_text = $tooltip_data[ucfirst($anomaly_type)] ?? 'No additional information available.';
+    ];
+        $tooltip_text = $tooltip_data[ucfirst($anomaly_type)] ?? 'No additional information available.';
 
 
                             echo "
                        <tr>
                         <td><input type='checkbox' name='selected_rows[]' value='{$row['waveAnalysisID']}' class='row-checkbox'></td>
-                        <td>{$patient_id}</td>
+                        <td>P{$patient_id}</td>
                         <td>{$analysis_id}</td>
                         <td>{$full_name}</td>
                         <td>{$date}</td>
@@ -1506,7 +1504,6 @@ $tooltip_text = $tooltip_data[ucfirst($anomaly_type)] ?? 'No additional informat
     </main>
 
     <!-- Footer -->
-
     <footer id="contact" class="site-footer">
         <div class="footer-grid">
 
