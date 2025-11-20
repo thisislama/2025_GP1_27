@@ -196,6 +196,31 @@ function getWaveformType($fileType)
     <link rel="stylesheet" href="dash.css"/>
 </head>
 <body>
+    <!-- Header for iPad & medium screens only -->
+<header class="ipad-header">
+    <div class="ipad-inner">
+
+        <a href="dashboard.php" class="ipad-logo">
+            <img src="Images/Logo.png" alt="Tanafs Logo">
+        </a>
+
+        <nav class="ipad-nav">
+            <a href="dashboard.php" class="nav-link">Dashboard</a>
+            <a href="patients.php" class="nav-link">Patients</a>
+            <a href="history2.php" class="nav-link">History</a>
+
+            <a href="profile.php" class="profile-btn">
+                <img src="images/profile.png" alt="Profile">
+            </a>
+
+            <form action="Logout.php" method="post">
+                <button type="submit" class="ipad-logout">Logout</button>
+            </form>
+        </nav>
+
+    </div>
+</header>
+
 <div class="wrapper">
 
     <img class="topimg" src="Images/Group 8.png" alt="img">

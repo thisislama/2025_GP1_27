@@ -597,3 +597,90 @@
             margin-top: 10em;
         }
 
+.ipad-header {
+    display: none;
+}
+
+
+@media (max-width: 1366px) {
+
+    .auth-nav,
+    .topimg,
+    .logo {
+        display: none !important;
+    }
+
+    .ipad-header {
+        display: block;
+        width: 100%;
+        background: #ffffff;
+        padding: 14px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+    }
+
+    .ipad-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ipad-logo img {
+        height: 55px;
+        width: auto;
+    }
+
+    .ipad-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.2em;
+    }
+
+    .ipad-nav .nav-link {
+        color: #0B83FE;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .ipad-nav .profile-btn img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .ipad-logout {
+        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+        color: white;
+        padding: 0.4em 0.9em;
+        border-radius: 0.7em;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+
+        /* نخلي الصفحة عمود واحد في الآيباد */
+    .container {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        margin-top: 140px !important;
+    }
+
+    .right-column {
+        margin-top: 0;
+    }
+
+    /* الكروت الإحصائية صفين فوق بعض (2 في السطر) */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    /* خلي upload box ياخذ عرض العمود كامل */
+    .upload-drop {
+        width: 100%;
+    }
+
+}
+
