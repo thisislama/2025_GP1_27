@@ -190,7 +190,7 @@ function getWaveformType($fileType)
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>TANAFS Dashboard</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
     <link rel="stylesheet" href="dash.css"/>
@@ -246,7 +246,7 @@ function getWaveformType($fileType)
         <!-- LEFT -->
         <section class="left-column">
 
-            <h2 style="color:#1f45b5; font-size:1.65em;margin:40px 0 0px 1.2em;">
+            <h2 style="color:#1f45b5; font-size:1.65em;margin:5%">
                 Welcome back <br>
                 <span style="color:rgba(89,115,195,0.76);font-size: .80em;margin-left: 1.7em">
                  <?php echo  $_SESSION['doctorName'] ?>
