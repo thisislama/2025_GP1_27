@@ -12,7 +12,7 @@ session_start();
 
 date_default_timezone_set('Asia/Riyadh');
 
-require_once __DIR__ . '/connection.php';
+require_once __DIR__ . '/db_connection.php';
 
 $sessionUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 if ($sessionUserId <= 0) {
