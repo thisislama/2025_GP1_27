@@ -19,13 +19,7 @@ if (empty($_SESSION['user_id'])) {
 $userID = (int)$_SESSION['user_id'];
 
 // --- Database connection ---
-$host = "localhost";
-$user = "root";
-$pass = "root";
-$db   = "tanafs";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-$conn->set_charset("utf8mb4");
+require_once __DIR__ . '/db_connection.php';
 
 // --- Doctor name ---
 $docRes = $conn->prepare("SELECT first_name, last_name FROM healthcareprofessional WHERE userID=?");

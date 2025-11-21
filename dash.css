@@ -315,7 +315,7 @@
 
         img.topimg {
             position: absolute;
-            top: -17.9%;
+            top: -16.5%;
             left: 48%;
             transform: translateX(-50%);
             height: auto;
@@ -327,7 +327,7 @@
 
         img.logo {
             position: absolute;
-            top: -9.1%;
+            top: -8.5%;
             left: 14%;
             width: clamp(100px, 12vw, 180px);
             height: auto;

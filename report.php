@@ -6,7 +6,6 @@ header('Expires: 0');
 session_start();
 date_default_timezone_set('Asia/Riyadh');
 
-// مهم: لا نعرض الأخطاء للمتصفح حتى ما تكسر JSON
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
