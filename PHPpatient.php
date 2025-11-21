@@ -20,8 +20,8 @@ if ($sessionUserId <= 0) {
     exit;
 }
 
-$docCheckSql = "SELECT email_verified FROM healthcareprofessional WHERE userID = ?";
-$docStmt = mysqli_prepare($connection, $docCheckSql);
+$docCheckSql = "SELECT is_verified FROM healthcareprofessional WHERE userID = ?";
+$docStmt = mysqli_prepare($conn, $docCheckSql);
 mysqli_stmt_bind_param($docStmt, "i", $sessionUserId);
 mysqli_stmt_execute($docStmt);
 $docRes = mysqli_stmt_get_result($docStmt);
@@ -29,10 +29,11 @@ $docRow = mysqli_fetch_assoc($docRes);
 if ($docRes) mysqli_free_result($docRes);
 mysqli_stmt_close($docStmt);
 
-if (!$docRow || (int)$docRow['email_verified'] !== 1) {
+if (!$docRow || (int)$docRow['is_verified'] !== 1) {
     echo json_encode(["status" => "error", "message" => "Email not verified"]);
     exit;
 }
+
 // قراءة pid و mode
 $pid  = isset($_GET['pid'])  ? (int)$_GET['pid']  : 0;
 $mode = isset($_GET['mode']) ? $_GET['mode']      : 'patient';
@@ -40,7 +41,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode']      : 'patient';
 /* ====================== patient name ====================== */
 if ($mode === 'patient') {
     $sql = "SELECT first_name, last_name FROM patient WHERE PID = $pid";
-    $result = mysqli_query($connection, $sql);
+    $result = mysqli_query($conn, $sql);
     if ($result && $row = mysqli_fetch_assoc($result)) {
         echo json_encode(["name" => $row["first_name"] . " " . $row["last_name"]]);
     } else {
@@ -56,7 +57,7 @@ elseif ($mode === 'analysis') {
             FROM waveform_analysis
             WHERE PID = $pid
             ORDER BY `timestamp` DESC";
-    $result = mysqli_query($connection, $sql);
+    $result = mysqli_query($conn, $sql);
     $data = [];
     if ($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
@@ -87,9 +88,9 @@ elseif ($mode === 'comments') {
         WHERE c.PID = ?
         ORDER BY c.`timestamp` DESC, c.CommentID DESC
     ";
-    $stmt = mysqli_prepare($connection, $sql);
+    $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
-        echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($connection)]);
+        echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($conn)]);
         exit;
     }
     mysqli_stmt_bind_param($stmt, "i", $pid);
@@ -129,14 +130,14 @@ elseif ($mode === 'add_comment') {
     }
 
     $sql  = "INSERT INTO comment (userID, PID, content, `timestamp`) VALUES (?, ?, ?, NOW())";
-    $stmt = mysqli_prepare($connection, $sql);
+    $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
-        echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($connection)]);
+        echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($conn)]);
         exit;
     }
     mysqli_stmt_bind_param($stmt, "iis", $sessionUserId, $pid, $content);
     $ok  = mysqli_stmt_execute($stmt);
-    $err = mysqli_error($connection);
+    $err = mysqli_error($conn);
     mysqli_stmt_close($stmt);
 
     echo json_encode($ok ? ["status"=>"success"] : ["status"=>"error","message"=>"Insert failed: ".$err]);
@@ -152,7 +153,7 @@ elseif ($mode === 'report') {
         ORDER BY `timestamp` DESC, reportID DESC
         LIMIT 1
     ";
-    $result = mysqli_query($connection, $sql);
+    $result = mysqli_query($conn, $sql);
 
     if ($result && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
@@ -169,4 +170,4 @@ elseif ($mode === 'report') {
     if ($result) mysqli_free_result($result);
 }
 
-mysqli_close($connection);
+mysqli_close($conn);
