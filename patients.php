@@ -850,28 +850,7 @@ main h2{
   .table-actions button{ flex: 1; }
   .table-card table{ font-size: .95rem; }
 }
-@media (min-width: 768px) and (max-width: 1024px) {
-  .auth-nav {
-    top: 4.5%;
-    right: 12%;
-    gap: 1.2em;
-  }
 
-  img.logo {
-    top: 3.5%;
-    left: 11%;
-    width: clamp(5em, 14vw, 10em);
-  }
-
-  img.topimg {
-    top: -2%;
-    max-width: 100%;
-  }
-
-  main {
-    margin-top: 10em !important;
-  }
-}
 .mini-table{ width:100%; border-collapse:collapse; }
 .mini-table th, .mini-table td{ padding:.5em; border-bottom:1px solid #eee; text-align:center; }
 .btn-mini-connect{ background:#0f65ff; color:#fff; border:0; padding:.4em .7em; border-radius:.5em; cursor:pointer; }
@@ -902,7 +881,7 @@ main h2{
   cursor: pointer;
   transition: 0.2s ease;
 }
-.btn-import :hover {
+.btn-import:hover {
   background-color: #084dcc;
 }
 
@@ -1007,12 +986,172 @@ tr.no-result-row td {
   font-size: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   width: 95%;
+}.ipad-header {
+    display: none;
 }
+
+@media (max-width: 1366px) {
+
+    .auth-nav,
+    .topimg,
+    .logo {
+        display: none !important;
+    }
+
+    .ipad-header {
+        display: block;
+        width: 100%;
+        background: #ffffff;
+        padding: 14px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+    }
+
+    .ipad-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ipad-logo img {
+        height: 55px;
+        width: auto;
+    }
+
+    .ipad-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.2em;
+    }
+
+    .ipad-nav .nav-link {
+        color: #0B83FE;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .ipad-nav .profile-btn img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .ipad-logout {
+        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+        color: white;
+        padding: 0.4em 0.9em;
+        border-radius: 0.7em;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+}
+/* تنسيق الـ Patients page على الآيباد والشاشات المتوسطة */
+@media (max-width: 1366px) {
+
+    main {
+        margin-top: 120px !important;   /* تحت الهيدر مباشرة */
+        padding: 0 24px;
+        text-align: center;
+    }
+
+    .table-card {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .table-actions {
+        flex-direction: column;       /* البحث فوق / الأزرار تحت */
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .table-actions input {
+        width: 100% !important;       /* حقل السيرش يمسك عرض الكارد */
+    }
+
+    .patient-buttons {
+        justify-content: flex-start;  /* الأزرار جنب بعض */
+        gap: 0.75rem;
+    }
+
+    .btn-import,
+    .btn-connect {
+        flex: 1 1 auto;               /* لو ضاق العرض يكبرون بالتساوي */
+        text-align: center;
+    }
+
+    /* خفّض حجم الخط في الجدول شوي على الآيباد */
+    #patientsTable th,
+    #patientsTable td {
+        padding: 10px 6px;
+        font-size: 0.92rem;
+    }
+}
+/* ضبط الهيدر على الآيباد حتى ما ينقص زر Logout */
+@media (max-width: 1024px) {
+
+    .ipad-header {
+        padding: 10px 16px;           /* نقلل البادينق يمين ويسار */
+    }
+
+    .ipad-inner {
+        gap: 0.75rem;
+    }
+
+    .ipad-logo img {
+        height: 48px;
+    }
+
+    .ipad-nav {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.6rem;                  /* نقلل المسافة بين العناصر */
+        flex-wrap: wrap;              /* لو ضاقت المساحة يسمح لهم ينزلون سطرين */
+    }
+
+    .ipad-nav .nav-link {
+        font-size: 0.85rem;           /* نص أصغر شوي */
+    }
+
+    .ipad-logout {
+        padding: 0.35em 0.75em;
+        font-size: 0.8rem;
+    }
+}
+
 
 </style>
 </head>
 
 <body>
+  <header class="ipad-header">
+    <div class="ipad-inner">
+
+        <a href="dashboard.php" class="ipad-logo">
+            <img src="Images/Logo.png" alt="Tanafs Logo">
+        </a>
+
+        <nav class="ipad-nav">
+            <a href="dashboard.php" class="nav-link">Dashboard</a>
+            <a href="patients.php" class="nav-link">Patients</a>
+            <a href="history2.php" class="nav-link">History</a>
+
+            <a href="profile.php" class="profile-btn">
+                <img src="images/profile.png" alt="Profile">
+            </a>
+
+            <form action="Logout.php" method="post">
+                <button type="submit" class="ipad-logout">Logout</button>
+            </form>
+        </nav>
+
+    </div>
+</header>
 <div class="wrapper">
   <!-- Header -->
   <img class="topimg" src="Images/Group 8.png" alt="img">

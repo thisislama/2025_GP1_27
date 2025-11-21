@@ -16,16 +16,17 @@ if (empty($_SESSION['user_id'])) {
 $userID = (int)$_SESSION['user_id'];
 
 // Database configuration
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "tanafs";
+require_once __DIR__ . '/db_connection.php';
 
-$current_user_id = $_SESSION['user_id'];
-$current_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
+$docRes = $conn->prepare("SELECT first_name, last_name, role FROM healthcareprofessional WHERE userID = ?");
+$docRes->bind_param("i", $userID);
+$docRes->execute();
+$docData = $docRes->get_result()->fetch_assoc();
+$docRes->close();
 
-$first = isset($docData['first_name']) ? $docData['first_name'] : ($_SESSION['first_name'] ?? '');
-$last = isset($docData['last_name']) ? $docData['last_name'] : ($_SESSION['last_name'] ?? '');
+$first = $docData['first_name'] ?? '';
+$last  = $docData['last_name']  ?? '';
+$current_user_role = $docData['role'] ?? null;
 
 $current_user_name = trim($first . ' ' . $last);
 
@@ -49,9 +50,6 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $records_per_page = 10;
 $offset = ($page - 1) * $records_per_page;
 $error_message = "";
-
-// Create database connection
-$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
@@ -170,6 +168,13 @@ if ($conn->connect_error) {
         $error_message = "Error fetching data: " . $conn->error;
     }
 }
+$success_message = $_SESSION['success_message'] ?? '';
+if (isset($_SESSION['success_message'])) unset($_SESSION['success_message']);
+
+if (isset($_SESSION['error_message'])) {
+    $error_message = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
+}
 
 ?>
 <!doctype html>
@@ -212,8 +217,8 @@ if ($conn->connect_error) {
             --maxw: 800px;
         }
         .nav-link.active::after {
-    width: 100%;
-}
+            width: 100%;
+        }
 
 
         * {
@@ -676,15 +681,16 @@ if ($conn->connect_error) {
             min-width: 80px;
         }
 
-        .status.anomaly {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
+       .status.Normal {
+    background: #e2f5e9;
+    color: #15803d;
+}
 
-        .status.normal {
-            background: #e2f5e9;
-            color: #15803d;
-        }
+.status.Abnormal {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
 
         .severity {
             padding: 6px 12px;
@@ -1222,37 +1228,161 @@ if ($conn->connect_error) {
         }
 
         
-.tooltip {
-  position: relative;
-  cursor: pointer;
-  font-size:.95rem;
+        .tooltip {
+        position: relative;
+        cursor: pointer;
+        font-size:.95rem;
+        }
+
+        .tooltiptext {
+        visibility: hidden;
+        font-size: 12px;
+        width:37em;
+        background-color: #757575ff;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        top: 3.2em;
+        left: -7%;
+        transform: translateX(-50%);
+        }
+
+        .tooltip:hover .tooltiptext {
+        visibility: visible;
+        }
+
+.ipad-header {
+    display: none;
 }
 
-.tooltiptext {
-  visibility: hidden;
-  font-size: 12px;
-  width:37em;
-  background-color: #757575ff;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  top: 3.2em;
-  left: -7%;
-  transform: translateX(-50%);
+
+@media (max-width: 1366px) {
+
+    .auth-nav,
+    .topimg,
+    .logo {
+        display: none !important;
+    }
+
+    .ipad-header {
+        display: block;
+        width: 100%;
+        background: #ffffff;
+        padding: 14px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+    }
+
+    .ipad-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ipad-logo img {
+        height: 55px;
+        width: auto;
+    }
+
+    .ipad-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.2em;
+    }
+
+    .ipad-nav .nav-link {
+        color: #0B83FE;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .ipad-nav .profile-btn img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .ipad-logout {
+        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+        color: white;
+        padding: 0.4em 0.9em;
+        border-radius: 0.7em;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    #searchInput {
+        width: 100% !important;
+    }
+
+    #searchButton {
+        margin-top: 0.5rem;
+    }
+
+    .advanced-filter-btn {
+        position: static !important;
+        top: auto !important;
+        right: auto !important;
+        margin-top: 0.5rem;
+        align-self: flex-start;
+    }
+
+    .table-actions {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 0.75rem;
+    }
+
+    .delete-btn {
+        position: static !important;
+        top: auto !important;
+        right: auto !important;
+        margin-top: 0.5rem;
+    }
 }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
+
 
     </style>
 
 </head>
 <body>
+<header class="ipad-header">
+    <div class="ipad-inner">
 
+        <a href="dashboard.php" class="ipad-logo">
+            <img src="Images/Logo.png" alt="Tanafs Logo">
+        </a>
+
+        <nav class="ipad-nav">
+            <a href="dashboard.php" class="nav-link">Dashboard</a>
+            <a href="patients.php" class="nav-link">Patients</a>
+            <a href="history2.php" class="nav-link">History</a>
+
+            <a href="profile.php" class="profile-btn">
+                <img src="images/profile.png" alt="Profile">
+            </a>
+
+            <form action="Logout.php" method="post">
+                <button type="submit" class="ipad-logout">Logout</button>
+            </form>
+        </nav>
+
+    </div>
+</header>
 <div class="wrapper">
 
     <img class="topimg" src="Images/Group 8.png" alt="img">
@@ -1278,9 +1408,7 @@ if ($conn->connect_error) {
         <div class="title">
             <h2 class="heading">History Analysis</h2>
             <p class="heading2">Track and review the status and output for every analysis request submitted to TANAFS.</p>
-           <div style="color:#6b7b8f; text-align:right; position:relative; top:-2em; font-size:14px;">Total Records: <?php echo $total_records; ?></div>
-
-       
+           <div style="color:#6b7b8f; text-align:right; position:relative; top:-2em; font-size:14px;">Total Records: <?php echo $total_records; ?></div>       
         </div>
 
 
@@ -1317,30 +1445,31 @@ if ($conn->connect_error) {
 
                         <div class="filter-group">
                             <label for="category">Anomaly type</label>
-                            <select name="category" id="category">
-                                <option value="all">All Anomaly</option>
-                                <option value="double trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'double trigger') ? 'selected' : ''; ?>>
-                                    double trigger
-                                </option>
-                                <option value="auto trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'auto trigger') ? 'selected' : ''; ?>>
-                                    auto trigger
-                                </option>
-                                <option value="ineffective trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'ineffective trigger') ? 'selected' : ''; ?>>
-                                    ineffective trigger
-                                </option>
-                                <option value="delayed cycling" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'delayed cycling') ? 'selected' : ''; ?>>
-                                    delayed cycling
-                                </option>
-                                <option value="reverse trigger" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'reverse trigger') ? 'selected' : ''; ?>>
-                                    reverse trigger
-                                </option>
-                                <option value="flow limited" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'flow limited') ? 'selected' : ''; ?>>
-                                    flow limited
-                                </option>
-                                <option value="early cycling" <?php echo (isset($_GET['anomaly_type']) && $_GET['anomaly_type'] == 'early cycling') ? 'selected' : ''; ?>>
-                                    early cycling
-                                </option>
-                            </select>
+                          <select name="category" id="category">
+    <option value="all">All Anomaly</option>
+    <option value="double trigger" <?php echo (isset($_GET['category']) && $_GET['category'] == 'double trigger') ? 'selected' : ''; ?>>
+        double trigger
+    </option>
+    <option value="auto trigger" <?php echo (isset($_GET['category']) && $_GET['category'] == 'auto trigger') ? 'selected' : ''; ?>>
+        auto trigger
+    </option>
+    <option value="ineffective trigger" <?php echo (isset($_GET['category']) && $_GET['category'] == 'ineffective trigger') ? 'selected' : ''; ?>>
+        ineffective trigger
+    </option>
+    <option value="delayed cycling" <?php echo (isset($_GET['category']) && $_GET['category'] == 'delayed cycling') ? 'selected' : ''; ?>>
+        delayed cycling
+    </option>
+    <option value="reverse trigger" <?php echo (isset($_GET['category']) && $_GET['category'] == 'reverse trigger') ? 'selected' : ''; ?>>
+        reverse trigger
+    </option>
+    <option value="flow limited" <?php echo (isset($_GET['category']) && $_GET['category'] == 'flow limited') ? 'selected' : ''; ?>>
+        flow limited
+    </option>
+    <option value="early cycling" <?php echo (isset($_GET['category']) && $_GET['category'] == 'early cycling') ? 'selected' : ''; ?>>
+        early cycling
+    </option>
+</select>
+
                         </div>
 
                         <div class="filter-group">
@@ -1408,7 +1537,7 @@ if ($conn->connect_error) {
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="selectAll"></th>
-                        <th>Patient ID</th>
+                        <th>File Number</th>
                         <th>Analysis ID</th>
                         <th>Patient Name</th>
                         <th>Date</th>
@@ -1436,46 +1565,43 @@ if ($conn->connect_error) {
                           
 
 $tooltip_data = [
-    // Trigger Dyssynchrony Sub-category
-    'Trigger Dyssynchrony' => 'Problems related to the initiation of a breath, either the ventilator failing to sense a patient\'s effort, or triggering a breath without patient effort.',
-    'Ineffective Trigger' => 'The patient attempts to breathe, but the ventilator fails to detect the effort and does not deliver a breath. This increases patient work of breathing.',
-    'Auto Trigger' => 'The ventilator delivers a breath without any patient inspiratory effort, often due to high sensitivity, leaks, or cardiac oscillations.',
-
-    // Flow Dyssynchrony Sub-category
-    'Flow Dyssynchrony' => 'A mismatch between the inspiratory flow demand of the patient and the inspiratory flow delivered by the ventilator.',
-    'Flow Limited' => 'The inspiratory flow delivered by the ventilator is insufficient to meet the patient\'s inspiratory demand, leading to increased work of breathing and patient discomfort.',
-
-    // Cycling Dyssynchrony Sub-category
-    'Cycling Dyssynchrony' => 'Problems related to the termination of the inspiratory phase of the breath, leading to either premature or delayed cycling off.',
-    'Double Trigger' => 'type of patient-ventilator asynchrony where a patient initiates two breaths in succession, and the ventilator delivers two breaths in response.',
-    'Delayed Cycling' => 'The ventilator\'s inspiratory time is longer than the patient\'s inspiratory effort, causing the patient to actively exhale against the ongoing inspiration. This can lead to breath stacking.',
-    'Early Cycling' => 'The ventilator cycles off prematurely (shorter inspiratory time) compared to the patient\'s inspiratory effort, leading to incomplete patient inspiration and increased inspiratory work.',
-    'Reverse Trigger' => 'The ventilator initiates a breath, which then triggers a subsequent diaphragmatic contraction from the patient. This is an entrainment phenomenon, often seen with sedation.',
+    'ineffective trigger' => 'The patient attempts to breathe, but the ventilator fails to detect the effort and does not deliver a breath. This increases patient work of breathing.',
+    'auto trigger'        => 'The ventilator delivers a breath without any patient inspiratory effort, often due to high sensitivity, leaks, or cardiac oscillations.',
+    'flow limited'        => 'The inspiratory flow delivered by the ventilator is insufficient to meet the patient\'s inspiratory demand, leading to increased work of breathing and patient discomfort.',
+    'double trigger'      => 'A type of patient-ventilator asynchrony where a patient initiates two breaths in succession, and the ventilator delivers two breaths in response.',
+    'delayed cycling'     => 'The ventilator\'s inspiratory time is longer than the patient\'s inspiratory effort, causing the patient to actively exhale against the ongoing inspiration (breath stacking).',
+    'early cycling'       => 'The ventilator cycles off prematurely compared to the patient\'s inspiratory effort, leading to incomplete inspiration and increased inspiratory work.',
+    'reverse trigger'     => 'The ventilator initiates a breath, which then triggers a diaphragmatic contraction from the patient (entrainment phenomenon, often with sedation).',
 ];
-$tooltip_text = $tooltip_data[ucfirst($anomaly_type)] ?? 'No additional information available.';
+
+$key = strtolower($anomaly_type);
+$tooltip_text = $tooltip_data[$key] ?? 'No additional information available.';
+
 
 
                             echo "
                        <tr>
                         <td><input type='checkbox' name='selected_rows[]' value='{$row['waveAnalysisID']}' class='row-checkbox'></td>
-                        <td>{$patient_id}</td>
+                        <td>P{$patient_id}</td>
                         <td>{$analysis_id}</td>
                         <td>{$full_name}</td>
                         <td>{$date}</td>
                         <td>{$time}</td>
                         <td><span class='status {$status}'>{$status}</span></td>
                         <td><span class='severity {$severity}'>{$severity}</span></td>
-                        <td class='tooltip'>" . ucfirst($anomaly_type) .
-                        "<span class='tooltip-container'>
-                        <span style='font-size:.7rem; margin-right:4px;' class='material-symbols-outlined info'>info</span>
-                        </span>
-                        <span class='tooltiptext'>$tooltip_text</span></td>
+                        <td class='tooltip'>" . ucwords($anomaly_type) . "
+    <span class='tooltip-container'>
+        <span style='font-size:.7rem; margin-right:4px;' class='material-symbols-outlined info'>info</span>
+    </span>
+    <span class='tooltiptext'>$tooltip_text</span>
+</td>
+
 
                       </tr>
                     ";
                         }
                     } else {
-                        echo "<tr><td colspan='7' class='no-data'>No analysis history found</td></tr>";
+echo "<tr><td colspan='9' class='no-data'>No analysis history found</td></tr>";
                     }
                     ?>
                     </tbody>
@@ -1506,7 +1632,6 @@ $tooltip_text = $tooltip_data[ucfirst($anomaly_type)] ?? 'No additional informat
     </main>
 
     <!-- Footer -->
-
     <footer id="contact" class="site-footer">
         <div class="footer-grid">
 
@@ -1682,7 +1807,6 @@ $tooltip_text = $tooltip_data[ucfirst($anomaly_type)] ?? 'No additional informat
     });
 </script>
 
-</script>
 
 <?php ?>
 </body>
