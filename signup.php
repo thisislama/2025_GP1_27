@@ -6,12 +6,10 @@ error_reporting(E_ALL);
 
 session_start();
 require_once __DIR__ . '/db_connection.php';
-require_once __DIR__ . '/mail_config.php';   // ← أهم سطر هنا
+require_once __DIR__ . '/mail_config.php';  
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// دالة إرسال إيميل التفعيل
 function send_verification_email(string $toEmail, string $toName, string $token): bool {
-    // نبني الرابط حسب السيرفر الحالي
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $base   = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
@@ -55,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password   = $_POST['password']        ?? '';
     $dob        = trim($_POST['dob']        ?? '');
 
-    // فحوصاتك كما هي
     if ($first_name === '' || $last_name === '' || $role === '' || $email === '' || $password === '' || $dob === '') {
         redirect_with_error('Please fill in all required fields.');
     }
@@ -63,15 +60,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!in_array($role, $allowed_roles, true)) redirect_with_error('Invalid role selected.');
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Invalid email format.');
     if (mb_strlen($password) < 8) redirect_with_error('Password must be at least 8 characters.');
-if (!preg_match('/^\+?[0-9]{8,15}$/', $phone)) {
+$normalizedPhone = preg_replace('/\s+/', '', $phone);
+if (!preg_match('/^\+?[0-9]{9,15}$/', $normalizedPhone)) {
     redirect_with_error('Invalid phone number format.');
-}    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) redirect_with_error('Invalid date of birth format (YYYY-MM-DD).');
+}
+
+
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) redirect_with_error('Invalid date of birth format (YYYY-MM-DD).');
     $dob_date = DateTime::createFromFormat('Y-m-d', $dob);
     if (!$dob_date || $dob_date->format('Y-m-d') !== $dob) redirect_with_error('Invalid date of birth.');
     if ((new DateTime())->diff($dob_date)->y < 20) redirect_with_error('You must be at least 20 years old to register.');
 
     try {
-        // تكرار الإيميل/الجوال
         $check = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE email = ? LIMIT 1');
         $check->bind_param('s', $email);
         $check->execute(); $check->store_result();
@@ -84,7 +85,6 @@ if (!preg_match('/^\+?[0-9]{8,15}$/', $phone)) {
         if ($checkPhone->num_rows > 0) { $checkPhone->close(); redirect_with_error('This phone number is already registered.'); }
         $checkPhone->close();
 
-        // إنشاء المستخدم (is_verified=0, verification_token=NULL)
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $conn->prepare('
             INSERT INTO healthcareprofessional (first_name, last_name, role, email, phone, password, DOB, is_verified, verification_token)
@@ -96,7 +96,7 @@ if (!preg_match('/^\+?[0-9]{8,15}$/', $phone)) {
         $stmt->close();
 
       $token  = bin2hex(random_bytes(32));
-$expire = date('Y-m-d H:i:s', time() + 3600 * 2); // ساعتين صلاحية
+$expire = date('Y-m-d H:i:s', time() + 3600 * 2); 
 
 $up = $conn->prepare('
     UPDATE healthcareprofessional 
@@ -107,12 +107,10 @@ $up->bind_param('ssi', $token, $expire, $new_user_id);
 $up->execute();
 
 
-        // إرسال الإيميل
         if (!send_verification_email($email, $first_name, $token)) {
             redirect_with_error('We could not send the verification email. Please try again later.');
         }
 
-        // توجيه لصفحة إشعار (اختياري)
         session_regenerate_id(true);
         $_SESSION['pending_email'] = $email;
         header('Location: verify_notice.php');
@@ -268,9 +266,11 @@ body {
   <div>
     <label for="email">Email</label>
     <div class="field">
-      <input class="input" id="email" name="email" type="email"
-             placeholder="Enter your email" required
-             value="<?php echo $old_email; ?>">
+<input class="input" id="phone" name="phone" type="tel"
+       placeholder="e.g., +966 51 234 5678"
+       required
+       value="<?php echo $old_phone; ?>">
+
     </div>
   </div>
   <div>
