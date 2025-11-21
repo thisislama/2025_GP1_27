@@ -268,18 +268,7 @@ if (isset($_SESSION['error_message'])) {
             overflow-y: auto;
         }
 
-        /* ===== Header visuals ===== */
-        img.topimg {
-            position: absolute;
-            top: -3%;
-            left: 48%;
-            transform: translateX(-50%);
-            max-width: 90%;
-            height: auto;
-            width: auto;
-            z-index: 10;
-            pointer-events: none;
-        }
+       
 
         img.logo {
             position: absolute;
@@ -909,7 +898,7 @@ if (isset($_SESSION['error_message'])) {
 
         img.topimg {
             position: absolute;
-            top: -15.4%;
+            top: -15.7%;
             left: 48%;
             transform: translateX(-50%);
             height: auto;
