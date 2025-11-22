@@ -296,7 +296,7 @@ function getWaveformType($fileType)
                                        <div class="patient-name">Patine name:  <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?></div>
                                         <!-- <div class="status-badge status-<?php echo strtolower(htmlspecialchars($patient['status'])); ?>"><?php echo htmlspecialchars($patient['status']); ?></div>-->
                                          <div class="view-btn">
-                                         <a class="view-btn" href="patient.php?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                         <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
                                          <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
                                         </div>    
                                      </div>
