@@ -148,15 +148,15 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
       --field-h:3.25rem; --field-r:12px; --gap:16px; --pad:36px; --maxw:800px;
     }
     *{box-sizing:border-box} html,body{height:100%}
-html {
-  overflow-y: scroll;            
-  scroll-behavior: smooth;       
-}
+      html {
+        overflow-y: scroll;            
+        scroll-behavior: smooth;       
+      }
 
-body {
-  overflow-y: visible;           
-  -webkit-overflow-scrolling: touch; 
-}
+      body {
+        overflow-y: visible;           
+        -webkit-overflow-scrolling: touch; 
+      }
 
     body{
       margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
@@ -266,10 +266,10 @@ body {
   <div>
     <label for="email">Email</label>
     <div class="field">
-<input class="input" id="phone" name="phone" type="tel"
-       placeholder="e.g., +966 51 234 5678"
+      <input class="input" id="email" name="email" type="text"
+       placeholder="e.g., user@mail.com
        required
-       value="<?php echo $old_phone; ?>">
+       value="<?php echo $old_email ?>">
 
     </div>
   </div>
