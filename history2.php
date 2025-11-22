@@ -1569,7 +1569,7 @@ $tooltip_text = $tooltip_data[$key] ?? 'No additional information available.';
 
 
                             echo "
-                       <tr>
+                        <tr>
                         <td><input type='checkbox' name='selected_rows[]' value='{$row['waveAnalysisID']}' class='row-checkbox'></td>
                         <td>P{$patient_id}</td>
                         <td>{$analysis_id}</td>

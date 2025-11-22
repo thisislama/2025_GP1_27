@@ -103,27 +103,10 @@
         .left-column {
             display: flex;
             flex-direction: column;
-            gap: 19px
+            gap: 19px;
+            width: 100%;
         }
 
-        .welcome {
-            color: #000000;
-            margin-bottom: 6px;
-            text-indent: 12px;
-            font-family: "Oxygen", sans-serif;
-        }
-
-        .welcome h1 {
-            font-size: 30px;
-            margin: 0;
-            font-family: "Oxygen", sans-serif;
-        }
-
-        .welcome p {
-            margin: 6px 0 0;
-            color: rgba(0, 0, 0, 0.9);
-            font-family: "Oxygen", sans-serif;
-        }
 
 
        /* .upload-card {
@@ -214,9 +197,9 @@
         .small-cards {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 13px;
             padding: 12px;
-            border-radius: 12px
+            border-radius: 12px;
         }
 
         .small-item {
@@ -227,9 +210,6 @@
             align-items: center
         }
 
-        .small-item .id {
-            font-weight: 700
-        }
 
         .right-column {
             display: flex;
@@ -557,7 +537,7 @@
         .result-card {
             background: #fff;
             border: 1px solid #e9eef6;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, .35);
         }
         .upload-card{
             border: none;
@@ -661,87 +641,157 @@
             margin-top: 10em;
         }
 
-.ipad-header {
-    display: none;
-}
+        .ipad-header {
+            display: none;
+        }
 
-/*
-@media (max-width: 1366px) {
 
-    .auth-nav,
-    .topimg,
-    .logo {
-        display: none !important;
+
+
+    .file-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
     }
 
-    .ipad-header {
-        display: block;
+    .file-item {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+        padding: .75em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-left: 3px solid #4a77b5;
         width: 100%;
-        background: #ffffff;
-        padding: 14px 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        position: sticky;
-        top: 0;
-        z-index: 9999;
     }
 
-    .ipad-inner {
+    .file-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .file-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
+        margin-bottom: 6px;
     }
 
-    .ipad-logo img {
-        height: 55px;
-        width: auto;
-    }
+.file-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #e9eff7 0%, #d4e1f5 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a77b5;
+    font-size: 22px;
+    margin-right: 12px;
+}
 
-    .ipad-nav {
-        display: flex;
-        align-items: center;
-        gap: 1.2em;
-    }
+.file-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
 
-    .ipad-nav .nav-link {
-        color: #0B83FE;
-        text-decoration: none;
-        font-weight: 600;
-    }
+.action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
 
-    .ipad-nav .profile-btn img {
-        width: 32px;
-        height: 32px;
-    }
+.action-btn:hover {
+    background: #e9ecef;
+    color: #4a77b5;
+}
 
-    .ipad-logout {
-        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-        color: white;
-        padding: 0.4em 0.9em;
-        border-radius: 0.7em;
-        border: none;
-        cursor: pointer;
-        font-size: 0.9em;
-        font-weight: 500;
-    }
+.patient-data {
+    flex: 1;
+}
 
-    .container {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        margin-top: 140px !important;
-    }
+.file-number {
+    font-size: .82em;
+    color: #6c757d;
+    margin-bottom: 2px;
+    font-weight: 500;
+}
 
-    .right-column {
-        margin-top: 0;
-    }
+.file-id {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #2b4a77;
+}
 
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-    }
+.patient-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: #6c757d;
+    margin-bottom: 0;
+    margin-left: .5em;
+    width: 110%;
+}
 
-    .upload-drop {
-        width: 100%;
-    }
+.patient-details {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2px;
+}
 
-}*/
+.detail-item {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: #6c757d;
+}
 
+.status-badge {
+    display: inline-flex;
+    align-items: center; /* Changed from 'right' to 'center' */
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.status-active { /* Removed the space and dot */
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-inactive { /* Removed the space and dot */
+    background: #ffebee;
+    color: #c62828;
+}
+
+.file-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:.12em;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.last-updated {
+    font-size: 11px;
+    color: #9e9e9e;
+}
+
+.view-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #4a77b5;
+    font-weight: 500;
+    font-size: 13px;
+}

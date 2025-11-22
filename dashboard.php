@@ -240,7 +240,7 @@ function getWaveformType($fileType)
         <!-- LEFT -->
         <section class="left-column">
 
-            <h2 style="color:#1f45b5; font-size:1.65em;margin:5%">
+            <h2 style="color:#1f45b5; font-size:1.65em;margin:5px">
                 Welcome back <br>
                 <span style="color:rgba(89,115,195,0.76);font-size: .80em;margin-left: 1.7em">
                  <?php echo  $_SESSION['doctorName'] ?>
@@ -272,41 +272,43 @@ function getWaveformType($fileType)
                 <h3 style="margin-bottom:12px;color:#2b4a77;font-weight:700">Recent Patients</h3>
                 <?php if (!empty($recent_patients)): ?>
                     <?php foreach ($recent_patients as $patient): ?>
-                        <div class="small-item"
-                             onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>'">
-                            <div style="gap:6px; display:flex; flex-direction:column">
-                                <div class="fileNum" style="opacity: .95;">File Number - <span class="id" style="font-size:15px;">P<?php echo substr($patient['PID'], -4); ?></span></div>
-                               <!-- <div class="id"> P<?php echo substr($patient['PID'], -4); ?></div>-->
-                                <div class="muted" style="font-size:13px">
-                                    <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?>
-                                    <!--<br>Status: <?php echo htmlspecialchars($patient['status']); ?>-->
+                        <div class="file-container">
+                            <div class="file-item" onclick="window.location.href='patient.php?pid=<?php echo $patient['PID']; ?>'">
+                                <div class="file-header">
+                                    <div class="file-icon">
+                                        <span class="material-symbols-outlined">description</span>
+                                    </div>
+                                    <div class="patient-data">
+                                        <div class="file-number">File Number</div>
+                                        <div class="file-id">P-<?php echo substr((string)$patient['PID'], -4); ?></div>
+                                    </div>    
+                                    <div class="file-actions">
+                                        <div class="action-btn">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div style="background:#8fa3bf2f;padding:8px;border-radius:8px;cursor:pointer"><a href="patient.html?pid=<?php echo $patient['PID']; ?>">
-                                    ️</a>
-                                <span class="material-symbols-outlined"
-                                      style="color: rgba(18,36,51,0.65)">arrow_forward</span>
+                                <!--Info-->
+                                
+                                <div class="patient-details">
+                                    <div class="detail-item" >
+                                        <span class="material-symbols-outlined" style="font-size:14px; margin-left:8px;">Account_Circle</span>
+                                       <div class="patient-name">Patine name:  <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?></div>
+                                        <div class="status-badge status-<?php echo strtolower(htmlspecialchars($patient['status'])); ?>"><?php echo htmlspecialchars($patient['status']); ?></div>
+                                    </div>
+                                </div>
+                                <div class="file-footer">
+                                    <div class="last-updated">Updated: 2 days ago</div>
+                                    <div class="view-btn">
+                                       <a href="patient.php?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                        <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="small-item">
-                        <div>
-                            <?php
-                            // Display a message when there are no recent patients
-                            if(empty($recent_patients)){
-                                echo "<div class='id'>No Recent Patients</div>";
-                                echo "<div class='muted' style='font-size:13px'>Add patient through patients page to see patient data</div>";
-                            }
-                            else{
-                                foreach ($recent_patients as $patient) {
-                                    echo "<div class='id'>File Number: P" . substr($patient['PID'], -4) . "</div>";
-                                    echo "<div class='muted' style='font-size:14px; '>" . htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) . "<br>Status: " . htmlspecialchars($patient['status']) . "</div>";
-                                }
-                            }
-                            ?>
-                        </div>
-                    </div>
+                    <p>No recent patients found.</p>
                 <?php endif; ?>
             </div>
         </section>
