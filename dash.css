@@ -64,10 +64,6 @@
             font-size: 20px
         }
 
-        .material-symbols-outlined:hover {
-            color: #eae8e8ff;
-        }
-
         .btn-logout {
             background: linear-gradient(90deg, #0f65ff, #5aa6ff);
             color: white;
@@ -143,7 +139,7 @@
             transform: translateY(-2px);
             box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
         }
-
+        /*dashed*/
         .upload-drop {
             display: flex;
             flex-direction: column;
@@ -155,6 +151,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
+            margin: 0 auto;
         }
         
 
@@ -175,24 +172,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /*from ex.html*/
-
-         /*dashed
-        .upload-drop {
-            width: 100%;
-            height: 230px;
-            border-radius: 12px;
-            border: 2px dashed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        .upload-drop .hint {
-            opacity: 0.9;
-            font-size: 18px;
-        }
-*/
 
         .small-cards {
             display: flex;
@@ -200,14 +179,6 @@
             gap: 13px;
             padding: 12px;
             border-radius: 12px;
-        }
-
-        .small-item {
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center
         }
 
 
@@ -269,7 +240,7 @@
             font-weight: 600;
             text-align: center;
             padding-top: 36px;
-            opacity: 0.55
+            opacity: 0.55;
         }
 
         
@@ -559,14 +530,6 @@
 
         }
 
-        .small-item {
-            background: #eef3fb;
-            border: 1px solid #e9eef6;
-        }
-
-        .small-item .id {
-            color: #2b4a77;
-        }
 
         .muted {
             color: var(--muted)
@@ -644,9 +607,7 @@
         .ipad-header {
             display: none;
         }
-
-
-
+/**/
 
     .file-container {
         display: flex;
@@ -661,8 +622,9 @@
         padding: .75em;
         cursor: pointer;
         transition: all 0.2s ease;
-        border-left: 3px solid #4a77b5;
+        border-left: 3px solid #0876FA;
         width: 100%;
+        height: 90%;
     }
 
     .file-item:hover {
@@ -674,7 +636,6 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 6px;
     }
 
 .file-icon {
@@ -685,7 +646,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #4a77b5;
+    color: #0c6bdf;
     font-size: 22px;
     margin-right: 12px;
 }
@@ -720,20 +681,20 @@
 }
 
 .file-number {
-    font-size: .82em;
+    font-size: .77em;
     color: #6c757d;
     margin-bottom: 2px;
     font-weight: 500;
 }
 
 .file-id {
-    font-size: 1.2em;
+    font-size: .88em;
     font-weight: 700;
     color: #2b4a77;
 }
 
 .patient-name {
-    font-size: 14px;
+    font-size: .77em;
     font-weight: 400;
     color: #6c757d;
     margin-bottom: 0;
@@ -756,7 +717,7 @@
 
 .status-badge {
     display: inline-flex;
-    align-items: center; /* Changed from 'right' to 'center' */
+    align-items: center; 
     padding: 4px 10px;
     border-radius: 50px;
     font-size: 12px;
@@ -764,12 +725,12 @@
     margin-bottom: 10px;
 }
 
-.status-active { /* Removed the space and dot */
+.status-active { 
     background: #e8f5e9;
     color: #2e7d32;
 }
 
-.status-inactive { /* Removed the space and dot */
+.status-inactive { 
     background: #ffebee;
     color: #c62828;
 }
@@ -783,15 +744,17 @@
 }
 
 .last-updated {
-    font-size: 11px;
+    font-size: .22em;
     color: #9e9e9e;
+
 }
 
 .view-btn {
     display: flex;
     align-items: center;
     gap: 4px;
-    color: #4a77b5;
+    color: #0c6bdf;
     font-weight: 500;
     font-size: 13px;
+    text-decoration: none;
 }
