@@ -1155,11 +1155,7 @@ tr.no-result-row td {
 
     .btn-import,
     .btn-connect {
-<<<<<<< HEAD
         flex: 1 1 auto;           
-=======
-        flex: 1 1 auto;               
->>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
         text-align: center;
     }
 
@@ -1169,11 +1165,8 @@ tr.no-result-row td {
         font-size: 0.92rem;
     }
 }
-<<<<<<< HEAD
     */
 /* ضبط الهيدر على الآيباد حتى ما ينقص زر Logout */
-=======
->>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
 @media (max-width: 1024px) {
 
     .ipad-header {
