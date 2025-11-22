@@ -273,7 +273,7 @@ function getWaveformType($fileType)
                 <?php if (!empty($recent_patients)): ?>
                     <?php foreach ($recent_patients as $patient): ?>
                         <div class="file-container">
-                            <div class="file-item" onclick="window.location.href='patient.php?pid=<?php echo $patient['PID']; ?>'">
+                            <div class="file-item" onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>'">
                                 <div class="file-header">
                                     <div class="file-icon">
                                         <span class="material-symbols-outlined">description</span>
@@ -300,7 +300,7 @@ function getWaveformType($fileType)
                                 <div class="file-footer">
                                     <div class="last-updated">Updated: 2 days ago</div>
                                     <div class="view-btn">
-                                       <a href="patient.php?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                       <a href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
                                     </div>
                                 </div>

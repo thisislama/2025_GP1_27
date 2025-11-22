@@ -104,7 +104,7 @@ if ($action === 'search_patients') {
 }
 
 
-// 🔹 Disconnect (آمن)
+// 🔹 Disconnect 
 elseif ($action === 'disconnect') {
     $PID = $_POST['PID'] ?? '';
     $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
@@ -117,7 +117,6 @@ elseif ($action === 'disconnect') {
     $response = ["type" => "info", "msg" => "Disconnected successfully!"];
 }
 
-// 🔹 Delete (حذف كامل من Tanafs فقط)
 elseif ($action === 'delete') {
     $PID = $_POST['PID'] ?? '';
     $confirmed = isset($_POST['confirm']) && $_POST['confirm'] === '1';
@@ -125,11 +124,11 @@ elseif ($action === 'delete') {
     if (!$confirmed) {
         $response = ["type" => "warn", "msg" => "Deletion not confirmed."];
     } else {
-        // رقم/نصي؟ حضّري البراميتر
+        
         $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
         $pidType  = ctype_digit($PID) ? "i" : "s";
 
-        // (اختياري) تحقّق أن الطبيب الحالي مرتبط بهذا المريض أو عنده صلاحية
+        
         $chk = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
         $chk->bind_param($pidType."i", $pidParam, $userID);
         $chk->execute();
@@ -139,35 +138,35 @@ elseif ($action === 'delete') {
         if (!$hasLink) {
             $response = ["type"=>"error","msg"=>"❌ You are not assigned to this patient."];
         } else {
-            // ابدأ معاملة
+            
             $conn->begin_transaction();
             try {
-                // احذف الروابط أولاً
+               
                 $delLink = $conn->prepare("DELETE FROM patient_doctor_assignments WHERE PID=?");
                 $delLink->bind_param($pidType, $pidParam);
                 $delLink->execute();
                 $delLink->close();
 
-                // احذف التعليقات
+               
                 $delC = $conn->prepare("DELETE FROM comment WHERE PID=?");
                 $delC->bind_param($pidType, $pidParam);
                 $delC->execute();
                 $delC->close();
 
-                // احذف التقارير
+                
                 $delR = $conn->prepare("DELETE FROM report WHERE PID=?");
                 $delR->bind_param($pidType, $pidParam);
                 $delR->execute();
                 $delR->close();
 
-                // احذف تحليلات الإشارة
+                
                 $delW = $conn->prepare("DELETE FROM waveform_analysis WHERE PID=?");
                 $delW->bind_param($pidType, $pidParam);
                 $delW->execute();
                 $delW->close();
 
 
-                // أخيراً احذف سجل المريض من Tanafs فقط
+                
                 $delP = $conn->prepare("DELETE FROM patient WHERE PID=?");
                 $delP->bind_param($pidType, $pidParam);
                 $delP->execute();
@@ -219,7 +218,6 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_hospital') {
 
     if ($exists) {
 
-        // ✅ تحقق إضافي: هل هذا المريض مرتبط بالفعل بنفس الدكتور؟
         $chkLink = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
         $chkLink->bind_param("si", $PID, $userID);
         $chkLink->execute();

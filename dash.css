@@ -294,20 +294,20 @@
         }
 
         img.topimg {
-            position: absolute;
-            top: -16.5%;
-            left: 48%;
-            transform: translateX(-50%);
-            height: auto;
-            width: auto;
-            max-width: 90%;
-            z-index: 10;
-            pointer-events: none;
+           
+
+              position: absolute;
+  top: -10.9%;
+  left: 48%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  z-index: 10;
+  pointer-events: none;
         }
 
         img.logo {
             position: absolute;
-            top: -8.5%;
+            top: -5.5%;
             left: 14%;
             width: clamp(100px, 12vw, 180px);
             height: auto;
@@ -317,7 +317,7 @@
 
         .auth-nav {
             position: absolute;
-            top: -8%;
+            top: -5.1%;
             right: 16.2%;
             display: flex;
             align-items: center;
