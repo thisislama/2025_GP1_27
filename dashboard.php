@@ -273,7 +273,7 @@ function getWaveformType($fileType)
                 <?php if (!empty($recent_patients)): ?>
                     <?php foreach ($recent_patients as $patient): ?>
                         <div class="file-container">
-                            <div class="file-item" onclick="window.location.href='patient.php?pid=<?php echo $patient['PID']; ?>'">
+                            <div class="file-item" onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>'">
                                 <div class="file-header">
                                     <div class="file-icon">
                                         <span class="material-symbols-outlined">description</span>
@@ -296,7 +296,7 @@ function getWaveformType($fileType)
                                        <div class="patient-name">Patine name:  <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?></div>
                                         <!-- <div class="status-badge status-<?php echo strtolower(htmlspecialchars($patient['status'])); ?>"><?php echo htmlspecialchars($patient['status']); ?></div>-->
                                          <div class="view-btn">
-                                         <a class="view-btn" href="patient.php?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                         <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
                                          <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
                                         </div>    
                                      </div>
@@ -304,7 +304,7 @@ function getWaveformType($fileType)
                                <div class="file-footer">
                                     <div class="last-updated">Updated: 2 days ago</div>
                                  <!--    <div class="view-btn">
-                                       <a class="view-btn" href="patient.php?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                       <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
                                     </div>-->
                                 </div>

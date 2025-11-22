@@ -104,7 +104,7 @@ if ($action === 'search_patients') {
 }
 
 
-// 🔹 Disconnect (آمن)
+// 🔹 Disconnect 
 elseif ($action === 'disconnect') {
     $PID = $_POST['PID'] ?? '';
     $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
@@ -117,7 +117,6 @@ elseif ($action === 'disconnect') {
     $response = ["type" => "info", "msg" => "Disconnected successfully!"];
 }
 
-// 🔹 Delete (حذف كامل من Tanafs فقط)
 elseif ($action === 'delete') {
     $PID = $_POST['PID'] ?? '';
     $confirmed = isset($_POST['confirm']) && $_POST['confirm'] === '1';
@@ -125,11 +124,11 @@ elseif ($action === 'delete') {
     if (!$confirmed) {
         $response = ["type" => "warn", "msg" => "Deletion not confirmed."];
     } else {
-        // رقم/نصي؟ حضّري البراميتر
+        
         $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
         $pidType  = ctype_digit($PID) ? "i" : "s";
 
-        // (اختياري) تحقّق أن الطبيب الحالي مرتبط بهذا المريض أو عنده صلاحية
+        
         $chk = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
         $chk->bind_param($pidType."i", $pidParam, $userID);
         $chk->execute();
@@ -139,35 +138,35 @@ elseif ($action === 'delete') {
         if (!$hasLink) {
             $response = ["type"=>"error","msg"=>"❌ You are not assigned to this patient."];
         } else {
-            // ابدأ معاملة
+            
             $conn->begin_transaction();
             try {
-                // احذف الروابط أولاً
+               
                 $delLink = $conn->prepare("DELETE FROM patient_doctor_assignments WHERE PID=?");
                 $delLink->bind_param($pidType, $pidParam);
                 $delLink->execute();
                 $delLink->close();
 
-                // احذف التعليقات
+               
                 $delC = $conn->prepare("DELETE FROM comment WHERE PID=?");
                 $delC->bind_param($pidType, $pidParam);
                 $delC->execute();
                 $delC->close();
 
-                // احذف التقارير
+                
                 $delR = $conn->prepare("DELETE FROM report WHERE PID=?");
                 $delR->bind_param($pidType, $pidParam);
                 $delR->execute();
                 $delR->close();
 
-                // احذف تحليلات الإشارة
+                
                 $delW = $conn->prepare("DELETE FROM waveform_analysis WHERE PID=?");
                 $delW->bind_param($pidType, $pidParam);
                 $delW->execute();
                 $delW->close();
 
 
-                // أخيراً احذف سجل المريض من Tanafs فقط
+                
                 $delP = $conn->prepare("DELETE FROM patient WHERE PID=?");
                 $delP->bind_param($pidType, $pidParam);
                 $delP->execute();
@@ -219,7 +218,10 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_hospital') {
 
     if ($exists) {
 
+<<<<<<< HEAD
         //check if patient is already assined to the same doctor
+=======
+>>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
         $chkLink = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
         $chkLink->bind_param("si", $PID, $userID);
         $chkLink->execute();
@@ -1104,8 +1106,13 @@ tr.no-result-row td {
         font-size: 0.9em;
         font-weight: 500;
     }
+<<<<<<< HEAD
 }*/
 /*@media (max-width: 1366px) {
+=======
+}
+@media (max-width: 1366px) {
+>>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
 
     main {
         margin-top: 120px !important;   
@@ -1120,23 +1127,39 @@ tr.no-result-row td {
     }
 
     .table-actions {
+<<<<<<< HEAD
         flex-direction: column;   
+=======
+        flex-direction: column;       
+>>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
         align-items: stretch;
         gap: 0.75rem;
     }
 
     .table-actions input {
+<<<<<<< HEAD
         width: 100% !important;      
     }
 
     .patient-buttons {
         justify-content: flex-start; 
+=======
+        width: 100% !important;       
+    }
+
+    .patient-buttons {
+        justify-content: flex-start;  
+>>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
         gap: 0.75rem;
     }
 
     .btn-import,
     .btn-connect {
+<<<<<<< HEAD
         flex: 1 1 auto;           
+=======
+        flex: 1 1 auto;               
+>>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
         text-align: center;
     }
 
@@ -1146,12 +1169,15 @@ tr.no-result-row td {
         font-size: 0.92rem;
     }
 }
+<<<<<<< HEAD
     */
 /* ضبط الهيدر على الآيباد حتى ما ينقص زر Logout */
+=======
+>>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
 @media (max-width: 1024px) {
 
     .ipad-header {
-        padding: 10px 16px;           /* نقلل البادينق يمين ويسار */
+        padding: 10px 16px;           
     }
 
     .ipad-inner {
@@ -1166,12 +1192,12 @@ tr.no-result-row td {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 0.6rem;                  /* نقلل المسافة بين العناصر */
-        flex-wrap: wrap;              /* لو ضاقت المساحة يسمح لهم ينزلون سطرين */
+        gap: 0.6rem;                  
+        flex-wrap: wrap;             
     }
 
     .ipad-nav .nav-link {
-        font-size: 0.85rem;           /* نص أصغر شوي */
+        font-size: 0.85rem;           
     }
 
     .ipad-logout {
