@@ -303,13 +303,8 @@ function getWaveformType($fileType)
                                 </div>
                                <div class="file-footer">
                                     <div class="last-updated">Updated: 2 days ago</div>
-<<<<<<< HEAD
-                                    <div class="view-btn">
-                                       <a href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
-=======
                                  <!--    <div class="view-btn">
                                        <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
->>>>>>> d20c00e4cce2b17c9e7c3ad830d81599aeff3fdc
                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
                                     </div>-->
                                 </div>
