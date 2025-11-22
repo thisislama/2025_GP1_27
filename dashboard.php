@@ -378,7 +378,7 @@ function getWaveformType($fileType)
                             echo "Uploaded file: " . htmlspecialchars(basename($_SESSION['last_uploaded_image']));
                         } else {
                             if ($stats['total_scans'] > 0) {
-                                echo "Total analyses: {$stats['total_scans']} | Anomalies detected: {$stats['anomaly']}";
+                               // echo "Total analyses: {$stats['total_scans']} | Anomalies detected: {$stats['anomaly']}";
                             } else {
                                 echo "Your result will show here!";
                             }
