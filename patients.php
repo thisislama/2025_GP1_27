@@ -218,10 +218,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_hospital') {
 
     if ($exists) {
 
-<<<<<<< HEAD
         //check if patient is already assined to the same doctor
-=======
->>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
         $chkLink = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
         $chkLink->bind_param("si", $PID, $userID);
         $chkLink->execute();
