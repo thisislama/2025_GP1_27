@@ -1046,11 +1046,10 @@ tr.no-result-row td {
         font-weight: 500;
     }
 }
-/* تنسيق الـ Patients page على الآيباد والشاشات المتوسطة */
 @media (max-width: 1366px) {
 
     main {
-        margin-top: 120px !important;   /* تحت الهيدر مباشرة */
+        margin-top: 120px !important;   
         padding: 0 24px;
         text-align: center;
     }
@@ -1062,38 +1061,36 @@ tr.no-result-row td {
     }
 
     .table-actions {
-        flex-direction: column;       /* البحث فوق / الأزرار تحت */
+        flex-direction: column;       
         align-items: stretch;
         gap: 0.75rem;
     }
 
     .table-actions input {
-        width: 100% !important;       /* حقل السيرش يمسك عرض الكارد */
+        width: 100% !important;       
     }
 
     .patient-buttons {
-        justify-content: flex-start;  /* الأزرار جنب بعض */
+        justify-content: flex-start;  
         gap: 0.75rem;
     }
 
     .btn-import,
     .btn-connect {
-        flex: 1 1 auto;               /* لو ضاق العرض يكبرون بالتساوي */
+        flex: 1 1 auto;               
         text-align: center;
     }
 
-    /* خفّض حجم الخط في الجدول شوي على الآيباد */
     #patientsTable th,
     #patientsTable td {
         padding: 10px 6px;
         font-size: 0.92rem;
     }
 }
-/* ضبط الهيدر على الآيباد حتى ما ينقص زر Logout */
 @media (max-width: 1024px) {
 
     .ipad-header {
-        padding: 10px 16px;           /* نقلل البادينق يمين ويسار */
+        padding: 10px 16px;           
     }
 
     .ipad-inner {
@@ -1108,12 +1105,12 @@ tr.no-result-row td {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 0.6rem;                  /* نقلل المسافة بين العناصر */
-        flex-wrap: wrap;              /* لو ضاقت المساحة يسمح لهم ينزلون سطرين */
+        gap: 0.6rem;                  
+        flex-wrap: wrap;             
     }
 
     .ipad-nav .nav-link {
-        font-size: 0.85rem;           /* نص أصغر شوي */
+        font-size: 0.85rem;           
     }
 
     .ipad-logout {
