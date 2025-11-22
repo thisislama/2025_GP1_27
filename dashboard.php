@@ -259,17 +259,18 @@ function getWaveformType($fileType)
               
             <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
               <label for="fileUpload" class="upload-drop" id="dropzone">
-                <div style="font-size:28px;opacity:0.95">
-                    <span class="material-symbols-outlined">upload</span>
+                <div class="hint">Upload your Waveform Image</div>
+                <div style="font-size:28px;opacity:0.65">
+                    <img src="images/upload2.png" style="height:6em" alt="upload">
+                   <!-- <span class="material-symbols-outlined">upload</span>-->
                 </div>
-                <div class="hint">Upload your waveform, Here!</div>
-                <div style="font-size:13px;color:#0b84feb3;margin-top:8px">Drag &amp; drop or click to select a file</div>
-                <div style="font-size:13px;color:rgba(145,148,151,0.7);margin-top:8px"> Only JPEG, PNG, JPG files are allowed. </div>
+                <div style="font-size:1.5empx;font-weight:500;color:#0b84feb3;margin-top:4px">Drag &amp; drop or <b style="text-decoration:underline;">choose a file</b> to upload</div>
+                <div style="font-size:.8em;color:rgba(145,148,151,0.7);margin-top:8px"> Only JPEG, PNG, JPG files are allowed. Max 10.0MB. </div>
                 </label>
             </form>
 
             <div class="small-cards">
-                <h3 style="margin-bottom:12px;margin-left:12px;color:#2b4a77;font-weight:700">Recent Patients</h3>
+                <h3 style="margin-bottom:.4em;margin-left:12px;color:#0a4a98;font-weight:700">Recent Patients</h3>
                 <?php if (!empty($recent_patients)): ?>
                     <?php foreach ($recent_patients as $patient): ?>
                         <div class="file-container">
@@ -312,7 +313,7 @@ function getWaveformType($fileType)
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <p>No recent patients found.</p>
+                    <p class="none">No recent patients found.</p>
                 <?php endif; ?>
             </div>
         </section>
@@ -320,7 +321,7 @@ function getWaveformType($fileType)
         <!-- RIGHT -->
         <section class="right-column">
             <div class="stats-grid">
-                <div class="stat">
+                <div class="stat anomaly" style="background-color: #ecd5d580;">
                     <div>
                         <div class="label" style="margin-bottom:8px;color: #232735">Anomaly</div>
                         <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
@@ -332,13 +333,13 @@ function getWaveformType($fileType)
                     </div>
                 </div>
 
-                <div class="stat">
+                <div class="stat analysis" style="background-color: #d6ecd58c; color: #064f02ff;">
                     <div>
-                        <div class="label" style="margin-bottom:8px;color: #232735">Analysis</div>
+                        <div class="label" style="margin-bottom:8px;">Analysis</div>
                         <div class="value"><?php echo $stats['total_scans']; ?></div>
                         <div class="under"><?php echo $stats['total_scans']; ?> analyses you applied for</div>
                     </div>
-                    <div style="background:linear-gradient(150deg,rgb(151,255,2),#5b8c2f);padding:10px;border-radius:8px;color:#fff;font-weight:700">
+                    <div style=padding:10px;border-radius:8px;font-weight:700">
                         <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
                     </div>
                 </div>
