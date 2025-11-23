@@ -188,6 +188,148 @@ function getWaveformType($fileType)
     <title>TANAFS Dashboard</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
     <link rel="stylesheet" href="dash.css"/>
+
+    <style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        }
+
+   .stat {
+        padding: .5em;
+        border-radius: 0.55em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
+        height:16vh;
+        }
+       
+
+    .stat.anomaly {
+        background-color: #fff;
+        border-left: 4px solid #e53935;
+    }
+
+    .stat.anomaly .label,
+    .stat.anomaly .value {
+        font-size: 1.13em;
+        color: #772b2bff;
+        font-weight: 700;
+        margin-left:.445em
+    }
+
+    .stat.anomaly .under {
+        color: #6c757d;
+        font-size: .7em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left:.445em
+
+    }
+
+    .stat.analysis {
+        background-color: #fff;
+        border-left: 4px solid #14b530;
+    }
+
+    .stat.analysis .label,
+    .stat.analysis .value {
+        font-size: 1.13em;
+        color: #014f0fff;
+        font-weight: 700;
+        margin-left:.445em
+
+    }
+
+    .stat.analysis .under {
+        color: #6c757d;
+        font-size: .7em;
+        margin-left:.445em
+    }
+
+    .stat.patient{
+        border-left: 4px solid #7750b8;
+
+    }
+
+    .stat.patient .label,
+    .stat.patient .value {
+        font-size: 1.13em;
+        color: #2b4a77;
+        margin-left:.445em;
+        font-weight: 700;
+    }
+
+    .stat.patient .under {
+        color: #6c757d;
+        font-size: .7em;
+        margin-left:.445em
+
+    }
+
+    .icon {
+        padding: 0.8em;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1.2em;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat.anomaly .icon {
+        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        color: #e53935;
+        margin-right:.54em;
+        margin-bottom:.85em
+
+
+    }
+
+    .stat.analysis .icon {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    color: #14b530;
+    margin-right:.54em;
+    margin-bottom:.85em
+
+
+}
+
+
+    .stat.patient .icon {
+        background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+        color: #7750b8;
+        margin-right:1em;
+    }
+
+        .label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #232735;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2b4a77;
+            margin-bottom: 8px;
+        }
+
+        .under {
+            font-size: .7em;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width:100%
+        }
+        
+        </style>    
 </head>
 <body>
     <!-- Header for iPad & medium screens only -->
@@ -255,13 +397,12 @@ function getWaveformType($fileType)
             <?php endif; ?>
             -->
             <!-- UPLOAD CARD -->
-            <form method="post" enctype="multipart/form-data" class="upload-card" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">
-              
+            <form method="post" enctype="multipart/form-data" class="upload-card" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">    
             <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
               <label for="fileUpload" class="upload-drop" id="dropzone">
                 <div class="hint">Upload your Waveform Image</div>
                 <div style="font-size:28px;opacity:0.65">
-                    <img src="images/upload2.png" style="height:6em" alt="upload">
+                    <img class="upImg" src="images/upload2.png" style="height:6em;" alt="upload">
                    <!-- <span class="material-symbols-outlined">upload</span>-->
                 </div>
                 <div style="font-size:1.5empx;font-weight:500;color:#0b84feb3;margin-top:4px">Drag &amp; drop or <b style="text-decoration:underline;">choose a file</b> to upload</div>
@@ -291,19 +432,19 @@ function getWaveformType($fileType)
                                 </div>
                                 <!--Info-->
                                 
-                                <div class="patient-details">
+                                <div class="patient-details" >
                                     <div class="detail-item" >
-                                        <span class="material-symbols-outlined" style="font-size:14px; margin-left:8px;">Account_Circle</span>
-                                       <div class="patient-name">Patine name:  <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?></div>
-                                        <!-- <div class="status-badge status-<?php echo strtolower(htmlspecialchars($patient['status'])); ?>"><?php echo htmlspecialchars($patient['status']); ?></div>-->
-                                         <div class="view-btn">
-                                         <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
-                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
-                                        </div>    
+                                       <!-- <span class="material-symbols-outlined" style="font-size:.8em; font-weight:500;margin-left:8px;margin-top;.2em">Account_Circle</span>
+                                       <div class="patient-name">Patine name:  <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?></div>-->
+                                        <!-- <div class="status-badge status-<?php echo strtolower(htmlspecialchars($patient['status'])); ?>"><?php echo htmlspecialchars($patient['status']); ?></div>-->  
                                      </div>
                                 </div>
                                <div class="file-footer">
                                     <div class="last-updated">Updated: 2 days ago</div>
+                                    <div class="view-btn">
+                                         <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                        </div>  
                                  <!--    <div class="view-btn">
                                        <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
@@ -321,38 +462,38 @@ function getWaveformType($fileType)
         <!-- RIGHT -->
         <section class="right-column">
             <div class="stats-grid">
-                <div class="stat anomaly" style="background-color: #ecd5d580;">
+                <div class="stat anomaly" style="width:103%;">
                     <div>
-                        <div class="label" style="margin-bottom:8px;color: #232735">Anomaly</div>
+                        <div class="label" >Anomaly</div>
                         <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
-                        <div class="under"><span class="material-symbols-outlined" style="margin-top: 8px;margin-right: 6px; color: #14b530">trending_up</span><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
+                        <div class="under"><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
                     </div>
 
-                    <div style="background:linear-gradient(150deg,rgb(218,35,35),rgb(214,103,103));padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span style="font-size: 1.75em;text-align: center" class="material-symbols-outlined">warning</span>
+                    <div class="icon warn">
+                        <span style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">warning</span>
                     </div>
                 </div>
 
-                <div class="stat analysis" style="background-color: #d6ecd58c; color: #064f02ff;">
+                <div class="stat analysis" style="width:103%;">
                     <div>
-                        <div class="label" style="margin-bottom:8px;">Analysis</div>
+                        <div class="label" >Analysis</div>
                         <div class="value"><?php echo $stats['total_scans']; ?></div>
                         <div class="under"><?php echo $stats['total_scans']; ?> analyses you applied for</div>
                     </div>
-                    <div style=padding:10px;border-radius:8px;font-weight:700">
+                    <div class="icon analysis">
                         <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
                     </div>
                 </div>
 
-                <div class="stat" style="width: 205%">
+                <div class="stat patient" style="width:212%">
                     <div>
-                        <div class="label"  style="margin-bottom:8px;color: #232735">Patients</div>
+                        <div class="label" >Patients</div>
                         <div class="value"><?php echo $stats['patients'] ?></div>
                         <div class="under"><?php echo $stats['patients'] ?>  total patients assigned to you</div>
 
                     </div>
-                    <div style="background:linear-gradient(150deg,rgb(101,0,255),#7750b8);padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">group</span>
+                    <div class="icon patient" >
+                        <span  style="font-size: 1.85em;text-align: center" class="material-symbols-outlined">group</span>
                     </div>
                 </div>
 
