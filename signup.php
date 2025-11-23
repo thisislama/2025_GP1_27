@@ -14,7 +14,7 @@ $logo_src = 'data:image/png;base64,' . $logo_data;
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-function send_verification_email(string $toEmail, string $toName, string $token): bool {
+function send_verification_email(string $toEmail, string $toName, string $token, string $logo_src): bool {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $base   = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
@@ -62,14 +62,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($first_name === '' || $last_name === '' || $role === '' || $email === '' || $password === '' || $dob === '') {
         redirect_with_error('Please fill in all required fields.');
     }
+    if (!preg_match('/^[\p{L}\s]{3,}$/u', $first_name)) {
+    redirect_with_error('First name must be at least 3 letters and contain only alphabetic characters.');
+}
+if (!preg_match('/^[\p{L}\s]{3,}$/u', $last_name)) {
+    redirect_with_error('Last name must be at least 3 letters and contain only alphabetic characters.');
+}
+
     $allowed_roles = ['ICU nurse', 'Respiratory therapist', 'Intensivists', 'Pulmonologist'];
     if (!in_array($role, $allowed_roles, true)) redirect_with_error('Invalid role selected.');
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Invalid email format.');
     if (mb_strlen($password) < 8) redirect_with_error('Password must be at least 8 characters.');
-$normalizedPhone = preg_replace('/\s+/', '', $phone);
-if (!preg_match('/^\+?[0-9]{9,15}$/', $normalizedPhone)) {
-    redirect_with_error('Invalid phone number format.');
+$normalizedPhone = preg_replace('/[^0-9+]/', '', $phone);
+
+$digitsOnly = preg_replace('/\D/', '', $normalizedPhone);
+
+if (strlen($digitsOnly) < 7 || strlen($digitsOnly) > 15) {
+    redirect_with_error('Phone number must be between 7 and 15 digits.');
 }
+
 
 
 
@@ -113,9 +124,9 @@ $up->bind_param('ssi', $token, $expire, $new_user_id);
 $up->execute();
 
 
-        if (!send_verification_email($email, $first_name, $token)) {
-            redirect_with_error('We could not send the verification email. Please try again later.');
-        }
+       if (!send_verification_email($email, $first_name, $token, $logo_src)) {
+    redirect_with_error('We could not send the verification email. Please try again later.');
+}
 
         session_regenerate_id(true);
         $_SESSION['pending_email'] = $email;
@@ -273,10 +284,14 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   <div>
     <label for="email">Email</label>
     <div class="field">
-      <input class="input" id="email" name="email" type="text"
-       placeholder="e.g., user@mail.com
+    <input class="input" 
+       id="email" 
+       name="email" 
+       type="text" 
+       placeholder="e.g., user@mail.com"
        required
        value="<?php echo $old_email ?>">
+
 
     </div>
   </div>
