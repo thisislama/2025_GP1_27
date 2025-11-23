@@ -896,7 +896,7 @@ main h2{
 .btn-import:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(15, 101, 255, 0.4);
-    color:0f65ff;
+    color:#fff;
 }
 
 .btn-import:active {
@@ -932,6 +932,8 @@ main h2{
     min-width: fit-content;
     height:2.5em;
     font-size: 15px;
+    box-shadow: 0 2px 8px rgba(15, 101, 255, 0.3);
+
 }
 
 .btn-connect:hover {

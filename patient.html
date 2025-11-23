@@ -24,7 +24,7 @@
       min-height:100vh; display:flex; flex-direction:column;
     }
 
-    /* ---------- Header (من صفحة 2) ---------- */
+    /* ---------- Header---------- */
     .wrapper{position:relative;width:100%;min-height:100px;overflow:visible}
     img.topimg{
       position:absolute; top:-4.9%; left:48%; transform:translateX(-50%);
@@ -56,7 +56,7 @@
     }
     .avatar-icon{width:30px;height:30px;display:block}
 
-    /* ---------- Main panels (نفس الأولى مع تعديل الهوامش لأن ما فيه Sidebar) ---------- */
+    /* ---------- Main panels---------- */
     main.main{flex:1; display:flex; flex-direction:column}
     .panel{
       background:#fff; border-radius:1.125em; box-shadow:0 .0625em .1875em rgba(0,0,0,.05);
@@ -94,12 +94,12 @@
     .btn-generate{margin-top:1em;align-self:flex-start;background:linear-gradient(90deg,#0f65ff,#5aa6ff);color:#fff;border:0;padding:.625em 1em;border-radius:.75em;font-weight:700;cursor:pointer;box-shadow:0 .5em 1.25em rgba(15,101,255,.14);display:inline-flex;align-items:center;gap:.625em}
     .report-date{color:#2b4a77;font-weight:600;font-size:.8125em;position:relative;top:1.25em}
 
-    /* أعمدة التاريخ/الوقت (صفحتك الأولى) */
+    /* Date/Time Columns*/
     .analysis-table th:nth-child(5), .analysis-table td:nth-child(5){width:140px;white-space:nowrap}
     .analysis-table th:nth-child(6), .analysis-table td:nth-child(6){width:120px;white-space:nowrap}
     .analysis-table td:nth-child(5), .analysis-table td:nth-child(6){overflow:visible!important;text-overflow:clip!important;font-variant-numeric:tabular-nums}
 
-    /* ---------- Footer (من صفحة 2) ---------- */
+    /* ---------- Footer---------- */
     .site-footer{background:#F6F6F6;color:#0b1b2b;font-family:'Montserrat',sans-serif;margin-top:6em}
     .footer-grid{max-width:75em;margin:0 auto;padding:2.5em 1.25em;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:2em;align-items:start}
     .footer-logo{height:5.5em;width:auto;display:block;margin-left:-3em}
@@ -133,19 +133,16 @@
   top: 60px;      
   left: 40px;        
 }
-
 .PName h2 {
   margin: 0;
   padding: 0;
 }
-
 .PName .pid {
  
   color: #2b4a77;
   margin-top: 4px;
   font-weight: 600;
 }
-
 .analysis-title {
   font-weight: 700;
   color: #2b4a77;
@@ -249,7 +246,7 @@
     </div>
 </header>
 <main class="main">
-  <!-- ===== Header بدل الـSidebar ===== -->
+  <!-- ===== Header  ===== -->
  <div class="header-wrapper">
     <img class="topimg" src="Images/Group 8.png" alt="img">
     <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
@@ -273,7 +270,7 @@
 </div>
 
 
-  <!-- Page Title: قللنا الـpadding علشان الهيدر -->
+  <!-- Page Title-->
   <section style="display:flex;align-items:flex-end;gap:12px;justify-content:space-between;padding:70px 30px;">
    <div class="PName">
     <h2 id="patientName" style="color:#1f46b6"></h2>
@@ -339,7 +336,7 @@
   </section>
 </main>
 
-<!-- ===== Footer (نفس صفحة 2) ===== -->
+<!-- ===== Footer ===== -->
 <footer id="contact" class="site-footer">
   <div class="footer-grid">
     <div class="footer-col brand">
@@ -383,6 +380,7 @@ function getPidFromURL() {
 
 
 <script>
+// bring patient's name and displays it on the page
 document.addEventListener("DOMContentLoaded", () => {
   const pid = getPidFromURL();
   fetch(`PHPpatient.php?pid=${pid}&mode=patient`)
@@ -408,6 +406,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script>
+  //Utility functions to format MySQL timestamps into readable date/time for display 
+
 function fmtDateTime(mysqlTs, locale='en-GB'){
   if(!mysqlTs) return '-';
   const iso=String(mysqlTs).replace(' ','T');
@@ -432,6 +432,8 @@ function fmtTime(mysqlTs, locale='en-GB'){
 </script>
 
 <script>
+  // Loads the patient's analyzed waveform records and fills the analysis table 
+
 document.addEventListener("DOMContentLoaded", () => {
   const pid = getPidFromURL();
   const tbody=document.querySelector(".analysis-table tbody");
@@ -508,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const txt=ta.value.trim(); if(!txt){ alert('Please write your comment first.'); return; }
      const fd = new FormData();
 fd.append('content', txt);
-// لا نرسل userID نهائيًا – السيرفر يعتمد على السيشن
+
 
       addBtn.disabled=true;
       fetch(`PHPpatient.php?mode=add_comment&pid=${encodeURIComponent(pid)}`,{method:'POST',body:fd})
@@ -523,6 +525,7 @@ fd.append('content', txt);
 </script>
 
 <script>
+  //Handles loading and adding patient comments
 document.addEventListener("DOMContentLoaded", async ()=>{
   const pid = getPidFromURL();
   const panel=document.querySelector('.reports-panel');
@@ -549,6 +552,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 });
 </script>
 <script>
+  // Validates patient data before generating a report and redirects if analysis/comments exist 
+
 (function () {
   const btn = document.querySelector('.btn-generate');
   if (!btn) return;
@@ -598,7 +603,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
     } catch (err) {
       console.error(err);
-      showMessage("تعذر التحقق من بيانات المريض.");
+      showMessage("Failed to verify patient data");
     }
   });
 })();
