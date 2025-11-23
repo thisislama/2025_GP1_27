@@ -488,7 +488,7 @@
             color: #0B83FE;
             font-size: 0.85em;
         }
-
+/*footer ends*/
         .upload-card,
         .small-cards,
         .stat,
@@ -580,7 +580,7 @@
         .ipad-header {
             display: none;
         }
-/**/
+        /**/
 
     .file-container {
         display: flex;
