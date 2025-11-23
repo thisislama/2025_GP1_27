@@ -274,8 +274,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resend_email'])) {
         <p class="footer-text">
             Didn't receive the email? 
             <a href="#" class="resend-link">Click here to resend</a>
-            <br>
-            Check your spam folder if you can't find the verification email.
         </p>
     </div>
 </div>
