@@ -34,7 +34,7 @@ if (!$docRow || (int)$docRow['is_verified'] !== 1) {
     exit;
 }
 
-// قراءة pid و mode
+// Read pid and mode
 $pid  = isset($_GET['pid'])  ? (int)$_GET['pid']  : 0;
 $mode = isset($_GET['mode']) ? $_GET['mode']      : 'patient';
 
@@ -52,7 +52,7 @@ if ($mode === 'patient') {
 
 /* ====================== analysis table ====================== */
 elseif ($mode === 'analysis') {
-    // FIX: نرجّع timestamp كما هو من الجدول
+   
     $sql = "SELECT anomaly_type, severity_level, `timestamp`
             FROM waveform_analysis
             WHERE PID = $pid
@@ -61,7 +61,8 @@ elseif ($mode === 'analysis') {
     $data = [];
     if ($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
-            // تطبيع بسيط للقيم
+             // Normalize anomaly type: if empty or "None", treat it as "Normal"
+
             $anomaly = isset($row['anomaly_type']) ? trim($row['anomaly_type']) : '';
             if ($anomaly === '' || strcasecmp($anomaly, 'None') === 0) $anomaly = 'Normal';
 
