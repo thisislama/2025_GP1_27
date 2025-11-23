@@ -1103,13 +1103,8 @@ tr.no-result-row td {
         font-size: 0.9em;
         font-weight: 500;
     }
-<<<<<<< HEAD
-}*/
-/*@media (max-width: 1366px) {
-=======
 }
 @media (max-width: 1366px) {
->>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
 
     main {
         margin-top: 120px !important;   
@@ -1124,29 +1119,17 @@ tr.no-result-row td {
     }
 
     .table-actions {
-<<<<<<< HEAD
         flex-direction: column;   
-=======
-        flex-direction: column;       
->>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
         align-items: stretch;
         gap: 0.75rem;
     }
 
     .table-actions input {
-<<<<<<< HEAD
         width: 100% !important;      
     }
 
     .patient-buttons {
         justify-content: flex-start; 
-=======
-        width: 100% !important;       
-    }
-
-    .patient-buttons {
-        justify-content: flex-start;  
->>>>>>> 90b2c9243198e1c15efbaefd01a8bcb99504cd35
         gap: 0.75rem;
     }
 
@@ -1162,8 +1145,7 @@ tr.no-result-row td {
         font-size: 0.92rem;
     }
 }
-    */
-/* ضبط الهيدر على الآيباد حتى ما ينقص زر Logout */
+   
 @media (max-width: 1024px) {
 
     .ipad-header {
@@ -1195,7 +1177,44 @@ tr.no-result-row td {
         font-size: 0.8rem;
     }
 }
+*/
+/* === Confirm Modals (Disconnect / Delete) === */
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
 
+.btn-cancel {
+  background:#eef6ff;
+  color:#0f65ff;
+  border:none;
+  padding:0.5em 0.9em;
+  border-radius:0.75em;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg,#0f65ff,#5aa6ff);
+  color:#fff;
+  border:none;
+  padding:0.5em 0.9em;
+  border-radius:0.75em;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-danger {
+  background:#d92b2b;
+  color:#fff;
+  border:none;
+  padding:0.5em 0.9em;
+  border-radius:0.75em;
+  font-weight:600;
+  cursor:pointer;
+}
 
 </style>
 </head>
@@ -1318,23 +1337,89 @@ tr.no-result-row td {
     </div>
   </footer>
 </div>
-<script>
-function performAction(action, pid){
-  let text = '';
-  if (action === 'disconnect') {
-    text = 'Are you sure you want to disconnect this patient from your list?\nThis will NOT delete any data.';
-  } else if (action === 'delete') {
-    text = 'WARNING: This will permanently delete the patient from Tanafs, including comments, reports, and analyses.\nProceed?';
-  } else {
-    return;
-  }
+<!-- 🔵 Disconnect Confirmation Modal -->
+<div class="modal" id="disconnectModal">
+  <div class="modal-content">
+    <h3 style="color:#0B83FE;margin-bottom:10px;">Disconnect patient</h3>
+    <p style="margin-bottom:10px;color:#555;">
+      Are you sure you want to disconnect this patient from your list?<br>
+      <strong>This will NOT delete any data in TANAFS.</strong>
+    </p>
 
-  if (!confirm(text)) return;
+    <div class="confirm-actions">
+      <button type="button" class="btn-cancel" onclick="closeDisconnectModal()">Cancel</button>
+      <button type="button" class="btn-primary" onclick="confirmDisconnect()">Disconnect</button>
+    </div>
+  </div>
+</div>
+<!-- 🔴 Delete Confirmation Modal -->
+<div class="modal" id="deleteModal">
+  <div class="modal-content">
+    <h3 style="color:#d92b2b;margin-bottom:10px;">Delete patient</h3>
+    <p style="margin-bottom:8px;color:#444;">
+      This action is permanent and cannot be undone.
+    </p>
+    <ul style="text-align:left;color:#333;margin-left:12px;margin-bottom:10px;">
+      <li>Patient record</li>
+      <li>Comments</li>
+      <li>Reports</li>
+      <li>Waveform analyses</li>
+      <li>Doctor assignments</li>
+    </ul>
+    <p style="margin-bottom:10px;color:#b30000;font-weight:600;">
+      Are you sure you want to delete this patient from TANAFS?
+    </p>
+
+    <div class="confirm-actions">
+      <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button type="button" class="btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== Confirm (Disconnect / Delete) with popup modal ======
+let pendingPID   = null;
+let pendingAction = null;
+
+function performAction(action, pid) {
+  pendingPID = pid;
+  pendingAction = action;
+
+  if (action === 'disconnect') {
+    document.getElementById('disconnectModal').style.display = 'flex';
+  } else if (action === 'delete') {
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+}
+
+// --- Close helpers ---
+function closeDisconnectModal() {
+  document.getElementById('disconnectModal').style.display = 'none';
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').style.display = 'none';
+}
+
+// --- Confirm buttons ---
+function confirmDisconnect() {
+  closeDisconnectModal();
+  sendPatientAction('disconnect', false);
+}
+
+function confirmDelete() {
+  closeDeleteModal();
+  sendPatientAction('delete', true);
+}
+
+// --- Shared fetch logic ---
+function sendPatientAction(action, withConfirmFlag) {
+  if (!pendingPID) return;
 
   const body = new URLSearchParams();
   body.set('ajax', action);
-  body.set('PID', pid);
-  if (action === 'delete') body.set('confirm', '1'); // تأكيد للحذف
+  body.set('PID', pendingPID);
+  if (withConfirmFlag) body.set('confirm', '1');
 
   fetch('', {
     method: 'POST',
@@ -1343,23 +1428,21 @@ function performAction(action, pid){
   })
   .then(r => r.json())
   .then(res => {
-    // رسالة أعلى الجدول (عندك <p id="message">)
     const m = document.getElementById('message');
     if (m) {
       m.className = 'message ' + (res.type || 'info');
       m.textContent = res.msg || '';
     }
 
-    if (action === 'disconnect' && (res.type === 'info' || res.type === 'success')) {
-      const tr = document.getElementById('row-' + pid);
+    if ((action === 'disconnect' && (res.type === 'info' || res.type === 'success')) ||
+        (action === 'delete' && res.type === 'success')) {
+
+      const tr = document.getElementById('row-' + pendingPID);
       if (tr) tr.remove();
-      return;
     }
 
-    if (action === 'delete' && res.type === 'success') {
-      const tr = document.getElementById('row-' + pid);
-      if (tr) tr.remove();
-    }
+    pendingPID = null;
+    pendingAction = null;
   })
   .catch(() => {
     const m = document.getElementById('message');
@@ -1369,6 +1452,7 @@ function performAction(action, pid){
     }
   });
 }
+</script>
 </script>
 
 <script>
