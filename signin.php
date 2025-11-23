@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if ($email === '' || $password === '') redirect_with_error('Please enter your email and password.');
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Invalid email format.');
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Please enter a valid email address.');
 
     try {
         $sql  = "SELECT userID, password, is_verified FROM healthcareprofessional WHERE email = ? LIMIT 1";
@@ -26,18 +26,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute();
         $stmt->store_result();
 
-        if ($stmt->num_rows !== 1) { $stmt->close(); redirect_with_error('Incorrect login credentials.'); }
+        if ($stmt->num_rows !== 1) { $stmt->close(); redirect_with_error('The email or password you entered is incorrect.'); }
 
         $stmt->bind_result($user_id, $password_hash, $is_verified);
         $stmt->fetch();
         $stmt->close();
 
         if (!password_verify($password, $password_hash)) {
-            redirect_with_error('Incorrect login credentials.');
+            redirect_with_error('The email or password you entered is incorrect.');
         }
 
         if ((int)$is_verified !== 1) {
-            redirect_with_error('Please verify your email before logging in.');
+            redirect_with_error('Your email is not verified. Please check your inbox to complete verification..');
         }
 
         session_regenerate_id(true);
