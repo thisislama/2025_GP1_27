@@ -4,6 +4,9 @@ error_reporting(0);
 
 session_start();
 require_once __DIR__ . '/mail_config.php';
+$logo_path = __DIR__ . '/images/logo.png';
+$logo_data = base64_encode(file_get_contents($logo_path));
+$logo_src = 'data:image/png;base64,' . $logo_data;
 
 // Define the function here instead of requiring signup.php
 function send_verification_email(string $toEmail, string $toName, string $token): bool {
@@ -14,9 +17,9 @@ function send_verification_email(string $toEmail, string $toName, string $token)
 
     $subject = 'Verify your TANAFS email';
     $body = '
-      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6; text-align:center">
+      <div style="font-family:Inter;line-height:1.6; text-align:center">
         <h2>Confirm your email</h2>
-        <img src="C:\MAMP\htdocs\2025_GP_27\images\logo.png"alt="logo">
+        <img src="'.$logo_src.'" alt="TANAFS Logo" style="height:50px; width:auto;">
         <p>Hello '.htmlspecialchars($toName, ENT_QUOTES, 'UTF-8').',</p>
         <p>Thank you for registering in <strong>TANAFS</strong>.</p>
         <p>Please verify your email by clicking the button below:</p>
