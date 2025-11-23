@@ -188,6 +188,148 @@ function getWaveformType($fileType)
     <title>TANAFS Dashboard</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
     <link rel="stylesheet" href="dash.css"/>
+
+    <style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        }
+
+   .stat {
+        padding: .5em;
+        border-radius: 0.55em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
+        height:16vh;
+        }
+       
+
+    .stat.anomaly {
+        background-color: #fff;
+        border-left: 4px solid #e53935;
+    }
+
+    .stat.anomaly .label,
+    .stat.anomaly .value {
+        font-size: 1.13em;
+        color: #772b2bff;
+        font-weight: 700;
+        margin-left:.445em
+    }
+
+    .stat.anomaly .under {
+        color: #6c757d;
+        font-size: .7em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left:.445em
+
+    }
+
+    .stat.analysis {
+        background-color: #fff;
+        border-left: 4px solid #14b530;
+    }
+
+    .stat.analysis .label,
+    .stat.analysis .value {
+        font-size: 1.13em;
+        color: #014f0fff;
+        font-weight: 700;
+        margin-left:.445em
+
+    }
+
+    .stat.analysis .under {
+        color: #6c757d;
+        font-size: .7em;
+        margin-left:.445em
+    }
+
+    .stat.patient{
+        border-left: 4px solid #7750b8;
+
+    }
+
+    .stat.patient .label,
+    .stat.patient .value {
+        font-size: 1.13em;
+        color: #2b4a77;
+        margin-left:.445em;
+        font-weight: 700;
+    }
+
+    .stat.patient .under {
+        color: #6c757d;
+        font-size: .7em;
+        margin-left:.445em
+
+    }
+
+    .icon {
+        padding: 0.8em;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1.2em;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat.anomaly .icon {
+        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        color: #e53935;
+        margin-right:.54em;
+        margin-bottom:.85em
+
+
+    }
+
+    .stat.analysis .icon {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    color: #14b530;
+    margin-right:.54em;
+    margin-bottom:.85em
+
+
+}
+
+
+    .stat.patient .icon {
+        background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+        color: #7750b8;
+        margin-right:1em;
+    }
+
+        .label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #232735;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2b4a77;
+            margin-bottom: 8px;
+        }
+
+        .under {
+            font-size: .7em;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width:100%
+        }
+        
+        </style>    
 </head>
 <body>
     <!-- Header for iPad & medium screens only -->
@@ -240,7 +382,7 @@ function getWaveformType($fileType)
         <!-- LEFT -->
         <section class="left-column">
 
-            <h2 style="color:#1f45b5; font-size:1.65em;margin:5%">
+            <h2 style="color:#0c6bdf; font-size:1.65em;margin:5px">
                 Welcome back <br>
                 <span style="color:rgba(89,115,195,0.76);font-size: .80em;margin-left: 1.7em">
                  <?php echo  $_SESSION['doctorName'] ?>
@@ -255,58 +397,64 @@ function getWaveformType($fileType)
             <?php endif; ?>
             -->
             <!-- UPLOAD CARD -->
-        <form method="post" enctype="multipart/form-data" class="upload-card" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">
-              
+            <form method="post" enctype="multipart/form-data" class="upload-card" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">    
             <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
               <label for="fileUpload" class="upload-drop" id="dropzone">
-                <div style="font-size:28px;opacity:0.95">
-                    <span class="material-symbols-outlined">upload</span>
+                <div class="hint">Upload your Waveform Image</div>
+                <div style="font-size:28px;opacity:0.65">
+                    <img class="upImg" src="images/upload2.png" style="height:6em;" alt="upload">
+                   <!-- <span class="material-symbols-outlined">upload</span>-->
                 </div>
-                <div class="hint">Upload your waveform, Here!</div>
-                <div style="font-size:13px;color:#0b84feb3;margin-top:8px">Drag &amp; drop or click to select a file</div>
-                <div style="font-size:13px;color:rgba(145,148,151,0.7);margin-top:8px"> Only JPEG, PNG, JPG files are allowed. </div>
+                <div style="font-size:1.5empx;font-weight:500;color:#0b84feb3;margin-top:4px">Drag &amp; drop or <b style="text-decoration:underline;">choose a file</b> to upload</div>
+                <div style="font-size:.8em;color:rgba(145,148,151,0.7);margin-top:8px"> Only JPEG, PNG, JPG files are allowed. Max 10.0MB. </div>
                 </label>
-        </form>
+            </form>
 
             <div class="small-cards">
-                <h3 style="margin-bottom:12px;color:#2b4a77;font-weight:700">Recent Patients</h3>
+                <h3 style="margin-bottom:.4em;margin-left:12px;color:#0a4a98;font-weight:700">Recent Patients</h3>
                 <?php if (!empty($recent_patients)): ?>
                     <?php foreach ($recent_patients as $patient): ?>
-                        <div class="small-item"
-                             onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>'">
-                            <div style="gap:6px; display:flex; flex-direction:column">
-                                <div class="fileNum" style="opacity: .95;">File Number - <span class="id" style="font-size:15px;">P<?php echo substr($patient['PID'], -4); ?></span></div>
-                               <!-- <div class="id"> P<?php echo substr($patient['PID'], -4); ?></div>-->
-                                <div class="muted" style="font-size:13px">
-                                    <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?>
-                                    <!--<br>Status: <?php echo htmlspecialchars($patient['status']); ?>-->
+                        <div class="file-container">
+                            <div class="file-item" onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>'">
+                                <div class="file-header">
+                                    <div class="file-icon">
+                                        <span class="material-symbols-outlined">description</span>
+                                    </div>
+                                    <div class="patient-data">
+                                        <div class="file-number">File Number</div>
+                                        <div class="file-id">P-<?php echo substr((string)$patient['PID'], -4); ?></div>
+                                    </div>    
+                                    <div class="file-actions">
+                                        <div class="action-btn">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div style="background:#8fa3bf2f;padding:8px;border-radius:8px;cursor:pointer"><a href="patient.html?pid=<?php echo $patient['PID']; ?>">
-                                    ️</a>
-                                <span class="material-symbols-outlined"
-                                      style="color: rgba(18,36,51,0.65)">arrow_forward</span>
+                                <!--Info-->
+                                
+                                <div class="patient-details" >
+                                    <div class="detail-item" >
+                                       <!-- <span class="material-symbols-outlined" style="font-size:.8em; font-weight:500;margin-left:8px;margin-top;.2em">Account_Circle</span>
+                                       <div class="patient-name">Patine name:  <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?></div>-->
+                                        <!-- <div class="status-badge status-<?php echo strtolower(htmlspecialchars($patient['status'])); ?>"><?php echo htmlspecialchars($patient['status']); ?></div>-->  
+                                     </div>
+                                </div>
+                               <div class="file-footer">
+                                    <div class="last-updated">Updated: 2 days ago</div>
+                                    <div class="view-btn">
+                                         <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                        </div>  
+                                 <!--    <div class="view-btn">
+                                       <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                        <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                    </div>-->
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="small-item">
-                        <div>
-                            <?php
-                            // Display a message when there are no recent patients
-                            if(empty($recent_patients)){
-                                echo "<div class='id'>No Recent Patients</div>";
-                                echo "<div class='muted' style='font-size:13px'>Add patient through patients page to see patient data</div>";
-                            }
-                            else{
-                                foreach ($recent_patients as $patient) {
-                                    echo "<div class='id'>File Number: P" . substr($patient['PID'], -4) . "</div>";
-                                    echo "<div class='muted' style='font-size:14px; '>" . htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) . "<br>Status: " . htmlspecialchars($patient['status']) . "</div>";
-                                }
-                            }
-                            ?>
-                        </div>
-                    </div>
+                    <p class="none">No recent patients found.</p>
                 <?php endif; ?>
             </div>
         </section>
@@ -314,38 +462,38 @@ function getWaveformType($fileType)
         <!-- RIGHT -->
         <section class="right-column">
             <div class="stats-grid">
-                <div class="stat">
+                <div class="stat anomaly" style="width:103%;">
                     <div>
-                        <div class="label" style="margin-bottom:8px;color: #232735">Anomaly</div>
+                        <div class="label" >Anomaly</div>
                         <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
-                        <div class="under"><span class="material-symbols-outlined" style="margin-top: 8px;margin-right: 6px; color: #14b530">trending_up</span><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
+                        <div class="under"><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
                     </div>
 
-                    <div style="background:linear-gradient(150deg,rgb(218,35,35),rgb(214,103,103));padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span style="font-size: 1.75em;text-align: center" class="material-symbols-outlined">warning</span>
+                    <div class="icon warn">
+                        <span style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">warning</span>
                     </div>
                 </div>
 
-                <div class="stat">
+                <div class="stat analysis" style="width:103%;">
                     <div>
-                        <div class="label" style="margin-bottom:8px;color: #232735">Analysis</div>
+                        <div class="label" >Analysis</div>
                         <div class="value"><?php echo $stats['total_scans']; ?></div>
                         <div class="under"><?php echo $stats['total_scans']; ?> analyses you applied for</div>
                     </div>
-                    <div style="background:linear-gradient(150deg,rgb(151,255,2),#5b8c2f);padding:10px;border-radius:8px;color:#fff;font-weight:700">
+                    <div class="icon analysis">
                         <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
                     </div>
                 </div>
 
-                <div class="stat" style="width: 205%">
+                <div class="stat patient" style="width:212%">
                     <div>
-                        <div class="label"  style="margin-bottom:8px;color: #232735">Patients</div>
+                        <div class="label" >Patients</div>
                         <div class="value"><?php echo $stats['patients'] ?></div>
                         <div class="under"><?php echo $stats['patients'] ?>  total patients assigned to you</div>
 
                     </div>
-                    <div style="background:linear-gradient(150deg,rgb(101,0,255),#7750b8);padding:10px;border-radius:8px;color:#fff;font-weight:700">
-                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">group</span>
+                    <div class="icon patient" >
+                        <span  style="font-size: 1.85em;text-align: center" class="material-symbols-outlined">group</span>
                     </div>
                 </div>
 
@@ -369,10 +517,10 @@ function getWaveformType($fileType)
                 <div class="result-output" id="resultArea">
                     <?php
                         if (isset($_SESSION['last_uploaded_image'])) {
-                            echo "Latest analysis completed. File: " . htmlspecialchars(basename($_SESSION['last_uploaded_image']));
+                            echo "Uploaded file: " . htmlspecialchars(basename($_SESSION['last_uploaded_image']));
                         } else {
                             if ($stats['total_scans'] > 0) {
-                                echo "Total analyses: {$stats['total_scans']} | Anomalies detected: {$stats['anomaly']}";
+                               // echo "Total analyses: {$stats['total_scans']} | Anomalies detected: {$stats['anomaly']}";
                             } else {
                                 echo "Your result will show here!";
                             }

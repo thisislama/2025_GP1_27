@@ -48,7 +48,7 @@
             -moz-osx-font-smoothing: grayscale;
             color: #15314b;
             overflow-y: auto;
-            font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
             display: block;
         }
 
@@ -62,10 +62,6 @@
         .material-symbols-outlined {
             font-variation-settings: 'wght' 500;
             font-size: 20px
-        }
-
-        .material-symbols-outlined:hover {
-            color: #eae8e8ff;
         }
 
         .btn-logout {
@@ -103,42 +99,10 @@
         .left-column {
             display: flex;
             flex-direction: column;
-            gap: 19px
+            gap: 19px;
+            width: 100%;
         }
 
-        .welcome {
-            color: #000000;
-            margin-bottom: 6px;
-            text-indent: 12px;
-            font-family: "Oxygen", sans-serif;
-        }
-
-        .welcome h1 {
-            font-size: 30px;
-            margin: 0;
-            font-family: "Oxygen", sans-serif;
-        }
-
-        .welcome p {
-            margin: 6px 0 0;
-            color: rgba(0, 0, 0, 0.9);
-            font-family: "Oxygen", sans-serif;
-        }
-
-
-       /* .upload-card {
-            border: none;
-            padding: 37px;
-            min-height: 230px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 10px;
-            border-radius: 12px ;
-            backdrop-filter: blur(4px);
-            box-shadow: #505867 1px 1px 1px;
-        }*/
 
         .upload-card input[type=file] {
             display: none
@@ -149,10 +113,11 @@
             background: var(--bg-white);
             border-radius: var(--border-radius);
             box-shadow: rgba(169, 175, 188, 0.69) -0.01em 0.01em 0.5em 0.1em;
-            padding: 4.5rem;
+            padding: 1.5rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            min-height: 230px;
+            min-height: 60vh;
             border-radius: 12px ;
+            width:100vh;
 
         }
 
@@ -160,20 +125,27 @@
             transform: translateY(-2px);
             box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
         }
-
+        /*dashed*/
         .upload-drop {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 4.8rem;
+            padding: 3rem;
             border: 2px dashed #cbd5e1;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
+            margin: 0 auto;
         }
-        
+        .upload-card .upImg{
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .upload-card .upImg:hover{
+            transform: translateY(-5px);
+        }
+
 
         .upload-drop:hover {
             border-color: var(--primary-blue);
@@ -186,56 +158,34 @@
             margin-bottom: 0.5rem;
         }
          .hint {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: rgba(2, 73, 188, 0.488);
+            margin-bottom: 1rem;
         }
 
-        /*from ex.html*/
-
-         /*dashed
-        .upload-drop {
-            width: 100%;
-            height: 230px;
-            border-radius: 12px;
-            border: 2px dashed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+        .none{
+            color:var(--muted);
+            font-size: .88em;
+            margin-bottom: 1em;
+            font-weight: 600;
+            margin-left: .5em;
         }
-        .upload-drop .hint {
-            opacity: 0.9;
-            font-size: 18px;
-        }
-*/
 
         .small-cards {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 13px;
             padding: 12px;
-            border-radius: 12px
+            border-radius: 12px;
         }
 
-        .small-item {
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center
-        }
-
-        .small-item .id {
-            font-weight: 700
-        }
 
         .right-column {
             display: flex;
             flex-direction: column;
             gap: 18px;
-            margin-top: 125.7px;
+            margin-top: 2.5em;
         }
 
         .stats-grid {
@@ -245,25 +195,15 @@
         }
 
         .stat {
-            padding: 14px;
-            border-radius: 10px;
+            padding: .8em;
+            border-radius: .88em;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: #4c5d7a 1px 1px 1px;
+            box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
         }
 
-        .stat .value {
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .stat .label {
-            color: rgba(255, 0, 0, 0.93);
-            font-weight: 700;
-        }
-
-        .stat .under{
+         .under{
             font-size: 0.8em;
             font-weight: 600;
             color: #4c5d7a;
@@ -271,10 +211,10 @@
         }
 
         .result-card {
-            padding: 22px;
+            padding: 1.1em;
             border-radius: 10px;
-            min-height: 260px;
             box-shadow: #4c5d7a 1px 1px 1px;
+            height: 75vh;
         }
 
         .result-card .title {
@@ -289,7 +229,7 @@
             font-weight: 600;
             text-align: center;
             padding-top: 36px;
-            opacity: 0.55
+            opacity: 0.55;
         }
 
         
@@ -315,20 +255,18 @@
 
         img.topimg {
             position: absolute;
-            top: -16.5%;
+            top: -12.8%;
             left: 48%;
             transform: translateX(-50%);
-            height: auto;
-            width: auto;
-            max-width: 90%;
+            max-width: 91%;
             z-index: 10;
             pointer-events: none;
         }
 
         img.logo {
             position: absolute;
-            top: -8.5%;
-            left: 14%;
+            top: -6.6%;
+            left: 13.6%;
             width: clamp(100px, 12vw, 180px);
             height: auto;
             z-index: 20;
@@ -337,17 +275,17 @@
 
         .auth-nav {
             position: absolute;
-            top: -8%;
-            right: 16.2%;
+            top: -5.7%;
+            right: 15.99%;
             display: flex;
             align-items: center;
-            gap: 1.6em;
+            gap: 1.5em;
             z-index: 30;
         }
 
         .nav-link {
             color: #0876FA;
-            font-weight: 600;
+            font-weight: 595;
             text-decoration: none;
             font-size: 1em;
             transition: all 0.3s ease;
@@ -557,7 +495,7 @@
         .result-card {
             background: #fff;
             border: 1px solid #e9eef6;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, .35);
         }
         .upload-card{
             border: none;
@@ -565,27 +503,12 @@
 
         }
 
-
         .upload-drop {
-            width: 30em;
+            width: 33em;
             background: #fff;
             border: 2px dashed rgba(68, 110, 170, 0.7);
             color: #2b4a77;
             cursor: pointer;
-        }
-
-        .upload-drop .hint {
-            color: #2b4a77;
-
-        }
-
-        .small-item {
-            background: #eef3fb;
-            border: 1px solid #e9eef6;
-        }
-
-        .small-item .id {
-            color: #2b4a77;
         }
 
         .muted {
@@ -598,14 +521,7 @@
             font-size: 14px;
         }
 
-        .stat .label {
-            color: #195695;
-        }
-
-        .stat .value {
-            color: #143340e6;
-        }
-
+    
         .result-card .title {
             color: #2b4a77;
             border-bottom: 1px solid #e9eef6;
@@ -661,87 +577,139 @@
             margin-top: 10em;
         }
 
-.ipad-header {
-    display: none;
-}
+        .ipad-header {
+            display: none;
+        }
+/**/
 
-/*
-@media (max-width: 1366px) {
-
-    .auth-nav,
-    .topimg,
-    .logo {
-        display: none !important;
+    .file-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
     }
 
-    .ipad-header {
-        display: block;
+    .file-item {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+        padding: .75em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-left: 3px solid #0876FA;
         width: 100%;
-        background: #ffffff;
-        padding: 14px 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        position: sticky;
-        top: 0;
-        z-index: 9999;
+        height: 90%;
     }
 
-    .ipad-inner {
+    .file-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .file-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
     }
 
-    .ipad-logo img {
-        height: 55px;
-        width: auto;
-    }
+.file-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #e9eff7 0%, #d4e1f5 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0c6bdf;
+    font-size: 22px;
+    margin-right: 12px;
+}
 
-    .ipad-nav {
-        display: flex;
-        align-items: center;
-        gap: 1.2em;
-    }
+.file-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
 
-    .ipad-nav .nav-link {
-        color: #0B83FE;
-        text-decoration: none;
-        font-weight: 600;
-    }
+.action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
 
-    .ipad-nav .profile-btn img {
-        width: 32px;
-        height: 32px;
-    }
+.action-btn:hover {
+    background: #e9ecef;
+    color: #4a77b5;
+}
 
-    .ipad-logout {
-        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-        color: white;
-        padding: 0.4em 0.9em;
-        border-radius: 0.7em;
-        border: none;
-        cursor: pointer;
-        font-size: 0.9em;
-        font-weight: 500;
-    }
+.patient-data {
+    flex: 1;
+}
 
-    .container {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        margin-top: 140px !important;
-    }
+.file-number {
+    font-size: .77em;
+    color: #6c757d;
+    margin-bottom: 2px;
+    font-weight: 500;
+}
 
-    .right-column {
-        margin-top: 0;
-    }
+.file-id {
+    font-size: .88em;
+    font-weight: 700;
+    color: #2b4a77;
+}
 
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-    }
+.patient-name {
+    font-size: .87em;
+    font-weight: 500;
+    color: #5c6f80;
+    margin-bottom: 0.2em;
+    margin-left: .5em;
+    margin-top: .7em;
+    width: 110%;
+}
 
-    .upload-drop {
-        width: 100%;
-    }
+.patient-details {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2px;
+}
 
-}*/
+.detail-item {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: #6c757d;
+}
 
+.file-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:.15em;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.last-updated {
+    font-size: .32em;
+    color: #9e9e9e;
+
+}
+
+.view-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #0c6bdf;
+    font-weight: 500;
+    font-size: 13px;
+    text-decoration: none;
+    margin-left: auto; /* This pushes it to the right */
+}

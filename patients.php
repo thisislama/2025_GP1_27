@@ -104,7 +104,7 @@ if ($action === 'search_patients') {
 }
 
 
-// 🔹 Disconnect (آمن)
+// 🔹 Disconnect 
 elseif ($action === 'disconnect') {
     $PID = $_POST['PID'] ?? '';
     $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
@@ -117,7 +117,6 @@ elseif ($action === 'disconnect') {
     $response = ["type" => "info", "msg" => "Disconnected successfully!"];
 }
 
-// 🔹 Delete (حذف كامل من Tanafs فقط)
 elseif ($action === 'delete') {
     $PID = $_POST['PID'] ?? '';
     $confirmed = isset($_POST['confirm']) && $_POST['confirm'] === '1';
@@ -125,11 +124,11 @@ elseif ($action === 'delete') {
     if (!$confirmed) {
         $response = ["type" => "warn", "msg" => "Deletion not confirmed."];
     } else {
-        // رقم/نصي؟ حضّري البراميتر
+        
         $pidParam = ctype_digit($PID) ? (int)$PID : $PID;
         $pidType  = ctype_digit($PID) ? "i" : "s";
 
-        // (اختياري) تحقّق أن الطبيب الحالي مرتبط بهذا المريض أو عنده صلاحية
+        
         $chk = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
         $chk->bind_param($pidType."i", $pidParam, $userID);
         $chk->execute();
@@ -139,35 +138,35 @@ elseif ($action === 'delete') {
         if (!$hasLink) {
             $response = ["type"=>"error","msg"=>"❌ You are not assigned to this patient."];
         } else {
-            // ابدأ معاملة
+            
             $conn->begin_transaction();
             try {
-                // احذف الروابط أولاً
+               
                 $delLink = $conn->prepare("DELETE FROM patient_doctor_assignments WHERE PID=?");
                 $delLink->bind_param($pidType, $pidParam);
                 $delLink->execute();
                 $delLink->close();
 
-                // احذف التعليقات
+               
                 $delC = $conn->prepare("DELETE FROM comment WHERE PID=?");
                 $delC->bind_param($pidType, $pidParam);
                 $delC->execute();
                 $delC->close();
 
-                // احذف التقارير
+                
                 $delR = $conn->prepare("DELETE FROM report WHERE PID=?");
                 $delR->bind_param($pidType, $pidParam);
                 $delR->execute();
                 $delR->close();
 
-                // احذف تحليلات الإشارة
+                
                 $delW = $conn->prepare("DELETE FROM waveform_analysis WHERE PID=?");
                 $delW->bind_param($pidType, $pidParam);
                 $delW->execute();
                 $delW->close();
 
 
-                // أخيراً احذف سجل المريض من Tanafs فقط
+                
                 $delP = $conn->prepare("DELETE FROM patient WHERE PID=?");
                 $delP->bind_param($pidType, $pidParam);
                 $delP->execute();
@@ -210,7 +209,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_hospital') {
         echo json_encode(['type'=>'error','msg'=>'Missing Hospital ID.']); exit;
     }
 
-    // 1️⃣ Check if exists in Tanafs
+    // 1. Check if patient exists in TANAFS
     $check = $conn->prepare("SELECT PID FROM patient WHERE PID=? LIMIT 1");
     $check->bind_param("s", $PID);
     $check->execute();
@@ -219,7 +218,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_hospital') {
 
     if ($exists) {
 
-        // ✅ تحقق إضافي: هل هذا المريض مرتبط بالفعل بنفس الدكتور؟
+        //check if patient is already assined to the same doctor
         $chkLink = $conn->prepare("SELECT 1 FROM patient_doctor_assignments WHERE PID=? AND userID=?");
         $chkLink->bind_param("si", $PID, $userID);
         $chkLink->execute();
@@ -234,7 +233,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_hospital') {
         exit;
     }
 
-    // 2️⃣ If not found in Tanafs, search Hospital JSON
+    // 2️. If not found in TANAFS, search in PMS 
     $jsonPath = "C:/MAMP/htdocs/2025_GP_27/data/patients_record.json";
     if (!is_file($jsonPath)) {
         echo json_encode(['type'=>'error','msg'=>'Hospital record file not found.']); exit;
@@ -248,7 +247,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_hospital') {
     }
 
     if (!$found) {
-        echo json_encode(['type'=>'error','msg'=>'No patient found with this Hospital ID.']); exit;
+        echo json_encode(['type'=>'error','msg'=>'No patient found with this File number.']); exit;
     }
 
     echo json_encode(['type'=>'found','data'=>$found]);
@@ -284,10 +283,11 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'import_hospital') {
 }
 
 // ======================= AJAX: Connect Patient =======================
+  //check from searced file number
 if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_connect') {
     header('Content-Type: application/json; charset=utf-8');
     $q = trim($_POST['q'] ?? '');
-    if ($q === '') { echo json_encode(['type'=>'error','msg'=>'Please enter a Patient ID or Name.']); exit; }
+    if ($q === '') { echo json_encode(['type'=>'error','msg'=>'Please enter patient file number or name.']); exit; }
 
     $like = '%' . $q . '%';
     $stmt = $conn->prepare("
@@ -303,7 +303,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_connect') {
     $stmt->execute();
     $res = $stmt->get_result();
 
-    if ($res->num_rows === 0) { echo json_encode(['type'=>'error','msg'=>'No matching patients found in Tanafs.']); exit; }
+    if ($res->num_rows === 0) { echo json_encode(['type'=>'error','msg'=>'No matching patients found in TANAFS.']); exit; }
 
     ob_start();
     echo "<table class='mini-table'><thead><tr><th>ID</th><th>Name</th><th>Action</th></tr></thead><tbody>";
@@ -323,7 +323,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'search_connect') {
     echo json_encode(['type'=>'success','html'=>$html]);
     exit;
 }
-
+  //assign patient to my account
 if (isset($_POST['ajax']) && $_POST['ajax'] === 'connect_existing') {
     header('Content-Type: application/json; charset=utf-8');
     $PID = trim($_POST['PID'] ?? '');
@@ -336,7 +336,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'connect_existing') {
     $chk->close();
 
     if (!$exists) {
-        echo json_encode(['type'=>'error','msg'=>'This patient doesn’t exist in Tanafs. Please import them first.']);
+        echo json_encode(['type'=>'error','msg'=>'This patient doesn’t exist in TANAFS. Please import them first.']);
         exit;
     }
 
@@ -869,41 +869,96 @@ main h2{
   display: flex;
   gap: 10px;
 }
-/* 🏥 Add from Hospital Button */
+/*  Add from Hospital Button */
 .btn-import {
-  background-color: #0f65ff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
+ 
+   display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px ;
+    background: linear-gradient(135deg, #668fdc, #0f65ff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(15, 101, 255, 0.3);
+    min-width: fit-content;
+    height:2.5em;
+    font-size: 15px;
+
 }
+
+/**byyy */
+
 .btn-import:hover {
-  background-color: #084dcc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 101, 255, 0.4);
+    color:0f65ff;
 }
 
-/* 🔗 Connect Button */
+.btn-import:active {
+    transform: translateY(-1px);
+}
+
+.btn-icon {
+    font-size: 1.4em;
+    font-weight: 700;
+}
+
+.btn-text {
+    text-align: center;
+    line-height: 1.2;
+    font-size: 14px;
+}
+
+
+/* Connect Button */
 .btn-connect {
-  background-color: #e8f0fe;
-  color: #0f65ff;
-  border: 1px solid #c9dcff;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-.btn-connect:hover {
-  background-color: #dbe7ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    background: linear-gradient(135deg, #e8f0fe, #dbe7ff);
+    color: #0f65ff;
+    border: 1px solid #c9dcff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    min-width: fit-content;
+    height:2.5em;
+    font-size: 15px;
 }
 
-/* 🔗 Connect Modal specific design */
+.btn-connect:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(15, 99, 255, 0.38);
+}
+
+.btn-connect:active {
+    transform: translateY(0);
+}
+
+/* Shared icon and text styles */
+.btn-icon {
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.btn-text {
+    text-align: center;
+    line-height: 1.2;
+    font-size: 14px;
+}
+
+
+/* Connect Modal specific design */
 .connect-modal {
-  max-height: 480px;                /* يثبت الحجم الكلي للمودال */
+  max-height: 480px;                
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -911,10 +966,10 @@ main h2{
 
 .connect-result {
   flex: 1;
-  overflow-y: auto;                 /* سكرول داخلي */
+  overflow-y: auto;                 
   margin-top: 10px;
   padding-right: 6px;
-  max-height: 320px;                /* منطقة النتائج */
+  max-height: 320px;               
 }
 
 .connect-result::-webkit-scrollbar {
@@ -925,7 +980,6 @@ main h2{
   border-radius: 3px;
 }
 
-/* تعديل الجدول داخل النتائج */
 .connect-result table {
   width: 100%;
   border-collapse: collapse;
@@ -941,7 +995,7 @@ main h2{
   color: #1f46b6;
   font-weight: 700;
   position: sticky;
-  top: 0; /* يبقى رأس الجدول ثابت */
+  top: 0; 
   z-index: 1;
 }
 
@@ -973,7 +1027,7 @@ tr.no-result-row td {
   text-align: center;
 }
 
-/* 🔹 شريط التنبيه الرمادي */
+
 .no-result-bar {
   background: #f1f3f6;
   border: 1px solid #d0d6de;
@@ -986,10 +1040,11 @@ tr.no-result-row td {
   font-size: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   width: 95%;
-}.ipad-header {
+}
+.ipad-header {
     display: none;
 }
-
+/*
 @media (max-width: 1366px) {
 
     .auth-nav,
@@ -1048,11 +1103,10 @@ tr.no-result-row td {
         font-weight: 500;
     }
 }
-/* تنسيق الـ Patients page على الآيباد والشاشات المتوسطة */
 @media (max-width: 1366px) {
 
     main {
-        margin-top: 120px !important;   /* تحت الهيدر مباشرة */
+        margin-top: 120px !important;   
         padding: 0 24px;
         text-align: center;
     }
@@ -1064,38 +1118,37 @@ tr.no-result-row td {
     }
 
     .table-actions {
-        flex-direction: column;       /* البحث فوق / الأزرار تحت */
+        flex-direction: column;   
         align-items: stretch;
         gap: 0.75rem;
     }
 
     .table-actions input {
-        width: 100% !important;       /* حقل السيرش يمسك عرض الكارد */
+        width: 100% !important;      
     }
 
     .patient-buttons {
-        justify-content: flex-start;  /* الأزرار جنب بعض */
+        justify-content: flex-start; 
         gap: 0.75rem;
     }
 
     .btn-import,
     .btn-connect {
-        flex: 1 1 auto;               /* لو ضاق العرض يكبرون بالتساوي */
+        flex: 1 1 auto;           
         text-align: center;
     }
 
-    /* خفّض حجم الخط في الجدول شوي على الآيباد */
     #patientsTable th,
     #patientsTable td {
         padding: 10px 6px;
         font-size: 0.92rem;
     }
 }
-/* ضبط الهيدر على الآيباد حتى ما ينقص زر Logout */
+   
 @media (max-width: 1024px) {
 
     .ipad-header {
-        padding: 10px 16px;           /* نقلل البادينق يمين ويسار */
+        padding: 10px 16px;           
     }
 
     .ipad-inner {
@@ -1110,12 +1163,12 @@ tr.no-result-row td {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 0.6rem;                  /* نقلل المسافة بين العناصر */
-        flex-wrap: wrap;              /* لو ضاقت المساحة يسمح لهم ينزلون سطرين */
+        gap: 0.6rem;                  
+        flex-wrap: wrap;             
     }
 
     .ipad-nav .nav-link {
-        font-size: 0.85rem;           /* نص أصغر شوي */
+        font-size: 0.85rem;           
     }
 
     .ipad-logout {
@@ -1123,7 +1176,48 @@ tr.no-result-row td {
         font-size: 0.8rem;
     }
 }
+*/
+/* === Confirm Modals (Disconnect / Delete) === */
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
 
+.btn-cancel {
+  background:#eef6ff;
+  color:#0f65ff;
+  border:none;
+  padding:0.5em 0.9em;
+  border-radius:0.75em;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg,#0f65ff,#5aa6ff);
+  color:#fff;
+  border:none;
+  padding:0.5em 0.9em;
+  border-radius:0.75em;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-danger {
+  background:#d92b2b;
+  color:#fff;
+  border:none;
+  padding:0.5em 0.9em;
+  border-radius:0.75em;
+  font-weight:600;
+  cursor:pointer;
+}
+.modal-content .btn-danger {
+  background: #d92b2b !important; 
+  color: #fff !important;
+}
 
 </style>
 </head>
@@ -1181,13 +1275,19 @@ tr.no-result-row td {
   <input type="text" id="search" placeholder="Search your patients...">
   
   <div class="patient-buttons">
-      <button class="btn-import" id="openImportModal">🏥 Add from Hospital</button>
-    <button class="btn-connect" id="openConnectModal">🔗 Connect Patient</button>
+      <button class="btn-import" id="openImportModal">
+         <span class="material-symbols-outlined">Add</span>
+         <div >Add from Hospital</div>
+      </button>
+    <button class="btn-connect" id="openConnectModal">
+      <span class="material-symbols-outlined">link</span>
+      <div> Connect Patient</div>
+    </button>
   </div>
 </div>
 
       <table id="patientsTable">
-        <thead><tr><th>ID</th><th>First</th><th>Last</th><th>Gender</th><th>Status</th><th>Phone</th><th>DOB</th><th>Actions</th></tr></thead>
+        <thead><tr><th>File Number</th><th>First</th><th>Last</th><th>Gender</th><th>Status</th><th>Phone</th><th>DOB</th><th>Actions</th></tr></thead>
         <tbody>
         <?php if ($result->num_rows > 0): while($row = $result->fetch_assoc()): ?>
           <tr id="row-<?= $row['PID'] ?>">
@@ -1240,23 +1340,88 @@ tr.no-result-row td {
     </div>
   </footer>
 </div>
-<script>
-function performAction(action, pid){
-  let text = '';
-  if (action === 'disconnect') {
-    text = 'Are you sure you want to disconnect this patient from your list?\nThis will NOT delete any data.';
-  } else if (action === 'delete') {
-    text = 'WARNING: This will permanently delete the patient from Tanafs, including comments, reports, and analyses.\nProceed?';
-  } else {
-    return;
-  }
+<!--  Disconnect -->
+<div class="modal" id="disconnectModal">
+  <div class="modal-content">
+    <h3 style="color:#0B83FE;margin-bottom:10px;">Disconnect patient</h3>
+    <p style="margin-bottom:10px;color:#555;">
+      Are you sure you want to disconnect this patient from your list?<br>
+      <strong>This will NOT delete any data in TANAFS.</strong>
+    </p>
 
-  if (!confirm(text)) return;
+    <div class="confirm-actions">
+      <button type="button" class="btn-cancel" onclick="closeDisconnectModal()">Cancel</button>
+      <button type="button" class="btn-primary" onclick="confirmDisconnect()">Disconnect</button>
+    </div>
+  </div>
+</div>
+<!--  Delete  -->
+<div class="modal" id="deleteModal">
+  <div class="modal-content">
+    <h3 style="color:#d92b2b;margin-bottom:10px;">Delete patient</h3>
+    <p style="margin-bottom:8px;color:#444;">
+      This action is permanent and cannot be undone.
+    </p>
+    <ul style="text-align:left;color:#333;margin-left:12px;margin-bottom:10px;">
+      <li>Patient record</li>
+      <li>Comments</li>
+      <li>Reports</li>
+      <li>Waveform analyses</li>
+    </ul>
+    <p style="margin-bottom:10px;color:#b30000;font-weight:600;">
+      Are you sure you want to delete this patient from TANAFS?
+    </p>
+
+    <div class="confirm-actions">
+      <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button type="button" class="btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== Confirm (Disconnect / Delete) with popup modal ======
+let pendingPID   = null;
+let pendingAction = null;
+
+function performAction(action, pid) {
+  pendingPID = pid;
+  pendingAction = action;
+
+  if (action === 'disconnect') {
+    document.getElementById('disconnectModal').style.display = 'flex';
+  } else if (action === 'delete') {
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+}
+
+// --- Close helpers ---
+function closeDisconnectModal() {
+  document.getElementById('disconnectModal').style.display = 'none';
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').style.display = 'none';
+}
+
+// --- Confirm buttons ---
+function confirmDisconnect() {
+  closeDisconnectModal();
+  sendPatientAction('disconnect', false);
+}
+
+function confirmDelete() {
+  closeDeleteModal();
+  sendPatientAction('delete', true);
+}
+
+// --- Shared fetch logic ---
+function sendPatientAction(action, withConfirmFlag) {
+  if (!pendingPID) return;
 
   const body = new URLSearchParams();
   body.set('ajax', action);
-  body.set('PID', pid);
-  if (action === 'delete') body.set('confirm', '1'); // تأكيد للحذف
+  body.set('PID', pendingPID);
+  if (withConfirmFlag) body.set('confirm', '1');
 
   fetch('', {
     method: 'POST',
@@ -1265,23 +1430,21 @@ function performAction(action, pid){
   })
   .then(r => r.json())
   .then(res => {
-    // رسالة أعلى الجدول (عندك <p id="message">)
     const m = document.getElementById('message');
     if (m) {
       m.className = 'message ' + (res.type || 'info');
       m.textContent = res.msg || '';
     }
 
-    if (action === 'disconnect' && (res.type === 'info' || res.type === 'success')) {
-      const tr = document.getElementById('row-' + pid);
+    if ((action === 'disconnect' && (res.type === 'info' || res.type === 'success')) ||
+        (action === 'delete' && res.type === 'success')) {
+
+      const tr = document.getElementById('row-' + pendingPID);
       if (tr) tr.remove();
-      return;
     }
 
-    if (action === 'delete' && res.type === 'success') {
-      const tr = document.getElementById('row-' + pid);
-      if (tr) tr.remove();
-    }
+    pendingPID = null;
+    pendingAction = null;
   })
   .catch(() => {
     const m = document.getElementById('message');
@@ -1291,6 +1454,7 @@ function performAction(action, pid){
     }
   });
 }
+</script>
 </script>
 
 <script>
@@ -1474,16 +1638,16 @@ document.getElementById("openImportModal").addEventListener("click", function() 
   if (modal) modal.style.display = "flex";
 });
 </script>
-<!-- ======================== 🏥 Add from Hospital Modal ======================== -->
+<!-- ========================  Add from Hospital Modal ======================== -->
 <div class="modal" id="importModal">
   <div class="modal-content">
-    <h3>🏥 Import Patient from Hospital</h3>
-    <p style="margin-bottom:10px;color:#666;">Enter the patient's ID to import the patient record from the PMS into TANAFS.
+    <h3>Import Patient from Hospital</h3>
+    <p style="margin-bottom:10px;color:#666;">Enter the patient's file number to import the patient record from the PMS into TANAFS.
 </p>
 
     <!-- Step 1: Search -->
     <div id="importStep1">
-      <input type="text" id="hospitalID" placeholder="Search by Hospital ID..." autocomplete="off">
+      <input type="text" id="hospitalID" placeholder="Search by Hospital File Number..." autocomplete="off">
       <button id="btnSearchHospital" style="margin-top:10px;background:#0f65ff;color:white;">Search</button>
     </div>
 
@@ -1498,7 +1662,7 @@ document.getElementById("openImportModal").addEventListener("click", function() 
 </div>
 
 <script>
-// ==================== 🧠 Add from Hospital Logic ====================
+// ====================  Add from Hospital Logic ====================
 document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("importModal");
   const openBtn = document.getElementById("openImportModal");
@@ -1526,7 +1690,7 @@ document.addEventListener("DOMContentLoaded", () => {
   searchBtn.addEventListener("click", () => {
     const pid = hospitalInput.value.trim();
     if (pid === "") {
-      resultDiv.innerHTML = "<p style='color:#c00;'>❌ Please enter a Hospital ID.</p>";
+      resultDiv.innerHTML = "<p style='color:#c00;'>❌ Please enter the hospital file number.</p>";
       resultDiv.style.display = "block";
       return;
     }
@@ -1582,15 +1746,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
-<!-- ======================== 🔗 Connect Patient Modal ======================== -->
+<!-- ========================  Connect Patient Modal ======================== -->
 <div class="modal" id="connectModal">
   <div class="modal-content connect-modal">
-    <h3>🔗 Connect to a Patient</h3>
+    <h3> Connect to a Patient</h3>
     <p style="margin-bottom:10px;color:#666;">
-      Start typing the patient ID or name to find and connect them instantly.
+      Start typing the patient file number or name to find and connect them instantly.
     </p>
 
-    <input type="text" id="connectInput" placeholder="Search by ID or Name..." autocomplete="off">
+    <input type="text" id="connectInput" placeholder="Search by file number or name..." autocomplete="off">
 
     <div id="connectResult" class="connect-result"></div>
 
@@ -1602,7 +1766,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script>
-// ==================== 🔗 Connect Patient Logic (Live Search) ====================
+// ====================  Connect Patient Logic (Live Search) ====================
 document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("connectModal");
   const openBtn = document.getElementById("openConnectModal");

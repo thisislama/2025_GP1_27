@@ -7,6 +7,11 @@ error_reporting(E_ALL);
 session_start();
 require_once __DIR__ . '/db_connection.php';
 require_once __DIR__ . '/mail_config.php';  
+
+$logo_path = __DIR__ . '/images/logo.png';
+$logo_data = base64_encode(file_get_contents($logo_path));
+$logo_src = 'data:image/png;base64,' . $logo_data;
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 function send_verification_email(string $toEmail, string $toName, string $token): bool {
@@ -19,6 +24,7 @@ function send_verification_email(string $toEmail, string $toName, string $token)
     $body = '
       <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6">
         <h2>Confirm your email</h2>
+        <img src="'.$logo_src.'" alt="TANAFS Logo" style="height:50px; width:auto;">
         <p>Hello '.htmlspecialchars($toName, ENT_QUOTES, 'UTF-8').',</p>
         <p>Thank you for registering in <strong>TANAFS</strong>.</p>
         <p>Please verify your email by clicking the button below:</p>
@@ -113,6 +119,7 @@ $up->execute();
 
         session_regenerate_id(true);
         $_SESSION['pending_email'] = $email;
+        $_SESSION['pending_token'] = $token;
         header('Location: verify_notice.php');
         exit;
 
@@ -148,15 +155,15 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
       --field-h:3.25rem; --field-r:12px; --gap:16px; --pad:36px; --maxw:800px;
     }
     *{box-sizing:border-box} html,body{height:100%}
-html {
-  overflow-y: scroll;            
-  scroll-behavior: smooth;       
-}
+      html {
+        overflow-y: scroll;            
+        scroll-behavior: smooth;       
+      }
 
-body {
-  overflow-y: visible;           
-  -webkit-overflow-scrolling: touch; 
-}
+      body {
+        overflow-y: visible;           
+        -webkit-overflow-scrolling: touch; 
+      }
 
     body{
       margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
@@ -266,10 +273,10 @@ body {
   <div>
     <label for="email">Email</label>
     <div class="field">
-<input class="input" id="phone" name="phone" type="tel"
-       placeholder="e.g., +966 51 234 5678"
+      <input class="input" id="email" name="email" type="text"
+       placeholder="e.g., user@mail.com
        required
-       value="<?php echo $old_phone; ?>">
+       value="<?php echo $old_email ?>">
 
     </div>
   </div>
