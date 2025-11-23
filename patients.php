@@ -1214,6 +1214,10 @@ tr.no-result-row td {
   font-weight:600;
   cursor:pointer;
 }
+.modal-content .btn-danger {
+  background: #d92b2b !important; 
+  color: #fff !important;
+}
 
 </style>
 </head>
