@@ -59,9 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password   = $_POST['password']        ?? '';
     $dob        = trim($_POST['dob']        ?? '');
 
-    if ($first_name === '' || $last_name === '' || $role === '' || $email === '' || $password === '' || $dob === '') {
-        redirect_with_error('Please fill in all required fields.');
-    }
+   if ($first_name === '') {
+    redirect_with_error('First name is required.');
+}
+if ($last_name === '') {
+    redirect_with_error('Last name is required.');
+}
+if ($role === '') {
+    redirect_with_error('Role is required.');
+}
+if ($email === '') {
+    redirect_with_error('Email is required.');
+}
+if ($password === '') {
+    redirect_with_error('Password is required.');
+}
+if ($dob === '') {
+    redirect_with_error('Date of birth is required.');
+}
+
     if (!preg_match('/^[\p{L}\s]{3,}$/u', $first_name)) {
     redirect_with_error('First name must be at least 3 letters and contain only alphabetic characters.');
 }
@@ -71,7 +87,7 @@ if (!preg_match('/^[\p{L}\s]{3,}$/u', $last_name)) {
 
     $allowed_roles = ['ICU nurse', 'Respiratory therapist', 'Intensivists', 'Pulmonologist'];
     if (!in_array($role, $allowed_roles, true)) redirect_with_error('Invalid role selected.');
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Invalid email format.');
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Please enter a valid email address.');
     if (mb_strlen($password) < 8) redirect_with_error('Password must be at least 8 characters.');
 $normalizedPhone = preg_replace('/[^0-9+]/', '', $phone);
 
@@ -149,6 +165,24 @@ $old_role  = htmlspecialchars($form_data['role']       ?? '', ENT_QUOTES, 'UTF-8
 $old_email = htmlspecialchars($form_data['email']      ?? '', ENT_QUOTES, 'UTF-8');
 $old_phone = htmlspecialchars($form_data['phone']      ?? '', ENT_QUOTES, 'UTF-8');
 $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8');
+function field_has_error(string $field, string $error): bool {
+    if ($error === '') return false;
+
+    $keywords = [
+        'first_name' => 'First name',
+        'last_name'  => 'Last name',
+        'role'       => 'role',
+        'email'      => 'email',
+        'phone'      => 'phone',
+        'password'   => 'Password',
+        'dob'        => 'birth'
+    ];
+
+    if (!isset($keywords[$field])) return false;
+
+    return stripos($error, $keywords[$field]) !== false;
+}
+
 ?>
 
 
@@ -229,6 +263,10 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   body{ padding: 32px 16px; }
   .card{ padding: 20px; }
 }
+.input-error {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.25);
+}
 
   </style>
 </head>
@@ -250,7 +288,7 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   <div>
     <label for="first_name">First Name</label>
     <div class="field">
-      <input class="input" id="first_name" name="first_name" type="text"
+      <input class="input <?php echo field_has_error('first_name', $error) ? 'input-error' : ''; ?>"id="first_name" name="first_name" type="text"
              placeholder="Enter your first name" required
              value="<?php echo $old_first; ?>">
     </div>
@@ -258,7 +296,8 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   <div>
     <label for="last_name">Last Name</label>
     <div class="field">
-      <input class="input" id="last_name" name="last_name" type="text"
+      <input class="input <?php echo field_has_error('last_name', $error) ? 'input-error' : ''; ?>"
+ id="last_name" name="last_name" type="text"
              placeholder="Enter your last name" required
              value="<?php echo $old_last; ?>">
     </div>
@@ -269,7 +308,8 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   <div>
     <label for="role">Role</label>
     <div class="field">
-      <select class="input" id="role" name="role" required>
+      <select class="input <?php echo field_has_error('role', $error) ? 'input-error' : ''; ?>"
+ id="role" name="role" required>
         <option value="">Select your role</option>
         <option value="ICU nurse" <?php if ($old_role==='ICU nurse') echo 'selected'; ?>>ICU nurse</option>
         <option value="Respiratory therapist" <?php if ($old_role==='Respiratory therapist') echo 'selected'; ?>>Respiratory therapist</option>
@@ -284,7 +324,8 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   <div>
     <label for="email">Email</label>
     <div class="field">
-    <input class="input" 
+    <input class="input <?php echo field_has_error('email', $error) ? 'input-error' : ''; ?>"
+ 
        id="email" 
        name="email" 
        type="text" 
@@ -298,7 +339,8 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   <div>
     <label for="phone">Phone Number</label>
     <div class="field">
-      <input class="input" id="phone" name="phone" type="tel"
+      <input class="input <?php echo field_has_error('phone', $error) ? 'input-error' : ''; ?>"
+ id="phone" name="phone" type="tel"
              placeholder="+966 5xxxxxxxx" required
              value="<?php echo $old_phone; ?>">
     </div>
@@ -310,7 +352,8 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
  <div>
   <label for="password">Password</label>
   <div class="field">
-    <input class="input" id="password" autocomplete="new-password" name="password" type="password"
+    <input class="input <?php echo field_has_error('password', $error) ? 'input-error' : ''; ?>"
+ id="password" autocomplete="new-password" name="password" type="password"
            placeholder="Enter password" required minlength="8"
            pattern="(?=.*[!@#$%^&*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}"
            title="At least 8 characters and include at least one symbol (e.g., !@#$%)">
@@ -323,7 +366,8 @@ $old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8
   <div>
     <label for="dob">Date of Birth</label>
     <div class="field">
-      <input class="input" id="dob" name="dob" type="date" required
+      <input class="input <?php echo field_has_error('dob', $error) ? 'input-error' : ''; ?>"
+id="dob" name="dob" type="date" required
              value="<?php echo $old_dob; ?>">
     </div>
   </div>
