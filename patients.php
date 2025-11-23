@@ -840,9 +840,21 @@ main h2{
   padding: 0.75em 0.625em; 
   border-bottom: 0.0625em solid #eef2f7;
   color:#16314b;
+  cursor: pointer;
 }
 
-.table-card tbody tr:hover{ background:#fbfdff; }
+.table-card tbody tr{ 
+  transition: all 0.2s ease;
+    cursor: pointer;
+
+ }
+
+.table-card tbody tr:hover{ 
+  background: #eef3ffff;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 6px rgba(15, 99, 255, 0.28);
+
+ }
 
 .action-icons span{
   color:#0f65ff;
