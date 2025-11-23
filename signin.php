@@ -53,8 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $error = $_GET['error'] ?? '';
 ?>
-<!-- HTML صفحة الدخول كما عندك (أبقِ التصميم) -->
-
 <!doctype html>
 <html >
 <head>
