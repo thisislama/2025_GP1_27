@@ -306,31 +306,30 @@ function getWaveformType($fileType)
         margin-right:1em;
     }
 
-    .label {
-        font-size: 14px;
-        font-weight: 600;
-        color: #232735;
-        margin-bottom: 8px;
-    }
+        .label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #232735;
+            margin-bottom: 8px;
+        }
 
-    .value {
-        font-size: 28px;
-        font-weight: 700;
-        color: #2b4a77;
-        margin-bottom: 8px;
-    }
+        .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2b4a77;
+            margin-bottom: 8px;
+        }
 
-    .under {
-        font-size: .7em;
-        color: #6c757d;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        width:100%
-    }
-
-      
-    </style>    
+        .under {
+            font-size: .7em;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width:100%
+        }
+        
+        </style>    
 </head>
 <body>
     <!-- Header for iPad & medium screens only -->
@@ -403,7 +402,7 @@ function getWaveformType($fileType)
               <label for="fileUpload" class="upload-drop" id="dropzone">
                 <div class="hint">Upload your Waveform Image</div>
                 <div style="font-size:28px;opacity:0.65">
-                    <img src="images/upload2.png" style="height:6em" alt="upload">
+                    <img class="upImg" src="images/upload2.png" style="height:6em;" alt="upload">
                    <!-- <span class="material-symbols-outlined">upload</span>-->
                 </div>
                 <div style="font-size:1.5empx;font-weight:500;color:#0b84feb3;margin-top:4px">Drag &amp; drop or <b style="text-decoration:underline;">choose a file</b> to upload</div>
@@ -437,15 +436,15 @@ function getWaveformType($fileType)
                                     <div class="detail-item" >
                                        <!-- <span class="material-symbols-outlined" style="font-size:.8em; font-weight:500;margin-left:8px;margin-top;.2em">Account_Circle</span>
                                        <div class="patient-name">Patine name:  <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?></div>-->
-                                        <!-- <div class="status-badge status-<?php echo strtolower(htmlspecialchars($patient['status'])); ?>"><?php echo htmlspecialchars($patient['status']); ?></div>-->
-                                         <div class="view-btn">
-                                         <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
-                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
-                                        </div>    
+                                        <!-- <div class="status-badge status-<?php echo strtolower(htmlspecialchars($patient['status'])); ?>"><?php echo htmlspecialchars($patient['status']); ?></div>-->  
                                      </div>
                                 </div>
                                <div class="file-footer">
                                     <div class="last-updated">Updated: 2 days ago</div>
+                                    <div class="view-btn">
+                                         <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                        </div>  
                                  <!--    <div class="view-btn">
                                        <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>

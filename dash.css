@@ -139,6 +139,13 @@
             text-align: center;
             margin: 0 auto;
         }
+        .upload-card .upImg{
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .upload-card .upImg:hover{
+            transform: translateY(-5px);
+        }
+
 
         .upload-drop:hover {
             border-color: var(--primary-blue);
@@ -686,7 +693,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding:.12em;
+    padding:.15em;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -698,12 +705,11 @@
 
 .view-btn {
     display: flex;
-    align-items:flex-end ;
-    text-align: right;
+    align-items: center;
     gap: 4px;
     color: #0c6bdf;
     font-weight: 500;
     font-size: 13px;
     text-decoration: none;
+    margin-left: auto; /* This pushes it to the right */
 }
-
