@@ -34,6 +34,26 @@ $docData = $docRes->get_result()->fetch_assoc();
 $_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
 $docRes->close();
 
+// Count total patients assigned to current user
+$count_sql = "
+    SELECT COUNT(DISTINCT p.PID) as total 
+    FROM Patient p
+    JOIN patient_doctor_assignments pda ON p.PID = pda.PID
+    WHERE pda.userID = ?
+";
+
+$count_stmt = $conn->prepare($count_sql);
+$count_stmt->bind_param("i", $userID);
+$count_stmt->execute();
+$count_result = $count_stmt->get_result();
+
+if ($count_result) {
+    $count_row = $count_result->fetch_assoc();
+    $total_records = $count_row['total'];
+} else {
+    $total_records = 0;
+    $error_message = "Error counting patients: " . $conn->error;
+}
 // --- Handle AJAX actions ---
 if (isset($_POST['ajax']) && !in_array($_POST['ajax'], ['search_hospital', 'import_hospital', 'search_connect', 'connect_existing'])) {
     $action = $_POST['ajax'];
@@ -464,6 +484,45 @@ img.logo {
   font-size: 0.875em;
 }
 
+
+.title {
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    text-align:left;
+    padding: 1em;
+}
+
+.title h2 {
+    color: #0c6bdf;
+    font-size: 1.65em;
+    margin: 5px;
+    text-align:left
+
+    
+}
+
+.title .heading {
+    margin-left: 1em;
+    font-weight: 700;
+    position: relative;
+    top: 0.4em;
+    margin-bottom: 0.25em;
+    text-align:left
+
+}
+
+.heading2 {
+    color: #6b7b8f;
+    font-size: 0.87em;
+    padding: 1em 0;
+    margin-left: 1em;
+    text-indent: 1em;
+    line-height: 1.9em;
+    max-width: 55em;
+    text-align:left;
+}
+
 /* ========== Table Card ========== */
 .table-card {
   background: #fff;
@@ -471,7 +530,7 @@ img.logo {
   padding: 1.25em;
   box-shadow: 0 0.5em 1.25em rgba(0,0,0,0.06);
   width: 90%;
-  margin: auto;
+  margin: 0 auto;
 }
 
 .table-actions {
@@ -731,6 +790,7 @@ main h2{
   border: 0.0625em solid rgba(15,101,255,.08);
   box-shadow: var(--panel-shadow);
   padding: 1.375em 1.375em 1.625em;   
+  width:77em;
 }
 
 .table-actions { gap: 0.875em; }      
@@ -1046,7 +1106,7 @@ tr.no-result-row td {
 .ipad-header {
     display: none;
 }
-/*
+
 @media (max-width: 1366px) {
 
     .auth-nav,
@@ -1178,7 +1238,6 @@ tr.no-result-row td {
         font-size: 0.8rem;
     }
 }
-*/
 /* === Confirm Modals (Disconnect / Delete) === */
 .confirm-actions {
   display: flex;
@@ -1220,6 +1279,7 @@ tr.no-result-row td {
   background: #d92b2b !important; 
   color: #fff !important;
 }
+
 
 </style>
 </head>
@@ -1270,7 +1330,12 @@ tr.no-result-row td {
 
   <!-- Page Content -->
   <main style="margin-top:130px; text-align:center;">
-    <h2>Patients List</h2>
+
+        <div class="title">
+          <h2 class="heading">Patient Management</h2>
+          <p class="heading2">Access and manage your assigned patients. View detailed profiles, check respiratory analysis reports, and maintain comprehensive care records for all patients under your supervision.</p>
+          <div style="color:#6b7b8f; margin-right:1.75em; text-align:right; position:relative; top:-2em; font-size:14px;">Patients Under Care: <?php echo $total_records; ?></div>       
+        </div>
 
     <div class="table-card">
      <div class="table-actions">
