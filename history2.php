@@ -57,19 +57,14 @@ if ($conn->connect_error) {
 } else {
     //search handle
     $search_filter = "";
-    $params = [$userID]; // Start with userID as first parameter
-    $types = "i"; // Start with integer type for userID
-
     if (isset($_GET['search']) && $_GET['search'] !== '') {
-        $search_term = "%" . $_GET['search'] . "%";
+        $search_term = $conn->real_escape_string($_GET['search']);
         $search_filter = " AND (
-            p.PID LIKE ? 
-            OR wa.waveAnalysisID LIKE ? 
-            OR p.first_name LIKE ? 
-            OR p.last_name LIKE ?
-        )";
-        $params = array_merge($params, [$search_term, $search_term, $search_term, $search_term]);
-        $types .= "ssss"; // Add string types for search parameters
+        p.PID LIKE '%$search_term%' 
+        OR wa.waveAnalysisID LIKE '%$search_term%' 
+        OR p.first_name LIKE '%$search_term%' 
+        OR p.last_name LIKE '%$search_term%'
+    )";
     }
 
 
@@ -682,7 +677,309 @@ if (isset($_SESSION['error_message'])) {
         }
     });
 </script>
+<script>
+    // AJAX Search Functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const tableBody = document.getElementById('tableBody');
+        const pagination = document.querySelector('.pagination');
+        const totalRecords = document.querySelector('.title div'); // The total records element
 
+        let searchTimeout;
+
+        // Real-time search with debouncing
+        searchInput.addEventListener('input', function (e) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(searchInput.value.trim());
+            }, 500); // 500ms delay
+        });
+
+        // Search button click
+        searchButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            performSearch(searchInput.value.trim());
+        });
+
+        // Enter key search
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch(searchInput.value.trim());
+            }
+        });
+
+        function performSearch(searchTerm) {
+            // Show loading state
+            tableBody.innerHTML = '<tr><td colspan="9" class="no-data">Searching...</td></tr>';
+            searchButton.disabled = true;
+            searchButton.innerHTML = 'Searching...';
+
+            // Get current URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Update search parameter
+            if (searchTerm) {
+                urlParams.set('search', searchTerm);
+            } else {
+                urlParams.delete('search');
+            }
+            
+            // Always reset to page 1 when searching
+            urlParams.set('page', '1');
+
+            // Perform AJAX request
+            fetch(window.location.pathname + '?' + urlParams.toString() + '&ajax=1', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Parse the HTML response
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Update table body
+                const newTableBody = doc.getElementById('tableBody');
+                if (newTableBody) {
+                    tableBody.innerHTML = newTableBody.innerHTML;
+                }
+                
+                // Update pagination
+                const newPagination = doc.querySelector('.pagination');
+                if (pagination && newPagination) {
+                    pagination.innerHTML = newPagination.innerHTML;
+                } else if (pagination && !newPagination) {
+                    pagination.innerHTML = '';
+                }
+                
+                // Update total records
+                const newTotalRecords = doc.querySelector('.title div');
+                if (totalRecords && newTotalRecords) {
+                    totalRecords.innerHTML = newTotalRecords.innerHTML;
+                }
+
+                // Update URL without reloading page
+                window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
+                
+                // Re-initialize event listeners for new checkboxes
+                initializeCheckboxListeners();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                tableBody.innerHTML = '<tr><td colspan="9" class="no-data">Error loading results</td></tr>';
+            })
+            .finally(() => {
+                searchButton.disabled = false;
+                searchButton.innerHTML = 'Search';
+            });
+        }
+
+        // Filter popup functionality
+        const filterPopup = document.getElementById('filterPopup');
+        const openFiltersBtn = document.getElementById('openFilters');
+        const closePopupBtn = document.getElementById('closePopup');
+
+        // Open filter popup
+        openFiltersBtn.addEventListener('click', function () {
+            filterPopup.style.display = 'flex';
+        });
+
+        // Close filter popup
+        closePopupBtn.addEventListener('click', function () {
+            filterPopup.style.display = 'none';
+        });
+
+        // Close popup when clicking outside
+        filterPopup.addEventListener('click', function (e) {
+            if (e.target === filterPopup) {
+                filterPopup.style.display = 'none';
+            }
+        });
+
+        // Reset filters to default values
+        document.getElementById('resetFilters').addEventListener('click', function () {
+            document.getElementById('status').value = 'all';
+            document.getElementById('category').value = 'all';
+            document.getElementById('severity').value = 'all';
+            document.getElementById('date_from').value = '';
+            document.getElementById('date_to').value = '';
+        });
+
+        // Handle filter form submission with AJAX
+        document.getElementById('filterForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const urlParams = new URLSearchParams(formData);
+            urlParams.set('page', '1'); // Reset to page 1 when applying filters
+            
+            // Close popup
+            filterPopup.style.display = 'none';
+            
+            // Perform search with filters
+            performSearchWithParams(urlParams);
+        });
+
+        function performSearchWithParams(urlParams) {
+            // Show loading state
+            tableBody.innerHTML = '<tr><td colspan="9" class="no-data">Applying filters...</td></tr>';
+
+            fetch(window.location.pathname + '?' + urlParams.toString() + '&ajax=1', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Update table body
+                const newTableBody = doc.getElementById('tableBody');
+                if (newTableBody) {
+                    tableBody.innerHTML = newTableBody.innerHTML;
+                }
+                
+                // Update pagination
+                const newPagination = doc.querySelector('.pagination');
+                if (pagination && newPagination) {
+                    pagination.innerHTML = newPagination.innerHTML;
+                } else if (pagination && !newPagination) {
+                    pagination.innerHTML = '';
+                }
+                
+                // Update total records
+                const newTotalRecords = doc.querySelector('.title div');
+                if (totalRecords && newTotalRecords) {
+                    totalRecords.innerHTML = newTotalRecords.innerHTML;
+                }
+
+                // Update URL
+                window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
+                
+                // Re-initialize event listeners
+                initializeCheckboxListeners();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                tableBody.innerHTML = '<tr><td colspan="9" class="no-data">Error applying filters</td></tr>';
+            });
+        }
+
+        // Handle pagination clicks with AJAX
+        document.addEventListener('click', function (e) {
+            if (e.target.matches('.pagination a, .pagination button')) {
+                e.preventDefault();
+                const url = e.target.href || e.target.getAttribute('href');
+                if (url) {
+                    performPagination(url);
+                }
+            }
+        });
+
+        function performPagination(url) {
+            tableBody.innerHTML = '<tr><td colspan="9" class="no-data">Loading...</td></tr>';
+
+            fetch(url + '&ajax=1', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Update table body
+                const newTableBody = doc.getElementById('tableBody');
+                if (newTableBody) {
+                    tableBody.innerHTML = newTableBody.innerHTML;
+                }
+                
+                // Update pagination
+                const newPagination = doc.querySelector('.pagination');
+                if (pagination && newPagination) {
+                    pagination.innerHTML = newPagination.innerHTML;
+                }
+                
+                // Update total records
+                const newTotalRecords = doc.querySelector('.title div');
+                if (totalRecords && newTotalRecords) {
+                    totalRecords.innerHTML = newTotalRecords.innerHTML;
+                }
+
+                // Update URL
+                window.history.replaceState({}, '', url);
+                
+                // Scroll to top of table
+                tableBody.closest('.table-container').scrollIntoView({ behavior: 'smooth' });
+                
+                // Re-initialize event listeners
+                initializeCheckboxListeners();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                tableBody.innerHTML = '<tr><td colspan="9" class="no-data">Error loading page</td></tr>';
+            });
+        }
+
+        // Initialize checkbox listeners
+        function initializeCheckboxListeners() {
+            // Select All functionality
+            const selectAll = document.getElementById('selectAll');
+            if (selectAll) {
+                selectAll.addEventListener('click', function () {
+                    const boxes = document.getElementsByClassName('row-checkbox');
+                    for (let b of boxes) {
+                        b.checked = this.checked;
+                    }
+                    updateDeleteButton();
+                });
+            }
+
+            // Add event listeners to row checkboxes
+            document.querySelectorAll('.row-checkbox').forEach(cb => {
+                cb.addEventListener('change', updateDeleteButton);
+            });
+
+            updateDeleteButton();
+        }
+
+        // Initialize on page load
+        initializeCheckboxListeners();
+    });
+
+    // Confirm before deleting
+    function confirmDelete() {
+        const checked = document.querySelectorAll('.row-checkbox:checked');
+        if (checked.length === 0) {
+            alert('Please select at least one record to delete.');
+            return false;
+        }
+        return confirm('Are you sure you want to delete ' + checked.length + ' selected record(s)? This action cannot be undone.');
+    }
+
+    // Update delete button state
+    function updateDeleteButton() {
+        const checked = document.querySelectorAll('.row-checkbox:checked');
+        const deleteBtn = document.getElementById('deleteBtn');
+        if (deleteBtn) {
+            deleteBtn.disabled = (checked.length === 0);
+        }
+    }
+</script>
 
 <?php ?>
 </body>
