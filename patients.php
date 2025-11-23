@@ -958,7 +958,7 @@ main h2{
 
 /* Connect Modal specific design */
 .connect-modal {
-  max-height: 480px;                /* يثبت الحجم الكلي للمودال */
+  max-height: 480px;                
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -966,10 +966,10 @@ main h2{
 
 .connect-result {
   flex: 1;
-  overflow-y: auto;                 /* سكرول داخلي */
+  overflow-y: auto;                 
   margin-top: 10px;
   padding-right: 6px;
-  max-height: 320px;                /* منطقة النتائج */
+  max-height: 320px;               
 }
 
 .connect-result::-webkit-scrollbar {
@@ -980,7 +980,6 @@ main h2{
   border-radius: 3px;
 }
 
-/* تعديل الجدول داخل النتائج */
 .connect-result table {
   width: 100%;
   border-collapse: collapse;
@@ -996,7 +995,7 @@ main h2{
   color: #1f46b6;
   font-weight: 700;
   position: sticky;
-  top: 0; /* يبقى رأس الجدول ثابت */
+  top: 0; 
   z-index: 1;
 }
 
@@ -1337,7 +1336,7 @@ tr.no-result-row td {
     </div>
   </footer>
 </div>
-<!-- 🔵 Disconnect Confirmation Modal -->
+<!--  Disconnect -->
 <div class="modal" id="disconnectModal">
   <div class="modal-content">
     <h3 style="color:#0B83FE;margin-bottom:10px;">Disconnect patient</h3>
@@ -1352,7 +1351,7 @@ tr.no-result-row td {
     </div>
   </div>
 </div>
-<!-- 🔴 Delete Confirmation Modal -->
+<!--  Delete  -->
 <div class="modal" id="deleteModal">
   <div class="modal-content">
     <h3 style="color:#d92b2b;margin-bottom:10px;">Delete patient</h3>
@@ -1364,7 +1363,6 @@ tr.no-result-row td {
       <li>Comments</li>
       <li>Reports</li>
       <li>Waveform analyses</li>
-      <li>Doctor assignments</li>
     </ul>
     <p style="margin-bottom:10px;color:#b30000;font-weight:600;">
       Are you sure you want to delete this patient from TANAFS?
