@@ -869,7 +869,7 @@ main h2{
   display: flex;
   gap: 10px;
 }
-/* 🏥 Add from Hospital Button */
+/*  Add from Hospital Button */
 .btn-import {
  
    display: flex;
@@ -1552,10 +1552,10 @@ document.getElementById("openImportModal").addEventListener("click", function() 
   if (modal) modal.style.display = "flex";
 });
 </script>
-<!-- ======================== 🏥 Add from Hospital Modal ======================== -->
+<!-- ========================  Add from Hospital Modal ======================== -->
 <div class="modal" id="importModal">
   <div class="modal-content">
-    <h3>🏥 Import Patient from Hospital</h3>
+    <h3>Import Patient from Hospital</h3>
     <p style="margin-bottom:10px;color:#666;">Enter the patient's file number to import the patient record from the PMS into TANAFS.
 </p>
 
@@ -1576,7 +1576,7 @@ document.getElementById("openImportModal").addEventListener("click", function() 
 </div>
 
 <script>
-// ==================== 🧠 Add from Hospital Logic ====================
+// ====================  Add from Hospital Logic ====================
 document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("importModal");
   const openBtn = document.getElementById("openImportModal");
@@ -1660,10 +1660,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
-<!-- ======================== 🔗 Connect Patient Modal ======================== -->
+<!-- ========================  Connect Patient Modal ======================== -->
 <div class="modal" id="connectModal">
   <div class="modal-content connect-modal">
-    <h3>🔗 Connect to a Patient</h3>
+    <h3> Connect to a Patient</h3>
     <p style="margin-bottom:10px;color:#666;">
       Start typing the patient file number or name to find and connect them instantly.
     </p>
@@ -1680,7 +1680,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script>
-// ==================== 🔗 Connect Patient Logic (Live Search) ====================
+// ====================  Connect Patient Logic (Live Search) ====================
 document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("connectModal");
   const openBtn = document.getElementById("openConnectModal");
