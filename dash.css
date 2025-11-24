@@ -255,7 +255,7 @@
 
         img.topimg {
             position: absolute;
-            top: -12.8%;
+            top: -14.1%;
             left: 48%;
             transform: translateX(-50%);
             max-width: 91%;
@@ -265,7 +265,7 @@
 
         img.logo {
             position: absolute;
-            top: -6.6%;
+            top: -7.3%;
             left: 13.6%;
             width: clamp(100px, 12vw, 180px);
             height: auto;
@@ -275,7 +275,7 @@
 
         .auth-nav {
             position: absolute;
-            top: -5.7%;
+            top: -6%;
             right: 15.99%;
             display: flex;
             align-items: center;
