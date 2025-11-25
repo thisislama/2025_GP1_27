@@ -711,5 +711,320 @@
     font-weight: 500;
     font-size: 13px;
     text-decoration: none;
-    margin-left: auto; /* This pushes it to the right */
+    margin-left: auto;
+}
+
+/* ===== iPad & Tablet Responsive Styles ===== */
+
+@media (max-width: 1024px) {
+    .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 1rem;
+        margin-top: 60px;
+    }
+    
+    .left-column,
+    .right-column {
+        width: 100%;
+    }
+    
+    .upload-card {
+        width: 100%;
+        min-height: 50vh;
+    }
+    
+    .upload-drop {
+        width: 100%;
+        padding: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .result-card {
+        height: auto;
+        min-height: 40vh;
+    }
+    
+    .auth-nav,
+    .topimg,
+    .logo {
+        display: none !important;
+    }
+    
+    .ipad-header {
+        display: block;
+        width: 100%;
+        background: #ffffff;
+        padding: 12px 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+    }
+    
+    .ipad-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .ipad-logo img {
+        height: 50px;
+        width: auto;
+    }
+    
+    .ipad-nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .ipad-nav .nav-link {
+        color: #0B83FE;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9em;
+    }
+    
+    .ipad-nav .profile-btn img {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .ipad-logout {
+        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+        color: white;
+        padding: 0.4em 0.8em;
+        border-radius: 0.6em;
+        border: none;
+        cursor: pointer;
+        font-size: 0.85em;
+        font-weight: 500;
+    }
+    
+    .main {
+        margin-top: 80px !important;
+        height: auto;
+    }
+    
+    body {
+        margin: 0.25em;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1366px) {
+    .container {
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        padding: 1.5rem;
+    }
+    
+    .upload-card {
+        width: 100%;
+        min-height: 55vh;
+    }
+    
+    .upload-drop {
+        width: 100%;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .result-card {
+        height: 65vh;
+    }
+}
+
+@media (max-width: 767px) {
+    .container {
+        margin-top: 50px;
+        padding: 0.75rem;
+        gap: 15px;
+    }
+    
+    .upload-card {
+        padding: 1rem;
+        min-height: 45vh;
+    }
+    
+    .upload-drop {
+        padding: 1.5rem;
+    }
+    
+    .upload-drop .material-symbols-outlined {
+        font-size: 2rem;
+    }
+    
+    .hint {
+        font-size: 1.1rem;
+    }
+    
+    .small-cards {
+        padding: 8px;
+        gap: 10px;
+    }
+    
+    .file-item {
+        padding: 0.6em;
+    }
+    
+    .file-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .file-actions {
+        margin-left: 0;
+        align-self: flex-end;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5em;
+        text-align: center;
+        padding: 1.5em 1em;
+    }
+    
+    .footer-col.brand {
+        text-align: center;
+    }
+    
+    .footer-logo {
+        margin-left: 0;
+    }
+    
+    .ipad-nav {
+        gap: 0.75rem;
+    }
+    
+    .ipad-nav .nav-link {
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 599px) {
+    .container {
+        margin-top: 40px;
+        padding: 0.5rem;
+    }
+    
+    .upload-card {
+        min-height: 40vh;
+        padding: 0.75rem;
+    }
+    
+    .upload-drop {
+        padding: 1rem;
+    }
+    
+    .upload-drop .material-symbols-outlined {
+        font-size: 1.8rem;
+    }
+    
+    .hint {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat {
+        padding: 0.6em;
+    }
+    
+    .result-card {
+        padding: 0.8em;
+        height: auto;
+        min-height: 30vh;
+    }
+    
+    .ipad-header {
+        padding: 10px 15px;
+    }
+    
+    .ipad-logo img {
+        height: 45px;
+    }
+    
+    .ipad-nav {
+        gap: 0.5rem;
+    }
+    
+    .ipad-nav .nav-link {
+        font-size: 0.8em;
+    }
+    
+    .ipad-logout {
+        padding: 0.3em 0.6em;
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 1024px) and (orientation: landscape) {
+    .upload-card {
+        min-height: 70vh;
+    }
+    
+    .result-card {
+        height: 75vh;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) and (min-resolution: 192dpi) {
+    .upload-drop {
+        padding: 2.5rem;
+    }
+    
+    .file-item {
+        padding: 1em;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .nav-link:hover::after {
+        width: 0;
+    }
+    
+    .nav-link:hover {
+        transform: none;
+    }
+    
+    .file-item:hover {
+        transform: none;
+    }
+    
+    .upload-card:hover {
+        transform: none;
+    }
+    
+    .action-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .nav-link {
+        padding: 8px 12px;
+    }
+}
+
+@media print {
+    .ipad-header,
+    .auth-nav,
+    .topimg,
+    .logo {
+        display: none !important;
+    }
+    
+    .container {
+        margin-top: 0;
+    }
 }
