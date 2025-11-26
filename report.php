@@ -48,19 +48,24 @@ if ($sessionUserId > 0) {
 // -- Last 3 waves
 $waves = [];
 $aRes = mysqli_query($conn, "
-  SELECT anomaly_type, severity_level, `timestamp` AS ts
+  SELECT anomaly_type,`timestamp` AS ts
   FROM waveform_analysis
   WHERE PID=$pid
   ORDER BY `timestamp` DESC
-  LIMIT 3
 ");
 if ($aRes) {
-  while ($row = mysqli_fetch_assoc($aRes)) {
-    $anomaly = trim($row['anomaly_type'] ?? '');
-    if ($anomaly === '' || strcasecmp($anomaly, 'None') === 0) $anomaly = 'Normal';
-    $level = ($row['severity_level'] ?? '') !== '' ? $row['severity_level'] : '-';
-    $waves[] = ["anomaly"=>$anomaly, "level"=>$level, "timestamp"=>$row["ts"]];
+ while ($row = mysqli_fetch_assoc($aRes)) {
+  $anomaly = trim($row['anomaly_type'] ?? '');
+  if ($anomaly === '' || strcasecmp($anomaly, 'None') === 0) {
+    $anomaly = 'Normal';
   }
+
+  $waves[] = [
+    "anomaly"   => $anomaly,
+    "timestamp" => $row["ts"]
+  ];
+}
+
   mysqli_free_result($aRes);
 }
 

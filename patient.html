@@ -25,7 +25,7 @@
     }
 
     /* ---------- Header---------- */
-    .wrapper{position:relative;width:100%;min-height:100px;overflow:visible}
+  
     img.topimg{
       position:absolute; top:-4.9%; left:48%; transform:translateX(-50%);
       height:auto; width:auto; max-width:90%; z-index:10; pointer-events:none;
@@ -67,10 +67,7 @@
     th,td{text-align:center;padding:.75em;color:#2b4a77}
     .analysis-table thead th{background:#f3f6fb;text-align:left}
     .analysis-table tbody td{border-top:1px solid #eef1f6}
-    .status{padding:.25em .5em;border-radius:.75em;font-size:.8125em;font-weight:500}
-    .status.normal{background:#eaf9ee;color:#1b8a3d}
-    .status.moderate{background:#fff7e6;color:#e6a100}
-    .status.critical{background:#fdeaea;color:#d32f2f}
+
 
     .table-scroll{max-height:15.625em;overflow-y:auto;border-radius:.75em;border:none}
     .table-scroll::-webkit-scrollbar{width:.5em}
@@ -95,9 +92,7 @@
     .report-date{color:#2b4a77;font-weight:600;font-size:.8125em;position:relative;top:1.25em}
 
     /* Date/Time Columns*/
-    .analysis-table th:nth-child(5), .analysis-table td:nth-child(5){width:140px;white-space:nowrap}
-    .analysis-table th:nth-child(6), .analysis-table td:nth-child(6){width:120px;white-space:nowrap}
-    .analysis-table td:nth-child(5), .analysis-table td:nth-child(6){overflow:visible!important;text-overflow:clip!important;font-variant-numeric:tabular-nums}
+   
 
     /* ---------- Footer---------- */
     .site-footer{background:#F6F6F6;color:#0b1b2b;font-family:'Montserrat',sans-serif;margin-top:6em}
@@ -291,7 +286,6 @@
           <thead>
           <tr>
             <th style="width:180px">Waveform status</th>
-            <th style="width:150px">Severity level</th>
             <th style="width:500px;text-align:center;">Explanation</th>
             <th style="width:500px;text-align:center;">Solution</th>
             <th style="width:140px">Date</th>
@@ -398,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const pid = getPidFromURL();
 
   document.getElementById("patientID").textContent =
-      pid ? `ID: ${pid}` : "";
+      pid ? `File Number: ${pid}` : "";
 });
 </script>
 
@@ -458,7 +452,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const tr=document.createElement("tr");
         tr.innerHTML=`
           <td>${type}</td>
-          <td><span class="status ${getSeverityClass(severity)}">${severity}</span></td>
           <td>${info.explanation}</td>
           <td>${info.solution}</td>
           <td><time datetime="${row.timestamp}" title="${row.timestamp}">${fmtDate(row.timestamp)}</time></td>

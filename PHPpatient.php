@@ -53,7 +53,7 @@ if ($mode === 'patient') {
 /* ====================== analysis table ====================== */
 elseif ($mode === 'analysis') {
    
-    $sql = "SELECT anomaly_type, severity_level, `timestamp`
+    $sql = "SELECT anomaly_type,`timestamp`
             FROM waveform_analysis
             WHERE PID = $pid
             ORDER BY `timestamp` DESC";
@@ -68,7 +68,6 @@ elseif ($mode === 'analysis') {
 
             $data[] = [
                 "anomaly_type"   => $anomaly,
-                "severity_level" => ($row['severity_level'] ?? '') !== '' ? $row['severity_level'] : '-',
                 "timestamp"      => $row['timestamp'],
             ];
         }
