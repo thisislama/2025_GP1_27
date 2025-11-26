@@ -954,3 +954,480 @@ tr:hover {
     }
 }
 
+/* ===== iPad & Tablet Responsive Styles ===== */
+
+/* Large Tablets: 1024px - 1366px */
+@media (max-width: 1366px) {
+    .container {
+        width: 95% !important;
+        margin: 0 auto !important;
+        padding: 1.5em !important;
+    }
+    
+    .table-container {
+        width: 100% !important;
+        padding: 1em !important;
+    }
+    
+    .filter-section {
+        padding: 1em !important;
+        flex-direction: column;
+        gap: 1em;
+    }
+    
+    #searchInput {
+        width: 100% !important;
+        max-width: none !important;
+    }
+    
+    .search-form {
+        width: 100%;
+        display: flex;
+        gap: 0.5em;
+    }
+    
+    #searchButton {
+        width: auto !important;
+        min-width: 100px;
+        margin-left: 0 !important;
+    }
+    
+    .actions-right {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0 !important;
+    }
+    
+    .advanced-filter-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Hide desktop navigation */
+    .auth-nav,
+    .topimg,
+    .logo {
+        display: none !important;
+    }
+    
+    /* Show iPad header */
+    .ipad-header {
+        display: block !important;
+        width: 100%;
+        background: #ffffff;
+        padding: 12px 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+    }
+    
+    .ipad-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .ipad-logo img {
+        height: 50px;
+        width: auto;
+    }
+    
+    .ipad-nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .ipad-nav .nav-link {
+        color: #0B83FE;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9em;
+    }
+    
+    .ipad-nav .profile-btn img {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .ipad-logout {
+        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+        color: white;
+        padding: 0.4em 0.8em;
+        border-radius: 0.6em;
+        border: none;
+        cursor: pointer;
+        font-size: 0.85em;
+        font-weight: 500;
+    }
+    
+    .main {
+        margin-top: 70px !important;
+        height: auto;
+    }
+    
+    /* Table adjustments */
+    table {
+        font-size: 0.9em;
+    }
+    
+    th, td {
+        padding: 8px 6px;
+    }
+    
+    .status, .severity {
+        font-size: 0.8em;
+        min-width: 70px;
+        padding: 4px 8px;
+    }
+    
+    /* Analysis info text */
+    .analysis-info {
+        font-size: 0.9em;
+        padding: 6px 10px;
+    }
+    
+    .table-actions {
+        flex-direction: column;
+        gap: 1em;
+    }
+    
+    .actions-right {
+        order: -1;
+    }
+    
+    .delete-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 1023px) {
+    .container {
+        width: 98% !important;
+        padding: 1em !important;
+    }
+    
+    .table-container {
+        padding: 0.8em !important;
+        overflow-x: auto;
+    }
+    
+    table {
+        min-width: 800px; /* Allow horizontal scrolling */
+    }
+    
+    .title h2 {
+        font-size: 1.4em;
+    }
+    
+    .heading2 {
+        font-size: 0.8em;
+        max-width: 100%;
+    }
+    
+    .filter-popup {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    
+    .pagination a {
+        padding: 4px 8px;
+        font-size: 0.85em;
+    }
+    
+    .ipad-nav {
+        gap: 0.8rem;
+    }
+    
+    .ipad-nav .nav-link {
+        font-size: 0.85em;
+    }
+    
+    .ipad-logo img {
+        height: 45px;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        margin: 0.25em;
+    }
+    
+    .container {
+        padding: 0.8em !important;
+        border-radius: 1em;
+    }
+    
+    .table-container {
+        padding: 0.6em !important;
+        border-radius: 12px;
+    }
+    
+    .title h2 {
+        font-size: 1.3em;
+        text-align: center;
+    }
+    
+    .heading2 {
+        text-align: center;
+        margin-left: 0;
+        padding: 0.5em 0;
+    }
+    
+    .title div {
+        text-align: center !important;
+        margin-right: 0 !important;
+        position: static !important;
+    }
+    
+    .filter-section {
+        padding: 0.8em !important;
+    }
+    
+    .search-form {
+        flex-direction: column;
+        gap: 0.5em;
+    }
+    
+    #searchButton {
+        width: 100% !important;
+        margin-top: 0.5em;
+    }
+    
+    .ipad-header {
+        padding: 10px 15px;
+    }
+    
+    .ipad-nav {
+        gap: 0.6rem;
+    }
+    
+    .ipad-nav .nav-link {
+        font-size: 0.8em;
+    }
+    
+    .ipad-logo img {
+        height: 40px;
+    }
+    
+    .ipad-logout {
+        padding: 0.3em 0.6em;
+        font-size: 0.8em;
+    }
+    
+    /* Tooltip adjustments */
+    .tooltiptext {
+        width: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .no-data img {
+        height: 8em !important;
+    }
+}
+
+@media (max-width: 599px) {
+    .container {
+        padding: 0.5em !important;
+    }
+    
+    .table-container {
+        padding: 0.5em !important;
+    }
+    
+    .title h2 {
+        font-size: 1.2em;
+    }
+    
+    .heading2 {
+        font-size: 0.75em;
+        line-height: 1.6;
+    }
+    
+    .filter-section {
+        padding: 0.5em !important;
+    }
+    
+    .analysis-info {
+        font-size: 0.8em;
+        padding: 5px 8px;
+    }
+    
+    .info-text {
+        font-size: 0.9em;
+    }
+    
+    .ipad-header {
+        padding: 8px 12px;
+    }
+    
+    .ipad-nav {
+        gap: 0.5rem;
+    }
+    
+    .ipad-nav .nav-link {
+        font-size: 0.75em;
+    }
+    
+    .ipad-logo img {
+        height: 35px;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5em;
+        text-align: center;
+        padding: 1.5em 1em;
+    }
+    
+    .footer-col.brand {
+        text-align: center;
+    }
+    
+    .footer-logo {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 1366px) and (orientation: landscape) {
+    .container {
+        padding: 1em !important;
+    }
+    
+    .table-container {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .main {
+        height: auto;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) and (min-resolution: 192dpi) {
+    .filter-section {
+        padding: 1.5em !important;
+    }
+    
+    .table-container {
+        padding: 1.2em !important;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .nav-link:hover::after {
+        width: 0;
+    }
+    
+    .nav-link:hover {
+        transform: none;
+    }
+    
+    /* Increase tap targets for touch devices */
+    .action-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .nav-link {
+        padding: 8px 12px;
+    }
+    
+    .pagination a {
+        padding: 8px 12px;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #searchButton,
+    .advanced-filter-btn,
+    .delete-btn {
+        min-height: 44px;
+    }
+    
+    .row-checkbox {
+        transform: scale(1.2);
+        margin: 0 5px;
+    }
+}
+
+@media print {
+    .ipad-header,
+    .auth-nav,
+    .topimg,
+    .logo,
+    .filter-section,
+    .table-actions,
+    .pagination {
+        display: none !important;
+    }
+    
+    .container {
+        margin-top: 0;
+        background: white !important;
+    }
+    
+    .table-container {
+        box-shadow: none !important;
+        border: 1px solid #ccc;
+    }
+    
+    table {
+        width: 100%;
+    }
+}
+
+.no-data {
+    text-align: center;
+    padding: 2em;
+    color: #6b7b8f;
+    margin: 0 auto;
+    max-width: 600px;
+    font-style: italic;
+}
+
+.search-form {
+    position: relative;
+}
+
+#searchButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@keyframes loading {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.loading {
+    animation: loading 1.5s ease-in-out infinite;
+}
+
+/* Ensure proper scrolling on tablets */
+@media (max-width: 1366px) {
+    html, body {
+        overflow-x: hidden;
+    }
+    
+    .wrapper {
+        overflow-x: hidden;
+    }
+}

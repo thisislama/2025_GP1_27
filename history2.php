@@ -105,12 +105,12 @@ if ($conn->connect_error) {
         $category_filter = " AND wa.anomaly_type = '$category'";
     }
 
-    // Handle priority filter
+    /* Handle priority filter
     $priority_filter = "";
     if (isset($_GET['severity']) && !empty($_GET['severity']) && $_GET['severity'] != 'all') {
         $severity = $conn->real_escape_string($_GET['severity']);
         $priority_filter = " AND wa.severity_level = '$severity'";
-    }
+    }*/
 
     // Handle date filter
     $date_filter = "";
@@ -130,7 +130,7 @@ if ($conn->connect_error) {
         JOIN Patient p ON wa.PID = p.PID
         JOIN patient_doctor_assignments pda ON p.PID = pda.PID
         WHERE pda.userID = ?
-        $search_filter $status_filter $category_filter $priority_filter $date_filter
+        $search_filter $status_filter $category_filter $date_filter
     ";
 
     $count_stmt = $conn->prepare($count_sql);
@@ -163,7 +163,7 @@ $sql = "
     JOIN Patient p ON wa.PID = p.PID
     JOIN patient_doctor_assignments pda ON p.PID = pda.PID
     WHERE pda.userID = ? 
-    $search_filter $status_filter $category_filter $priority_filter $date_filter
+    $search_filter $status_filter $category_filter $date_filter
     ORDER BY wa.timestamp DESC
     LIMIT $offset, $records_per_page
 ";
@@ -316,7 +316,7 @@ if (isset($_SESSION['error_message'])) {
 
                         </div>
 
-                        <div class="filter-group">
+                       <!-- <div class="filter-group">
                             <label for="severity">Severity</label>
                             <select name="severity" id="severity">
                                 <option value="all">All Severities</option>
@@ -330,7 +330,7 @@ if (isset($_SESSION['error_message'])) {
                                     High
                                 </option>
                             </select>
-                        </div>
+                        </div>-->
 
                         <div class="filter-group">
                             <label for="date_from">From Date</label>
@@ -411,7 +411,7 @@ if (isset($_SESSION['error_message'])) {
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
-                        <th>Severity level</th>
+                        <!--<th>Severity level</th>-->
                         <th>Anomaly type</th>
                     </tr>
                     </thead>
@@ -427,7 +427,7 @@ if (isset($_SESSION['error_message'])) {
                             $date = date('Y-m-d', strtotime($row['analysis_date']));
                             $time = date('H:i', strtotime($row['analysis_date']));
                             $status = $row['status'];
-                            $severity = $row['severity_level'] ?: 'N/A';
+                          //  $severity = $row['severity_level'] ?: 'N/A';
                             $anomaly_type = $row['anomaly_type'] ?: 'N/A';
 
                           
@@ -456,7 +456,6 @@ if (isset($_SESSION['error_message'])) {
                         <td>{$date}</td>
                         <td>{$time}</td>
                         <td><span class='status {$status}'>{$status}</span></td>
-                        <td><span class='severity {$severity}'>{$severity}</span></td>
                         <td class='tooltip'>" . ucwords($anomaly_type) . "
         <span class='tooltip-container'>
             <span style='font-size:.7rem; margin-right:4px;' class='material-symbols-outlined info'>info</span>
@@ -638,7 +637,7 @@ if (isset($_SESSION['error_message'])) {
     document.getElementById('resetFilters').addEventListener('click', function () {
         document.getElementById('status').value = 'all';
         document.getElementById('category').value = 'all';
-        document.getElementById('severity').value = 'all';
+       // document.getElementById('severity').value = 'all';
         document.getElementById('date_from').value = '';
         document.getElementById('date_to').value = '';
     });
@@ -810,7 +809,7 @@ if (isset($_SESSION['error_message'])) {
         document.getElementById('resetFilters').addEventListener('click', function () {
             document.getElementById('status').value = 'all';
             document.getElementById('category').value = 'all';
-            document.getElementById('severity').value = 'all';
+           // document.getElementById('severity').value = 'all';
             document.getElementById('date_from').value = '';
             document.getElementById('date_to').value = '';
         });

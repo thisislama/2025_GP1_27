@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TANAFS Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+    <link rel="stylesheet" href="dash.css"/>
+
+    <style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        }
+
+   .stat {
+        padding: .5em;
+        border-radius: 0.55em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
+        height:16vh;
+        }
+       
+
+    .stat.anomaly {
+        background-color: #fff;
+        border-left: 4px solid #e53935;
+    }
+
+    .stat.anomaly .label,
+    .stat.anomaly .value {
+        font-size: 1.13em;
+        color: #772b2bff;
+        font-weight: 700;
+        margin-left:.445em
+    }
+
+    .stat.anomaly .under {
+        color: #6c757d;
+        font-size: .7em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left:.445em
+
+    }
+
+    .stat.analysis {
+        background-color: #fff;
+        border-left: 4px solid #143ab5ff;
+    }
+
+    .stat.analysis .label,
+    .stat.analysis .value {
+        font-size: 1.13em;
+        color: #01124fff;
+        font-weight: 700;
+        margin-left:.445em
+
+    }
+
+    .stat.analysis .under {
+        color: #6c757d;
+        font-size: .7em;
+        margin-left:.445em
+    }
+
+    .stat.patient{
+        border-left: 4px solid #7750b8;
+
+    }
+
+    .stat.patient .label,
+    .stat.patient .value {
+        font-size: 1.13em;
+        color: #2b4a77;
+        margin-left:.445em;
+        font-weight: 700;
+    }
+
+    .stat.patient .under {
+        color: #6c757d;
+        font-size: .7em;
+        margin-left:.445em
+
+    }
+
+    .icon {
+        padding: 0.8em;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1.2em;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat.anomaly .icon {
+        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        color: #e53935;
+        margin-right:.54em;
+        margin-bottom:.85em
+
+
+    }
+
+    .stat.analysis .icon {
+    background: linear-gradient(135deg, #e8ecf5ff, #c8d0e6ff);
+    color: #143ab5ff;
+    margin-right:.54em;
+    margin-bottom:.85em
+
+
+}
+
+
+    .stat.patient .icon {
+        background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+        color: #7750b8;
+        margin-right:1em;
+    }
+
+        .label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #232735;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2b4a77;
+            margin-bottom: 8px;
+        }
+
+        .under {
+            font-size: .7em;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width:100%
+        }
+        
+        </style>    
+</head>
+<body>
+    <!-- Header for iPad & medium screens only -->
+<header class="ipad-header">
+    <div class="ipad-inner">
+
+        <a href="dashboard.html" class="ipad-logo">
+            <img src="Images/Logo.png" alt="Tanafs Logo">
+        </a>
+
+        <nav class="ipad-nav">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="patients.html" class="nav-link">Patients</a>
+            <a href="history2.html" class="nav-link">History</a>
+
+            <a href="profile.html" class="profile-btn">
+                <img src="images/profile.png" alt="Profile">
+            </a>
+
+            <form action="Logout.html" method="post">
+                <button type="submit" class="ipad-logout">Logout</button>
+            </form>
+        </nav>
+
+    </div>
+</header>
+
+<div class="wrapper">
+
+    <img class="topimg" src="Images/Group 8.png" alt="img">
+    <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
+
+    <nav class="auth-nav" aria-label="User navigation">
+        <a class="nav-link active" href="dashboard.html">Dashboard</a>
+        <a class="nav-link" href="patients.html">Patients</a>
+        <a class="nav-link" href="history2.html">History</a>
+        <a href="profile.html" class="profile-btn">
+            <div class="profile">
+                <img class="avatar-icon" src="images/profile.png" alt="Profile">
+            </div>
+        </a>
+
+        <form action="Logout.html" method="post" style="display:inline;">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </nav>
+
+
+    <main class="container">
+        <!-- LEFT -->
+        <section class="left-column">
+
+            <h2 style="color:#0c6bdf; font-size:1.65em;margin:5px">
+                Welcome back <br>
+                <span style="color:rgba(89,115,195,0.76);font-size: .80em;margin-left: 1.7em">
+                 Dr. John Smith
+                </span>
+            </h2>
+
+            <!-- UPLOAD CARD -->
+            <form method="post" enctype="multipart/form-data" class="upload-card" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">    
+            <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
+              <label for="fileUpload" class="upload-drop" id="dropzone">
+                <div class="hint">Upload your Waveform Image</div>
+                <div style="font-size:28px;opacity:0.65">
+                    <img class="upImg" src="images/upload2.png" style="height:6em;" alt="upload">
+                </div>
+                <div style="font-size:1.5empx;font-weight:500;color:#0b84feb3;margin-top:4px">Drag &amp; drop or <b style="text-decoration:underline;">choose a file</b> to upload</div>
+                <div style="font-size:.8em;color:rgba(145,148,151,0.7);margin-top:8px"> Only JPEG, PNG, JPG files are allowed. Max 10.0MB. </div>
+                </label>
+            </form>
+
+            <div class="small-cards">
+                <h3 style="margin-bottom:.4em;margin-left:12px;color:#0a4a98;font-weight:700">Recent Patients</h3>
+                <div class="file-container">
+                    <div class="file-item" onclick="window.location.href='patient.html?pid=1001'">
+                        <div class="file-header">
+                            <div class="file-icon">
+                                <span class="material-symbols-outlined">description</span>
+                            </div>
+                            <div class="patient-data">
+                                <div class="file-number">File Number</div>
+                                <div class="file-id">P-1001</div>
+                            </div>    
+                            <div class="file-actions">
+                                <div class="action-btn">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="file-footer">
+                            <div class="last-updated">Updated: 2 days ago</div>
+                            <div class="view-btn">
+                                 <a class="view-btn" href="patient.html?pid=1001"> View </a> 
+                                 <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                </div>  
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="file-container">
+                    <div class="file-item" onclick="window.location.href='patient.html?pid=1002'">
+                        <div class="file-header">
+                            <div class="file-icon">
+                                <span class="material-symbols-outlined">description</span>
+                            </div>
+                            <div class="patient-data">
+                                <div class="file-number">File Number</div>
+                                <div class="file-id">P-1002</div>
+                            </div>    
+                            <div class="file-actions">
+                                <div class="action-btn">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="file-footer">
+                            <div class="last-updated">Updated: 5 days ago</div>
+                            <div class="view-btn">
+                                 <a class="view-btn" href="patient.html?pid=1002"> View </a> 
+                                 <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                </div>  
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="file-container">
+                    <div class="file-item" onclick="window.location.href='patient.html?pid=1003'">
+                        <div class="file-header">
+                            <div class="file-icon">
+                                <span class="material-symbols-outlined">description</span>
+                            </div>
+                            <div class="patient-data">
+                                <div class="file-number">File Number</div>
+                                <div class="file-id">P-1003</div>
+                            </div>    
+                            <div class="file-actions">
+                                <div class="action-btn">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="file-footer">
+                            <div class="last-updated">Updated: 1 week ago</div>
+                            <div class="view-btn">
+                                 <a class="view-btn" href="patient.html?pid=1003"> View </a> 
+                                 <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                </div>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT -->
+        <section class="right-column">
+            <div class="stats-grid">
+                <div class="stat anomaly" style="width:103%;">
+                    <div>
+                        <div class="label" >Abnormality</div>
+                        <div class="value">12</div>
+                        <div class="under">8% of total scans</div>
+                    </div>
+
+                    <div class="icon warn">
+                        <span style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">warning</span>
+                    </div>
+                </div>
+
+                <div class="stat analysis" style="width:103%;">
+                    <div>
+                        <div class="label" >Analysis</div>
+                        <div class="value">156</div>
+                        <div class="under">156 analyses you applied for</div>
+                    </div>
+                    <div class="icon analysis">
+                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
+                    </div>
+                </div>
+
+                <div class="stat patient" style="width:212%">
+                    <div>
+                        <div class="label" >Patients</div>
+                        <div class="value">42</div>
+                        <div class="under">42 total patients assigned to you</div>
+
+                    </div>
+                    <div class="icon patient" >
+                        <span  style="font-size: 1.85em;text-align: center" class="material-symbols-outlined">group</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="result-card">
+                <div class="title">Analysis Overview</div>
+                <div class="result-output" id="resultArea">
+                    <p>No file uploaded yet.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+
+<footer id="contact" class="site-footer">
+    <div class="footer-grid">
+
+        <div class="footer-col brand">
+            <img src="images/logo.png" alt="Tanafs logo" class="footer-logo"/>
+            <p class="brand-tag">Breathe well, live well</p>
+        </div>
+
+        <!-- Social -->
+        <nav class="footer-col social" aria-label="Social media">
+            <h3 class="footer-title">Social Media</h3>
+            <ul class="social-list">
+                <li>
+                    <a href="#" aria-label="Twitter">
+                        <img src="images/twitter.png" alt="Twitter"/>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" aria-label="Instagram">
+                        <img src="images/instagram.png" alt="Instagram"/>
+                    </a>
+                </li>
+            </ul>
+            <span class="social-handle">@official_Tanafs</span>
+        </nav>
+
+        <!-- Contact -->
+        <div class="footer-col contact">
+            <h3 class="footer-title">Contact Us</h3>
+            <ul class="contact-list">
+                <li>
+                    <a href="#" class="contact-link">
+                        <img src="images/whatsapp.png" alt="WhatsApp"/>
+                        <span>+123 165 788</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:Appointly@gmail.com" class="contact-link">
+                        <img src="images/email.png" alt="Email"/>
+                        <span>Tanafs@gmail.com</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bar">
+        <p class="legal">
+            <a href="#">Terms &amp; Conditions</a>
+            <span class="dot">•</span>
+            <a href="#">Privacy Policy</a>
+        </p>
+        <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
+    </div>
+</footer>
+<script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileUpload');
+    const resultArea = document.getElementById('resultArea');
+
+    // Only use click event - no drag & drop to avoid conflicts
+    dropzone.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileInput.click();
+    });
+
+    // Handle file selection
+    fileInput.addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+         
+        resultArea.textContent = 'Uploading: ' + f.name;
+        
+        // Simulate upload process
+        setTimeout(() => {
+            resultArea.innerHTML = `
+                <p>Uploaded file: ${f.name}</p>
+                <p>File size: ${(f.size / 1024 / 1024).toFixed(2)} MB</p>
+                <p>Status: Upload successful (simulated)</p>
+            `;
+        }, 1500);
+    });
+
+  
+</script>
+</body>
+</html>

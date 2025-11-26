@@ -24,7 +24,7 @@ try {
     $res = $stmt->get_result();
 
     if (!$row = $res->fetch_assoc()) {
-        echo '❌ Invalid or expired token. <a href="signin.php">Sign in</a>';
+        echo ' Invalid or expired token. <a href="signin.php">Sign in</a>';
         exit;
     }
 
@@ -32,19 +32,18 @@ try {
     $expires  = $row['verification_expires'];
     $verified = (int)$row['is_verified'];
 
-    // لو أصلاً مفعّل
+    // already verfied?
     if ($verified === 1) {
-        echo '✅ Email already verified. <a href="signin.php">Sign in</a>';
+        echo ' Email already verified. <a href="signin.php">Sign in</a>';
         exit;
     }
 
-    // تحقق من انتهاء الصلاحية
+    // link expires?
     if ($expires && strtotime($expires) < time()) {
-        echo '❌ Verification link has expired. Please sign up again with the same email.';
+        echo 'Verification link has expired. Please sign up again with the same email.';
         exit;
     }
-
-    // فعّل الحساب وامسح التوكن
+    //delete verifiy token & validate the account
     $up = $conn->prepare('
         UPDATE healthcareprofessional
         SET is_verified = 1, verification_token = NULL, verification_expires = NULL
@@ -53,7 +52,7 @@ try {
     $up->bind_param('i', $uid);
     $up->execute();
 
-    echo '✅ Email verified successfully. <a href="signin.php">Sign in</a>';
+    echo ' Email verified successfully. <a href="signin.php">Sign in</a>';
 
 } catch (Throwable $e) {
     // error_log($e->getMessage());

@@ -143,12 +143,12 @@ function handleFileUpload($conn, $userID)
 
         // Insert into Waveform_Img table
         $waveform_sql = "
-            INSERT INTO Waveform_Img (userID, filePath, waveformType, timestamp) 
-            VALUES (?, ?, ?, NOW())
+            INSERT INTO Waveform_Img (userID, filePath, timestamp) 
+            VALUES (?, ?, NOW())
         ";
         $stmt = $conn->prepare($waveform_sql);
-        $waveform_type = getWaveformType($fileType);
-        $stmt->bind_param("iss", $userID, $target_file, $waveform_type);
+       // $waveform_type = getWaveformType($fileType);
+        $stmt->bind_param("is", $userID, $target_file);
 
         if ($stmt->execute()) {
             $wave_img_id = $stmt->insert_id;
@@ -232,13 +232,13 @@ function getWaveformType($fileType)
 
     .stat.analysis {
         background-color: #fff;
-        border-left: 4px solid #14b530;
+        border-left: 4px solid #143ab5ff;
     }
 
     .stat.analysis .label,
     .stat.analysis .value {
         font-size: 1.13em;
-        color: #014f0fff;
+        color: #01124fff;
         font-weight: 700;
         margin-left:.445em
 
@@ -291,8 +291,8 @@ function getWaveformType($fileType)
     }
 
     .stat.analysis .icon {
-    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    color: #14b530;
+    background: linear-gradient(135deg, #e8ecf5ff, #c8d0e6ff);
+    color: #143ab5ff;
     margin-right:.54em;
     margin-bottom:.85em
 
@@ -464,7 +464,7 @@ function getWaveformType($fileType)
             <div class="stats-grid">
                 <div class="stat anomaly" style="width:103%;">
                     <div>
-                        <div class="label" >Anomaly</div>
+                        <div class="label" >Abnormality</div>
                         <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
                         <div class="under"><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
                     </div>
