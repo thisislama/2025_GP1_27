@@ -71,17 +71,52 @@ z-index: 30;
    background: #ebeaea;
   text-decoration: none;
 border-radius: 9999em;
+
+
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    background: linear-gradient(135deg, #e8f0fe, #dbe7ff);
+    color: #0f65ff;
+    border: 1px solid #d2e2ff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height:2.5em;
+    width: 6.4em; 
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(15, 101, 255, 0.3);
+
+
 }
 
 .auth-signup{
   background: #0876FA;
   color: #ffffff;
   text-decoration: none;
-border-radius: 9999em;
-padding: 0.625em 1.125em;
+  border-radius: 9999em;
+  padding: 0.625em 1.125em;
   font-weight: 700;
   line-height: 1;
   display: inline-block;
+
+  
+   display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px ;
+    background: linear-gradient(135deg, #668fdc, #0f65ff);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(15, 101, 255, 0.3);
+    width: 6.4em;
+    height:2.5em;
+    font-size: 15px;
 }
 
 .nav-link {
@@ -120,14 +155,21 @@ transform: translateY(-0.125em);
 }
 
 .auth-signin:hover {
-  background: #dcdcdc;
-  transform: translateY(-0.125em);
+  background: #dcdcdc6f;
+ /* transform: translateY(-0.125em);*/
+
+  
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(15, 99, 255, 0.38);
 
 }
 
 .auth-signup:hover {
-  background: #78C1F5;
-  transform: translateY(-0.125em);
+  background: #0f63ff57;
+ /* transform: translateY(-0.125em);*/
+  
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 101, 255, 0.4);
 }
 
 
