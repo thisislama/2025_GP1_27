@@ -1009,7 +1009,7 @@ main h2{
 }
 
 .btn-connect:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: 0 2px 6px rgba(15, 99, 255, 0.38);
 }
 
