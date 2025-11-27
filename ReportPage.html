@@ -31,22 +31,9 @@ body {
   margin: 0;              
 }
 
-  .status {
-  padding: 0.25em 0.5em;
-  border-radius: 0.75em;
-  font-size: 0.8125em;
-  font-weight: 500;
-}
-        .status.normal { background: #eaf9ee; color: #1b8a3d; }
-        .status.moderate { background: #fff7e6; color: #e6a100; }
-        .status.critical { background: #fdeaea; color: #d32f2f; }
-
-
-
 
 /* -------- Report Section -------- */
 #report-box { padding: 0.625em 1.875em; }
-.report-title { color:#1f46b6; font-weight:800; font-size:1.5em; }
 
 .report-sheet{
   background:#fff; border:1px solid #e9eef6; border-radius:1.125em;
@@ -122,16 +109,11 @@ body {
 }
 
 /* Recent analyzed waveforms */
-.waves-list {
-  list-style: none; /*to remove defult syle*/
-  display: flex;/*allowing easy control over the direction and alignment of its items.*/
-  flex-direction: column;
-  gap: 0.625em;
-}
+.item-list, .waves-list { list-style: none; display: flex; flex-direction: column; gap: 0.625em; margin: 0; padding: 0; }
 
-.wave-item {
+.item, .wave-item {
   display: grid;
-  grid-template-columns: 1fr auto; /*name and sevariy level*/
+  grid-template-columns: 1fr auto; /*  Layout with text on the left and date on the right */
   gap: 0.75em;
   align-items: center;
   padding: 0.625em 0.75em;
@@ -140,11 +122,16 @@ body {
   background: #fff;
 }
 
-.wave-item .name {
-  align-items: center;
-  gap: 0.5em;
-  font-weight: 600;
-  color: #2b4a77;
+.item .meta, .wave-item .meta {
+  display: flex; align-items: center; gap: .5em; color:#2b4a77; font-weight:600;
+}
+
+.item .right, .wave-item .right { display:flex; align-items:center; gap:.5em; white-space:nowrap; color:#2b4a77; font-variant-numeric: tabular-nums; }
+
+.item .text {
+  grid-column: 1 / -1;  /* Makes the element stretch across the entire grid width */
+  background: #f6f9ff; border: 1px solid rgba(15,101,255,0.12);
+  border-radius: 0.5em; padding: 0.6em 0.75em; color:#2b4a77; white-space: pre-wrap;
 }
 
 .wave-item .name .material-symbols-outlined {
@@ -230,8 +217,6 @@ img.logo {
 .nav-link:hover::after { width: 100%; }
 .nav-link:hover { transform: translateY(-2px); color: #055ac0; }
 
-
-.profile-btn { all: unset; cursor: pointer; display: inline-block; }
 
 /* logout button*/
 .btn-logout {
@@ -380,52 +365,6 @@ img.logo {
   width:30px; height:30px; display:block;
 }  
 
-
-
-
-
-.item-list, .waves-list { list-style: none; display: flex; flex-direction: column; gap: 0.625em; margin: 0; padding: 0; }
-
-.item, .wave-item {
-  display: grid;
-  grid-template-columns: 1fr auto; /*  Layout with text on the left and date on the right */
-  gap: 0.75em;
-  align-items: center;
-  padding: 0.625em 0.75em;
-  border: 1px solid #eef1f6;
-  border-radius: 0.75em;
-  background: #fff;
-}
-
-.item .meta, .wave-item .meta {
-  display: flex; align-items: center; gap: .5em; color:#2b4a77; font-weight:600;
-}
-
-.item .right, .wave-item .right { display:flex; align-items:center; gap:.5em; white-space:nowrap; color:#2b4a77; font-variant-numeric: tabular-nums; }
-
-.item .text {
-  grid-column: 1 / -1;  /* Makes the element stretch across the entire grid width */
-  background: #f6f9ff; border: 1px solid rgba(15,101,255,0.12);
-  border-radius: 0.5em; padding: 0.6em 0.75em; color:#2b4a77; white-space: pre-wrap;
-}
-
-
-
-
-.wave-item .date {
-  font-size: 0.70em;
-  color: #6b7b8f;   
-}
-
-
-.comment-item .date {
-  font-size: 0.70em;
-  color: #6b7b8f;  
-}
-
-.value { font-weight: strong; }
-
-
 .ipad-header {
     display: none;
 }
@@ -526,8 +465,6 @@ img.logo {
   }
 
     </style>
-
-
 
 </head>
 
@@ -650,33 +587,10 @@ img.logo {
 
 
 <div class="field">
-  <div class="label">Analyzed waveforms<br>with sevarity level:</div>
+  <div class="label">Analyzed waveforms:</div>
   <div class="value">
-    <ul class="waves-list" id="waves-list">
-      <li class="wave-item">
-        <div class="name">
-          <span class="material-symbols-outlined">show_chart</span>
-         
-        </div>
-        <span class="status critical"></span>
-      </li>
-      
-<li class="wave-item">
-        <div class="name">
-          <span class="material-symbols-outlined">show_chart</span>
-         
-        </div>
-        <span class="status critical"></span>
-      </li>
-      <li class="wave-item">
-        <div class="name">
-          <span class="material-symbols-outlined">show_chart</span>
-         
-        </div>
-        <span class="status critical"></span>
-      </li>
+    <ul class="waves-list" id="waves-list"></ul>
 
-    </ul>
   </div>
 </div>
 
@@ -741,12 +655,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const wavesList  = document.getElementById("waves-list");
   const commentsUl = document.getElementById("comments-list");
 
-  const getSeverityClass = (level = "") => {
-    const s = String(level).trim().toLowerCase();
-    if (s.includes("high") || s.includes("critical")) return "critical";
-    if (s.includes("moderate") || s.includes("med"))  return "moderate";
-    return "normal";
-  };
+
 
   try {
     const res  = await fetch(`report.php?pid=${encodeURIComponent(pid)}&_=${Date.now()}`, { cache:'no-store' });
@@ -765,23 +674,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("r-date").textContent     = fmtDateTime(data.date);
 
     // waves
-    if (wavesList) {
-      wavesList.innerHTML = "";
-      (data.waves || []).forEach(w => {
-        const li = document.createElement("li");
-        li.className = "wave-item";
-        li.innerHTML = `
-          <div class="meta">
-            <span class="material-symbols-outlined">show_chart</span>
-            ${w.anomaly}
-          </div>
-          <div class="right">
-            <span class="status ${getSeverityClass(w.level)}">${w.level || '-'}</span>
-            <time datetime="${w.timestamp}" title="${w.timestamp}">${fmtDateTime(w.timestamp)}</time>
-          </div>`;
-        wavesList.appendChild(li);
-      });
-    }
+if (wavesList) {
+  wavesList.innerHTML = "";
+  (data.waves || []).forEach(w => {
+    const li = document.createElement("li");
+    li.className = "wave-item";
+    li.innerHTML = `
+      <div class="meta">
+        <span class="material-symbols-outlined">show_chart</span>
+        ${w.anomaly}
+      </div>
+      <div class="right">
+        <time datetime="${w.timestamp}" title="${w.timestamp}">
+          ${fmtDateTime(w.timestamp)}
+        </time>
+      </div>`;
+    wavesList.appendChild(li);
+  });
+}
+
 
     // comment
     if (commentsUl) {
