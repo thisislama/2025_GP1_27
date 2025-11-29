@@ -391,6 +391,7 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'connect_existing') {
 <title>Patients List - TANAFS</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/fi.png">
 
 <style>
 <?php include 'dashboard-style.css';  ?>

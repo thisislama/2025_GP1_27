@@ -192,6 +192,7 @@ function field_has_error(string $field, string $error): bool {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sign Up</title>
+      <link rel="icon" type="image/png" href="/images/fi.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{

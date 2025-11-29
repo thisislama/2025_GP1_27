@@ -156,7 +156,6 @@ $sql = "
         p.gender,
         wa.timestamp as analysis_date,
         wa.status,
-        wa.severity_level,
         wa.anomaly_type,
         wa.finding_notes
     FROM Waveform_analysis wa
@@ -196,7 +195,7 @@ if (isset($_SESSION['error_message'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tanafs History</title>
     <link rel="stylesheet" href="history.css"/>
-    <!-- Google Material Symbols  -->
+    <link rel="icon" type="image/png" href="/images/fi.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">

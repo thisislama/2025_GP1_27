@@ -186,6 +186,8 @@ function getWaveformType($fileType)
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>TANAFS Dashboard</title>
+        <link rel="icon" type="image/png" href="/images/fi.png">
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
     <link rel="stylesheet" href="dash.css"/>
 

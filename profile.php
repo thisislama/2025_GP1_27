@@ -79,6 +79,7 @@ if (!$userData) {
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tanafs Profile</title>
+    <link rel="icon" type="image/png" href="/images/fi.png">
 
 <!-- Google Material Symbols -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
