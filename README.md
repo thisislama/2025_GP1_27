@@ -11,7 +11,7 @@ of an intelligent automated detection system that analyzes ventilator waveform i
 ##  Technology Stack
  #### All software tools/technology will be used for this project:
 Backend & AI
-<p> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="55" title="Python"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-original.svg](https://blog.nashtechglobal.com/wp-content/uploads/2024/01/django-logo-big-removebg-preview.png" width="55" title="Django"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" width="55" title="TensorFlow"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg" width="55" title="PyTorch"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg" width="55" title="OpenCV"/>  </p>
+<p> <img src="raw.githubusercontent.com" width="55" title="Django Logo"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" width="55" title="TensorFlow"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg" width="55" title="PyTorch"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg" width="55" title="OpenCV"/>  </p>
 Frontend
 <p> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="50" title="HTML5"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="50" title="CSS3"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="50" title="JavaScript"/> </p>
 Database & Hosting
