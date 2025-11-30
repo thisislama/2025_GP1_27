@@ -22,21 +22,21 @@ Development Tools
  ## Launching Instructions
 
 #### The system will be publicly hosted on Flask once finished.
-##### For now, you can run it locally:
-1️. Clone the Repository
-git clone https://github.com/<your-org-or-username>/2025_GP_27.git
-cd 2025_GP_27
-2️. Create a Virtual Environment 
-python -m venv venv
-  Activate the Environment
-    - Windows
-      venv\Scripts\activate
-    - macOS / Linux
-      source venv/bin/activate
-3️. Install Project Dependencies
-pip install -r requirements.txt
-4️. Run the Flask Application
-  python app.py
-5️. Access the Application
-Once the server starts, open your browser and visit:
-👉 http://127.0.0.1:5000
+ For now, you can run it locally:
+<br> 1️. Clone the Repository
+<br> git clone https://github.com/<your-org-or-username>/2025_GP_27.git
+<br> cd 2025_GP_27
+<br> 2️. Create a Virtual Environment 
+<br> python -m venv venv
+<br>  Activate the Environment
+<br>    - Windows
+<br>      venv\Scripts\activate
+ <br>   - macOS / Linux
+ <br>     source venv/bin/activate
+<br> 3️. Install Project Dependencies
+<br> pip install -r requirements.txt
+<br> 4️. Run the Flask Application
+<br>  python app.py
+<br> 5️. Access the Application
+<br> Once the server starts, open your browser and visit:
+<br> 👉 http://127.0.0.1:5000
