@@ -1,38 +1,41 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List
+from fastapi import FastAPI, File, UploadFile
+from torchvision import models, transforms
+from PIL import Image
+from io import BytesIO
 import torch
+import torch.nn as nn
 
-from model.model_def import EventDetector
+app = FastAPI(title="Image Event Detection API")
 
-app = FastAPI(title="Event Detection API")
+num_classes = 12
 
-# ---- Load model ONCE ----
-input_size = 224        # must match training
-num_classes = 12         # number of events
+# Load model EXACTLY as trained
+model = models.resnet18(weights=None)
+model.fc = nn.Linear(model.fc.in_features, num_classes)
 
-model = EventDetector(input_size, num_classes)
 model.load_state_dict(
-    torch.load("/best_resnet18_2.pth", map_location="cpu")
+    torch.load("best_resnet18_2.pth", map_location="cpu")
 )
 model.eval()
 
-# ---- Input schema ----
-class EventInput(BaseModel):
-    features: List[float]
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+])
 
 @app.get("/")
 def root():
     return {"message": "API running"}
 
 @app.post("/predict")
-def predict_event(data: EventInput):
-    x = torch.tensor([data.features], dtype=torch.float32)
+async def predict(file: UploadFile = File(...)):
+    image = Image.open(BytesIO(await file.read())).convert("RGB")
+    x = transform(image).unsqueeze(0)
 
     with torch.no_grad():
         outputs = model(x)
-        predicted_class = torch.argmax(outputs, dim=1).item()
+        pred = torch.argmax(outputs, dim=1).item()
 
     return {
-        "detected_event": predicted_class
+        "class_id": pred
     }
