@@ -63,9 +63,9 @@ if ($conn->connect_error) {
         // Get scans and anomalies for assigned patients
     $scans_sql = "
         SELECT 
-            COUNT(wa.waveAnalysisID) AS total_scans,
+            COUNT(wa.waveImg_id) AS total_scans,
             SUM(CASE WHEN wa.status = 'anomaly' THEN 1 ELSE 0 END) AS anomalies
-        FROM Waveform_analysis wa
+        FROM waveform wa
         WHERE wa.PID IN (SELECT PID FROM patient_doctor_assignments WHERE userID = ?)
     ";
 

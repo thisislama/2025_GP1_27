@@ -126,7 +126,7 @@ if ($conn->connect_error) {
    // Get total records count for pagination
     $count_sql = "
         SELECT COUNT(*) as total 
-        FROM Waveform_analysis wa
+        FROM waveform wa
         JOIN Patient p ON wa.PID = p.PID
         JOIN patient_doctor_assignments pda ON p.PID = pda.PID
         WHERE pda.userID = ?
@@ -148,7 +148,7 @@ if ($conn->connect_error) {
     // Get analysis history data
 $sql = "
     SELECT 
-        wa.waveAnalysisID,
+        wa.waveImg_id,
         p.PID,
         p.first_name,
         p.last_name,
@@ -158,7 +158,7 @@ $sql = "
         wa.status,
         wa.anomaly_type,
         wa.finding_notes
-    FROM Waveform_analysis wa
+    FROM waveform wa
     JOIN Patient p ON wa.PID = p.PID
     JOIN patient_doctor_assignments pda ON p.PID = pda.PID
     WHERE pda.userID = ? 
