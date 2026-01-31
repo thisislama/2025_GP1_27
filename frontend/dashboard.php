@@ -383,8 +383,7 @@ function getWaveformType($fileType)
 
         <form action="Logout.php" method="post" style="display:inline;">
             <button type="submit" class="btn-logout">
-            <span class="material-symbols-outlined" style="font-size: 1.85em;">logout</span></button>
-
+            <span class="material-symbols-outlined" style="font-size: 2em; margin-right:1.24em;">logout</span></button>
         </form>
     </nav>
 
