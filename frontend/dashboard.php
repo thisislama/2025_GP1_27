@@ -387,7 +387,7 @@ function getWaveformType($fileType)
         </form>
     </nav>
 
-  <div class="stats-grid">
+    <div class="stats-grid">
                 <div class="stat anomaly">
                     <div>
                         <div class="label" >Abnormality</div>
@@ -434,10 +434,9 @@ function getWaveformType($fileType)
                         <span  style="font-size: 1.85em;text-align: center" class="material-symbols-outlined">Assignment_add</span>
                     </div>
                 </div>
+    </div>
 
-            </div>
-    <main class="container">
-       
+    <main class="container">    
         <!-- LEFT -->
         <section class="left-column">
             <!--
@@ -507,8 +506,65 @@ function getWaveformType($fileType)
                     <p class="none">No recent patients found.</p>
                 <?php endif; ?>
             </div>-->
-        <!-- RECENT PATIENTS -->
+          <!-- RECENT ANALYSIS -->
                     <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Analysis</h2>
+                            <button class="btn-text">View All →</button>
+                        </div>
+                        <div class="transactions-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Patient</th>
+                                        <th>Result</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Today</td>
+                                        <td>P-1001</td>
+                                        <td>Abnormal</td>
+                                        <td><span class="status-badge completed">Normal</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Today</td>
+                                        <td>P-1005</td>
+                                        <td>Normal</td>
+                                        <td><span class="status-badge completed">Normal</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>23.05</td>
+                                        <td>P-1002</td>
+                                        <td>Normal</td>
+                                        <td><span class="status-badge pending">Abnormal</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+        </section>
+
+        <!-- RIGHT -->
+        <section class="right-column">
+            <div class="card account-card" style=" background: linear-gradient(135deg, #0a76fc, #c4d8ff); box-shadow: rgba(10, 118, 252, 0.4) 0em 0.5em 1.5em 0em; color: white;">
+                        <div class="card-header">
+                            <h2 class="card-title">My Patients</h2>
+                            <button class="btn-primary">Add Patient</button>
+                        </div>
+                        <div class="account-info">
+                            <div class="account-number">Total: <?php echo $stats['patients'] ?? '0' ?> Patients</div>
+                            <div class="account-actions">
+                                <button class="btn-secondary">View All</button>
+                                <button class="btn-secondary">Generate Report</button>
+                            </div>
+                        </div>
+            </div>
+        <!-- RECENT PATIENTS -->
+
+             <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Recent Patients</h2>
                         </div>
@@ -553,23 +609,6 @@ function getWaveformType($fileType)
                             </div>
                         </div>
                     </div>
-        </section>
-
-        <!-- RIGHT -->
-        <section class="right-column">
-            <div class="card account-card">
-                        <div class="card-header">
-                            <h2 class="card-title">My Patients</h2>
-                            <button class="btn-primary">Add Patient</button>
-                        </div>
-                        <div class="account-info">
-                            <div class="account-number">Total: 45 Patients</div>
-                            <div class="account-actions">
-                                <button class="btn-secondary">View All</button>
-                                <button class="btn-secondary">Generate Report</button>
-                            </div>
-                        </div>
-            </div>
            <!-- <div class="stats-grid">
                 <div class="stat anomaly">
                     <div>
