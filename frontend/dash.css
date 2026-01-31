@@ -216,7 +216,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 3rem;
+            padding: 3.25rem;
             border: 2px dashed #cbd5e1;
             border-radius: 12px;
             cursor: pointer;
@@ -297,12 +297,56 @@
             box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
             width: 18em;
         }
+        .anomaly{
+            background: #ffe0e0;
+            color: #ff0022;
+            padding: .5em 1em;
+            border-radius: .75em;
+            font-weight: 600;
+            font-size: 0.75em;
+        }
+        .patient{
+            background: #ede8f5;
+            color: #4a14b5;
+            padding: .5em 1em;
+            border-radius: .75em;
+            font-weight: 600;
+            font-size: 0.75em;
+        }
+        .analysis{
+            background: #e0f0ff;
+            color: #0f65ff;
+            padding: .5em 1em;
+            border-radius: .75em;
+            font-weight: 600;
+            font-size: 0.75em;
+        }
+        .report{
+            background: #fff4e5;
+            color: #ff8800;
+            padding: .5em 1em;
+            border-radius: .75em;
+            font-weight: 600;
+            font-size: 0.75em;  
+        }
 
          .under{
             font-size: 0.8em;
             font-weight: 600;
             color: #4c5d7a;
             margin-top: 0.77em;
+        }
+        .label{
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #4c5d7a;
+            margin-bottom: .455em;
+        }
+
+        .value{
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2b4a77;
         }
 
         .result-card {

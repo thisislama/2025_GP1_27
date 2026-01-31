@@ -449,6 +449,10 @@ function getWaveformType($fileType)
             -->
             
             <!-- UPLOAD CARD -->
+        <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Upload an Image</h2>
+                </div>
             <form method="post" enctype="multipart/form-data" class="upload-card" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">    
             <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
               <label for="fileUpload" class="upload-drop" id="dropzone">
@@ -461,6 +465,8 @@ function getWaveformType($fileType)
                 <div style="font-size:.8em;color:rgba(145,148,151,0.7);margin-top:8px"> Only JPEG, PNG, JPG files are allowed. Max 10.0MB. </div>
                 </label>
             </form>
+        </div>
+            
 
            <!-- <div class="small-cards">
                 <h3 style="margin-bottom:.4em;margin-left:12px;color:#0a4a98;font-weight:700">Recent Patients</h3>
