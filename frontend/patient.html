@@ -287,7 +287,7 @@
           <tr>
             <th style="width:180px">Waveform status</th>
             <th style="width:500px;text-align:center;">Explanation</th>
-            <th style="width:500px;text-align:center;">Solution</th>
+            <th style="width:500px;text-align:center;">Recommendation</th>
             <th style="width:140px">Date</th>
             <th style="width:120px">Time</th>
           </tr>
@@ -366,8 +366,8 @@
 <script>
 // pid=...
 function getPidFromURL() {
-  const pidStr = new URLSearchParams(location.search).get('pid');
-  const pidNum = parseInt(pidStr, 10);
+  const pidStr = new URLSearchParams(location.search).get('pid');  // extract PID from link as string
+  const pidNum = parseInt(pidStr, 10);  // convert to intger
   return Number.isFinite(pidNum) ? pidNum : 0;
 }
 </script>
@@ -377,9 +377,9 @@ function getPidFromURL() {
 // bring patient's name and displays it on the page
 document.addEventListener("DOMContentLoaded", () => {
   const pid = getPidFromURL();
-  fetch(`PHPpatient.php?pid=${pid}&mode=patient`)
-    .then(r=>r.json())
-    .then(data=>{
+  fetch(`PHPpatient.php?pid=${pid}&mode=patient`)//The page sends a request to the PHP backend to retrieve the patient's name
+    .then(r=>r.json())//convert response from php to json
+    .then(data=>{  //insert name inside the page
       const nameElement=document.querySelector(".PName h2");
       nameElement.textContent = (nameElement && data.name) ? data.name : "Unknown Patient";
     });
@@ -406,22 +406,24 @@ function fmtDateTime(mysqlTs, locale='en-GB'){
   if(!mysqlTs) return '-';
   const iso=String(mysqlTs).replace(' ','T');
   const d=new Date(iso); if(isNaN(d)) return mysqlTs;
-  return new Intl.DateTimeFormat(locale,{
+  return new Intl.DateTimeFormat(locale,{  //create new object
     year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',
     hour12:false,timeZone:'Asia/Riyadh'
   }).format(d);
 }
+
 function fmtDate(mysqlTs, locale='en-GB'){
   if(!mysqlTs) return '-';
   const iso=String(mysqlTs).replace(' ','T');
   const d=new Date(iso); if(isNaN(d)) return mysqlTs;
-  return new Intl.DateTimeFormat(locale,{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Riyadh'}).format(d);
+  return new Intl.DateTimeFormat(locale,{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Riyadh'}).format(d); //create new object
 }
+
 function fmtTime(mysqlTs, locale='en-GB'){
   if(!mysqlTs) return '-';
   const iso=String(mysqlTs).replace(' ','T');
   const d=new Date(iso); if(isNaN(d)) return mysqlTs;
-  return new Intl.DateTimeFormat(locale,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Riyadh'}).format(d);
+  return new Intl.DateTimeFormat(locale,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Riyadh'}).format(d);  //create new object
 }
 </script>
 
@@ -432,11 +434,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const pid = getPidFromURL();
   const tbody=document.querySelector(".analysis-table tbody");
   const anomalyInfo={
-    "Double Trigger":{explanation:"Overlapping breaths due to short inspiratory time.",solution:"Increase inspiratory time or adjust trigger sensitivity."},
-    "Auto Trigger":{explanation:"Breaths triggered without effort (leak/high sensitivity).",solution:"Fix leaks and reduce trigger sensitivity."},
-    "Flow Asynchrony":{explanation:"Mismatch between patient demand and ventilator flow.",solution:"Increase flow or adjust pressure support."},
-    "Normal":{explanation:"Waveform within normal pattern.",solution:"Continue monitoring."},
-    "None":{explanation:"Waveform within normal pattern.",solution:"Continue monitoring."}
+    "Double Trigger":{explanation:"Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",solution:"Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"},
+    "Accumulation":{explanation:"Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",solution:"Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."},
+    "Leak":{explanation:"Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",solution:"Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"},
+    "Premature cycling":{explanation:"Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient’s inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",solution:"Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"},
+    "Ineffective effort":{explanation:"Ineffective  effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",solution:"Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."},
+    "Normal":{explanation:"Waveform within normal pattern.",solution:"Continue routine monitoring"}
   };
   const getSeverityClass=(level)=>{ if(!level) return ""; const s=level.toLowerCase(); if(s.includes("high")||s.includes("critical"))return"critical"; if(s.includes("moderate"))return"moderate"; return"normal"; };
 
@@ -467,11 +470,11 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
 (function(){
   const pid = getPidFromURL();;
-  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));   // Escape dangerous characters to prevent HTML injection in comments
   function loadComments(){
     const panel=document.querySelector('.comment-card'); if(!panel) return;
     const inputBox=panel.querySelector('.comment-input');
-    panel.querySelectorAll('.comment-block').forEach(el=>el.remove());
+    panel.querySelectorAll('.comment-block').forEach(el=>el.remove());  //  Remove existing comment blocks before reloading
     fetch(`PHPpatient.php?mode=comments&pid=${encodeURIComponent(pid)}&_=${Date.now()}`,{cache:'no-store'})
       .then(res=>res.json())
       .then(list=>{
@@ -485,7 +488,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="comment-content">${esc(comment.text||'')}</div>
           `;
-          panel.insertBefore(block,inputBox);
+          panel.insertBefore(block,inputBox);   // Insert each comment above the input box
         });
       })
       .catch(err=>{
@@ -527,10 +530,10 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   const btnOpen=item.querySelector('.btn-open');
   const dateBox=panel.querySelector('.report-date');
   try{
-    const res=await fetch(`PHPpatient.php?mode=report&pid=${encodeURIComponent(pid)}&_=${Date.now()}`,{cache:'no-store'});
+    const res=await fetch(`PHPpatient.php?mode=report&pid=${encodeURIComponent(pid)}&_=${Date.now()}`,{cache:'no-store'});//Sending a request to the PHP file to retrieve the latest report.
     const data=await res.json();
     if(data.status==='success'&&data.filePath){
-      const rel=String(data.filePath).replace(/^\/+/,''); const url=`/Tanafas/reports/${encodeURI(rel)}`;
+      const rel=String(data.filePath).replace(/^\/+/,''); const url=`/Tanafas/reports/${encodeURI(rel)}`;//make url for report
       btnOpen.disabled=false; btnOpen.title='Open last report'; btnOpen.onclick=()=>window.open(url,'_blank');
       if(data.timestamp){ const txt=fmtDateTime(data.timestamp); dateBox.textContent=txt; dateBox.title=data.timestamp; }
     }else{
@@ -552,7 +555,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   if (!btn) return;
 
   
-  const normalize = (raw) => {
+  const normalize = (raw) => {//Converts any result coming from PHP into an array, even if it's empty. 
     if (!raw) return [];
     if (Array.isArray(raw)) return raw;
     if (raw.status === "empty") return [];
@@ -564,8 +567,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   };
 
   btn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault();      //Preventing the page from refreshing.
+    e.stopPropagation();     // 
 
     const pid = getPidFromURL();
     if (!pid) {

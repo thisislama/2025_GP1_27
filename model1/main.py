@@ -35,8 +35,22 @@ model.load_state_dict(
     torch.load("best_resnet18_2.pth", map_location="cpu")
 )
 model.eval()
+# new step :
+class RoughWaveformCrop:
+    def __call__(self, img):
+        w, h = img.size
+
+        # قص تقريبي لمنطقة waveform
+        left   = int(w * 0.05)
+        right  = int(w * 0.95)
+
+        top    = int(h * 0.25)
+        bottom = int(h * 0.6)
+
+        return img.crop((left, top, right, bottom))
 
 transform = transforms.Compose([
+     RoughWaveformCrop(),          #NEW
     transforms.Resize((224, 224)),
     DenoiseTransform(),
     transforms.ToTensor(),

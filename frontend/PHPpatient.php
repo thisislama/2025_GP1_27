@@ -1,6 +1,9 @@
 <?php
+// Specifies that the server response is JSON encoded in UTF-8.
 header('Content-Type: application/json; charset=utf-8');
+// Prevents the browser from caching the response; forces fresh data on every request.
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+// Indicates that the response should be considered immediately expired (no caching).
 header('Expires: 0');
 
 error_reporting(E_ALL);
@@ -72,7 +75,9 @@ elseif ($mode === 'analysis') {
             ];
         }
     }
+    // Return the analysis data as JSO
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    // Free the MySQL result from memory after use
     if ($result) mysqli_free_result($result);
 }
 
