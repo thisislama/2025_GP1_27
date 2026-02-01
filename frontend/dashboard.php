@@ -180,6 +180,34 @@ function getWaveformType($fileType)
     return $types[$fileType] ?? 'Unknown';
 }
 
+  // Get analysis history data
+$sql = "
+    SELECT 
+        wa.waveImg_id,
+        p.PID,
+        p.first_name,
+        p.last_name,
+        p.phone,
+        p.gender,
+        wa.timestamp as analysis_date,
+        wa.status,
+        wa.anomaly_type,
+        wa.finding_notes
+    FROM waveform wa
+    JOIN Patient p ON wa.PID = p.PID
+    JOIN patient_doctor_assignments pda ON p.PID = pda.PID
+    WHERE pda.userID = ? 
+    ORDER BY wa.timestamp DESC
+    LIMIT 3
+";
+
+// Prepare and execute with userID parameter
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result2 = $stmt->get_result();
+$results2 = $result2->fetch_all(MYSQLI_ASSOC);
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -334,6 +362,8 @@ function getWaveformType($fileType)
             width:100%
         }
         */
+
+     
         </style>    
 </head>
 <body>
@@ -386,9 +416,14 @@ function getWaveformType($fileType)
             <span class="material-symbols-outlined" style="font-size: 2em; margin-right:1.24em;">logout</span></button>
         </form>
     </nav>
-
+    <!--
+     <div class="dashboard-header">
+            <h1>Hello <?php echo $_SESSION['doctorName'] ?>,</h1>
+            <p class="subtitle">This is what we've got for you today.</p>
+        </div>
+-->
     <div class="stats-grid">
-                <div class="stat anomaly">
+                <div class="stat anomaly" style="box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em; border-left: 4px solid #e53935;">
                     <div>
                         <div class="label" >Abnormality</div>
                         <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
@@ -400,7 +435,7 @@ function getWaveformType($fileType)
                     </div>
                 </div>
 
-                <div class="stat analysis">
+                <div class="stat analysis" style="box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em; border-left: 4px solid #143ab5ff;">
                     <div>
                         <div class="label" >Analysis</div>
                         <div class="value"><?php echo $stats['total_scans']; ?></div>
@@ -411,7 +446,7 @@ function getWaveformType($fileType)
                     </div>
                 </div>
 
-                <div class="stat patient">
+                <div class="stat patient" style="box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em; border-left: 4px solid #2b4a77;">
                     <div>
                         <div class="label" >Patients</div>
                         <div class="value"><?php echo $stats['patients'] ?></div>
@@ -423,12 +458,11 @@ function getWaveformType($fileType)
                     </div>
                 </div>
 
-                <div class="stat reports">
+                <div class="stat reports" style="box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em; border-left: 4px solid #0a76fc;">
                     <div>
                         <div class="label" >Reports</div>
-                        <div class="value"><?php echo $stats['patients'] ?></div>
-                        <div class="under"><?php echo $stats['patients'] ?>  total number of generated reports</div>
-
+                        <div class="value"><?php echo $stats['reports'] ?? 0 ?></div>
+                        <div class="under"><?php echo $stats['reports'] ?? 0 ?>  total number of generated reports</div>
                     </div>
                     <div class="icon patient" >
                         <span  style="font-size: 1.85em;text-align: center" class="material-symbols-outlined">Assignment_add</span>
@@ -436,7 +470,9 @@ function getWaveformType($fileType)
                 </div>
     </div>
 
-    <main class="container">    
+    
+    <main class="container">
+            
         <!-- LEFT -->
         <section class="left-column">
             <!--
@@ -522,31 +558,39 @@ function getWaveformType($fileType)
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
                                         <th>Patient</th>
+                                        <th>Date</th>
                                         <th>Result</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                     <?php
+                    if (!empty($results2)) {
+                        foreach ($results2 as $row) {
+                            $patient_id = $row['PID'];
+                            $analysis_id = $row['waveImg_id'];
+                            $full_name = htmlspecialchars($row['first_name'] . " " . $row['last_name']);
+                            $phone = htmlspecialchars($row['phone']);
+                            $date = date('Y-m-d', strtotime($row['analysis_date']));
+                            $time = date('H:i', strtotime($row['analysis_date']));
+                            $status = $row['status'];
+                            $anomaly_type = $row['anomaly_type'] ?: 'N/A';
+
+                            echo "  
                                     <tr>
-                                        <td>Today</td>
-                                        <td>P-1001</td>
-                                        <td>Abnormal</td>
-                                        <td><span class="status-badge completed">Normal</span></td>
+                                        <td>P{$patient_id}</td>
+                                        <td>{$date}</td>
+                                        <td>{$anomaly_type}</td>
+                                        <td><span class='status-badge completed'>{$status}</span></td>
                                     </tr>
-                                    <tr>
-                                        <td>Today</td>
-                                        <td>P-1005</td>
-                                        <td>Normal</td>
-                                        <td><span class="status-badge completed">Normal</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>23.05</td>
-                                        <td>P-1002</td>
-                                        <td>Normal</td>
-                                        <td><span class="status-badge pending">Abnormal</span></td>
-                                    </tr>
+                                    ";
+                        } } else {
+                    echo "<tr><td colspan='9' class='no-data'><img style='height:10em; margin:.5em' src='images/nores.png' alt='no-result'>.
+                    <br>No analysis history found.
+                    </td></tr>";
+                    }
+                    ?>  
                                 </tbody>
                             </table>
                         </div>

@@ -410,7 +410,6 @@ if (isset($_SESSION['error_message'])) {
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
-                        <!--<th>Severity level</th>-->
                         <th>Anomaly type</th>
                     </tr>
                     </thead>
@@ -418,15 +417,13 @@ if (isset($_SESSION['error_message'])) {
                     <?php
                     if (!empty($results)) {
                         foreach ($results as $row) {
-                            // $patient_id = "P".substr($row['PID'],-4)."A".substr($row['waveAnalysisID'],-2);
                             $patient_id = $row['PID'];
-                            $analysis_id = $row['waveAnalysisID'];
+                            $analysis_id = $row['waveImg_id'];
                             $full_name = htmlspecialchars($row['first_name'] . " " . $row['last_name']);
                             $phone = htmlspecialchars($row['phone']);
                             $date = date('Y-m-d', strtotime($row['analysis_date']));
                             $time = date('H:i', strtotime($row['analysis_date']));
                             $status = $row['status'];
-                          //  $severity = $row['severity_level'] ?: 'N/A';
                             $anomaly_type = $row['anomaly_type'] ?: 'N/A';
 
                           
@@ -448,7 +445,7 @@ if (isset($_SESSION['error_message'])) {
 
                             echo "
                         <tr>
-                        <td><input type='checkbox' name='selected_rows[]' value='{$row['waveAnalysisID']}' class='row-checkbox'></td>
+                        <td><input type='checkbox' name='selected_rows[]' value='{$row['waveImg_id']}' class='row-checkbox'></td>
                         <td>P{$patient_id}</td>
                         <td>{$analysis_id}</td>
                         <td>{$full_name}</td>

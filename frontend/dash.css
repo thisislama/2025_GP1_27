@@ -60,7 +60,7 @@
 
         body {
             margin: 0.5em;
-            background: var(--bg);
+            background: #f2f6fb!important;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             color: #15314b;
@@ -197,7 +197,7 @@
         .upload-card {
             background: var(--bg-white);
             border-radius: var(--border-radius);
-            box-shadow: rgba(169, 175, 188, 0.69) -0.01em 0.01em 0.5em 0.1em;
+         /*  box-shadow: rgba(169, 175, 188, 0.69) -0.01em 0.01em 0.5em 0.1em;*/
             padding: 1.5rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             min-height: 60vh;
@@ -278,9 +278,9 @@
             grid-template-columns:repeat(4, 1fr);
             gap: .255em;
             position: relative;
-            top: 5%;
+            top: 5.55%;
             padding: 1em;
-            margin: 2.5em;
+            margin: 2.575em;
             /*
             margin-top: 8em;
             margin-left: 1.5em;
@@ -297,6 +297,7 @@
             box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
             width: 18em;
         }
+        /*
         .anomaly{
             background: #ffe0e0;
             color: #ff0022;
@@ -329,7 +330,7 @@
             font-weight: 600;
             font-size: 0.75em;  
         }
-
+*/
          .under{
             font-size: 0.8em;
             font-weight: 600;
@@ -745,12 +746,11 @@
         .result-card {
             background: #fff;
             border: 1px solid #e9eef6;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, .35);
+          /*  box-shadow: 0 1px 6px rgba(0, 0, 0, .35);*/
         }
         .upload-card{
             border: none;
             box-shadow: none;
-
         }
 
         .upload-drop {
