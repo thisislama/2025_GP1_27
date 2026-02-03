@@ -81,7 +81,7 @@ if ($conn->connect_error) {
 
         if (!empty($selected_ids)) {
             $ids_string = implode(',', $selected_ids);
-            $delete_sql = "DELETE FROM waveform_analysis WHERE waveAnalysisID IN ($ids_string)";
+            $delete_sql = "DELETE FROM waveform WHERE waveImg_id IN ($ids_string)";
 
             if ($conn->query($delete_sql) === TRUE) {
                 $_SESSION['success_message'] = "Successfully deleted " . count($selected_ids) . " record(s).";

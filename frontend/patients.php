@@ -1898,7 +1898,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(() => {
           resultDiv.innerHTML = "<p style='color:#c00;'>❌ Network error while searching.</p>";
         });
-    }, 300); // ⏱ تأخير بسيط بعد آخر حرف
+    }, 300); 
   });
 
   

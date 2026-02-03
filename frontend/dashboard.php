@@ -99,7 +99,7 @@ if ($recent_result) {
 }
 
 
-         // Handle file upload
+         /* Handle file upload
         $upload_result = [];
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['waveform_file'])) {
     $upload_result = handleFileUpload($conn, $userID);
@@ -109,10 +109,10 @@ if ($recent_result) {
     } else {
         $upload_message = $upload_result['error'];
     }
-}
+}*/
 }
 
-
+/*
 function handleFileUpload($conn, $userID)
 {
     $target_dir = "uploads/";
@@ -169,7 +169,7 @@ function handleFileUpload($conn, $userID)
         return ['error' => "Error uploading file."];
     }
 }
-
+*/
 function getWaveformType($fileType)
 {
     $types = [
@@ -489,9 +489,9 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
                 <div class="card-header">
                     <h2 class="card-title">Upload an Image</h2>
                 </div>
-            <form method="post" enctype="multipart/form-data" class="upload-card" style="box-shadow: rgba(169,175,188,0.69) -.01em .01em 0.5em .1em">    
-            <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
-              <label for="fileUpload" class="upload-drop" id="dropzone">
+            <form id="uploadForm" method="post" enctype="multipart/form-data" class="upload-card">
+                <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
+                <label for="fileUpload" class="upload-drop" id="dropzone">
                 <div class="hint">Upload your Waveform Image</div>
                 <div style="font-size:28px;opacity:0.65">
                     <img class="upImg" src="images/upload2.png" style="height:6em;" alt="upload">
@@ -502,6 +502,12 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
                 </label>
             </form>
         </div>
+
+        <div id="uploadLoader" style="display:none; text-align:center; margin-top:1em;">
+            <img src="images/loading.gif" alt="Loading..." style="height:80px;">
+            <p>Analyzing waveform…</p>
+        </div>
+
             
 
            <!-- <div class="small-cards">
@@ -552,7 +558,7 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Recent Analysis</h2>
-                            <button class="btn-text">View All →</button>
+                            <button class="btn-text"><a href="history2.php">View All →</a></button>
                         </div>
                         <div class="transactions-table">
                             <table>
@@ -607,58 +613,56 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
                         <div class="account-info">
                             <div class="account-number">Total: <?php echo $stats['patients'] ?? '0' ?> Patients</div>
                             <div class="account-actions">
-                                <button class="btn-secondary">View All</button>
+                                <button class="btn-secondary"><a href="patients.php">View All</a></button>
                                 <button class="btn-secondary">Generate Report</button>
                             </div>
                         </div>
             </div>
         <!-- RECENT PATIENTS -->
 
-             <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Recent Patients</h2>
+            <div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Recent Patients</h2>
+    </div>
+
+    <?php if (!empty($recent_patients)): ?>
+        <div class="patients-list">
+            <?php foreach ($recent_patients as $patient): ?>
+                <div class="patient-item"
+                     onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>';">
+
+                    <div class="patient-info">
+                        <div class="patient-icon">
+                            <span class="material-symbols-outlined">person</span>
                         </div>
-                        <div class="patients-list">
-                            <div class="patient-item">
-                                <div class="patient-info">
-                                    <div class="patient-icon">
-                                        <span class="material-symbols-outlined">person</span>
-                                    </div>
-                                    <div>
-                                        <div class="patient-name">P-1001 • Michael Chen</div>
-                                        <div class="patient-details">Age: 54 • Last visit: 2 days ago</div>
-                                    </div>
-                                </div>
-                                <div class="patient-status abnormal">Abnormal</div>
+
+                        <div>
+                            <div class="patient-name">
+                                P-<?php echo $patient['PID']; ?> •
+                                <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?>
                             </div>
 
-                            <div class="patient-item">
-                                <div class="patient-info">
-                                    <div class="patient-icon">
-                                        <span class="material-symbols-outlined">person</span>
-                                    </div>
-                                    <div>
-                                        <div class="patient-name">P-1002 • Sarah Johnson</div>
-                                        <div class="patient-details">Age: 67 • Last visit: 3 days ago</div>
-                                    </div>
-                                </div>
-                                <div class="patient-status normal">Normal</div>
-                            </div>
-
-                            <div class="patient-item">
-                                <div class="patient-info">
-                                    <div class="patient-icon">
-                                        <span class="material-symbols-outlined">person</span>
-                                    </div>
-                                    <div>
-                                        <div class="patient-name">P-1003 • Robert Williams</div>
-                                        <div class="patient-details">Age: 48 • Last visit: 5 days ago</div>
-                                    </div>
-                                </div>
-                                <div class="patient-status abnormal">Abnormal</div>
+                            <div class="patient-details">
+                                DOB: <?php echo $patient['dob'] ?? 'Unknown'; ?> •
+                                Last visit: <?php echo $patient['last_visit'] ?? 'Today'; ?>
                             </div>
                         </div>
                     </div>
+
+                    <div class="patient-status <?php echo strtolower($patient['status']); ?>">
+                        <?php echo $patient['status']; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="none" style="margin-left:1.2em;margin-top:.8em;">
+            No recent patients found.
+        </p>
+    <?php endif; ?>
+</div>
+
+
            <!-- <div class="stats-grid">
                 <div class="stat anomaly">
                     <div>
@@ -760,32 +764,130 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
     </div>
 </footer>
 <script>
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.getElementById('fileUpload');
-    const resultArea = document.getElementById('resultArea');
+const fileInput = document.getElementById('fileUpload');
+const form = document.getElementById('uploadForm');
+const loader = document.getElementById('uploadLoader');
+const dropzone = document.getElementById('dropzone');
 
-    // Only use click event - no drag & drop to avoid conflicts
-    dropzone.addEventListener('click', (e) => {
+// Debug logging
+console.log("=== UPLOAD DEBUG ===");
+console.log("File Input Found:", !!fileInput);
+console.log("Form Found:", !!form);
+console.log("Loader Found:", !!loader);
+console.log("Dropzone Found:", !!dropzone);
+
+// Simple upload handler
+fileInput.addEventListener('change', async function(e) {
+    console.log("File selected:", this.files[0]);
+    
+    if (!this.files.length) {
+        console.error("No file selected");
+        return;
+    }
+    
+    // Show loader
+    if(loader) loader.style.display = 'block';
+    
+    try {
+        const formData = new FormData();
+        formData.append('waveform_file', this.files[0]);
+        
+        console.log("Sending to upload_waveform.php...");
+        
+        // Add timeout to prevent hanging
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
+        const response = await fetch("upload_waveform.php", {
+            method: "POST",
+            body: formData,
+            signal: controller.signal,
+            credentials: 'same-origin' // Important for session cookies
+        });
+        
+        clearTimeout(timeoutId);
+        
+        console.log("Response Status:", response.status);
+        console.log("Response OK:", response.ok);
+        
+        // Get response as text first
+        const responseText = await response.text();
+        console.log("Raw Response:", responseText);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        try {
+            const data = JSON.parse(responseText);
+            console.log("Parsed JSON:", data);
+            
+            if (data.success) {
+                alert("✓ Upload successful!");
+                console.log("Redirecting to:", data.redirect || 'dashboard');
+                
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    window.location.reload();
+                }
+            } else {
+                alert("✗ Error: " + (data.error || "Unknown error"));
+                console.error("Upload failed:", data.error);
+            }
+        } catch (jsonError) {
+            console.error("JSON Parse Error:", jsonError);
+            console.error("Response was:", responseText);
+            alert("Server returned invalid JSON. See console for details.");
+        }
+        
+    } catch (error) {
+        console.error("Upload Error:", error);
+        
+        if (error.name === 'AbortError') {
+            alert("Upload timeout. Please try again.");
+        } else {
+            alert("Upload failed: " + error.message);
+        }
+    } finally {
+        // Hide loader
+        if(loader) loader.style.display = 'none';
+        // Reset file input
+        this.value = '';
+    }
+});
+
+// Drag and drop support
+if (dropzone) {
+    dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
-        e.stopPropagation();
+        dropzone.style.backgroundColor = '#f0f7ff';
+    });
+    
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.style.backgroundColor = '';
+    });
+    
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.style.backgroundColor = '';
+        
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+}
+
+// Also allow clicking on dropzone to trigger file input
+if (dropzone) {
+    dropzone.addEventListener('click', () => {
         fileInput.click();
     });
-
-    // Handle file selection
-    fileInput.addEventListener('change', (e) => {
-        const f = e.target.files[0];
-        if (!f) return;
-         
-        resultArea.textContent = 'Uploading: ' + f.name;
-        
-        // Auto-submit form after short delay
-        setTimeout(() => {
-            fileInput.closest('form').submit();
-        }, 500);
-    });
-
-  
+}
 </script>
+
+
 </body>
 </html>
 

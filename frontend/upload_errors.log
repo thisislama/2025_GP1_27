@@ -1,0 +1,11 @@
+[02-Feb-2026 18:09:02 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 3) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 11
+[02-Feb-2026 18:09:02 UTC] PHP Warning:  http_response_code(): Cannot set response code - headers already sent (output started at C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php:11) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 57
+[02-Feb-2026 18:13:24 UTC] Upload Error: Unknown column 'confidence' in 'field list'
+[02-Feb-2026 18:13:48 UTC] Upload Error: Unknown column 'confidence' in 'field list'
+[02-Feb-2026 18:15:04 UTC] Upload Error: Unknown column 'confidence' in 'field list'
+[02-Feb-2026 18:17:55 UTC] Upload Error: Unknown column 'confidence' in 'field list'
+[02-Feb-2026 18:20:31 UTC] Upload Error: Data truncated for column 'status' at row 1
+[02-Feb-2026 18:25:12 UTC] Upload Error: Column count doesn't match value count at row 1
+[02-Feb-2026 18:26:22 UTC] Upload Error: Column 'anomaly_type' cannot be null
+[02-Feb-2026 18:27:16 UTC] Upload Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE waveImg_id = ?' at line 5
+[02-Feb-2026 18:30:00 UTC] Upload Error: Data truncated for column 'status' at row 1
