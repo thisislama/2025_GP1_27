@@ -764,6 +764,8 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
     </div>
 </footer>
 <script>
+</script>
+<script>
 const fileInput = document.getElementById('fileUpload');
 const form = document.getElementById('uploadForm');
 const loader = document.getElementById('uploadLoader');
@@ -776,6 +778,23 @@ console.log("Form Found:", !!form);
 console.log("Loader Found:", !!loader);
 console.log("Dropzone Found:", !!dropzone);
 
+
+async function predict() {
+    const input = document.getElementById("fileUpload");
+    const file = input.files[0];
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await response.json();
+    const result2 = data.predicted_class;
+    console.log("Predicted Class:", result2);
+}
 // Simple upload handler
 fileInput.addEventListener('change', async function(e) {
     console.log("File selected:", this.files[0]);
@@ -789,7 +808,21 @@ fileInput.addEventListener('change', async function(e) {
     if(loader) loader.style.display = 'block';
     
     try {
-        const formData = new FormData();
+    const input = document.getElementById("fileUpload");
+    const file = input.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response2 = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await response2.json();
+    const result2 = data.predicted_class;
+    console.log("Predicted Class:", result2);
+
+       // const formData = new FormData();
         formData.append('waveform_file', this.files[0]);
         
         console.log("Sending to upload_waveform.php...");

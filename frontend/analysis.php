@@ -343,7 +343,7 @@ $patientName = $analysis['first_name'] . ' ' . $analysis['last_name'];
             display: flex;
             gap: 1em;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: left;
         }
         
         .btn-primary, .btn-secondary, .btn-outline {
@@ -859,7 +859,7 @@ $patientName = $analysis['first_name'] . ' ' . $analysis['last_name'];
                 <?php elseif ($status === 'normal'): ?>
                 <div class="recommendation-section" style="border-left-color: var(--success);">
                     <div class="recommendation-title">
-                        <i class="fas fa-check-circle"></i> Follow-up Recommendation
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i> Follow-up Recommendation
                     </div>
                     <div class="recommendation-content">
                         <p>No significant anomalies detected. Routine follow-up as per standard care protocol is recommended.</p>

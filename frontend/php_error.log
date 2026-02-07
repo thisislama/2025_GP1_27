@@ -48,3 +48,8 @@ Stack trace:
 #0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
 #1 {main}
   thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63
+[03-Feb-2026 22:38:50 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.waveform_analysis' doesn't exist in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php:63
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63
