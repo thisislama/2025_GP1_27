@@ -1,4 +1,23 @@
 <?php
+session_start();
+
+// Check if user is logged in
+if (empty($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized. Please sign in.']);
+    exit;
+}
+
+require_once 'db_connection.php';
+
+$userID = (int)$_SESSION['user_id'];
+
+// Check if file was uploaded
+if (!isset($_FILES['waveform_file'])) {
+    echo json_encode(['error' => 'No file uploaded']);
+    exit;
+}
+
 function handleFileUpload($conn, $userID)
 {
     $target_dir = "uploads/";
@@ -17,6 +36,9 @@ function handleFileUpload($conn, $userID)
 
     $file = $_FILES['waveform_file'];
     $filename = basename($file["name"]);
+    
+    // Sanitize filename
+    $filename = preg_replace("/[^a-zA-Z0-9.]/", "_", $filename);
     $target_file = $target_dir . time() . "_" . $filename;
     $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
@@ -34,10 +56,15 @@ function handleFileUpload($conn, $userID)
 
     // Upload file
     if (!move_uploaded_file($file["tmp_name"], $target_file)) {
-        return ['error' => 'File upload failed. Check directory permissions.'];
+        $error = error_get_last();
+        return ['error' => 'File upload failed. Error: ' . ($error['message'] ?? 'Unknown error')];
     }
 
-    // Get a valid patient ID assigned to this doctor
+    // FIXED: For foreign key constraint, we need a valid PID
+    // OPTION A: Create a temporary patient for pending uploads (if you want)
+    // OPTION B: Use the first patient assigned to doctor (temporary)
+    
+    // Let's use the first patient assigned to this doctor as a temporary holder
     $pid_sql = "SELECT PID FROM patient_doctor_assignments WHERE userID = ? LIMIT 1";
     $pid_stmt = $conn->prepare($pid_sql);
     $pid_stmt->bind_param("i", $userID);
@@ -45,21 +72,22 @@ function handleFileUpload($conn, $userID)
     $pid_result = $pid_stmt->get_result();
     
     if ($pid_result->num_rows === 0) {
-        // Delete the uploaded file since we can't save it to DB
+        // No patients assigned - we can't proceed
         unlink($target_file);
-        return ['error' => 'No patients assigned to you. Please assign patients first.'];
+        return ['error' => 'No patients assigned to you. Please assign a patient first.'];
     }
     
     $patient = $pid_result->fetch_assoc();
-    $patientID = $patient['PID'];
+    $temp_patient_id = $patient['PID']; // Use first patient as temporary holder
     $pid_stmt->close();
 
-    // Insert into waveform table - DON'T specify waveImg_id, let it auto-increment
+    // Insert into waveform table with a temporary patient ID
+    // We'll update this later when doctor chooses the actual patient
     $sql = "INSERT INTO waveform (userID, PID, filePath, timestamp, status, anomaly_type, finding_notes) 
-            VALUES (?, ?, ?, NOW(), 'normal', NULL, 'Analysis pending')";
+            VALUES (?, ?, ?, NOW(), 'normal', NULL, 'Awaiting patient assignment')";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $userID, $patientID, $target_file);
+    $stmt->bind_param("iis", $userID, $temp_patient_id, $target_file);
 
     if (!$stmt->execute()) {
         // Delete the uploaded file since DB insert failed
@@ -70,29 +98,23 @@ function handleFileUpload($conn, $userID)
     $waveImg_id = $stmt->insert_id;
     $stmt->close();
 
-    // FIXED: Remove the extra comma before WHERE
-    $update_sql = "UPDATE waveform SET 
-                   status = 'normal', 
-                   anomaly_type = 'No anomaly detected',
-                   finding_notes = 'Normal waveform pattern detected. No significant abnormalities found.'
-                   WHERE waveImg_id = ?";
-    
-    $update_stmt = $conn->prepare($update_sql);
-    $update_stmt->bind_param("i", $waveImg_id);
-    
-    if (!$update_stmt->execute()) {
-        error_log("Update failed: " . $update_stmt->error);
-        // Don't return error here, just log it - the upload was still successful
-    }
-    
-    $update_stmt->close();
-
     return [
         'success' => true,
-        'message' => 'File uploaded and analyzed successfully!',
+        'message' => 'File uploaded successfully! Please assign to a patient.',
         'file_path' => $target_file,
         'waveImg_id' => $waveImg_id,
         'redirect' => 'analysis.php?id=' . $waveImg_id
     ];
+}
+
+// Process the upload
+$result = handleFileUpload($conn, $userID);
+
+// Return JSON response
+header('Content-Type: application/json');
+echo json_encode($result);
+
+if (isset($conn)) {
+    $conn->close();
 }
 ?>

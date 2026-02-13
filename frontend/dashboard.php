@@ -66,6 +66,7 @@ if ($conn->connect_error) {
         SELECT 
             COUNT(wa.waveImg_id) AS total_scans,
             SUM(CASE WHEN wa.status = 'anomaly' THEN 1 ELSE 0 END) AS anomalies
+            ,MAX(wa.timestamp) AS last_visit
         FROM waveform wa
         WHERE wa.PID IN (SELECT PID FROM patient_doctor_assignments WHERE userID = ?)
     ";
@@ -82,7 +83,7 @@ if ($conn->connect_error) {
 
    // Get recent patients with details
     $recent_sql = "
-    SELECT p.PID, p.first_name, p.last_name, p.status
+    SELECT p.PID, p.first_name, p.last_name, p.status, p.DOB
     FROM Patient p
     INNER JOIN patient_doctor_assignments pda ON p.PID = pda.PID
     WHERE pda.userID = ?
@@ -99,77 +100,7 @@ if ($recent_result) {
 }
 
 
-         /* Handle file upload
-        $upload_result = [];
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['waveform_file'])) {
-    $upload_result = handleFileUpload($conn, $userID);
-    if (isset($upload_result['success'])) {
-        $upload_message = $upload_result['success'];
-        $_SESSION['last_uploaded_image'] = $upload_result['file_path'];
-    } else {
-        $upload_message = $upload_result['error'];
-    }
-}*/
 }
-
-/*
-function handleFileUpload($conn, $userID)
-{
-    $target_dir = "uploads/";
-    if (!file_exists($target_dir)) {
-        mkdir($target_dir, 0777, true);
-    }
-
-    $filename = basename($_FILES["waveform_file"]["name"]);
-    $target_file = $target_dir . time() . "_" . $filename;
-    $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    // Check file type
-    $allowed_types = ['png', 'jpg', 'jpeg'];
-    if (!in_array($fileType, $allowed_types)) {
-        return ['error' => "Error: Only PNG, JPG, JPEG files are allowed."];
-    }
-
-    // Check file size (10MB max)
-    if ($_FILES["waveform_file"]["size"] > 10000000) {
-        return ['error' => "Error: File is too large. Maximum size is 10MB."];
-    }
-
-    // Upload file
-    if (move_uploaded_file($_FILES["waveform_file"]["tmp_name"], $target_file)) {
-        // Get a random patient ID for demonstration
-        $patient_sql = "SELECT PID FROM Patient ORDER BY RAND() LIMIT 1";
-        $patient_result = $conn->query($patient_sql);
-        $patient_id = $patient_result->fetch_assoc()['PID'];
-
-        // Insert into Waveform_Img table
-        $waveform_sql = "
-            INSERT INTO Waveform_Img (userID, filePath, timestamp) 
-            VALUES (?, ?, NOW())
-        ";
-        $stmt = $conn->prepare($waveform_sql);
-       // $waveform_type = getWaveformType($fileType);
-        $stmt->bind_param("is", $userID, $target_file);
-
-        if ($stmt->execute()) {
-            $wave_img_id = $stmt->insert_id;
-
-            // Create analysis entry
-            //  $analysis_result = createWaveformAnalysis($conn, $wave_img_id, $patient_id);
-
-            return [
-                'success' => "File uploaded successfully!",
-                'file_path' => $target_file,
-                'file_name' => $filename
-            ];
-        } else {
-            return ['error' => "Error saving file information to database."];
-        }
-    } else {
-        return ['error' => "Error uploading file."];
-    }
-}
-*/
 function getWaveformType($fileType)
 {
     $types = [
@@ -215,156 +146,11 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>TANAFS Dashboard</title>
-        <link rel="icon" type="image/png" href="/images/fi.png">
-
+    <link rel="icon" type="image/png" href="/images/fi.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
     <link rel="stylesheet" href="dash.css"/>
     <link rel="stylesheet" href="styles.css"/>
 
-
-    <style>/*
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        }
-
-   .stat {
-        padding: .5em;
-        border-radius: 0.55em;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em;
-        height:16vh;
-        }
-       
-
-    .stat.anomaly {
-        background-color: #fff;
-        border-left: 4px solid #e53935;
-    }
-
-    .stat.anomaly .label,
-    .stat.anomaly .value {
-        font-size: 1.13em;
-        color: #772b2bff;
-        font-weight: 700;
-        margin-left:.445em
-    }
-
-    .stat.anomaly .under {
-        color: #6c757d;
-        font-size: .7em;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        margin-left:.445em
-
-    }
-
-    .stat.analysis {
-        background-color: #fff;
-        border-left: 4px solid #143ab5ff;
-    }
-
-    .stat.analysis .label,
-    .stat.analysis .value {
-        font-size: 1.13em;
-        color: #01124fff;
-        font-weight: 700;
-        margin-left:.445em
-
-    }
-
-    .stat.analysis .under {
-        color: #6c757d;
-        font-size: .7em;
-        margin-left:.445em
-    }
-
-    .stat.patient{
-        border-left: 4px solid #7750b8;
-
-    }
-
-    .stat.patient .label,
-    .stat.patient .value {
-        font-size: 1.13em;
-        color: #2b4a77;
-        margin-left:.445em;
-        font-weight: 700;
-    }
-
-    .stat.patient .under {
-        color: #6c757d;
-        font-size: .7em;
-        margin-left:.445em
-
-    }
-
-    .icon {
-        padding: 0.8em;
-        border-radius: 10px;
-        font-weight: 700;
-        font-size: 1.2em;
-        background: #f8f9fa;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .stat.anomaly .icon {
-        background: linear-gradient(135deg, #ffebee, #ffcdd2);
-        color: #e53935;
-        margin-right:.54em;
-        margin-bottom:.85em
-
-
-    }
-
-    .stat.analysis .icon {
-    background: linear-gradient(135deg, #e8ecf5ff, #c8d0e6ff);
-    color: #143ab5ff;
-    margin-right:.54em;
-    margin-bottom:.85em
-
-
-}
-
-
-    .stat.patient .icon {
-        background: linear-gradient(135deg, #f3e5f5, #e1bee7);
-        color: #7750b8;
-        margin-right:1em;
-    }
-
-    .label {
-        font-size: 14px;
-        font-weight: 600;
-        color: #232735;
-        margin-bottom: 8px;
-    }
-
-        .value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #2b4a77;
-            margin-bottom: 8px;
-        }
-
-        .under {
-            font-size: .7em;
-            color: #6c757d;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            width:100%
-        }
-        */
-
-     
-        </style>    
 </head>
 <body>
     <!-- Header for iPad & medium screens only -->
@@ -379,7 +165,6 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
             <a href="dashboard.php" class="nav-link">Dashboard</a>
             <a href="patients.php" class="nav-link">Patients</a>
             <a href="history2.php" class="nav-link">History</a>
-
             <a href="profile.php" class="profile-btn">
                 <img src="images/profile.png" alt="Profile">
             </a>
@@ -643,8 +428,8 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
                             </div>
 
                             <div class="patient-details">
-                                DOB: <?php echo $patient['dob'] ?? 'Unknown'; ?> •
-                                Last visit: <?php echo $patient['last_visit'] ?? 'Today'; ?>
+                                DOB: <?php echo $patient['DOB'] ?? 'Unknown'; ?> 
+                               <!-- • Last analysis: <?php echo $patient['last_visit'] ?? 'Today'; ?>-->
                             </div>
                         </div>
                     </div>
@@ -823,99 +608,75 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
             }
         });
 
-        // Handle file upload
-        async function handleFileUpload(e) {
-            console.log("File selected:", this.files[0]);
-            
-            if (!this.files.length) {
-                console.error("No file selected");
-                return;
-            }
-            
-            // Validate file type
-            const file = this.files[0];
-            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            if (!validTypes.includes(file.type)) {
-                alert('Please select a valid image file (JPEG, PNG, JPG)');
-                return;
-            }
+        // Handle file upload - ONLY UPLOADS FILE, NO DATABASE
+async function handleFileUpload(e) {
+    console.log("File selected:", this.files[0]);
+    
+    if (!this.files.length) {
+        console.error("No file selected");
+        return;
+    }
+    
+    const file = this.files[0];
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, PNG, JPG)');
+        return;
+    }
 
-            // Validate file size (10MB)
-            if (file.size > 10000000) {
-                alert('File is too large. Maximum size is 10MB.');
-                return;
-            }
-            
-            // Show loader
-            if (loader) loader.style.display = 'block';
-            
-            try {
-                const formData = new FormData();
-                formData.append('waveform_file', file);
-                
-                console.log("Sending to upload_waveform.php...");
-                
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 30000);
-                
-                const response = await fetch("upload_waveform.php", {
-                    method: "POST",
-                    body: formData,
-                    signal: controller.signal,
-                    credentials: 'same-origin'
-                });
-                
-                clearTimeout(timeoutId);
-                
-                console.log("Response Status:", response.status);
-                
-                const responseText = await response.text();
-                console.log("Raw Response:", responseText);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                try {
-                    const data = JSON.parse(responseText);
-                    console.log("Parsed JSON:", data);
-                    
-                    if (data.success) {
-                        alert("✓ Upload successful!");
-                        console.log("Redirecting to:", data.redirect || 'analysis.php?id=' + data.waveImg_id);
-                        
-                        if (data.redirect) {
-                            window.location.href = data.redirect;
-                        } else if (data.waveImg_id) {
-                            window.location.href = 'analysis.php?id=' + data.waveImg_id;
-                        } else {
-                            window.location.reload();
-                        }
-                    } else {
-                        alert("✗ Error: " + (data.error || "Unknown error"));
-                        console.error("Upload failed:", data.error);
-                    }
-                } catch (jsonError) {
-                    console.error("JSON Parse Error:", jsonError);
-                    alert("Server returned invalid response. Please check console for details.");
-                }
-                
-            } catch (error) {
-                console.error("Upload Error:", error);
-                
-                if (error.name === 'AbortError') {
-                    alert("Upload timeout. Please try again with a smaller file.");
-                } else {
-                    alert("Upload failed: " + error.message);
-                }
-            } finally {
-                // Hide loader
-                if (loader) loader.style.display = 'none';
-                // Reset file input
-                this.value = '';
-            }
+    if (file.size > 10000000) {
+        alert('File is too large. Maximum size is 10MB.');
+        return;
+    }
+    
+    if (loader) loader.style.display = 'block';
+    
+    try {
+        const formData = new FormData();
+        formData.append('waveform_file', file);
+        
+        console.log("Uploading file...");
+        
+        const response = await fetch("upload_waveform.php", {
+            method: "POST",
+            body: formData,
+            credentials: 'same-origin'
+        });
+        
+        const responseText = await response.text();
+        console.log("Raw Response:", responseText);
+        
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (jsonError) {
+            console.error("JSON Parse Error:", jsonError);
+            throw new Error('Invalid server response');
         }
-
+        
+        if (data.success) {
+            // Store file info in session storage for the analysis page
+            sessionStorage.setItem('temp_upload', JSON.stringify({
+                file_path: data.file_path,
+                file_name: data.file_name
+            }));
+            
+            alert("✓ File uploaded successfully! Now you can save it to a patient.");
+            
+            // Redirect to analysis page with file path
+            window.location.href = 'analysis.php?upload=' + encodeURIComponent(data.file_path);
+        } else {
+            throw new Error(data.error || "Upload failed");
+        }
+        
+    } catch (error) {
+        console.error("Upload Error:", error);
+        alert("Upload failed: " + error.message);
+    } finally {
+        if (loader) loader.style.display = 'none';
+        this.value = '';
+    }
+}
         // Generate report function
         function generateReport() {
             alert("Report generation feature coming soon!");
