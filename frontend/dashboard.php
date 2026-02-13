@@ -763,162 +763,176 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
         <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
     </div>
 </footer>
-<script>
-</script>
-<script>
-const fileInput = document.getElementById('fileUpload');
-const form = document.getElementById('uploadForm');
-const loader = document.getElementById('uploadLoader');
-const dropzone = document.getElementById('dropzone');
 
-// Debug logging
-console.log("=== UPLOAD DEBUG ===");
-console.log("File Input Found:", !!fileInput);
-console.log("Form Found:", !!form);
-console.log("Loader Found:", !!loader);
-console.log("Dropzone Found:", !!dropzone);
+    <script>
+        // DOM Elements
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileUpload');
+        const form = document.getElementById('uploadForm');
+        const loader = document.getElementById('uploadLoader');
 
+        // Debug logging
+        console.log("=== UPLOAD DEBUG ===");
+        console.log("File Input Found:", !!fileInput);
+        console.log("Form Found:", !!form);
+        console.log("Loader Found:", !!loader);
+        console.log("Dropzone Found:", !!dropzone);
 
-async function predict() {
-    const input = document.getElementById("fileUpload");
-    const file = input.files[0];
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response = await fetch("http://127.0.0.1:8000/predict", {
-        method: "POST",
-        body: formData
-    });
-
-    const data = await response.json();
-    const result2 = data.predicted_class;
-    console.log("Predicted Class:", result2);
-}
-// Simple upload handler
-fileInput.addEventListener('change', async function(e) {
-    console.log("File selected:", this.files[0]);
-    
-    if (!this.files.length) {
-        console.error("No file selected");
-        return;
-    }
-    
-    // Show loader
-    if(loader) loader.style.display = 'block';
-    
-    try {
-    const input = document.getElementById("fileUpload");
-    const file = input.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response2 = await fetch("http://127.0.0.1:8000/predict", {
-        method: "POST",
-        body: formData
-    });
-
-    const data = await response2.json();
-    const result2 = data.predicted_class;
-    console.log("Predicted Class:", result2);
-
-       // const formData = new FormData();
-        formData.append('waveform_file', this.files[0]);
-        
-        console.log("Sending to upload_waveform.php...");
-        
-        // Add timeout to prevent hanging
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-        
-        const response = await fetch("upload_waveform.php", {
-            method: "POST",
-            body: formData,
-            signal: controller.signal,
-            credentials: 'same-origin' // Important for session cookies
-        });
-        
-        clearTimeout(timeoutId);
-        
-        console.log("Response Status:", response.status);
-        console.log("Response OK:", response.ok);
-        
-        // Get response as text first
-        const responseText = await response.text();
-        console.log("Raw Response:", responseText);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        try {
-            const data = JSON.parse(responseText);
-            console.log("Parsed JSON:", data);
-            
-            if (data.success) {
-                alert("✓ Upload successful!");
-                console.log("Redirecting to:", data.redirect || 'dashboard');
-                
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                } else {
-                    window.location.reload();
-                }
-            } else {
-                alert("✗ Error: " + (data.error || "Unknown error"));
-                console.error("Upload failed:", data.error);
+        // Initialize event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // File input change handler
+            if (fileInput) {
+                fileInput.addEventListener('change', handleFileUpload);
             }
-        } catch (jsonError) {
-            console.error("JSON Parse Error:", jsonError);
-            console.error("Response was:", responseText);
-            alert("Server returned invalid JSON. See console for details.");
-        }
-        
-    } catch (error) {
-        console.error("Upload Error:", error);
-        
-        if (error.name === 'AbortError') {
-            alert("Upload timeout. Please try again.");
-        } else {
-            alert("Upload failed: " + error.message);
-        }
-    } finally {
-        // Hide loader
-        if(loader) loader.style.display = 'none';
-        // Reset file input
-        this.value = '';
-    }
-});
 
-// Drag and drop support
-if (dropzone) {
-    dropzone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzone.style.backgroundColor = '#f0f7ff';
-    });
-    
-    dropzone.addEventListener('dragleave', () => {
-        dropzone.style.backgroundColor = '';
-    });
-    
-    dropzone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzone.style.backgroundColor = '';
-        
-        if (e.dataTransfer.files.length) {
-            fileInput.files = e.dataTransfer.files;
-            fileInput.dispatchEvent(new Event('change'));
-        }
-    });
-}
+            // Drag and drop handlers
+            if (dropzone) {
+                // Click handler
+                dropzone.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fileInput.click();
+                });
 
-// Also allow clicking on dropzone to trigger file input
-if (dropzone) {
-    dropzone.addEventListener('click', () => {
-        fileInput.click();
-    });
-}
-</script>
+                // Drag over handler
+                dropzone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.add('dragover');
+                });
+
+                // Drag leave handler
+                dropzone.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.remove('dragover');
+                });
+
+                // Drop handler
+                dropzone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.remove('dragover');
+
+                    if (e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        // Trigger change event
+                        const event = new Event('change', { bubbles: true });
+                        fileInput.dispatchEvent(event);
+                    }
+                });
+            }
+        });
+
+        // Handle file upload
+        async function handleFileUpload(e) {
+            console.log("File selected:", this.files[0]);
+            
+            if (!this.files.length) {
+                console.error("No file selected");
+                return;
+            }
+            
+            // Validate file type
+            const file = this.files[0];
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please select a valid image file (JPEG, PNG, JPG)');
+                return;
+            }
+
+            // Validate file size (10MB)
+            if (file.size > 10000000) {
+                alert('File is too large. Maximum size is 10MB.');
+                return;
+            }
+            
+            // Show loader
+            if (loader) loader.style.display = 'block';
+            
+            try {
+                const formData = new FormData();
+                formData.append('waveform_file', file);
+                
+                console.log("Sending to upload_waveform.php...");
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000);
+                
+                const response = await fetch("upload_waveform.php", {
+                    method: "POST",
+                    body: formData,
+                    signal: controller.signal,
+                    credentials: 'same-origin'
+                });
+                
+                clearTimeout(timeoutId);
+                
+                console.log("Response Status:", response.status);
+                
+                const responseText = await response.text();
+                console.log("Raw Response:", responseText);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                try {
+                    const data = JSON.parse(responseText);
+                    console.log("Parsed JSON:", data);
+                    
+                    if (data.success) {
+                        alert("✓ Upload successful!");
+                        console.log("Redirecting to:", data.redirect || 'analysis.php?id=' + data.waveImg_id);
+                        
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                        } else if (data.waveImg_id) {
+                            window.location.href = 'analysis.php?id=' + data.waveImg_id;
+                        } else {
+                            window.location.reload();
+                        }
+                    } else {
+                        alert("✗ Error: " + (data.error || "Unknown error"));
+                        console.error("Upload failed:", data.error);
+                    }
+                } catch (jsonError) {
+                    console.error("JSON Parse Error:", jsonError);
+                    alert("Server returned invalid response. Please check console for details.");
+                }
+                
+            } catch (error) {
+                console.error("Upload Error:", error);
+                
+                if (error.name === 'AbortError') {
+                    alert("Upload timeout. Please try again with a smaller file.");
+                } else {
+                    alert("Upload failed: " + error.message);
+                }
+            } finally {
+                // Hide loader
+                if (loader) loader.style.display = 'none';
+                // Reset file input
+                this.value = '';
+            }
+        }
+
+        // Generate report function
+        function generateReport() {
+            alert("Report generation feature coming soon!");
+            // You can redirect to report generation page
+            // window.location.href = 'generate_report.php';
+        }
+
+        // Prevent default drag behaviors on the whole document
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            document.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    </script>
 
 
 </body>
