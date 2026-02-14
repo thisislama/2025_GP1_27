@@ -57,7 +57,7 @@ if ($mode === 'patient') {
 elseif ($mode === 'analysis') {
    
     $sql = "SELECT anomaly_type,`timestamp`
-            FROM waveform_analysis
+            FROM waveform
             WHERE PID = $pid
             ORDER BY `timestamp` DESC";
     $result = mysqli_query($conn, $sql);
@@ -174,5 +174,123 @@ elseif ($mode === 'report') {
     }
     if ($result) mysqli_free_result($result);
 }
+
+elseif ($mode === 'recommendations') {
+
+    if ($pid <= 0) {
+        echo json_encode(["status"=>"error","message"=>"Invalid PID"]);
+        exit;
+    }
+
+    // 1) Fetch all abnormal waveforms for this patient (newest first)
+    $sql = "
+        SELECT 
+            w.waveImg_id,
+            w.anomaly_type,
+            w.`timestamp`,
+            w.finding_notes,
+            w.userID,
+            CONCAT_WS(' ', hp.first_name, hp.last_name) AS by_name
+        FROM waveform w
+        LEFT JOIN healthcareprofessional hp ON hp.userID = w.userID
+        WHERE w.pid = ?
+          AND w.anomaly_type IS NOT NULL
+          AND TRIM(w.anomaly_type) <> ''
+          AND LOWER(TRIM(w.anomaly_type)) <> 'none'
+          AND LOWER(TRIM(w.anomaly_type)) <> 'normal'
+        ORDER BY w.`timestamp` DESC, w.waveImg_id DESC
+    ";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    if (!$stmt) {
+        echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($conn)]);
+        exit;
+    }
+    mysqli_stmt_bind_param($stmt, "i", $pid);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+
+    $latestByType = [];   // type => latest row
+    $historyByType = [];  // type => notes list
+
+    while ($row = mysqli_fetch_assoc($res)) {
+        $type = trim($row['anomaly_type'] ?? '');
+        if ($type === '') continue;
+
+        // set latest (first time we see type because results are DESC)
+        if (!isset($latestByType[$type])) {
+            $latestByType[$type] = [
+                "waveImg_id"     => (int)$row["waveImg_id"],
+                "timestamp"      => $row["timestamp"],
+                "finding_notes"  => $row["finding_notes"]
+            ];
+        }
+
+        // history notes: only where finding_notes not null/empty
+        $note = $row['finding_notes'];
+        if ($note !== null && trim($note) !== '') {
+            $name = trim($row['by_name'] ?? '');
+            if (!isset($historyByType[$type])) $historyByType[$type] = [];
+            $historyByType[$type][] = [
+                "waveImg_id" => (int)$row["waveImg_id"],
+                "timestamp"  => $row["timestamp"],
+                "by"         => ($name !== '' ? $name : 'Unknown'),
+                "note"       => $note
+            ];
+        }
+    }
+
+    mysqli_free_result($res);
+    mysqli_stmt_close($stmt);
+
+    // build cards array
+    $cards = [];
+    foreach ($latestByType as $type => $latest) {
+        $cards[] = [
+            "type"    => $type,
+            "latest"  => $latest,
+            "history" => $historyByType[$type] ?? []
+        ];
+    }
+
+    echo json_encode(["status"=>"success","cards"=>$cards], JSON_UNESCAPED_UNICODE);
+}
+
+
+elseif ($mode === 'save_finding_note') {
+
+    if ($pid <= 0) {
+        echo json_encode(["status"=>"error","message"=>"Invalid PID"]);
+        exit;
+    }
+
+    $waveImgId = isset($_POST['waveImg_id']) ? (int)$_POST['waveImg_id'] : 0;
+    $note      = isset($_POST['note']) ? trim($_POST['note']) : '';
+
+    if ($waveImgId <= 0) {
+        echo json_encode(["status"=>"error","message"=>"Invalid waveform id"]);
+        exit;
+    }
+    if ($note === '') {
+        echo json_encode(["status"=>"error","message"=>"Empty note"]);
+        exit;
+    }
+
+    // Update note + set userID to who wrote the note (so "Created by" makes sense)
+    $sql = "UPDATE waveform SET finding_notes = ?, userID = ? WHERE waveImg_id = ? AND pid = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    if(!$stmt){
+        echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($conn)]);
+        exit;
+    }
+
+    mysqli_stmt_bind_param($stmt, "siii", $note, $sessionUserId, $waveImgId, $pid);
+    $ok = mysqli_stmt_execute($stmt);
+    $err = mysqli_error($conn);
+    mysqli_stmt_close($stmt);
+
+    echo json_encode($ok ? ["status"=>"success"] : ["status"=>"error","message"=>"Update failed: ".$err], JSON_UNESCAPED_UNICODE);
+}
+
 
 mysqli_close($conn);
