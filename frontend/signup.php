@@ -195,11 +195,24 @@ function field_has_error(string $field, string $error): bool {
       <link rel="icon" type="image/png" href="/images/fi.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg-1:#0875fa29; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
-      --primary:#0B83FE; --primary-pressed:#0970d7; --ring:#D1E6FE; --radius:24px;
-      --field-h:3.25rem; --field-r:12px; --gap:16px; --pad:36px; --maxw:800px;
-    }
+  :root{
+  --bg-1:#0875fa29;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --primary:#0B83FE;
+  --primary-pressed:#0970d7;
+  --ring:#D1E6FE;
+  --radius:24px;
+
+--field-h: 2.6rem;    --gap: 14px;
+         --field-r:12px;
+  
+  --pad:28px;
+
+  --maxw: 760px;   
+}
+
     *{box-sizing:border-box} html,body{height:100%}
       html {
         overflow-y: scroll;            
@@ -212,20 +225,38 @@ function field_has_error(string $field, string $error): bool {
       }
 
     body{
-      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 10% -10%, var(--bg-1), transparent 60%),
-        radial-gradient(1200px 900px at 100% 100%, #ffffff, transparent 60%),
-        linear-gradient(160deg, #D1E6FE 0%, #ffffff 100%);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      min-height:100vh; padding:clamp(60px, 8vh, 100px) 24px 60px;
+   margin:0;
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 800px at 10% -10%, var(--bg-1), transparent 60%),
+    radial-gradient(1200px 900px at 100% 100%, #ffffff, transparent 60%),
+    linear-gradient(160deg, #D1E6FE 0%, #ffffff 100%);
+    background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  justify-content:flex-start;  
+  align-items:flex-start; 
+  min-height:100vh;
+  padding:32px 24px;            
+  
+padding-top:4px;
     }
-    .wrap{ width:min(var(--maxw), 95vw); margin-inline:auto; margin-top:clamp(40px, 6vh, 80px); margin-bottom:clamp(40px, 5vh, 80px); }
-    .card{ background:var(--card); border-radius:var(--radius); box-shadow:0 20px 50px rgba(31,41,55,.10),0 8px 20px rgba(31,41,55,.06); padding:clamp(24px, 3vw, var(--pad)); }
-    header.card-head{text-align:center;margin-bottom:24px;}
-    .title{ font-size:clamp(1.4rem, 2.5vw, 1.7rem); font-weight:700; margin:0 0 6px; }
-    .subtitle{ color:var(--muted); font-size:.95rem; margin:0; }
+.wrap{
+  width:min(var(--maxw), 95vw);
+  margin:40px auto;
+
+}
+    .card{ background:var(--card); border-radius:var(--radius); box-shadow:0 20px 50px rgba(31,41,55,.10),0 8px 20px rgba(31,41,55,.06);         padding:20px 28px;   /* متوازن */
+  
+ 
+
+ }
+    header.card-head{text-align:center; margin-bottom:14px;  }
+    .title{   font-size:1.45rem;
+font-weight:700; margin:0 0 6px; }
+    .subtitle{ color:var(--muted);   font-size:.9rem;
+ margin:0; }
     form{width:100%}
     .grid{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap); margin-top:12px; }
     .grid-full{ display:grid; grid-template-columns:1fr; gap:var(--gap); margin-top:12px; }
@@ -238,7 +269,8 @@ function field_has_error(string $field, string $error): bool {
     }
     .input:focus{ border-color:#9FD0FF; box-shadow:0 0 0 4px #0b84fe33; }
     .actions{ margin-top:24px; display:grid; gap:10px; }
-    .btn{ width:100%; height:3.5rem; border-radius:12px; border:0; cursor:pointer; font-weight:600; font-size:1rem; transition:transform .06s ease, background .2s ease, box-shadow .2s ease; }
+    .btn{ width:100%;   height:3.1rem;
+  font-size:.95rem; border-radius:12px; border:0; cursor:pointer; font-weight:600;  transition:transform .06s ease, background .2s ease, box-shadow .2s ease; }
     .btn.primary{ background:var(--primary); color:#fff; }
     .btn.primary:hover{ background:var(--primary-pressed); }
     .btn:active{ transform:translateY(1px); }
@@ -268,6 +300,30 @@ function field_has_error(string $field, string $error): bool {
     border-color: #dc2626 !important;
     box-shadow: 0 0 0 3px rgba(220,38,38,0.25);
 }
+:root{
+  --pad: 26px;
+  --field-h: 2.8rem;
+}
+
+/* أيقونة العين */
+.password-field {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: #64748B; /* نفس لون الأيقونة */
+}
+
+.toggle-password:hover {
+  color: #0B83FE;
+}
 
   </style>
 </head>
@@ -276,8 +332,9 @@ function field_has_error(string $field, string $error): bool {
   <div class="wrap">
     <form class="card" action="signup.php" method="post" novalidate>
     <header class="card-head" style="position: relative;">
-  <img src="images/logo.png" alt="TANAFS logo" 
-       style="position: absolute; left: -5px; top: -50px; width: 100px; height: 100px; object-fit: contain;">
+  <img src="images/logo.png"
+     style="position:absolute; left:-5px; top:-28px; width:84px; height:72px;
+ object-fit: contain;">
         <h1 class="title">Create Account</h1>
         <p class="subtitle">Please fill in your information to sign up.</p>
       </header>
@@ -358,12 +415,37 @@ function field_has_error(string $field, string $error): bool {
            placeholder="Enter password" required minlength="8"
            pattern="(?=.*[!@#$%^&*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}"
            title="At least 8 characters and include at least one symbol (e.g., !@#$%)">
+           
+  <button type="button"
+          class="toggle-password"
+          onclick="togglePassword('password', this)">
+    <span class="icon-eye"></span>
+  </button>
   </div>
   <p style="color:#6b7280; font-size:0.85rem; margin-top:6px;">
     Must be at least <strong>8 characters</strong> and include <strong>one symbol</strong> (e.g., !@#$%).
   </p>
 
   </div>
+  <div>
+  <label for="confirm_password">Confirm Password</label>
+  <div class="field">
+    <input class="input <?php echo field_has_error('password', $error) ? 'input-error' : ''; ?>"
+           id="confirm_password"
+           name="confirm_password"
+           type="password"
+           placeholder="Re-enter password"
+           required>
+           
+  <button type="button"
+          class="toggle-password"
+          onclick="togglePassword('confirm_password', this)">
+    <span class="icon-eye"></span>
+  </button>
+  </div>
+</div>
+<div class="grid-full">
+
   <div>
     <label for="dob">Date of Birth</label>
     <div class="field">
@@ -373,6 +455,7 @@ id="dob" name="dob" type="date" required
     </div>
   </div>
 </div>
+</div>
 
 
       <div class="actions">
@@ -381,5 +464,70 @@ id="dob" name="dob" type="date" required
       </div>
     </form>
   </div>
+  <script>
+const eyeOnSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+     viewBox="0 0 24 24" fill="none" stroke="currentColor">
+  <path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5
+           c4.478 0 8.268 2.943 9.542 7
+           -1.274 4.057-5.064 7-9.542 7
+           -4.477 0-8.268-2.943-9.542-7z"/>
+  <circle cx="12" cy="12" r="3" stroke-width="1.8"/>
+</svg>`;
+
+const eyeOffSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+     viewBox="0 0 24 24" fill="none" stroke="currentColor">
+  <path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+        d="M13.875 18.825A10.05 10.05 0 0112 19
+           c-4.478 0-8.268-2.943-9.542-7
+           a9.956 9.956 0 012.223-3.592M6.42 6.42
+           A9.956 9.956 0 0112 5
+           c4.478 0 8.268 2.943 9.542 7
+           a9.978 9.978 0 01-4.293 5.774"/>
+  <path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+        d="M3 3l18 18"/>
+</svg>`;
+
+document.querySelectorAll('.icon-eye').forEach(e => e.innerHTML = eyeOffSVG);
+
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  const icon = btn.querySelector('.icon-eye');
+
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.innerHTML = eyeOnSVG;   
+  } else {
+    input.type = 'password';
+    icon.innerHTML = eyeOffSVG;  
+  }
+}
+
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirm_password');
+
+function checkMatch() {
+  if (!confirmPassword.value) return;
+  if (password.value !== confirmPassword.value) {
+    confirmPassword.classList.add('input-error');
+  } else {
+    confirmPassword.classList.remove('input-error');
+  }
+}
+
+password.addEventListener('input', checkMatch);
+confirmPassword.addEventListener('input', checkMatch);
+
+// منع الإرسال لو ما تطابق
+document.querySelector('form').addEventListener('submit', function(e){
+  if (password.value !== confirmPassword.value) {
+    e.preventDefault();
+    alert('Passwords do not match');
+  }
+});
+</script>
+
 </body>
 </html>
