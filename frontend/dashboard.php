@@ -608,7 +608,7 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
             }
         });
 
-        // Handle file upload - ONLY UPLOADS FILE, NO DATABASE
+        
 async function handleFileUpload(e) {
     console.log("File selected:", this.files[0]);
     

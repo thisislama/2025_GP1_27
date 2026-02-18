@@ -15,21 +15,25 @@ $temp_file = isset($_GET['upload']) ? $_GET['upload'] : '';
 $analysis = null;
 $is_temp = false;
 $imagePath = '';
-$status = 'pending';
-$status_class = 'pending';
+$status = 'normal';
+$status_class = 'normal';
 $notes = '';
 $patientName = '';
 $anomaly_type = '';
+$suggested_recommendation = '';
 
 // If we have a temp file, show upload view
 if ($temp_file && file_exists($temp_file)) {
     $is_temp = true;
     $imagePath = htmlspecialchars($temp_file);
-    $status = 'pending';
-    $status_class = 'pending';
+    $status = 'normal';
+    $status_class = 'normal';
     $notes = 'Awaiting analysis and patient assignment.';
     $patientName = 'Not assigned yet';
     $anomaly_type = null;
+    
+    // Generate AI suggestion based on filename or default
+    $suggested_recommendation = 'Based on the waveform pattern, consider monitoring patient vitals and reviewing ventilator settings.';
 } 
 // Otherwise try to get from database
 else if ($waveImg_id > 0) {
@@ -55,6 +59,7 @@ else if ($waveImg_id > 0) {
     $notes = $analysis['finding_notes'] ?: 'No notes available.';
     $patientName = $analysis['first_name'] ? $analysis['first_name'] . ' ' . $analysis['last_name'] : 'Not linked yet';
     $anomaly_type = $analysis['anomaly_type'];
+    $suggested_recommendation = $analysis['suggested_recommendation'] ?? 'Regular monitoring of patient respiratory patterns recommended.';
 }
 
 // Get patients for dropdown
@@ -113,24 +118,33 @@ $patients_stmt->close();
             --transition: all 0.3s ease;
         }
         
-        /* Modern Card Design */
+        /* Main container adjustments */
+        .container {
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0 auto;
+        }
+        
+        /* Modern Card Design - Optimized size */
         .result-card {
             position: relative;
-            top: 15%;
-            width: 75em;
-            max-width: 95%;
-            height: fit-content;
-            padding: 3em;
+            top: 6.75em;
+            width: 100%;
+            max-width: 1200px;
+            min-width: 320px;
+            padding: 2em;
             background: white;
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow-lg);
-            margin: 0 auto;
-            align-items: center;
-            align-content: center;
-            align-self: center;
             border: 1px solid var(--gray-200);
             overflow: hidden;
             transition: var(--transition);
+            margin: 0 auto;
+            max-height: fit-content;
+            height: auto;
         }
         
         .result-card:hover {
@@ -153,34 +167,35 @@ $patients_stmt->close();
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2em;
-            padding-bottom: 1.5em;
+            margin-bottom: 1.5em;
+            padding-bottom: 1em;
             border-bottom: 1px solid var(--gray-200);
         }
         
         .result-header h2 {
-            font-size: 1.8em;
+            font-size: 1.5em;
             font-weight: 700;
             color: var(--gray-900);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            margin: 0;
         }
         
         .result-header h2 i {
             color: var(--primary);
-            font-size: 1.4em;
+            font-size: 1.2em;
         }
         
         /* Status Badge */
         .status-badge {
-            padding: 0.5em 1.5em;
+            padding: 0.4em 1.2em;
             border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.9em;
+            font-weight: 600;
+            font-size: 0.85em;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
             box-shadow: var(--shadow-sm);
@@ -205,9 +220,9 @@ $patients_stmt->close();
         /* Enhanced Grid Layout */
         .analysis-grid {
             display: grid;
-            grid-template-columns: 1.3fr 1fr;
-            gap: 2.5em;
-            margin-bottom: 2em;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5em;
+            margin-bottom: 1.5em;
         }
         
         /* Image Container */
@@ -217,18 +232,24 @@ $patients_stmt->close();
             border: 1px solid var(--gray-200);
             box-shadow: var(--shadow-md);
             background: var(--gray-50);
-            padding: .75em;
+            padding: 0.5em;
             transition: var(--transition);
+            max-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .image-container:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
         }
         
         .image-container img {
             width: 100%;
             height: auto;
+            max-height: 230px;
+            object-fit: contain;
             border-radius: var(--radius-md);
             display: block;
         }
@@ -236,10 +257,11 @@ $patients_stmt->close();
         .image-label {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 1em;
+            gap: 8px;
+            margin-bottom: 0.8em;
             font-weight: 600;
             color: var(--gray-900);
+            font-size: 0.95em;
         }
         
         .image-label i {
@@ -248,8 +270,8 @@ $patients_stmt->close();
         
         /* Combined Info Items */
         .combined-info-item {
-            margin: 1.2em 0;
-            padding: 2em;
+            margin: 0.8em 0;
+            padding: 1.2em;
             background: var(--gray-50);
             border-radius: var(--radius-lg);
             border-left: 4px solid var(--primary);
@@ -261,180 +283,226 @@ $patients_stmt->close();
             transform: translateX(5px);
         }
         
+        .combined-info-item p {
+            margin: 0.3em 0;
+            font-size: 0.95em;
+        }
+        
         .info-label {
             font-weight: 600;
             color: var(--gray-700);
-            margin-bottom: 0.8em;
+            margin-bottom: 0.3em;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 0.95em;
+            gap: 8px;
+            font-size: 0.9em;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
         .info-label i {
-            font-size: 1.1em;
+            font-size: 1em;
         }
         
-        /* Analysis Summary */
-        .analysis-summary {
-            text-align: center;
-            padding: 1.5em;
+        /* Recommendation Card */
+        .recommendation-card {
             background: linear-gradient(135deg, var(--primary-light), white);
             border-radius: var(--radius-lg);
+            padding: 1.2em;
+            margin: 1em 0;
             border: 1px solid var(--gray-200);
-            margin-bottom: 1.5em;
         }
         
-        .summary-label {
-            font-size: 1em;
-            color: var(--gray-700);
-            font-weight: 600;
-            margin-bottom: 1.5em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .summary-content {
+        .recommendation-title {
             display: flex;
-            justify-content: space-around;
-            gap: 1em;
-        }
-        
-        .summary-item {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 0.8em;
-            flex: 1;
+            gap: 8px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.8em;
         }
         
-        .summary-item i {
-            font-size: 1.5em;
-            color: var(--primary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .recommendation-text {
+            font-size: 1em;
+            color: var(--gray-900);
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-container {
             background: white;
+            border-radius: var(--radius-xl);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .modal-header {
+            padding: 1.5em;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-light), white);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+        
+        .modal-header h3 i {
+            color: var(--primary);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--gray-500);
+            transition: var(--transition);
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: var(--shadow-sm);
+            border-radius: 50%;
         }
         
-        .summary-item span {
-            font-size: 0.9em;
-            color: var(--gray-700);
-            font-weight: 500;
+        .modal-close:hover {
+            background: var(--gray-200);
+            color: var(--gray-900);
         }
         
-        /* Save Section */
-        .save-section {
-            margin-top: 2em;
-            padding: 2em;
+        .modal-body {
+            padding: 1.5em;
+        }
+        
+        .modal-footer {
+            padding: 1.5em;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1em;
+        }
+        
+        /* Feedback Section */
+        .feedback-section {
             background: var(--gray-50);
             border-radius: var(--radius-lg);
-            border: 1px solid var(--gray-200);
-        }
-        
-        .patient-select {
-            width: 100%;
-            padding: 1em;
-            border: 2px solid var(--gray-300);
-            border-radius: var(--radius-lg);
-            font-size: 1em;
-            margin-bottom: 1.5em;
-        }
-        
-        .status-select {
-            display: flex;
-            gap: 1em;
+            padding: 1.2em;
             margin: 1.5em 0;
         }
         
-        .status-option {
-            flex: 1;
-            padding: 1em;
-            border: 2px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            text-align: center;
+        .feedback-title {
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feedback-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1em;
+            padding: 0.8em;
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--gray-200);
             cursor: pointer;
             transition: var(--transition);
         }
         
-        .status-option:hover {
+        .feedback-option:hover {
             border-color: var(--primary);
             background: var(--primary-light);
         }
         
-        .status-option.selected {
-            border-color: var(--primary);
-            background: var(--primary-light);
-            font-weight: 600;
+        .feedback-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
         }
         
-        .status-option.normal i { color: var(--success); }
-        .status-option.anomaly i { color: var(--danger); }
+        .feedback-option label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 500;
+        }
         
-        .form-input, .form-textarea {
+        .feedback-textarea {
             width: 100%;
-            padding: 0.8em 1em;
+            padding: 0.8em;
             border: 1px solid var(--gray-300);
             border-radius: var(--radius-md);
-            font-size: 1em;
+            font-size: 0.95em;
             transition: var(--transition);
             font-family: inherit;
+            margin-top: 1em;
+            resize: vertical;
         }
         
-        .form-input:focus, .form-textarea:focus {
+        .feedback-textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(10, 118, 252, 0.1);
         }
         
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .alert {
-            padding: 1em 1.5em;
-            border-radius: var(--radius-lg);
-            margin-bottom: 1.5em;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideDown 0.3s ease;
-        }
-        
-        .alert-warning {
-            background: #eef1f5;
-            color: var(--gray-900);
-            border-left: 4px solid #96b7ff;
-        }
-        
+        /* Action Buttons */
         .action-buttons {
             display: flex;
-            gap: 1em;
+            gap: 0.8em;
             flex-wrap: wrap;
             justify-content: flex-end;
-            margin-top: 2em;
+            margin-top: 1.5em;
         }
         
-        .btn-primary, .btn-secondary, .btn-outline {
-            padding: 1em 2.5em;
+        .btn-primary, .btn-secondary, .btn-outline, .btn-success {
+            padding: 0.8em 2em;
             border-radius: var(--radius-lg);
             font-weight: 600;
-            font-size: 1em;
+            font-size: 0.95em;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
             transition: var(--transition);
             border: none;
-            min-width: 180px;
+            min-width: 150px;
         }
         
         .btn-primary {
@@ -448,15 +516,20 @@ $patients_stmt->close();
             box-shadow: 0 8px 20px rgba(10, 118, 252, 0.4);
         }
         
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--secondary), #1b5e20);
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #1b5e20);
             color: white;
             box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
         }
         
-        .btn-secondary:hover {
+        .btn-success:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
         }
         
         .btn-outline {
@@ -474,73 +547,147 @@ $patients_stmt->close();
         .badge-pending {
             background: linear-gradient(135deg, #dbdbdb, #adafb75a);
             color: var(--gray-700);
-            padding: 0.5em 1.5em;
+            padding: 0.4em 1.2em;
             border-radius: 50px;
-            font-size: 0.9em;
+            font-size: 0.85em;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
+        /* Form Elements */
+        .patient-select {
+            width: 100%;
+            padding: 0.8em;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 0.95em;
+            margin-bottom: 1em;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.7em 1em;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.95em;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .alert {
+            padding: 0.8em 1.2em;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+            font-size: 0.95em;
+        }
+        
+        .alert-warning {
+            background: #eef1f5;
+            color: var(--gray-900);
+            border-left: 4px solid #96b7ff;
+        }
+        
+        .alert-info {
+            background: var(--primary-light);
+            color: var(--gray-900);
+            border-left: 4px solid var(--primary);
+        }
+        
+        /* Animations */
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Responsive Design */
         @media (max-width: 1200px) {
             .result-card {
                 width: 95%;
-                padding: 2em;
+                padding: 1.5em;
             }
             
             .analysis-grid {
-                grid-template-columns: 1fr;
-                gap: 2em;
+                gap: 1.2em;
             }
             
-            .summary-content {
-                flex-wrap: wrap;
+            .image-container {
+                max-height: 220px;
             }
             
-            .summary-item {
-                flex: 0 0 calc(50% - 1em);
+            .image-container img {
+                max-height: 200px;
             }
         }
         
         @media (max-width: 768px) {
             .result-card {
-                padding: 1.5em;
-                top: 10%;
+                padding: 1.2em;
+                top: 4em;
             }
             
             .result-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 15px;
+                gap: 10px;
             }
             
-            .summary-content {
-                flex-direction: column;
-                gap: 1.5em;
+            .result-header h2 {
+                font-size: 1.3em;
             }
             
-            .summary-item {
-                flex-direction: row;
-                text-align: left;
+            .analysis-grid {
+                grid-template-columns: 1fr;
                 gap: 1em;
             }
             
-            .status-select {
-                flex-direction: column;
+            .image-container {
+                max-height: 200px;
+            }
+            
+            .image-container img {
+                max-height: 180px;
+            }
+            
+            .modal-container {
+                width: 95%;
+                margin: 1em;
             }
             
             .action-buttons {
                 flex-direction: column;
             }
             
-            .btn-primary, .btn-secondary, .btn-outline {
+            .btn-primary, .btn-secondary, .btn-outline, .btn-success {
                 width: 100%;
+                min-width: unset;
             }
         }
     </style>
@@ -608,7 +755,7 @@ $patients_stmt->close();
                 <?php if ($is_temp): ?>
                     <div class="alert alert-warning">
                         <i class="fas fa-info-circle"></i>
-                        <span>This is a new upload. Please select a patient and save the analysis.</span>
+                        <span>This is a new upload. Please save the analysis to a patient record.</span>
                     </div>
                 <?php endif; ?>
 
@@ -628,9 +775,32 @@ $patients_stmt->close();
                         <!-- Combined Info Item -->
                         <div class="combined-info-item">
                             <div class="info-label">
-                                <i class="fas fa-stethoscope"></i> Patient
+                                <i class="fas fa-clipboard-list"></i> Waveform detected to be 
+                                <span style="color: <?= $status === 'anomaly' ? 'var(--danger)' : 'var(--success)' ?>; text-transform: uppercase;">
+                                    <?= htmlspecialchars($status) ?>
+                                </span>
                             </div>
-                            <p style="font-size: 1.1em; font-weight: 600;"><?= htmlspecialchars($patientName) ?></p>
+
+                            <!--  Suggestion Card -->
+                            <div class="recommendation-card">
+                                <div class="recommendation-title">
+                                    <i class="fas fa-stethoscope"></i>
+                                    <span>Suggested Recommendation</span>
+                                </div>
+                                <div class="recommendation-text">
+                                    <?= htmlspecialchars($suggested_recommendation) ?>
+                                </div>
+                            </div>
+
+                            <!--
+                            <div class="info-label">
+                                <i class="fas fa-stethoscope"></i> Suggested Recommendation
+                            </div>
+                            <p style="font-size: 1.1em; font-weight: 600;"><?= htmlspecialchars($suggested_recommendation) ?></p>-->
+
+                            <div class="info-label" style="margin-top: 1.5em;">
+                                <i class="fas fa-user-md"></i> Waveform uploaded By Dr. <?= htmlspecialchars($_SESSION['doctorName'] ?? 'System') ?>
+                            </div>
                             
                             <?php if (!$is_temp && $anomaly_type): ?>
                                 <div class="info-label" style="margin-top: 1.5em;">
@@ -655,69 +825,111 @@ $patients_stmt->close();
                 </div>
 
                 <?php if ($is_temp): ?>
-                <!-- SAVE SECTION FOR TEMP UPLOAD -->
-                <div class="save-section">
-                    <h3 style="margin-bottom: 1.5em; color: var(--gray-900);">
-                        <i class="fas fa-save"></i> Save Analysis to Patient
-                    </h3>
-                    
-                    <form id="saveAnalysisForm">
-                        <input type="hidden" name="file_path" value="<?= htmlspecialchars($temp_file) ?>">
-                        
-                        <label class="form-label">Select Patient <span style="color: var(--danger);">*</span></label>
-                        <select name="patient_id" class="patient-select" required>
-                            <option value="">-- Choose a patient --</option>
-                            <?php foreach ($patients as $patient): ?>
-                                <option value="<?= $patient['PID'] ?>">
-                                    P-<?= $patient['PID'] ?> - <?= htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        
-                        <label class="form-label">Analysis Result</label>
-                    <!--     <div class="status-select">
-                           <div class="status-option normal selected" onclick="selectStatus('normal', this)">
-                                <i class="fas fa-check-circle"></i> Normal
-                            </div>
-                            <div class="status-option anomaly" onclick="selectStatus('anomaly', this)">
-                                <i class="fas fa-exclamation-triangle"></i> Anomaly Detected
-                            </div>
-                        </div>-->
-                        <input type="hidden" name="status" id="statusInput" value="normal">
-                        
-                        <div id="anomalyField" style="display: none;">
-                            <label class="form-label">Anomaly Type</label>
-                            <input type="text" name="anomaly_type" class="form-input" placeholder="e.g., Double trigger, Auto trigger, Ineffective trigger, etc...">
-                        </div>
-                        
-                        <label class="form-label">Clinical Notes</label>
-                        <textarea name="finding_notes" class="form-textarea" rows="4" placeholder="Enter your observations and recommendations...">Normal waveform pattern detected. No significant abnormalities found.</textarea>
-                        
-                        <div class="action-buttons">
-                            <button type="button" class="btn-outline" onclick="window.location.href='dashboard.php'">
-                                <i class="fas fa-times"></i> Cancel
-                            </button>
-                            <button type="button" class="btn-primary" onclick="saveAnalysis()">
-                                <i class="fas fa-save"></i> Save Analysis
-                            </button>
-                        </div>
-                    </form>
+                <!-- ACTION BUTTONS FOR TEMP UPLOAD -->
+                <div class="action-buttons">
+                    <button type="button" class="btn-outline" onclick="window.location.href='dashboard.php'">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn-success" onclick="openSaveModal()">
+                        <i class="fas fa-save"></i> Save to Patient
+                    </button>
                 </div>
                 <?php else: ?>
                 <!-- ACTION SECTION FOR SAVED ANALYSIS -->
-                <div class="action-section">
-                    <div class="action-buttons">
-                        <button class="btn-outline" onclick="window.location.href='dashboard.php'">
-                            <i class="fas fa-arrow-left"></i> Back to Dashboard
-                        </button>
-                        <button class="btn-secondary" onclick="window.location.href='history2.php'">
-                            <i class="fas fa-history"></i> View History
-                        </button>
-                    </div>
+                <div class="action-buttons">
+                    <button class="btn-outline" onclick="window.location.href='dashboard.php'">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                    <button class="btn-secondary" onclick="window.location.href='history2.php'">
+                        <i class="fas fa-history"></i> View History
+                    </button>
                 </div>
                 <?php endif; ?>
             </div>
         </main>
+    </div>
+
+    <!-- SAVE MODAL -->
+    <div id="saveModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-save"></i> Save Analysis to Patient</h3>
+                <button class="modal-close" onclick="closeSaveModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="saveAnalysisForm">
+                    <input type="hidden" name="file_path" value="<?= htmlspecialchars($temp_file) ?>">
+                    
+                    <!-- Patient Selection -->
+                    <label class="form-label">Select Patient <span style="color: var(--danger);">*</span></label>
+                    <select name="patient_id" class="patient-select" required>
+                        <option value="">-- Choose a patient --</option>
+                        <?php foreach ($patients as $patient): ?>
+                            <option value="<?= $patient['PID'] ?>">
+                                P-<?= $patient['PID'] ?> - <?= htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    
+                    <!-- Analysis Result (Hidden) -->
+                    <input type="hidden" name="status" id="statusInput" value="normal">
+                    
+                    <div id="anomalyField" style="display: none;">
+                        <label class="form-label">Anomaly Type</label>
+                        <input type="text" name="anomaly_type" class="form-input" placeholder="e.g., Double trigger, Auto trigger, Ineffective trigger, etc...">
+                    </div>
+                    
+                    <!-- Doctor Feedback Section -->
+                    <div class="feedback-section">
+                        <div class="feedback-title">
+                            <i class="fas fa-comment-medical"></i>
+                            <span>Doctor's Feedback on Recommendation</span>
+                        </div>
+                        
+                        <div class="alert alert-info" style="margin-bottom: 1em;">
+                            <i class="fas fa-robot"></i>
+                            <span> Suggested Recommendation: <?= htmlspecialchars($suggested_recommendation) ?></span>
+                        </div>
+                        
+                        <div class="feedback-option">
+                            <input type="radio" name="feedback_helpful" id="feedbackYes" value="yes" checked>
+                            <label for="feedbackYes">
+                                <strong>Yes, this recommendation is helpful</strong>
+                                <br>
+                                <small style="color: var(--gray-500);">I agree with the suggestion</small>
+                            </label>
+                        </div>
+                        
+                        <div class="feedback-option">
+                            <input type="radio" name="feedback_helpful" id="feedbackNo" value="no">
+                            <label for="feedbackNo">
+                                <strong>No, I would modify this recommendation</strong>
+                                <br>
+                                <small style="color: var(--gray-500);">The suggestion needs adjustment</small>
+                            </label>
+                        </div>
+                        
+                        <div id="modifiedRecommendationField" style="display: none;">
+                            <label class="form-label">Your Modified Recommendation</label>
+                            <textarea name="modified_recommendation" class="feedback-textarea" rows="3" placeholder="Please provide your modified recommendation based on clinical expertise..."></textarea>
+                        </div>
+                        
+                        <label class="form-label" style="margin-top: 1em;">Additional Clinical Notes</label>
+                        <textarea name="finding_notes" class="form-textarea" rows="4" placeholder="Enter your observations, additional recommendations, and clinical notes...">Normal waveform pattern detected. No significant abnormalities found.</textarea>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-outline" onclick="closeSaveModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn-primary" onclick="saveAnalysis()">
+                    <i class="fas fa-save"></i> Save Analysis
+                </button>
+            </div>
+        </div>
     </div>
 
     <footer id="contact" class="site-footer">
@@ -774,19 +986,52 @@ $patients_stmt->close();
     </footer>
 
     <script>
+        // Modal functions
+        function openSaveModal() {
+            document.getElementById('saveModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+        
+        function closeSaveModal() {
+            document.getElementById('saveModal').classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('saveModal');
+            if (event.target === modal) {
+                closeSaveModal();
+            }
+        }
+        
+        // Handle feedback radio buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const feedbackYes = document.getElementById('feedbackYes');
+            const feedbackNo = document.getElementById('feedbackNo');
+            const modifiedField = document.getElementById('modifiedRecommendationField');
+            
+            function updateModifiedField() {
+                if (feedbackNo.checked) {
+                    modifiedField.style.display = 'block';
+                } else {
+                    modifiedField.style.display = 'none';
+                }
+            }
+            
+            feedbackYes.addEventListener('change', updateModifiedField);
+            feedbackNo.addEventListener('change', updateModifiedField);
+        });
+        
         function selectStatus(status, element) {
-            // Update hidden input
             document.getElementById('statusInput').value = status;
             
-            // Remove selected class from all options
             document.querySelectorAll('.status-option').forEach(opt => {
                 opt.classList.remove('selected');
             });
             
-            // Add selected class to clicked option
             element.classList.add('selected');
             
-            // Show/hide anomaly field
             document.getElementById('anomalyField').style.display = 
                 status === 'anomaly' ? 'block' : 'none';
         }
@@ -795,8 +1040,15 @@ $patients_stmt->close();
             const form = document.getElementById('saveAnalysisForm');
             const formData = new FormData(form);
             
+            // Validate patient selection
+            const patientSelect = document.querySelector('select[name="patient_id"]');
+            if (!patientSelect.value) {
+                alert('Please select a patient');
+                return;
+            }
+            
             // Show loading state
-            const saveBtn = document.querySelector('.btn-primary');
+            const saveBtn = document.querySelector('.modal-footer .btn-primary');
             const originalText = saveBtn.innerHTML;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
             saveBtn.disabled = true;
@@ -823,6 +1075,13 @@ $patients_stmt->close();
                 saveBtn.disabled = false;
             });
         }
+
+        // Handle Escape key to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSaveModal();
+            }
+        });
     </script>
 </body>
 </html>
