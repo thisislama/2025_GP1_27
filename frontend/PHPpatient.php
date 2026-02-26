@@ -56,7 +56,7 @@ if ($mode === 'patient') {
 /* ====================== analysis table ====================== */
 elseif ($mode === 'analysis') {
    
-    $sql = "SELECT anomaly_type,`timestamp`
+   $sql = "SELECT waveImg_id, anomaly_type, `timestamp`, finding_notes
             FROM waveform
             WHERE PID = $pid
             ORDER BY `timestamp` DESC";
@@ -72,6 +72,9 @@ elseif ($mode === 'analysis') {
             $data[] = [
                 "anomaly_type"   => $anomaly,
                 "timestamp"      => $row['timestamp'],
+                "waveImg_id"   => (int)$row["waveImg_id"],
+"finding_notes"=> $row["finding_notes"],
+
             ];
         }
     }

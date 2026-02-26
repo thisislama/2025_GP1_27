@@ -216,19 +216,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 .extra-rec-sub{
   color:#6b7b8f;
   font-size:.9rem;
@@ -321,6 +308,19 @@
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ---------- Extra Recommendations ---------- */
 
 /* الكرت الكبير */
@@ -390,6 +390,73 @@
   justify-content:flex-end;
   flex: 0 0 auto;
 }
+
+
+
+
+
+/* ===== Doctor Action column ===== */
+.action-cell{
+  display:flex;
+  flex-direction:column;
+  gap:.55em;
+  align-items:flex-end;            /* يخلي الزر يمين مثل تصميمك */
+}
+
+.action-textarea{
+  width:100%;
+  min-height:3.5em;
+  resize:vertical;
+
+  border:1px solid #dfe6ef;
+  border-radius:.75em;
+  padding:.75em;
+
+  background:#fff;
+  color:#2b4a77;
+  font-family:inherit;
+  font-size:.9em;
+  line-height:1.4;
+
+  white-space:normal;          /* يكسر السطر */
+  word-break:break-word;       /* يكسر الكلمات الطويلة */
+  overflow-x:hidden;           /* يمنع السكرول الأفقي */
+}
+
+
+.action-textarea:focus{
+  border-color: rgba(15,101,255,.45);
+  box-shadow: 0 0 0 .2em rgba(15,101,255,.12);
+}
+
+/* زر بنفس روح btn-add لكن أصغر */
+.action-btn{
+  border:0;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.3em;
+
+  background:linear-gradient(90deg,#0f65ff,#5aa6ff);
+  color:#fff;
+
+  padding:.4em .75em;     /* أصغر */
+  border-radius:.65em;
+  font-weight:600;
+  font-size:.75em;        /* أصغر خط */
+
+  box-shadow:0 .35em .9em rgba(15,101,255,.12);
+}
+
+
+.action-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
+
+
 
 
   </style>
@@ -462,15 +529,17 @@
     <div class="panel-body">
       <div class="table-scroll">
         <table class="analysis-table">
-          <thead>
-          <tr>
-            <th style="width:180px">Waveform status</th>
-            <th style="width:500px;text-align:center;">Explanation</th>
-            <th style="width:500px;text-align:center;">Recommendation</th>
-            <th style="width:140px">Date</th>
-            <th style="width:120px">Time</th>
-          </tr>
-          </thead>
+         <thead>
+<tr>
+  <th style="width:160px">Waveform status</th>
+  <th style="width:120px">Date</th>
+  <th style="width:100px">Time</th>
+  <th style="width:500px;text-align:center;">Explanation</th>
+  <th style="width:500px;text-align:center;">Recommendation</th>
+  <th style="width:400px;text-align:center;">Doctor Action</th>
+</tr>
+</thead>
+
           <tbody></tbody>
         </table>
       </div>
@@ -643,18 +712,67 @@ document.addEventListener("DOMContentLoaded", () => {
         const severity=row.severity_level||"-";
         const info=anomalyInfo[type]||{explanation:"-",solution:"-"};
         const tr=document.createElement("tr");
-        tr.innerHTML=`
-          <td>${type}</td>
-          <td>${info.explanation}</td>
-          <td>${info.solution}</td>
-          <td><time datetime="${row.timestamp}" title="${row.timestamp}">${fmtDate(row.timestamp)}</time></td>
-          <td><time datetime="${row.timestamp}" title="${row.timestamp}">${fmtTime(row.timestamp)}</time></td>
-        `;
+       tr.innerHTML = `
+  <td>${type}</td>
+  <td>${fmtDate(row.timestamp)}</td>
+  <td>${fmtTime(row.timestamp)}</td>
+  <td>${info.explanation}</td>
+  <td>${info.solution}</td>
+  <td>
+  <div class="action-cell">
+    <textarea
+      class="action-textarea"
+      data-id="${row.waveImg_id}"
+      placeholder="Write what you did to address this waveform...">${row.finding_notes ?? ''}</textarea>
+
+    <button class="action-btn wave-save-btn" data-id="${row.waveImg_id}">
+      <span class="material-symbols-outlined">save</span>
+      ${row.finding_notes ? 'Update' : 'Add'}
+    </button>
+  </div>
+</td>
+
+`;
+
         tbody.appendChild(tr);
       });
     })
     .catch(err=>{ console.error(err); tbody.innerHTML=`<tr><td colspan="6" style="color:red;text-align:center;">Error loading data</td></tr>`; });
 });
+
+
+
+document.addEventListener("click", async function(e){
+  if(!e.target.classList.contains("wave-save-btn")) return;
+
+  const id = e.target.dataset.id;
+  const textarea = document.querySelector(`.wave-note-input[data-id="${id}"]`);
+  const note = textarea.value.trim();
+
+  if(!note){
+    alert("Please write the action first.");
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append("waveImg_id", id);
+  fd.append("note", note);
+
+  const res = await fetch(`PHPpatient.php?mode=save_finding_note&pid=${getPidFromURL()}`,{
+    method:"POST",
+    body: fd
+  });
+
+  const out = await res.json();
+
+  if(out.status === "success"){
+    alert("Saved successfully");
+    location.reload();
+  }else{
+    alert(out.message || "Error saving");
+  }
+});
+
 </script>
 
 <script>
@@ -926,6 +1044,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   loadRecommendations();
 })();
 </script>
+
 
 </body>
 </html>
