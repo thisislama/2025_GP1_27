@@ -65,7 +65,7 @@ if ($conn->connect_error) {
     $scans_sql = "
         SELECT 
             COUNT(wa.waveImg_id) AS total_scans,
-            SUM(CASE WHEN wa.status = 'anomaly' THEN 1 ELSE 0 END) AS anomalies
+            SUM(CASE WHEN wa.status = 'abnormal' THEN 1 ELSE 0 END) AS anomalies
             ,MAX(wa.timestamp) AS last_visit
         FROM waveform wa
         WHERE wa.PID IN (SELECT PID FROM patient_doctor_assignments WHERE userID = ?)
@@ -288,10 +288,10 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
             </form>
         </div>
 
-        <div id="uploadLoader" style="display:none; text-align:center; margin-top:1em;">
+        <!--<div id="uploadLoader" style="display:none; text-align:center; margin-top:1em;">
             <img src="images/loading.gif" alt="Loading..." style="height:80px;">
             <p>Analyzing waveform…</p>
-        </div>
+        </div>-->
 
             
 
@@ -373,7 +373,7 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
                                         <td>P{$patient_id}</td>
                                         <td>{$date}</td>
                                         <td>{$anomaly_type}</td>
-                                        <td><span class='status-badge completed'>{$status}</span></td>
+                                        <td><span class='status-badge $status'>{$status}</span></td>
                                     </tr>
                                     ";
                         } } else {
@@ -448,44 +448,6 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
 </div>
 
 
-           <!-- <div class="stats-grid">
-                <div class="stat anomaly">
-                    <div>
-                        <div class="label" >Abnormality</div>
-                        <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
-                        <div class="under"><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
-                    </div>
-
-                    <div class="icon warn">
-                        <span style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">warning</span>
-                    </div>
-                </div>
-
-                <div class="stat analysis">
-                    <div>
-                        <div class="label" >Analysis</div>
-                        <div class="value"><?php echo $stats['total_scans']; ?></div>
-                        <div class="under"><?php echo $stats['total_scans']; ?> analyses you applied for</div>
-                    </div>
-                    <div class="icon analysis">
-                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
-                    </div>
-                </div>
-
-                <div class="stat patient">
-                    <div>
-                        <div class="label" >Patients</div>
-                        <div class="value"><?php echo $stats['patients'] ?></div>
-                        <div class="under"><?php echo $stats['patients'] ?>  total patients assigned to you</div>
-
-                    </div>
-                    <div class="icon patient" >
-                        <span  style="font-size: 1.85em;text-align: center" class="material-symbols-outlined">group</span>
-                    </div>
-                </div>
-
-            </div>-->
-
       
         </section>
     </main>
@@ -549,6 +511,7 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
     </div>
 </footer>
 
+    
     <script>
         // DOM Elements
         const dropzone = document.getElementById('dropzone');
@@ -654,20 +617,21 @@ async function handleFileUpload(e) {
             throw new Error('Invalid server response');
         }
         
-        if (data.success) {
-            // Store file info in session storage for the analysis page
-            sessionStorage.setItem('temp_upload', JSON.stringify({
-                file_path: data.file_path,
-                file_name: data.file_name
-            }));
-            
-            alert("✓ File uploaded successfully! Now you can save it to a patient.");
-            
-            // Redirect to analysis page with file path
-            window.location.href = 'analysis.php?upload=' + encodeURIComponent(data.file_path);
-        } else {
-            throw new Error(data.error || "Upload failed");
-        }
+       if (data.success) {
+    // Store file info and prediction in session storage
+    sessionStorage.setItem('temp_upload', JSON.stringify({
+        file_path: data.file_path,
+        file_name: data.file_name,
+        prediction: data.prediction
+    }));
+    
+    alert("✓ File uploaded and analyzed successfully!");
+    
+    // Redirect to analysis page with file path
+    window.location.href = 'analysis.php?upload=' + encodeURIComponent(data.file_path);
+} else {
+    throw new Error(data.error || "Upload failed");
+}
         
     } catch (error) {
         console.error("Upload Error:", error);
