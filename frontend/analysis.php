@@ -6,6 +6,9 @@ if (empty($_SESSION['user_id'])) {
     exit;
 }
 
+$image_path = $_GET['upload'] ?? $_SESSION['last_uploaded_image'] ?? null;
+$prediction = $_SESSION['last_prediction'] ?? null;
+
 require_once 'db_connection.php';
 
 $userID = (int)$_SESSION['user_id'];
@@ -15,28 +18,96 @@ $temp_file = isset($_GET['upload']) ? $_GET['upload'] : '';
 $analysis = null;
 $is_temp = false;
 $imagePath = '';
-$status = 'normal';
-$status_class = 'normal';
 $notes = '';
 $patientName = '';
 $anomaly_type = '';
 $suggested_recommendation = '';
+$explanation = '';
 
-// If we have a temp file, show upload view
+// Static array with explanations and recommendations
+$anomalyInfo = [
+    "Double Trigger" => [
+        "explanation" => "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
+        "suggested_recommendation" => "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
+    ],
+    "ACCUMULATION FLOW" => [
+        "explanation" => "Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",
+        "suggested_recommendation" => "Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."
+    ],
+    "Leak" => [
+        "explanation" => "Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",
+        "suggested_recommendation" => "Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"
+    ],
+    "Premature_cycling flow"  => [
+        "explanation" => "Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient's inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",
+        "suggested_recommendation" => "Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"
+    ],
+    "Premature_cycling volume" => [
+        "explanation" => "Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient's inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",
+        "suggested_recommendation" => "Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"
+    ],
+    "Ineffective effort" => [
+        "explanation" => "Ineffective effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",
+        "suggested_recommendation" => "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
+    ],
+    "normal flow" => [
+        "explanation" => "Flow waveform within normal pattern.",
+        "suggested_recommendation" => "Continue routine monitoring"
+    ],
+    "normal volume" => [
+        "explanation" => "Volume waveform within normal pattern.",
+        "suggested_recommendation" => "Continue routine monitoring"
+    ],
+    "normal pressure" => [
+        "explanation" => "Pressure waveform within normal pattern.",
+        "suggested_recommendation" => "Continue routine monitoring"
+    ]
+];
+
+// Helper function to get explanation/recommendation from array (case‑insensitive)
+function getAnomalyInfo($key, $anomalyInfo) {
+    if (!$key) return null;
+    // Try exact match first
+    if (isset($anomalyInfo[$key])) {
+        return $anomalyInfo[$key];
+    }
+    // Try case‑insensitive match
+    $lowerKey = strtolower(trim($key));
+    foreach ($anomalyInfo as $k => $v) {
+        if (strtolower(trim($k)) === $lowerKey) {
+            return $v;
+        }
+    }
+    return null;
+}
+
+// ------------------------------------------------------------
+// Handle temporary upload (new file, not saved in DB)
+// ------------------------------------------------------------
 if ($temp_file && file_exists($temp_file)) {
     $is_temp = true;
     $imagePath = htmlspecialchars($temp_file);
-    $status = 'normal';
-    $status_class = 'normal';
     $notes = 'Awaiting analysis and patient assignment.';
     $patientName = 'Not assigned yet';
-    $anomaly_type = null;
+    $anomaly_type = $prediction; // Set anomaly_type from prediction
     
-    // Generate AI suggestion based on filename or default
-    $suggested_recommendation = 'Based on the waveform pattern, consider monitoring patient vitals and reviewing ventilator settings.';
-} 
-// Otherwise try to get from database
-else if ($waveImg_id > 0) {
+    // Set status based on prediction
+    $status = (strtolower($prediction) === 'normal') ? 'normal' : 'abnormal';
+
+    // Use prediction from session to get explanation/recommendation
+    $info = getAnomalyInfo($prediction, $anomalyInfo);
+    if ($info) {
+        $explanation = $info['explanation'];
+        $suggested_recommendation = $info['suggested_recommendation'];
+    } else {
+        $explanation = 'No detailed explanation available.';
+        $suggested_recommendation = 'Regular monitoring recommended.';
+    }
+}
+// ------------------------------------------------------------
+// Load existing analysis from database
+// ------------------------------------------------------------
+elseif ($waveImg_id > 0) {
     $sql = "SELECT w.*, p.first_name, p.last_name 
             FROM waveform w 
             LEFT JOIN Patient p ON w.PID = p.PID 
@@ -52,22 +123,40 @@ else if ($waveImg_id > 0) {
 
     $analysis = $result->fetch_assoc();
     $stmt->close();
-    
+
     $imagePath = htmlspecialchars($analysis['filePath']);
-    $status = $analysis['status'] ?: 'pending';
-    $status_class = $status === 'anomaly' ? 'anomaly' : ($status === 'normal' ? 'normal' : 'pending');
     $notes = $analysis['finding_notes'] ?: 'No notes available.';
     $patientName = $analysis['first_name'] ? $analysis['first_name'] . ' ' . $analysis['last_name'] : 'Not linked yet';
     $anomaly_type = $analysis['anomaly_type'];
-    $suggested_recommendation = $analysis['suggested_recommendation'] ?? 'Regular monitoring of patient respiratory patterns recommended.';
+    $status = $analysis['status']; 
+
+
+     // Get explanation and recommendation from static array (case‑insensitive)
+     $info = getAnomalyInfo($anomaly_type, $anomalyInfo);
+     if ($info) {
+         $explanation = $info['explanation'];
+         $suggested_recommendation = $info['suggested_recommendation'];
+     } else {
+         $explanation = 'No detailed explanation available.';
+         $suggested_recommendation = 'Regular monitoring recommended.';
+     }    
+}
+// Determine display status for badge
+if ($is_temp) {
+    // For temp files, show based on prediction
+    $display_status = (strtolower($prediction) === 'normal flow' || strtolower($prediction) === 'normal volume') ? 'normal' : 'abnormal';
+} elseif ($status === 'normal') {
+    $display_status = 'normal';
+} else {
+    $display_status = 'abnormal';
 }
 
 // Get patients for dropdown
 $patients_sql = "SELECT p.PID, p.first_name, p.last_name 
-                 FROM Patient p
-                 INNER JOIN patient_doctor_assignments pda ON p.PID = pda.PID
-                 WHERE pda.userID = ?
-                 ORDER BY p.first_name";
+                FROM Patient p
+                INNER JOIN patient_doctor_assignments pda ON p.PID = pda.PID
+                WHERE pda.userID = ?
+                ORDER BY p.first_name";
 $patients_stmt = $conn->prepare($patients_sql);
 $patients_stmt->bind_param("i", $userID);
 $patients_stmt->execute();
@@ -202,7 +291,7 @@ $patients_stmt->close();
             transition: var(--transition);
         }
         
-        .status-badge.anomaly {
+        .status-badge.abnormal {
             background: linear-gradient(135deg, #ff6b6b, #c62828);
             color: white;
         }
@@ -745,9 +834,9 @@ $patients_stmt->close();
                     <?php if ($is_temp): ?>
                         <span class="badge-pending"><i class="fas fa-clock"></i> Pending Assignment</span>
                     <?php else: ?>
-                        <span class="status-badge <?= $status_class ?>">
-                            <i class="fas fa-<?= $status === 'anomaly' ? 'exclamation-triangle' : 'check-circle' ?>"></i>
-                            <?= ucfirst($status) ?>
+                        <span class="status-badge <?= $display_status ?>">
+                            <i class="fas fa-<?= $display_status === 'abnormal' ? 'exclamation-triangle' : 'check-circle' ?>"></i>
+                            <?= ucfirst($display_status) ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -776,9 +865,20 @@ $patients_stmt->close();
                         <div class="combined-info-item">
                             <div class="info-label">
                                 <i class="fas fa-clipboard-list"></i> Waveform detected to be 
-                                <span style="color: <?= $status === 'anomaly' ? 'var(--danger)' : 'var(--success)' ?>; text-transform: uppercase;">
-                                    <?= htmlspecialchars($status) ?>
+                                <span style="color: <?php echo ($status === 'abnormal' && $status !== null) ? 'var(--danger)' : 'var(--success)'; ?>; font-weight: 700; margin-left: 5px;">
+                                    <?= htmlspecialchars($prediction ?: ($anomaly_type ?: 'No prediction available')) ?>
                                 </span>
+                            </div>
+
+                             <!--  Explanation Card -->
+                            <div class="recommendation-card">
+                                <div class="recommendation-title">
+                                    <i class="fas fa-stethoscope"></i>
+                                    <span>Explanation of waveform</span>
+                                </div>
+                                <div class="recommendation-text">
+                                    <?= htmlspecialchars($explanation) ?>
+                                </div>
                             </div>
 
                             <!--  Suggestion Card -->
@@ -792,14 +892,8 @@ $patients_stmt->close();
                                 </div>
                             </div>
 
-                            <!--
-                            <div class="info-label">
-                                <i class="fas fa-stethoscope"></i> Suggested Recommendation
-                            </div>
-                            <p style="font-size: 1.1em; font-weight: 600;"><?= htmlspecialchars($suggested_recommendation) ?></p>-->
-
                             <div class="info-label" style="margin-top: 1.5em;">
-                                <i class="fas fa-user-md"></i> Waveform uploaded By Dr. <?= htmlspecialchars($_SESSION['doctorName'] ?? 'System') ?>
+                                <i class="fas fa-user-md"></i> Waveform uploaded By <?= htmlspecialchars($_SESSION['doctorName'] ?? 'System') ?>
                             </div>
                             
                             <?php if (!$is_temp && $anomaly_type): ?>
@@ -860,6 +954,10 @@ $patients_stmt->close();
             <div class="modal-body">
                 <form id="saveAnalysisForm">
                     <input type="hidden" name="file_path" value="<?= htmlspecialchars($temp_file) ?>">
+                    <input type="hidden" name="suggested_recommendation" value="<?= htmlspecialchars($suggested_recommendation) ?>">
+                    <input type="hidden" name="explanation" value="<?= htmlspecialchars($explanation) ?>">
+                    <input type="hidden" name="anomaly_type" value="<?= htmlspecialchars($prediction) ?>">
+                    
                     
                     <!-- Patient Selection -->
                     <label class="form-label">Select Patient <span style="color: var(--danger);">*</span></label>
@@ -872,12 +970,9 @@ $patients_stmt->close();
                         <?php endforeach; ?>
                     </select>
                     
-                    <!-- Analysis Result (Hidden) -->
-                    <input type="hidden" name="status" id="statusInput" value="normal">
-                    
+                    <!-- Analysis Result (Hidden) -->                    
                     <div id="anomalyField" style="display: none;">
                         <label class="form-label">Anomaly Type</label>
-                        <input type="text" name="anomaly_type" class="form-input" placeholder="e.g., Double trigger, Auto trigger, Ineffective trigger, etc...">
                     </div>
                     
                     <!-- Doctor Feedback Section -->
@@ -916,7 +1011,7 @@ $patients_stmt->close();
                         </div>
                         
                         <label class="form-label" style="margin-top: 1em;">Additional Clinical Notes</label>
-                        <textarea name="finding_notes" class="form-textarea" rows="4" placeholder="Enter your observations, additional recommendations, and clinical notes...">Normal waveform pattern detected. No significant abnormalities found.</textarea>
+                        <textarea name="finding_notes" class="form-textarea" rows="4" placeholder="Enter your observations, additional recommendations, and clinical notes..."></textarea>
                     </div>
                 </form>
             </div>
@@ -989,15 +1084,14 @@ $patients_stmt->close();
         // Modal functions
         function openSaveModal() {
             document.getElementById('saveModal').classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
         }
         
         function closeSaveModal() {
             document.getElementById('saveModal').classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
+            document.body.style.overflow = '';
         }
         
-        // Close modal when clicking outside
         window.onclick = function(event) {
             const modal = document.getElementById('saveModal');
             if (event.target === modal) {
@@ -1005,7 +1099,6 @@ $patients_stmt->close();
             }
         }
         
-        // Handle feedback radio buttons
         document.addEventListener('DOMContentLoaded', function() {
             const feedbackYes = document.getElementById('feedbackYes');
             const feedbackNo = document.getElementById('feedbackNo');
@@ -1040,14 +1133,12 @@ $patients_stmt->close();
             const form = document.getElementById('saveAnalysisForm');
             const formData = new FormData(form);
             
-            // Validate patient selection
             const patientSelect = document.querySelector('select[name="patient_id"]');
             if (!patientSelect.value) {
                 alert('Please select a patient');
                 return;
             }
             
-            // Show loading state
             const saveBtn = document.querySelector('.modal-footer .btn-primary');
             const originalText = saveBtn.innerHTML;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
@@ -1076,7 +1167,6 @@ $patients_stmt->close();
             });
         }
 
-        // Handle Escape key to close modal
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeSaveModal();
