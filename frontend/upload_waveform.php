@@ -1,95 +1,112 @@
 <?php
-// Turn off error reporting to prevent HTML output
-error_reporting(0);
+session_start();
+error_reporting(0); // Turn off error reporting to avoid corrupting JSON output
 ini_set('display_errors', 0);
 
-session_start();
-
-// Function to return JSON
-function returnJSON($data) {
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit;
-}
+header('Content-Type: application/json');
 
 // Check if user is logged in
 if (empty($_SESSION['user_id'])) {
-    returnJSON(['error' => 'Unauthorized. Please sign in.']);
+    echo json_encode(['error' => 'Unauthorized. Please sign in.']);
+    exit;
 }
 
 $userID = (int)$_SESSION['user_id'];
 
 // Check if file was uploaded
 if (!isset($_FILES['waveform_file'])) {
-    returnJSON(['error' => 'No file uploaded']);
+    echo json_encode(['error' => 'No file uploaded']);
+    exit;
 }
 
 $file = $_FILES['waveform_file'];
 
-// Check for upload errors
+// Upload error check
 if ($file['error'] !== UPLOAD_ERR_OK) {
     $upload_errors = [
         UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize',
         UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE',
-        UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
-        UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+        UPLOAD_ERR_PARTIAL   => 'File was only partially uploaded',
+        UPLOAD_ERR_NO_FILE   => 'No file was uploaded',
         UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
         UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-        UPLOAD_ERR_EXTENSION => 'File upload stopped by extension'
+        UPLOAD_ERR_EXTENSION  => 'File upload stopped by extension'
     ];
     $error_msg = $upload_errors[$file['error']] ?? 'Unknown upload error';
-    returnJSON(['error' => 'Upload error: ' . $error_msg]);
+    echo json_encode(['error' => 'Upload error: ' . $error_msg]);
+    exit;
 }
 
-$target_dir = "uploads/";
-
-// Create uploads directory if it doesn't exist
-if (!file_exists($target_dir)) {
-    if (!mkdir($target_dir, 0777, true)) {
-        returnJSON(['error' => 'Failed to create upload directory']);
-    }
-}
-
-// Check if directory is writable
-if (!is_writable($target_dir)) {
-    returnJSON(['error' => 'Upload directory is not writable']);
-}
-
-$filename = basename($file["name"]);
-// Sanitize filename
-$filename = preg_replace("/[^a-zA-Z0-9.]/", "_", $filename);
-$target_file = $target_dir . time() . "_" . $filename;
-$fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-// Allowed file types
+// Validate file type
 $allowed_types = ['png', 'jpg', 'jpeg'];
-if (!in_array($fileType, $allowed_types)) {
-    returnJSON(['error' => 'Only PNG, JPG, JPEG files are allowed.']);
+$file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+if (!in_array($file_ext, $allowed_types)) {
+    echo json_encode(['error' => 'Only PNG, JPG, JPEG files are allowed.']);
+    exit;
 }
 
-// Max size 10MB
-$maxSize = 10 * 1024 * 1024;
-if ($file["size"] > $maxSize) {
-    returnJSON(['error' => 'File too large (max 10MB).']);
+// Validate file size (max 10MB)
+if ($file['size'] > 10 * 1024 * 1024) {
+    echo json_encode(['error' => 'File too large (max 10MB).']);
+    exit;
 }
 
-// Upload file ONLY - NO DATABASE INSERT
-if (!move_uploaded_file($file["tmp_name"], $target_file)) {
-    returnJSON(['error' => 'File upload failed.']);
+// Create uploads directory if needed
+$target_dir = 'uploads/';
+if (!file_exists($target_dir)) {
+    mkdir($target_dir, 0777, true);
+}
+if (!is_writable($target_dir)) {
+    echo json_encode(['error' => 'Upload directory is not writable']);
+    exit;
 }
 
-// Store in session temporarily
-$_SESSION['temp_upload'] = [
-    'file_path' => $target_file,
-    'file_name' => $filename,
-    'userID' => $userID,
-    'timestamp' => time()
-];
+// Generate safe filename and save
+$safe_filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file['name']);
+$target_path = $target_dir . $safe_filename;
 
-// Return success with file info
-returnJSON([
+if (!move_uploaded_file($file['tmp_name'], $target_path)) {
+    echo json_encode(['error' => 'Failed to save uploaded file.']);
+    exit;
+}
+
+// --- Call FastAPI model ---
+$fastapi_url = 'http://127.0.0.1:8000/predict'; // adjust if needed
+
+// Prepare file for cURL
+$curl_file = new CURLFile($target_path);
+$post_data = ['file' => $curl_file];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $fastapi_url);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+$response = curl_exec($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+$prediction = null;
+if ($http_code == 200) {
+    $result = json_decode($response, true);
+    if (isset($result['predicted_class'])) {
+        $prediction = $result['predicted_class'];
+    }
+} else {
+    error_log("FastAPI call failed: HTTP $http_code - $response");
+}
+
+// Store info in session for next page
+$_SESSION['last_uploaded_image'] = $target_path;
+$_SESSION['last_prediction'] = $prediction;
+
+// Return JSON to browser
+echo json_encode([
     'success' => true,
-    'message' => 'File uploaded successfully!',
-    'file_path' => $target_file,
-    'file_name' => $filename
+    'message' => 'File uploaded and analyzed successfully!',
+    'file_path' => $target_path,
+    'file_name' => $safe_filename,
+    'prediction' => $prediction
 ]);
+exit;
