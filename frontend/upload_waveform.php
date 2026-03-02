@@ -1,15 +1,14 @@
 <?php
 session_start();
-error_reporting(0); // Turn off error reporting to avoid corrupting JSON output
-ini_set('display_errors', 0);
-
-header('Content-Type: application/json');
 
 // Check if user is logged in
 if (empty($_SESSION['user_id'])) {
+    http_response_code(401);
     echo json_encode(['error' => 'Unauthorized. Please sign in.']);
     exit;
 }
+
+require_once 'db_connection.php';
 
 $userID = (int)$_SESSION['user_id'];
 
@@ -19,94 +18,100 @@ if (!isset($_FILES['waveform_file'])) {
     exit;
 }
 
-$file = $_FILES['waveform_file'];
+function handleFileUpload($conn, $userID)
+{
+    $target_dir = "uploads/";
 
-// Upload error check
-if ($file['error'] !== UPLOAD_ERR_OK) {
-    $upload_errors = [
-        UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize',
-        UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE',
-        UPLOAD_ERR_PARTIAL   => 'File was only partially uploaded',
-        UPLOAD_ERR_NO_FILE   => 'No file was uploaded',
-        UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
-        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-        UPLOAD_ERR_EXTENSION  => 'File upload stopped by extension'
-    ];
-    $error_msg = $upload_errors[$file['error']] ?? 'Unknown upload error';
-    echo json_encode(['error' => 'Upload error: ' . $error_msg]);
-    exit;
-}
-
-// Validate file type
-$allowed_types = ['png', 'jpg', 'jpeg'];
-$file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-if (!in_array($file_ext, $allowed_types)) {
-    echo json_encode(['error' => 'Only PNG, JPG, JPEG files are allowed.']);
-    exit;
-}
-
-// Validate file size (max 10MB)
-if ($file['size'] > 10 * 1024 * 1024) {
-    echo json_encode(['error' => 'File too large (max 10MB).']);
-    exit;
-}
-
-// Create uploads directory if needed
-$target_dir = 'uploads/';
-if (!file_exists($target_dir)) {
-    mkdir($target_dir, 0777, true);
-}
-if (!is_writable($target_dir)) {
-    echo json_encode(['error' => 'Upload directory is not writable']);
-    exit;
-}
-
-// Generate safe filename and save
-$safe_filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file['name']);
-$target_path = $target_dir . $safe_filename;
-
-if (!move_uploaded_file($file['tmp_name'], $target_path)) {
-    echo json_encode(['error' => 'Failed to save uploaded file.']);
-    exit;
-}
-
-// --- Call FastAPI model ---
-$fastapi_url = 'http://127.0.0.1:8000/predict'; // adjust if needed
-
-// Prepare file for cURL
-$curl_file = new CURLFile($target_path);
-$post_data = ['file' => $curl_file];
-
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $fastapi_url);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-$response = curl_exec($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
-
-$prediction = null;
-if ($http_code == 200) {
-    $result = json_decode($response, true);
-    if (isset($result['predicted_class'])) {
-        $prediction = $result['predicted_class'];
+    // Create uploads directory if it doesn't exist
+    if (!file_exists($target_dir)) {
+        if (!mkdir($target_dir, 0777, true)) {
+            return ['error' => 'Failed to create upload directory'];
+        }
     }
-} else {
-    error_log("FastAPI call failed: HTTP $http_code - $response");
+
+    // Check if directory is writable
+    if (!is_writable($target_dir)) {
+        return ['error' => 'Upload directory is not writable'];
+    }
+
+    $file = $_FILES['waveform_file'];
+    $filename = basename($file["name"]);
+    
+    // Sanitize filename
+    $filename = preg_replace("/[^a-zA-Z0-9.]/", "_", $filename);
+    $target_file = $target_dir . time() . "_" . $filename;
+    $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+    // Allowed file types
+    $allowed_types = ['png', 'jpg', 'jpeg'];
+    if (!in_array($fileType, $allowed_types)) {
+        return ['error' => 'Only PNG, JPG, JPEG files are allowed. Your file: ' . $fileType];
+    }
+
+    // Max size 10MB
+    $maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    if ($file["size"] > $maxSize) {
+        return ['error' => 'File too large (max 10MB). Your file: ' . round($file["size"] / 1024 / 1024, 2) . 'MB'];
+    }
+
+    // Upload file
+    if (!move_uploaded_file($file["tmp_name"], $target_file)) {
+        $error = error_get_last();
+        return ['error' => 'File upload failed. Error: ' . ($error['message'] ?? 'Unknown error')];
+    }
+
+   
+    // Let's use the first patient assigned to this doctor as a temporary holder
+    $pid_sql = "SELECT PID FROM patient_doctor_assignments WHERE userID = ? LIMIT 1";
+    $pid_stmt = $conn->prepare($pid_sql);
+    $pid_stmt->bind_param("i", $userID);
+    $pid_stmt->execute();
+    $pid_result = $pid_stmt->get_result();
+    
+    if ($pid_result->num_rows === 0) {
+        // No patients assigned - we can't proceed
+        unlink($target_file);
+        return ['error' => 'No patients assigned to you. Please assign a patient first.'];
+    }
+    
+    $patient = $pid_result->fetch_assoc();
+    $temp_patient_id = $patient['PID']; // Use first patient as temporary holder
+    $pid_stmt->close();
+
+    // Insert into waveform table with a temporary patient ID
+    // We'll update this later when doctor chooses the actual patient
+    $sql = "INSERT INTO waveform (userID, PID, filePath, timestamp, status, anomaly_type, finding_notes) 
+            VALUES (?, ?, ?, NOW(), 'normal', NULL, 'Awaiting patient assignment')";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iis", $userID, $temp_patient_id, $target_file);
+
+    if (!$stmt->execute()) {
+        // Delete the uploaded file since DB insert failed
+        unlink($target_file);
+        return ['error' => 'Database insert failed: ' . $stmt->error];
+    }
+
+    $waveImg_id = $stmt->insert_id;
+    $stmt->close();
+
+    return [
+        'success' => true,
+        'message' => 'File uploaded successfully! Please assign to a patient.',
+        'file_path' => $target_file,
+        'waveImg_id' => $waveImg_id,
+        'redirect' => 'analysis.php?id=' . $waveImg_id
+    ];
 }
 
-// Store info in session for next page
-$_SESSION['last_uploaded_image'] = $target_path;
-$_SESSION['last_prediction'] = $prediction;
+// Process the upload
+$result = handleFileUpload($conn, $userID);
 
-// Return JSON to browser
-echo json_encode([
-    'success' => true,
-    'message' => 'File uploaded and analyzed successfully!',
-    'file_path' => $target_path,
-    'file_name' => $safe_filename,
-    'prediction' => $prediction
-]);
-exit;
+// Return JSON response
+header('Content-Type: application/json');
+echo json_encode($result);
+
+if (isset($conn)) {
+    $conn->close();
+}
+?>
