@@ -1,0 +1,533 @@
+<?php
+// signup.php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
+require_once __DIR__ . '/db_connection.php';
+require_once __DIR__ . '/mail_config.php';  
+
+$logo_path = __DIR__ . '/images/logo.png';
+$logo_data = base64_encode(file_get_contents($logo_path));
+$logo_src = 'data:image/png;base64,' . $logo_data;
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+function send_verification_email(string $toEmail, string $toName, string $token, string $logo_src): bool {
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $base   = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+    $verify_link = "{$scheme}://{$host}{$base}/verify_email.php?token=" . urlencode($token);
+
+    $subject = 'Verify your TANAFS email';
+    $body = '
+      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6">
+        <h2>Confirm your email</h2>
+        <img src="'.$logo_src.'" alt="TANAFS Logo" style="height:50px; width:auto;">
+        <p>Hello '.htmlspecialchars($toName, ENT_QUOTES, 'UTF-8').',</p>
+        <p>Thank you for registering in <strong>TANAFS</strong>.</p>
+        <p>Please verify your email by clicking the button below:</p>
+        <p><a href="'.$verify_link.'" style="background:#0B83FE;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:600">Verify Email</a></p>
+        <p>If the button doesn\'t work, copy this link:</p>
+        <p style="word-break:break-all">'.$verify_link.'</p>
+      </div>';
+
+    return sendAppMail($toEmail, $toName, $subject, $body);
+}
+
+
+function redirect_with_error(string $msg) {
+    $form_data = $_POST;
+    if (stripos($msg, 'email') !== false) unset($form_data['email']);
+    elseif (stripos($msg, 'phone') !== false) unset($form_data['phone']);
+    elseif (stripos($msg, 'password') !== false) unset($form_data['password']);
+    elseif (stripos($msg, 'role') !== false) unset($form_data['role']);
+    elseif (stripos($msg, 'birth') !== false || stripos($msg, 'age') !== false) unset($form_data['dob']);
+    $_SESSION['form_data'] = $form_data;
+    $_SESSION['error'] = $msg;
+    header('Location: signup.php');
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name  = trim($_POST['last_name']  ?? '');
+    $role       = trim($_POST['role']       ?? '');
+    $email      = trim($_POST['email']      ?? '');
+    $phone      = trim($_POST['phone']      ?? '');
+    $password   = $_POST['password']        ?? '';
+    $dob        = trim($_POST['dob']        ?? '');
+
+   if ($first_name === '') {
+    redirect_with_error('First name is required.');
+}
+if ($last_name === '') {
+    redirect_with_error('Last name is required.');
+}
+if ($role === '') {
+    redirect_with_error('Role is required.');
+}
+if ($email === '') {
+    redirect_with_error('Email is required.');
+}
+if ($password === '') {
+    redirect_with_error('Password is required.');
+}
+if ($dob === '') {
+    redirect_with_error('Date of birth is required.');
+}
+
+    if (!preg_match('/^[\p{L}\s]{3,}$/u', $first_name)) {
+    redirect_with_error('First name must be at least 3 letters and contain only alphabetic characters.');
+}
+if (!preg_match('/^[\p{L}\s]{3,}$/u', $last_name)) {
+    redirect_with_error('Last name must be at least 3 letters and contain only alphabetic characters.');
+}
+
+    $allowed_roles = ['ICU nurse', 'Respiratory therapist', 'Intensivists', 'Pulmonologist'];
+    if (!in_array($role, $allowed_roles, true)) redirect_with_error('Invalid role selected.');
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Please enter a valid email address.');
+    if (mb_strlen($password) < 8) redirect_with_error('Password must be at least 8 characters.');
+$normalizedPhone = preg_replace('/[^0-9+]/', '', $phone);
+
+$digitsOnly = preg_replace('/\D/', '', $normalizedPhone);
+
+if (strlen($digitsOnly) < 7 || strlen($digitsOnly) > 15) {
+    redirect_with_error('Phone number must be between 7 and 15 digits.');
+}
+
+
+
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) redirect_with_error('Invalid date of birth format (YYYY-MM-DD).');
+    $dob_date = DateTime::createFromFormat('Y-m-d', $dob);
+    if (!$dob_date || $dob_date->format('Y-m-d') !== $dob) redirect_with_error('Invalid date of birth.');
+    if ((new DateTime())->diff($dob_date)->y < 20) redirect_with_error('You must be at least 20 years old to register.');
+
+    try {
+        $check = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE email = ? LIMIT 1');
+        $check->bind_param('s', $email);
+        $check->execute(); $check->store_result();
+        if ($check->num_rows > 0) { $check->close(); redirect_with_error('This email is already registered.'); }
+        $check->close();
+
+        $checkPhone = $conn->prepare('SELECT userID FROM healthcareprofessional WHERE phone = ? LIMIT 1');
+        $checkPhone->bind_param('s', $phone);
+        $checkPhone->execute(); $checkPhone->store_result();
+        if ($checkPhone->num_rows > 0) { $checkPhone->close(); redirect_with_error('This phone number is already registered.'); }
+        $checkPhone->close();
+
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare('
+            INSERT INTO healthcareprofessional (first_name, last_name, role, email, phone, password, DOB, is_verified, verification_token)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0, NULL)
+        ');
+        $stmt->bind_param('sssssss', $first_name, $last_name, $role, $email, $phone, $hashed_password, $dob);
+        $stmt->execute();
+        $new_user_id = $stmt->insert_id;
+        $stmt->close();
+
+      $token  = bin2hex(random_bytes(32));
+$expire = date('Y-m-d H:i:s', time() + 3600 * 2); 
+
+$up = $conn->prepare('
+    UPDATE healthcareprofessional 
+    SET verification_token = ?, verification_expires = ?
+    WHERE userID = ?
+');
+$up->bind_param('ssi', $token, $expire, $new_user_id);
+$up->execute();
+
+
+       if (!send_verification_email($email, $first_name, $token, $logo_src)) {
+    redirect_with_error('We could not send the verification email. Please try again later.');
+}
+
+        session_regenerate_id(true);
+        $_SESSION['pending_email'] = $email;
+        $_SESSION['pending_token'] = $token;
+        header('Location: verify_notice.php');
+        exit;
+
+    } catch (Throwable $e) {
+        redirect_with_error('An unexpected error occurred. Please try again later.');
+    }
+}
+
+$error = $_SESSION['error'] ?? '';
+$form_data = $_SESSION['form_data'] ?? [];
+unset($_SESSION['error'], $_SESSION['form_data']);
+
+$old_first = htmlspecialchars($form_data['first_name'] ?? '', ENT_QUOTES, 'UTF-8');
+$old_last  = htmlspecialchars($form_data['last_name']  ?? '', ENT_QUOTES, 'UTF-8');
+$old_role  = htmlspecialchars($form_data['role']       ?? '', ENT_QUOTES, 'UTF-8');
+$old_email = htmlspecialchars($form_data['email']      ?? '', ENT_QUOTES, 'UTF-8');
+$old_phone = htmlspecialchars($form_data['phone']      ?? '', ENT_QUOTES, 'UTF-8');
+$old_dob   = htmlspecialchars($form_data['dob']        ?? '', ENT_QUOTES, 'UTF-8');
+function field_has_error(string $field, string $error): bool {
+    if ($error === '') return false;
+
+    $keywords = [
+        'first_name' => 'First name',
+        'last_name'  => 'Last name',
+        'role'       => 'role',
+        'email'      => 'email',
+        'phone'      => 'phone',
+        'password'   => 'Password',
+        'dob'        => 'birth'
+    ];
+
+    if (!isset($keywords[$field])) return false;
+
+    return stripos($error, $keywords[$field]) !== false;
+}
+
+?>
+
+
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up</title>
+      <link rel="icon" type="image/png" href="/images/fi.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+  :root{
+  --bg-1:#0875fa29;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --primary:#0B83FE;
+  --primary-pressed:#0970d7;
+  --ring:#D1E6FE;
+  --radius:24px;
+
+--field-h: 2.6rem;    --gap: 14px;
+         --field-r:12px;
+  
+  --pad:28px;
+
+  --maxw: 760px;   
+}
+
+    *{box-sizing:border-box} html,body{height:100%}
+      html {
+        overflow-y: scroll;            
+        scroll-behavior: smooth;       
+      }
+
+      body {
+        overflow-y: visible;           
+        -webkit-overflow-scrolling: touch; 
+      }
+
+    body{
+   margin:0;
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 800px at 10% -10%, var(--bg-1), transparent 60%),
+    radial-gradient(1200px 900px at 100% 100%, #ffffff, transparent 60%),
+    linear-gradient(160deg, #D1E6FE 0%, #ffffff 100%);
+    background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  justify-content:flex-start;  
+  align-items:flex-start; 
+  min-height:100vh;
+  padding:32px 24px;            
+  
+padding-top:4px;
+    }
+.wrap{
+  width:min(var(--maxw), 95vw);
+  margin:40px auto;
+
+}
+    .card{ background:var(--card); border-radius:var(--radius); box-shadow:0 20px 50px rgba(31,41,55,.10),0 8px 20px rgba(31,41,55,.06);         padding:20px 28px;   /* متوازن */
+  
+ 
+
+ }
+    header.card-head{text-align:center; margin-bottom:14px;  }
+    .title{   font-size:1.45rem;
+font-weight:700; margin:0 0 6px; }
+    .subtitle{ color:var(--muted);   font-size:.9rem;
+ margin:0; }
+    form{width:100%}
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap); margin-top:12px; }
+    .grid-full{ display:grid; grid-template-columns:1fr; gap:var(--gap); margin-top:12px; }
+    @media (max-width:640px){ .grid{grid-template-columns:1fr;} .wrap{width:100%;} }
+    label{ display:block; font-size:.875rem; font-weight:600; margin:6px 2px 6px; }
+    .field{position:relative;}
+    .input, select.input{
+      width:100%; height:var(--field-h); padding:0 14px; background:#fff; border:1px solid var(--ring);
+      border-radius:var(--field-r); outline:none; font-size:0.95rem; transition:border-color .2s, box-shadow .2s;
+    }
+    .input:focus{ border-color:#9FD0FF; box-shadow:0 0 0 4px #0b84fe33; }
+    .actions{ margin-top:24px; display:grid; gap:10px; }
+    .btn{ width:100%;   height:3.1rem;
+  font-size:.95rem; border-radius:12px; border:0; cursor:pointer; font-weight:600;  transition:transform .06s ease, background .2s ease, box-shadow .2s ease; }
+    .btn.primary{ background:var(--primary); color:#fff; }
+    .btn.primary:hover{ background:var(--primary-pressed); }
+    .btn:active{ transform:translateY(1px); }
+    .footer-note{ text-align:center; color:var(--muted); font-size:.95rem; margin:8px 0 0; }
+    .footer-note a{ color:var(--primary); font-weight:600; text-decoration:none; }
+    .footer-note a:hover{text-decoration:underline;}
+    .error{
+      background:#fde8e8; color:#991b1b; border:1px solid #f8c7c7;
+      padding:12px 14px; border-radius:12px; margin:0 0 14px 0; font-size:.95rem;
+    }
+@media (max-width:1024px){
+  .grid{ grid-template-columns: 1fr !important; }
+
+  header.card-head{ min-height: 72px; }
+  header.card-head img[alt="TANAFS logo"]{
+    left: 0; top: -6px; width: 72px; height: 72px; object-fit: contain;
+  }
+
+  .input, select.input{ font-size: 16px; }
+}
+
+@media (max-width:480px){
+  body{ padding: 32px 16px; }
+  .card{ padding: 20px; }
+}
+.input-error {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.25);
+}
+:root{
+  --pad: 26px;
+  --field-h: 2.8rem;
+}
+
+/* أيقونة العين */
+.password-field {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: #64748B; /* نفس لون الأيقونة */
+}
+
+.toggle-password:hover {
+  color: #0B83FE;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <form class="card" action="signup.php" method="post" novalidate>
+    <header class="card-head" style="position: relative;">
+  <img src="images/logo.png"
+     style="position:absolute; left:-5px; top:-28px; width:84px; height:72px;
+ object-fit: contain;">
+        <h1 class="title">Create Account</h1>
+        <p class="subtitle">Please fill in your information to sign up.</p>
+      </header>
+
+      <?php if (!empty($error)): ?>
+        <div class="error"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
+      <?php endif; ?>
+<div class="grid">
+  <div>
+    <label for="first_name">First Name</label>
+    <div class="field">
+      <input class="input <?php echo field_has_error('first_name', $error) ? 'input-error' : ''; ?>"id="first_name" name="first_name" type="text"
+             placeholder="Enter your first name" required
+             value="<?php echo $old_first; ?>">
+    </div>
+  </div>
+  <div>
+    <label for="last_name">Last Name</label>
+    <div class="field">
+      <input class="input <?php echo field_has_error('last_name', $error) ? 'input-error' : ''; ?>"
+ id="last_name" name="last_name" type="text"
+             placeholder="Enter your last name" required
+             value="<?php echo $old_last; ?>">
+    </div>
+  </div>
+</div>
+
+<div class="grid-full">
+  <div>
+    <label for="role">Role</label>
+    <div class="field">
+      <select class="input <?php echo field_has_error('role', $error) ? 'input-error' : ''; ?>"
+ id="role" name="role" required>
+        <option value="">Select your role</option>
+        <option value="ICU nurse" <?php if ($old_role==='ICU nurse') echo 'selected'; ?>>ICU nurse</option>
+        <option value="Respiratory therapist" <?php if ($old_role==='Respiratory therapist') echo 'selected'; ?>>Respiratory therapist</option>
+        <option value="Intensivists" <?php if ($old_role==='Intensivists') echo 'selected'; ?>>Intensivists</option>
+        <option value="Pulmonologist" <?php if ($old_role==='Pulmonologist') echo 'selected'; ?>>Pulmonologist</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="grid">
+  <div>
+    <label for="email">Email</label>
+    <div class="field">
+    <input class="input <?php echo field_has_error('email', $error) ? 'input-error' : ''; ?>"
+ 
+       id="email" 
+       name="email" 
+       type="text" 
+       placeholder="e.g., user@mail.com"
+       required
+       value="<?php echo $old_email ?>">
+
+
+    </div>
+  </div>
+  <div>
+    <label for="phone">Phone Number</label>
+    <div class="field">
+      <input class="input <?php echo field_has_error('phone', $error) ? 'input-error' : ''; ?>"
+ id="phone" name="phone" type="tel"
+             placeholder="+966 5xxxxxxxx" required
+             value="<?php echo $old_phone; ?>">
+    </div>
+  </div>
+</div>
+
+
+<div class="grid">
+ <div>
+  <label for="password">Password</label>
+  <div class="field">
+    <input class="input <?php echo field_has_error('password', $error) ? 'input-error' : ''; ?>"
+ id="password" autocomplete="new-password" name="password" type="password"
+           placeholder="Enter password" required minlength="8"
+           pattern="(?=.*[!@#$%^&*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}"
+           title="At least 8 characters and include at least one symbol (e.g., !@#$%)">
+           
+  <button type="button"
+          class="toggle-password"
+          onclick="togglePassword('password', this)">
+    <span class="icon-eye"></span>
+  </button>
+  </div>
+  <p style="color:#6b7280; font-size:0.85rem; margin-top:6px;">
+    Must be at least <strong>8 characters</strong> and include <strong>one symbol</strong> (e.g., !@#$%).
+  </p>
+
+  </div>
+  <div>
+  <label for="confirm_password">Confirm Password</label>
+  <div class="field">
+    <input class="input <?php echo field_has_error('password', $error) ? 'input-error' : ''; ?>"
+           id="confirm_password"
+           name="confirm_password"
+           type="password"
+           placeholder="Re-enter password"
+           required>
+           
+  <button type="button"
+          class="toggle-password"
+          onclick="togglePassword('confirm_password', this)">
+    <span class="icon-eye"></span>
+  </button>
+  </div>
+</div>
+<div class="grid-full">
+
+  <div>
+    <label for="dob">Date of Birth</label>
+    <div class="field">
+      <input class="input <?php echo field_has_error('dob', $error) ? 'input-error' : ''; ?>"
+id="dob" name="dob" type="date" required
+             value="<?php echo $old_dob; ?>">
+    </div>
+  </div>
+</div>
+</div>
+
+
+      <div class="actions">
+        <button class="btn primary" type="submit">Sign Up</button>
+        <p class="footer-note">Already have an account? <a href="signin.php">Sign in</a></p>
+      </div>
+    </form>
+  </div>
+  <script>
+const eyeOnSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+     viewBox="0 0 24 24" fill="none" stroke="currentColor">
+  <path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5
+           c4.478 0 8.268 2.943 9.542 7
+           -1.274 4.057-5.064 7-9.542 7
+           -4.477 0-8.268-2.943-9.542-7z"/>
+  <circle cx="12" cy="12" r="3" stroke-width="1.8"/>
+</svg>`;
+
+const eyeOffSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+     viewBox="0 0 24 24" fill="none" stroke="currentColor">
+  <path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+        d="M13.875 18.825A10.05 10.05 0 0112 19
+           c-4.478 0-8.268-2.943-9.542-7
+           a9.956 9.956 0 012.223-3.592M6.42 6.42
+           A9.956 9.956 0 0112 5
+           c4.478 0 8.268 2.943 9.542 7
+           a9.978 9.978 0 01-4.293 5.774"/>
+  <path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+        d="M3 3l18 18"/>
+</svg>`;
+
+document.querySelectorAll('.icon-eye').forEach(e => e.innerHTML = eyeOffSVG);
+
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  const icon = btn.querySelector('.icon-eye');
+
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.innerHTML = eyeOnSVG;   
+  } else {
+    input.type = 'password';
+    icon.innerHTML = eyeOffSVG;  
+  }
+}
+
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirm_password');
+
+function checkMatch() {
+  if (!confirmPassword.value) return;
+  if (password.value !== confirmPassword.value) {
+    confirmPassword.classList.add('input-error');
+  } else {
+    confirmPassword.classList.remove('input-error');
+  }
+}
+
+password.addEventListener('input', checkMatch);
+confirmPassword.addEventListener('input', checkMatch);
+
+// منع الإرسال لو ما تطابق
+document.querySelector('form').addEventListener('submit', function(e){
+  if (password.value !== confirmPassword.value) {
+    e.preventDefault();
+    alert('Passwords do not match');
+  }
+});
+</script>
+
+</body>
+</html>

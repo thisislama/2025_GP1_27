@@ -1,0 +1,38 @@
+<annotation>
+	<folder>images</folder>
+	<filename>003090.jpg</filename>
+	<path>F:\tmp\exp\data4\images\003090.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>605</width>
+		<height>325</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Double_Triggering Flow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>90</xmin>
+			<ymin>47</ymin>
+			<xmax>475</xmax>
+			<ymax>144</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Double_Triggering Volume</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>56</xmin>
+			<ymin>188</ymin>
+			<xmax>474</xmax>
+			<ymax>274</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>Image Prediction</title> 
+</head>
+<body> 
+<input type="file" id="imageInput" />
+<button onclick="predict()">Predict</button>
+<p id="result"></p>
+ </body>
+<script>
+async function predict() {
+    const input = document.getElementById("imageInput");
+    const file = input.files[0];
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await response.json();
+    document.getElementById("result").innerText = "Prediction: " + data.predicted_class;
+}
+</script>

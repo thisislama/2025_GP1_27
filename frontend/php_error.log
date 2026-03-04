@@ -1,0 +1,75 @@
+[22-Nov-2025 00:50:31 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'is_verified' in 'field list' in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:24
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(24): mysqli_prepare(Object(mysqli), 'SELECT is_verif...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 24
+[22-Nov-2025 00:50:31 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'is_verified' in 'field list' in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:24
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(24): mysqli_prepare(Object(mysqli), 'SELECT is_verif...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 24
+[22-Nov-2025 00:50:31 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'is_verified' in 'field list' in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:24
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(24): mysqli_prepare(Object(mysqli), 'SELECT is_verif...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 24
+[22-Nov-2025 00:50:31 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'is_verified' in 'field list' in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:24
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(24): mysqli_prepare(Object(mysqli), 'SELECT is_verif...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 24
+[22-Nov-2025 00:51:36 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'is_verified' in 'field list' in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:24
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(24): mysqli_prepare(Object(mysqli), 'SELECT is_verif...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 24
+[22-Nov-2025 00:51:36 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'is_verified' in 'field list' in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:24
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(24): mysqli_prepare(Object(mysqli), 'SELECT is_verif...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 24
+[22-Nov-2025 00:51:36 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'is_verified' in 'field list' in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:24
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(24): mysqli_prepare(Object(mysqli), 'SELECT is_verif...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 24
+[22-Nov-2025 00:51:36 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'is_verified' in 'field list' in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php:24
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\PHPpatient.php(24): mysqli_prepare(Object(mysqli), 'SELECT is_verif...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\PHPpatient.php on line 24
+[02-Feb-2026 09:06:02 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.waveform_analysis' doesn't exist in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php:63
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63
+[02-Feb-2026 09:06:05 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.waveform_analysis' doesn't exist in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php:63
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63
+[03-Feb-2026 22:38:50 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.waveform_analysis' doesn't exist in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php:63
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63
+[13-Feb-2026 13:49:18 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.waveform_analysis' doesn't exist in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php:63
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63
+[13-Feb-2026 14:12:53 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.waveform_analysis' doesn't exist in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php:63
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63
+[13-Feb-2026 14:13:07 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.waveform_analysis' doesn't exist in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php:63
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63
+[13-Feb-2026 15:52:29 Asia/Riyadh] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'tanafs.waveform_analysis' doesn't exist in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php:63
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php(63): mysqli_query(Object(mysqli), 'SELECT anomaly_...')
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\PHPpatient.php on line 63

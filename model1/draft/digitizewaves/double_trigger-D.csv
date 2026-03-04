@@ -1,0 +1,719 @@
+sample_id,time,anomaly,anomaly_type,data_modality,volume,flow,pressure
+5,-0.008325574,1,Double trigger,paw_flow,,,9.821051129
+5,0.014238431,1,Double trigger,paw_flow,,,10.3054976
+5,0.024772831,1,Double trigger,paw_flow,,,13.1822723
+5,0.025248578,1,Double trigger,paw_flow,,,11.50573955
+5,0.035668392,1,Double trigger,paw_flow,,5.815649637,
+5,0.046521269,1,Double trigger,paw_flow,,,16.54077492
+5,0.047337895,1,Double trigger,paw_flow,,12.7944292,
+5,0.064703226,1,Double trigger,paw_flow,,26.75094641,
+5,0.075990692,1,Double trigger,paw_flow,,43.3226826,
+5,0.079959494,1,Double trigger,paw_flow,,,18.7044727
+5,0.147107797,1,Double trigger,paw_flow,,,22.07384954
+5,0.201021082,1,Double trigger,paw_flow,,53.8096065,
+5,0.231688834,1,Double trigger,paw_flow,,,24.01027614
+5,0.310526924,1,Double trigger,paw_flow,,,26.18484813
+5,0.338207203,1,Double trigger,paw_flow,,59.06609245,
+5,0.378286903,1,Double trigger,paw_flow,,,27.39868286
+5,0.452129648,1,Double trigger,paw_flow,,,27.17684879
+5,0.463584899,1,Double trigger,paw_flow,,60.8321467,
+5,0.476460713,1,Double trigger,paw_flow,,,21.43417359
+5,0.494980868,1,Double trigger,paw_flow,,,16.16914848
+5,0.506234154,1,Double trigger,paw_flow,,39.90935297,
+5,0.524375242,1,Double trigger,paw_flow,,,12.58337468
+5,0.525023443,1,Double trigger,paw_flow,,18.11030459,
+5,0.561629563,1,Double trigger,paw_flow,,-1.069357135,
+5,0.563828269,1,Double trigger,paw_flow,,,13.55090834
+5,0.638622508,1,Double trigger,paw_flow,,,9.976008754
+5,0.657277811,1,Double trigger,paw_flow,,-2.796860348,
+5,0.728684055,1,Double trigger,paw_flow,,4.192338416,
+5,0.746854972,1,Double trigger,paw_flow,,,8.564806949
+5,0.763064355,1,Double trigger,paw_flow,,,11.44294093
+5,0.767787844,1,Double trigger,paw_flow,,,14.79736572
+5,0.770152468,1,Double trigger,paw_flow,,12.92050151,
+5,0.781474664,1,Double trigger,paw_flow,,28.62015073,
+5,0.798735804,1,Double trigger,paw_flow,,45.19292884,
+5,0.812168251,1,Double trigger,paw_flow,,,18.40081013
+5,0.887958879,1,Double trigger,paw_flow,,54.80151426,
+5,0.890530594,1,Double trigger,paw_flow,,,22.25191488
+5,0.963149989,1,Double trigger,paw_flow,,,26.34116504
+5,0.995589206,1,Double trigger,paw_flow,,52.20400792,
+5,1.07501852,1,Double trigger,paw_flow,,,32.11646289
+5,1.109019553,1,Double trigger,paw_flow,,53.96797833,
+5,1.176148759,1,Double trigger,paw_flow,,,35.73350007
+5,1.204563609,1,Double trigger,paw_flow,,54.85673601,
+5,1.206834447,1,Double trigger,paw_flow,,,27.59713736
+5,1.223318168,1,Double trigger,paw_flow,,33.9297746,
+5,1.231981079,1,Double trigger,paw_flow,,,18.98040602
+5,1.236342166,1,Double trigger,paw_flow,,6.897162505,
+5,1.249296704,1,Double trigger,paw_flow,,-18.39127566,
+5,1.27419859,1,Double trigger,paw_flow,,-43.67762998,
+5,1.35825795,1,Double trigger,paw_flow,,,13.98071185
+5,1.38200257,1,Double trigger,paw_flow,,-50.63557115,
+5,1.53438632,1,Double trigger,paw_flow,,,13.30433542
+5,1.543013927,1,Double trigger,paw_flow,,-43.63074358,
+5,1.653696895,1,Double trigger,paw_flow,,,12.85387088
+5,1.686000069,1,Double trigger,paw_flow,,-34.01278088,
+5,1.930851249,1,Double trigger,paw_flow,,-32.22588824,
+5,1.942985109,1,Double trigger,paw_flow,,,13.40220339
+5,2.127913034,1,Double trigger,paw_flow,,-30.44733095,
+5,2.164445381,1,Double trigger,paw_flow,,,12.97620585
+5,2.318966415,1,Double trigger,paw_flow,,-27.79772861,
+5,2.369084595,1,Double trigger,paw_flow,,,11.82761644
+5,2.461778905,1,Double trigger,paw_flow,,-13.81933109,
+5,2.522580996,1,Double trigger,paw_flow,,,10.90629821
+5,2.550793596,1,Double trigger,paw_flow,,1.021776126,
+5,2.607977599,1,Double trigger,paw_flow,,,9.968668656
+5,2.618444035,1,Double trigger,paw_flow,,,13.08494804
+5,2.634147189,1,Double trigger,paw_flow,,8.01305873,
+5,2.634449527,1,Double trigger,paw_flow,,,16.68159606
+5,2.639322057,1,Double trigger,paw_flow,,28.07210086,
+5,2.656548467,1,Double trigger,paw_flow,,45.51696593,
+5,2.712675941,1,Double trigger,paw_flow,,,21.01171017
+5,2.763657834,1,Double trigger,paw_flow,,56.00076407,
+5,2.785839048,1,Double trigger,paw_flow,,,23.18492289
+5,2.894939742,1,Double trigger,paw_flow,,59.51203417,
+5,2.915887914,1,Double trigger,paw_flow,,,24.89271903
+5,2.996283819,1,Double trigger,paw_flow,,64.76226861,
+5,3.040737544,1,Double trigger,paw_flow,,,24.92262313
+5,3.062167888,1,Double trigger,paw_flow,,60.4132949,
+5,3.076554504,1,Double trigger,paw_flow,,,18.70365714
+5,3.089603567,1,Double trigger,paw_flow,,,12.71875871
+5,3.099017122,1,Double trigger,paw_flow,,35.12902442,
+5,3.130008088,1,Double trigger,paw_flow,,,10.33322686
+5,3.141944223,1,Double trigger,paw_flow,,7.229534956,
+5,3.21486098,1,Double trigger,paw_flow,,,11.31163473
+5,3.273712361,1,Double trigger,paw_flow,,-1.468412461,
+5,3.287956123,1,Double trigger,paw_flow,,,13.72435213
+5,3.39978467,1,Double trigger,paw_flow,,-17.14409752,
+5,3.492527372,1,Double trigger,paw_flow,,,12.8152674
+5,3.537318098,1,Double trigger,paw_flow,,-20.60848123,
+5,3.640008971,1,Double trigger,paw_flow,,,13.0901133
+5,3.68079047,1,Double trigger,paw_flow,,-23.19973605,
+5,3.912612055,1,Double trigger,paw_flow,,,12.43684457
+5,3.991004758,1,Double trigger,paw_flow,,-12.68051262,
+5,4.145490257,1,Double trigger,paw_flow,,,11.77406091
+5,4.1999097,1,Double trigger,paw_flow,,-8.2836106,
+5,4.338575613,1,Double trigger,paw_flow,,,11.34126698
+5,4.39665891,1,Double trigger,paw_flow,,1.343729379,
+5,4.485638871,1,Double trigger,paw_flow,,17.05692356,
+5,4.492072015,1,Double trigger,paw_flow,,,10.41994876
+5,4.501926776,1,Double trigger,paw_flow,,,15.69177025
+5,4.507058048,1,Double trigger,paw_flow,,,17.60916697
+5,4.508561109,1,Double trigger,paw_flow,,41.47952627,
+5,4.538012711,1,Double trigger,paw_flow,,51.94977946,
+5,4.636563203,1,Double trigger,paw_flow,,,21.23300054
+5,4.675164102,1,Double trigger,paw_flow,,58.07835238,
+5,4.749519156,1,Double trigger,paw_flow,,,23.17622352
+5,4.794602855,1,Double trigger,paw_flow,,58.97127774,
+5,4.822546334,1,Double trigger,paw_flow,,,25.8284456
+5,4.884427438,1,Double trigger,paw_flow,,,27.75943508
+5,4.896155316,1,Double trigger,paw_flow,,58.98899038,
+5,4.932002148,1,Double trigger,paw_flow,,,20.10615957
+5,4.932865627,1,Double trigger,paw_flow,,37.19306776,
+5,4.956197286,1,Double trigger,paw_flow,,,14.84249373
+5,4.957906436,1,Double trigger,paw_flow,,8.418365575,
+5,4.98963551,1,Double trigger,paw_flow,,,17.00619151
+5,4.994026326,1,Double trigger,paw_flow,,1.44792137,
+5,5.075779716,1,Double trigger,paw_flow,,,13.43401048
+5,5.121179581,1,Double trigger,paw_flow,,,13.4448847
+6,-0.00726035,1,Double trigger,paw_flow,,28.19269551,
+6,0.031185031,1,Double trigger,paw_flow,,,15.69870118
+6,0.087182287,1,Double trigger,paw_flow,,22.27731053,
+6,0.145530146,1,Double trigger,paw_flow,,,15.4824179
+6,0.245283676,1,Double trigger,paw_flow,,18.35253938,
+6,0.25469309,1,Double trigger,paw_flow,,8.464290693,
+6,0.263812091,1,Double trigger,paw_flow,,-3.896542912,
+6,0.280665281,1,Double trigger,paw_flow,,,15.26591107
+6,0.301455301,1,Double trigger,paw_flow,,,13.86783806
+6,0.301455301,1,Double trigger,paw_flow,,,12.25493484
+6,0.304644301,1,Double trigger,paw_flow,,-16.25110357,
+6,0.311850312,1,Double trigger,paw_flow,,,10.42686607
+6,0.395010395,1,Double trigger,paw_flow,,,9.565756824
+6,0.43207797,1,Double trigger,paw_flow,,-11.28084197,
+6,0.498960499,1,Double trigger,paw_flow,,,8.91947779
+6,0.506017378,1,Double trigger,paw_flow,,-11.76072209,
+6,0.56863064,1,Double trigger,paw_flow,,-18.67141397,
+6,0.623700624,1,Double trigger,paw_flow,,,9.993405316
+6,0.72696436,1,Double trigger,paw_flow,,-20.61811719,
+6,0.79002079,1,Double trigger,paw_flow,,,9.991616927
+6,0.906788718,1,Double trigger,paw_flow,,-19.59353655,
+6,1.008316008,1,Double trigger,paw_flow,,,9.55916214
+6,1.139875006,1,Double trigger,paw_flow,,-15.09688212,
+6,1.195426195,1,Double trigger,paw_flow,,,9.234569557
+6,1.392931393,1,Double trigger,paw_flow,,,9.017392082
+6,1.499756052,1,Double trigger,paw_flow,,-11.0696529,
+6,1.538461538,1,Double trigger,paw_flow,,,8.693246596
+6,1.600831601,1,Double trigger,paw_flow,,,9.122683478
+6,1.722097022,1,Double trigger,paw_flow,,-8.058640398,
+6,1.735966736,1,Double trigger,paw_flow,,,8.691122885
+6,1.933983086,1,Double trigger,paw_flow,,-4.060684912,
+6,2.027027027,1,Double trigger,paw_flow,,,8.687993204
+6,2.156033642,1,Double trigger,paw_flow,,-3.52225733,
+6,2.293864133,1,Double trigger,paw_flow,,-0.033455694,
+6,2.318087318,1,Double trigger,paw_flow,,,8.577336642
+6,2.409913573,1,Double trigger,paw_flow,,-1.988522838,
+6,2.453222453,1,Double trigger,paw_flow,,,8.683410458
+6,2.516437433,1,Double trigger,paw_flow,,4.955624739,
+6,2.538973561,1,Double trigger,paw_flow,,16.8282143,
+6,2.550706287,1,Double trigger,paw_flow,,26.72064495,
+6,2.567567568,1,Double trigger,paw_flow,,,8.144546532
+6,2.572777752,1,Double trigger,paw_flow,,34.63709865,
+6,2.588357588,1,Double trigger,paw_flow,,,10.07980685
+6,2.609147609,1,Double trigger,paw_flow,,,13.09033599
+6,2.661122661,1,Double trigger,paw_flow,,,15.24031476
+6,2.679185447,1,Double trigger,paw_flow,,40.59221226,
+6,2.754677755,1,Double trigger,paw_flow,,,14.5941475
+6,2.805805957,1,Double trigger,paw_flow,,38.63923609,
+6,2.848232848,1,Double trigger,paw_flow,,,15.23830282
+6,3.024948025,1,Double trigger,paw_flow,,,15.23640266
+6,3.100692347,1,Double trigger,paw_flow,,29.30196088,
+6,3.17047817,1,Double trigger,paw_flow,,,15.44989158
+6,3.253638254,1,Double trigger,paw_flow,,,15.66405115
+6,3.28975187,1,Double trigger,paw_flow,,18.95474188,
+6,3.38425259,1,Double trigger,paw_flow,,13.53387389,
+6,3.392384183,1,Double trigger,paw_flow,,-7.233748432,
+6,3.393603922,1,Double trigger,paw_flow,,3.15110822,
+6,3.40956341,1,Double trigger,paw_flow,,,15.44732077
+6,3.411783839,1,Double trigger,paw_flow,,-22.06507597,
+6,3.412655081,1,Double trigger,paw_flow,,-14.64732122,
+6,3.41995842,1,Double trigger,paw_flow,,,12.00634878
+6,3.43035343,1,Double trigger,paw_flow,,,14.26430152
+6,3.451143451,1,Double trigger,paw_flow,,,9.64042206
+6,3.52887877,1,Double trigger,paw_flow,,-15.11883741,
+6,3.596673597,1,Double trigger,paw_flow,,,9.63885722
+6,3.686573579,1,Double trigger,paw_flow,,-22.50522745,
+6,3.794178794,1,Double trigger,paw_flow,,,10.17436792
+6,3.940395428,1,Double trigger,paw_flow,,-21.46600994,
+6,4.215882162,1,Double trigger,paw_flow,,-15.97195762,
+6,4.293139293,1,Double trigger,paw_flow,,,9.201260814
+6,4.523256354,1,Double trigger,paw_flow,,-8.988081409,
+6,4.594594595,1,Double trigger,paw_flow,,,8.767911832
+6,4.777136285,1,Double trigger,paw_flow,,-7.454346917,
+6,4.833679834,1,Double trigger,paw_flow,,,8.765341023
+6,4.925247433,1,Double trigger,paw_flow,,-6.436039218,
+6,5.242902281,1,Double trigger,paw_flow,,-1.92265694,
+6,5.343035343,1,Double trigger,paw_flow,,,8.544810319
+6,5.528321175,1,Double trigger,paw_flow,,-1.866200455,
+6,5.644196366,1,Double trigger,paw_flow,,-5.304818549,
+6,5.654885655,1,Double trigger,paw_flow,,,8.756510853
+6,5.771455787,1,Double trigger,paw_flow,,-1.818107895,
+6,5.904365904,1,Double trigger,paw_flow,,,8.431247625
+6,5.993738674,1,Double trigger,paw_flow,,0.698387621,
+6,6.015810139,1,Double trigger,paw_flow,,8.614841318,
+6,6.027717114,1,Double trigger,paw_flow,,19.99082292,
+6,6.04989605,1,Double trigger,paw_flow,,,9.935059129
+6,6.050137075,1,Double trigger,paw_flow,,30.87437851,
+6,6.06029106,1,Double trigger,paw_flow,,,8.42957101
+6,6.070686071,1,Double trigger,paw_flow,,,12.30042698
+6,6.091476091,1,Double trigger,paw_flow,,,13.69805289
+6,6.122661123,1,Double trigger,paw_flow,,,14.77298639
+6,6.164241164,1,Double trigger,paw_flow,,,15.20264682
+6,6.198945216,1,Double trigger,paw_flow,,37.82689001,
+6,6.247401247,1,Double trigger,paw_flow,,,14.66411821
+6,6.372141372,1,Double trigger,paw_flow,,,15.09288445
+6,6.399679383,1,Double trigger,paw_flow,,36.87758468,
+6,6.465696466,1,Double trigger,paw_flow,,,15.41445912
+6,6.559251559,1,Double trigger,paw_flow,,,15.30592627
+6,6.578574416,1,Double trigger,paw_flow,,29.98989359,
+6,6.704781705,1,Double trigger,paw_flow,,,15.19683455
+6,6.704962595,1,Double trigger,paw_flow,,26.0588495,
+6,6.714255843,1,Double trigger,paw_flow,,15.18156684,
+6,6.723491009,1,Double trigger,paw_flow,,3.809767204,
+6,6.725571726,1,Double trigger,paw_flow,,,12.61596584
+6,6.735966736,1,Double trigger,paw_flow,,,10.6803702
+6,6.756756757,1,Double trigger,paw_flow,,,8.852189659
+6,6.764613633,1,Double trigger,paw_flow,,-6.07220854,
+6,6.891756889,1,Double trigger,paw_flow,,-3.574531853,
+6,6.891891892,1,Double trigger,paw_flow,,,8.528155948
+6,6.977196692,1,Double trigger,paw_flow,,3.859950746,
+6,7.058212058,1,Double trigger,paw_flow,,,8.418840677
+6,7.093478463,1,Double trigger,paw_flow,,3.882951536,
+6,7.105501603,1,Double trigger,paw_flow,,16.2479671,
+6,7.106372845,1,Double trigger,paw_flow,,23.66572185,
+6,7.11018711,1,Double trigger,paw_flow,,,8.955916214
+6,7.117582826,1,Double trigger,paw_flow,,29.10749965,
+6,7.130977131,1,Double trigger,paw_flow,,,10.67612277
+6,7.130977131,1,Double trigger,paw_flow,,,12.71913353
+6,7.162162162,1,Double trigger,paw_flow,,,14.33170143
+6,7.201977139,1,Double trigger,paw_flow,,27.64067655,
+6,7.203742204,1,Double trigger,paw_flow,,,16.48179197
+6,7.232702941,1,Double trigger,paw_flow,,19.24016077,
+6,7.274174063,1,Double trigger,paw_flow,,12.32528693,
+6,7.328482328,1,Double trigger,paw_flow,,,16.48045067
+6,7.34706798,1,Double trigger,paw_flow,,2.944101111,
+6,7.397890433,1,Double trigger,paw_flow,,-14.3535384,
+6,7.40944891,1,Double trigger,paw_flow,,-5.944658705,
+6,7.417929,1,Double trigger,paw_flow,,-23.74517913,
+6,7.427744993,1,Double trigger,paw_flow,,-30.17180893,
+6,7.432432432,1,Double trigger,paw_flow,,,16.15675229
+6,7.432432432,1,Double trigger,paw_flow,,,13.89868777
+6,7.442827443,1,Double trigger,paw_flow,,,12.17814589
+6,7.484407484,1,Double trigger,paw_flow,,,10.13468804
+6,7.567567568,1,Double trigger,paw_flow,,,9.166051908
+6,7.576030389,1,Double trigger,paw_flow,,-27.66995028,
+6,7.671517672,1,Double trigger,paw_flow,,,9.379987928
+6,7.788381116,1,Double trigger,paw_flow,,-19.71585893,
+6,7.920997921,1,Double trigger,paw_flow,,,9.269778463
+6,8.05329678,1,Double trigger,paw_flow,,-14.22389759,
+6,8.222453222,1,Double trigger,paw_flow,,,8.836429482
+6,8.40289717,1,Double trigger,paw_flow,,-7.726174434,
+6,8.451143451,1,Double trigger,paw_flow,,,8.511389802
+6,8.711018711,1,Double trigger,paw_flow,,,8.616122326
+6,8.752207147,1,Double trigger,paw_flow,,-3.701036197,
+6,8.974490033,1,Double trigger,paw_flow,,-1.184540681,
+6,9.043659044,1,Double trigger,paw_flow,,,8.397491785
+6,9.218031225,1,Double trigger,paw_flow,,2.325170763,
+6,9.272349272,1,Double trigger,paw_flow,,,8.610086513
+6,9.397913666,1,Double trigger,paw_flow,,3.844268389,
+6,9.438669439,1,Double trigger,paw_flow,,,7.748083071
+6,9.45187259,1,Double trigger,paw_flow,,13.25054598,
+6,9.463721481,1,Double trigger,paw_flow,,24.13201059,
+6,9.46985447,1,Double trigger,paw_flow,,,9.038070328
+6,9.475279959,1,Double trigger,paw_flow,,32.54089029,
+6,9.501039501,1,Double trigger,paw_flow,,,11.72590705
+6,9.521829522,1,Double trigger,paw_flow,,,14.41385554
+6,9.5291808,1,Double trigger,paw_flow,,41.4526509,
+6,9.563409563,1,Double trigger,paw_flow,,,15.38115038
+6,9.582326565,1,Double trigger,paw_flow,,43.93569072,
+6,9.704010037,1,Double trigger,paw_flow,,-0.051229032,
+6,9.708939709,1,Double trigger,paw_flow,,,8.390338229
+6,9.873205241,1,Double trigger,paw_flow,,0.476743646,
+6,9.968814969,1,Double trigger,paw_flow,,,8.28001699
+6,10.05320385,1,Double trigger,paw_flow,,2.984875238,
+7,0.06504065,1,double_trigger,flow_pressure,,-0.185714286,18.1871345
+7,0.221138211,1,double_trigger,flow_pressure,,-0.1,17.25146199
+7,0.403252033,1,double_trigger,flow_pressure,,-0.071428571,16.78362573
+7,0.637398374,1,double_trigger,flow_pressure,,-0.028571429,16.31578947
+7,0.871544715,1,double_trigger,flow_pressure,,-0.014285714,16.31578947
+7,1.027642276,1,double_trigger,flow_pressure,,-0.014285714,16.31578947
+7,1.118699187,1,double_trigger,flow_pressure,,0.957142857,16.31578947
+7,1.131707317,1,double_trigger,flow_pressure,,0.957142857,17.95321637
+7,1.144715447,1,double_trigger,flow_pressure,,1.185714286,21.22807018
+7,1.170731707,1,double_trigger,flow_pressure,,1.185714286,24.26900585
+7,1.170731707,1,double_trigger,flow_pressure,,1.185714286,27.77777778
+7,1.196747967,1,double_trigger,flow_pressure,,1.185714286,29.64912281
+7,1.248780488,1,double_trigger,flow_pressure,,1.214285714,32.69005848
+7,1.300813008,1,double_trigger,flow_pressure,,1.214285714,35.02923977
+7,1.339837398,1,double_trigger,flow_pressure,,1.214285714,37.36842105
+7,1.391869919,1,double_trigger,flow_pressure,,1.114285714,38.77192982
+7,1.443902439,1,double_trigger,flow_pressure,,0.5,40.87719298
+7,1.456910569,1,double_trigger,flow_pressure,,0.385714286,38.5380117
+7,1.469918699,1,double_trigger,flow_pressure,,0.257142857,34.56140351
+7,1.482926829,1,double_trigger,flow_pressure,,0.128571429,37.13450292
+7,1.495934959,1,double_trigger,flow_pressure,,0.128571429,32.22222222
+7,1.57398374,1,double_trigger,flow_pressure,,0.014285714,30.11695906
+7,1.61300813,1,double_trigger,flow_pressure,,-0.042857143,28.71345029
+7,1.704065041,1,double_trigger,flow_pressure,,-0.6,27.54385965
+7,1.717073171,1,double_trigger,flow_pressure,,-0.6,24.50292398
+7,1.730081301,1,double_trigger,flow_pressure,,-0.6,23.0994152
+7,1.847154472,1,double_trigger,flow_pressure,,-0.357142857,20.52631579
+7,2.029268293,1,double_trigger,flow_pressure,,-0.3,19.35672515
+7,2.172357724,1,double_trigger,flow_pressure,,-0.214285714,18.65497076
+7,2.341463415,1,double_trigger,flow_pressure,,-0.157142857,18.1871345
+7,2.484552846,1,double_trigger,flow_pressure,,-0.142857143,17.95321637
+7,2.653658537,1,double_trigger,flow_pressure,,-0.1,17.25146199
+7,2.822764228,1,double_trigger,flow_pressure,,-0.057142857,16.78362573
+7,3.030894309,1,double_trigger,flow_pressure,,-0.057142857,16.78362573
+7,3.18699187,1,double_trigger,flow_pressure,,-0.042857143,16.31578947
+7,3.317073171,1,double_trigger,flow_pressure,,-0.014285714,16.31578947
+7,3.408130081,1,double_trigger,flow_pressure,,0.214285714,16.31578947
+7,3.447154472,1,double_trigger,flow_pressure,,0.985714286,20.05847953
+7,3.460162602,1,double_trigger,flow_pressure,,0.928571429,21.4619883
+7,3.473170732,1,double_trigger,flow_pressure,,1.071428571,24.26900585
+7,3.499186992,1,double_trigger,flow_pressure,,1.185714286,26.37426901
+7,3.499186992,1,double_trigger,flow_pressure,,1.185714286,29.18128655
+7,3.538211382,1,double_trigger,flow_pressure,,1.228571429,31.75438596
+7,3.577235772,1,double_trigger,flow_pressure,,1.228571429,33.85964912
+7,3.642276423,1,double_trigger,flow_pressure,,1.228571429,36.43274854
+7,3.655284553,1,double_trigger,flow_pressure,,1.228571429,38.07017544
+7,3.694308943,1,double_trigger,flow_pressure,,1.242857143,39.47368421
+7,3.746341463,1,double_trigger,flow_pressure,,0.728571429,41.11111111
+7,3.759349593,1,double_trigger,flow_pressure,,0.728571429,39.94152047
+7,3.772357724,1,double_trigger,flow_pressure,,0.414285714,37.83625731
+7,3.785365854,1,double_trigger,flow_pressure,,0.585714286,35.26315789
+7,3.798373984,1,double_trigger,flow_pressure,,0.3,31.98830409
+7,3.876422764,1,double_trigger,flow_pressure,,0.1,30.81871345
+7,3.915447154,1,double_trigger,flow_pressure,,-0.014285714,29.41520468
+7,3.980487805,1,double_trigger,flow_pressure,,-0.014285714,27.54385965
+7,3.993495935,1,double_trigger,flow_pressure,,-0.057142857,25.67251462
+7,3.993495935,1,double_trigger,flow_pressure,,-0.057142857,23.33333333
+7,4.032520325,1,double_trigger,flow_pressure,,-0.242857143,20.99415205
+7,4.084552846,1,double_trigger,flow_pressure,,-0.157142857,18.1871345
+7,4.188617886,1,double_trigger,flow_pressure,,0.071428571,16.31578947
+7,4.279674797,1,double_trigger,flow_pressure,,0.685714286,15.84795322
+7,4.292682927,1,double_trigger,flow_pressure,,0.828571429,18.65497076
+7,4.292682927,1,double_trigger,flow_pressure,,0.828571429,20.52631579
+7,4.318699187,1,double_trigger,flow_pressure,,1.185714286,23.80116959
+7,4.331707317,1,double_trigger,flow_pressure,,1.185714286,27.07602339
+7,4.370731707,1,double_trigger,flow_pressure,,1.285714286,29.88304094
+7,4.435772358,1,double_trigger,flow_pressure,,1.328571429,32.69005848
+7,4.500813008,1,double_trigger,flow_pressure,,1.314285714,34.56140351
+7,4.552845528,1,double_trigger,flow_pressure,,1.271428571,35.96491228
+7,4.591869919,1,double_trigger,flow_pressure,,1.057142857,36.66666667
+7,4.617886179,1,double_trigger,flow_pressure,,0.514285714,34.32748538
+7,4.617886179,1,double_trigger,flow_pressure,,0.514285714,31.75438596
+7,4.630894309,1,double_trigger,flow_pressure,,0.3,29.18128655
+7,4.656910569,1,double_trigger,flow_pressure,,0.4,26.37426901
+7,4.73495935,1,double_trigger,flow_pressure,,-0.014285714,25.20467836
+7,4.76097561,1,double_trigger,flow_pressure,,0.1,23.33333333
+7,4.87804878,1,double_trigger,flow_pressure,,-0.085714286,21.92982456
+7,4.982113821,1,double_trigger,flow_pressure,,-0.157142857,20.52631579
+7,5.060162602,1,double_trigger,flow_pressure,,-0.028571429,20.76023392
+7,5.255284553,1,double_trigger,flow_pressure,,-0.357142857,22.39766082
+7,5.463414634,1,double_trigger,flow_pressure,,-0.4,21.22807018
+7,5.632520325,1,double_trigger,flow_pressure,,-0.371428571,20.76023392
+7,5.814634146,1,double_trigger,flow_pressure,,-0.328571429,20.29239766
+7,6.022764228,1,double_trigger,flow_pressure,,-0.271428571,20.05847953
+7,6.230894309,1,double_trigger,flow_pressure,,-0.214285714,19.8245614
+7,6.34796748,1,double_trigger,flow_pressure,,-0.214285714,19.35672515
+7,6.543089431,1,double_trigger,flow_pressure,,-0.157142857,18.88888889
+7,6.582113821,1,double_trigger,flow_pressure,,0.057142857,21.4619883
+7,6.595121951,1,double_trigger,flow_pressure,,0.528571429,25.20467836
+7,6.621138211,1,double_trigger,flow_pressure,,0.871428571,28.24561404
+7,6.647154472,1,double_trigger,flow_pressure,,1.014285714,31.52046784
+7,6.725203252,1,double_trigger,flow_pressure,,1.214285714,35.96491228
+7,6.764227642,1,double_trigger,flow_pressure,,1.242857143,38.30409357
+7,6.803252033,1,double_trigger,flow_pressure,,1.242857143,40.64327485
+7,6.894308943,1,double_trigger,flow_pressure,,1.085714286,43.21637427
+7,6.907317073,1,double_trigger,flow_pressure,,1.085714286,41.11111111
+7,6.933333333,1,double_trigger,flow_pressure,,0.7,38.30409357
+7,6.959349593,1,double_trigger,flow_pressure,,0.214285714,34.56140351
+7,7.011382114,1,double_trigger,flow_pressure,,0.071428571,33.15789474
+7,7.076422764,1,double_trigger,flow_pressure,,-0.042857143,31.75438596
+7,7.141463415,1,double_trigger,flow_pressure,,-0.028571429,31.75438596
+7,7.167479675,1,double_trigger,flow_pressure,,-0.028571429,27.77777778
+7,7.167479675,1,double_trigger,flow_pressure,,-0.028571429,24.73684211
+7,7.180487805,1,double_trigger,flow_pressure,,-0.028571429,22.86549708
+7,7.271544715,1,double_trigger,flow_pressure,,-0.757142857,21.69590643
+7,7.440650407,1,double_trigger,flow_pressure,,-0.542857143,20.52631579
+7,7.583739837,1,double_trigger,flow_pressure,,-0.414285714,19.35672515
+7,7.765853659,1,double_trigger,flow_pressure,,-0.328571429,18.88888889
+7,7.94796748,1,double_trigger,flow_pressure,,-0.228571429,18.1871345
+7,0.06504065,1,double_trigger,flow_pressure,,-0.185714286,18.1871345
+7,0.221138211,1,double_trigger,flow_pressure,,-0.1,17.25146199
+7,0.403252033,1,double_trigger,flow_pressure,,-0.071428571,16.78362573
+7,0.637398374,1,double_trigger,flow_pressure,,-0.028571429,16.31578947
+7,0.871544715,1,double_trigger,flow_pressure,,-0.014285714,16.31578947
+7,1.027642276,1,double_trigger,flow_pressure,,-0.014285714,16.31578947
+7,1.118699187,1,double_trigger,flow_pressure,,0.957142857,16.31578947
+7,1.131707317,1,double_trigger,flow_pressure,,0.957142857,17.95321637
+7,1.144715447,1,double_trigger,flow_pressure,,1.185714286,21.22807018
+7,1.170731707,1,double_trigger,flow_pressure,,1.185714286,24.26900585
+7,1.170731707,1,double_trigger,flow_pressure,,1.185714286,27.77777778
+7,1.196747967,1,double_trigger,flow_pressure,,1.185714286,29.64912281
+7,1.248780488,1,double_trigger,flow_pressure,,1.214285714,32.69005848
+7,1.300813008,1,double_trigger,flow_pressure,,1.214285714,35.02923977
+7,1.339837398,1,double_trigger,flow_pressure,,1.214285714,37.36842105
+7,1.391869919,1,double_trigger,flow_pressure,,1.114285714,38.77192982
+7,1.443902439,1,double_trigger,flow_pressure,,0.5,40.87719298
+7,1.456910569,1,double_trigger,flow_pressure,,0.385714286,38.5380117
+7,1.469918699,1,double_trigger,flow_pressure,,0.257142857,34.56140351
+7,1.482926829,1,double_trigger,flow_pressure,,0.128571429,37.13450292
+7,1.495934959,1,double_trigger,flow_pressure,,0.128571429,32.22222222
+7,1.57398374,1,double_trigger,flow_pressure,,0.014285714,30.11695906
+7,1.61300813,1,double_trigger,flow_pressure,,-0.042857143,28.71345029
+7,1.704065041,1,double_trigger,flow_pressure,,-0.6,27.54385965
+7,1.717073171,1,double_trigger,flow_pressure,,-0.6,24.50292398
+7,1.730081301,1,double_trigger,flow_pressure,,-0.6,23.0994152
+7,1.847154472,1,double_trigger,flow_pressure,,-0.357142857,20.52631579
+7,2.029268293,1,double_trigger,flow_pressure,,-0.3,19.35672515
+7,2.172357724,1,double_trigger,flow_pressure,,-0.214285714,18.65497076
+7,2.341463415,1,double_trigger,flow_pressure,,-0.157142857,18.1871345
+7,2.484552846,1,double_trigger,flow_pressure,,-0.142857143,17.95321637
+7,2.653658537,1,double_trigger,flow_pressure,,-0.1,17.25146199
+7,2.822764228,1,double_trigger,flow_pressure,,-0.057142857,16.78362573
+7,3.030894309,1,double_trigger,flow_pressure,,-0.057142857,16.78362573
+7,3.18699187,1,double_trigger,flow_pressure,,-0.042857143,16.31578947
+7,3.317073171,1,double_trigger,flow_pressure,,-0.014285714,16.31578947
+7,3.408130081,1,double_trigger,flow_pressure,,0.214285714,16.31578947
+7,3.447154472,1,double_trigger,flow_pressure,,0.985714286,20.05847953
+7,3.460162602,1,double_trigger,flow_pressure,,0.928571429,21.4619883
+7,3.473170732,1,double_trigger,flow_pressure,,1.071428571,24.26900585
+7,3.499186992,1,double_trigger,flow_pressure,,1.185714286,26.37426901
+7,3.499186992,1,double_trigger,flow_pressure,,1.185714286,29.18128655
+7,3.538211382,1,double_trigger,flow_pressure,,1.228571429,31.75438596
+7,3.577235772,1,double_trigger,flow_pressure,,1.228571429,33.85964912
+7,3.642276423,1,double_trigger,flow_pressure,,1.228571429,36.43274854
+7,3.655284553,1,double_trigger,flow_pressure,,1.228571429,38.07017544
+7,3.694308943,1,double_trigger,flow_pressure,,1.242857143,39.47368421
+7,3.746341463,1,double_trigger,flow_pressure,,0.728571429,41.11111111
+7,3.759349593,1,double_trigger,flow_pressure,,0.728571429,39.94152047
+7,3.772357724,1,double_trigger,flow_pressure,,0.414285714,37.83625731
+7,3.785365854,1,double_trigger,flow_pressure,,0.585714286,35.26315789
+7,3.798373984,1,double_trigger,flow_pressure,,0.3,31.98830409
+7,3.876422764,1,double_trigger,flow_pressure,,0.1,30.81871345
+7,3.915447154,1,double_trigger,flow_pressure,,-0.014285714,29.41520468
+7,3.980487805,1,double_trigger,flow_pressure,,-0.014285714,27.54385965
+7,3.993495935,1,double_trigger,flow_pressure,,-0.057142857,25.67251462
+7,3.993495935,1,double_trigger,flow_pressure,,-0.057142857,23.33333333
+7,4.032520325,1,double_trigger,flow_pressure,,-0.242857143,20.99415205
+7,4.084552846,1,double_trigger,flow_pressure,,-0.157142857,18.1871345
+7,4.188617886,1,double_trigger,flow_pressure,,0.071428571,16.31578947
+7,4.279674797,1,double_trigger,flow_pressure,,0.685714286,15.84795322
+7,4.292682927,1,double_trigger,flow_pressure,,0.828571429,18.65497076
+7,4.292682927,1,double_trigger,flow_pressure,,0.828571429,20.52631579
+7,4.318699187,1,double_trigger,flow_pressure,,1.185714286,23.80116959
+7,4.331707317,1,double_trigger,flow_pressure,,1.185714286,27.07602339
+7,4.370731707,1,double_trigger,flow_pressure,,1.285714286,29.88304094
+7,4.435772358,1,double_trigger,flow_pressure,,1.328571429,32.69005848
+7,4.500813008,1,double_trigger,flow_pressure,,1.314285714,34.56140351
+7,4.552845528,1,double_trigger,flow_pressure,,1.271428571,35.96491228
+7,4.591869919,1,double_trigger,flow_pressure,,1.057142857,36.66666667
+7,4.617886179,1,double_trigger,flow_pressure,,0.514285714,34.32748538
+7,4.617886179,1,double_trigger,flow_pressure,,0.514285714,31.75438596
+7,4.630894309,1,double_trigger,flow_pressure,,0.3,29.18128655
+7,4.656910569,1,double_trigger,flow_pressure,,0.4,26.37426901
+7,4.73495935,1,double_trigger,flow_pressure,,-0.014285714,25.20467836
+7,4.76097561,1,double_trigger,flow_pressure,,0.1,23.33333333
+7,4.87804878,1,double_trigger,flow_pressure,,-0.085714286,21.92982456
+7,4.982113821,1,double_trigger,flow_pressure,,-0.157142857,20.52631579
+7,5.060162602,1,double_trigger,flow_pressure,,-0.028571429,20.76023392
+7,5.255284553,1,double_trigger,flow_pressure,,-0.357142857,22.39766082
+7,5.463414634,1,double_trigger,flow_pressure,,-0.4,21.22807018
+7,5.632520325,1,double_trigger,flow_pressure,,-0.371428571,20.76023392
+7,5.814634146,1,double_trigger,flow_pressure,,-0.328571429,20.29239766
+7,6.022764228,1,double_trigger,flow_pressure,,-0.271428571,20.05847953
+7,6.230894309,1,double_trigger,flow_pressure,,-0.214285714,19.8245614
+7,6.34796748,1,double_trigger,flow_pressure,,-0.214285714,19.35672515
+7,6.543089431,1,double_trigger,flow_pressure,,-0.157142857,18.88888889
+7,6.582113821,1,double_trigger,flow_pressure,,0.057142857,21.4619883
+7,6.595121951,1,double_trigger,flow_pressure,,0.528571429,25.20467836
+7,6.621138211,1,double_trigger,flow_pressure,,0.871428571,28.24561404
+7,6.647154472,1,double_trigger,flow_pressure,,1.014285714,31.52046784
+7,6.725203252,1,double_trigger,flow_pressure,,1.214285714,35.96491228
+7,6.764227642,1,double_trigger,flow_pressure,,1.242857143,38.30409357
+7,6.803252033,1,double_trigger,flow_pressure,,1.242857143,40.64327485
+7,6.894308943,1,double_trigger,flow_pressure,,1.085714286,43.21637427
+7,6.907317073,1,double_trigger,flow_pressure,,1.085714286,41.11111111
+7,6.933333333,1,double_trigger,flow_pressure,,0.7,38.30409357
+7,6.959349593,1,double_trigger,flow_pressure,,0.214285714,34.56140351
+7,7.011382114,1,double_trigger,flow_pressure,,0.071428571,33.15789474
+7,7.076422764,1,double_trigger,flow_pressure,,-0.042857143,31.75438596
+7,7.141463415,1,double_trigger,flow_pressure,,-0.028571429,31.75438596
+7,7.167479675,1,double_trigger,flow_pressure,,-0.028571429,27.77777778
+7,7.167479675,1,double_trigger,flow_pressure,,-0.028571429,24.73684211
+7,7.180487805,1,double_trigger,flow_pressure,,-0.028571429,22.86549708
+7,7.271544715,1,double_trigger,flow_pressure,,-0.757142857,21.69590643
+7,7.440650407,1,double_trigger,flow_pressure,,-0.542857143,20.52631579
+7,7.583739837,1,double_trigger,flow_pressure,,-0.414285714,19.35672515
+7,7.765853659,1,double_trigger,flow_pressure,,-0.328571429,18.88888889
+7,7.94796748,1,double_trigger,flow_pressure,,-0.228571429,18.1871345
+8,0.02275254,1,DoubleTrigger,paw_flow,,,9.568024924
+8,0.051703531,1,DoubleTrigger,paw_flow,,-0.244271652,
+8,0.188079986,1,DoubleTrigger,paw_flow,,-0.20955911,
+8,0.221707992,1,DoubleTrigger,paw_flow,,,9.570071791
+8,0.441864674,1,DoubleTrigger,paw_flow,,,9.778098094
+8,0.485878893,1,DoubleTrigger,paw_flow,,-0.166058311,
+8,0.651162189,1,DoubleTrigger,paw_flow,,,9.677370703
+8,0.697124747,1,DoubleTrigger,paw_flow,,-0.17452426,
+8,0.776818264,1,DoubleTrigger,paw_flow,,,9.678663461
+8,0.912945678,1,DoubleTrigger,paw_flow,,,9.680063948
+8,0.933080859,1,DoubleTrigger,paw_flow,,-0.165671542,
+8,1.090958451,1,DoubleTrigger,paw_flow,,,9.681895356
+8,1.119347864,1,DoubleTrigger,paw_flow,,-0.156861797,
+8,1.289913902,1,DoubleTrigger,paw_flow,,,9.683942222
+8,1.305547722,1,DoubleTrigger,paw_flow,,-0.139403462,
+8,1.341941635,1,DoubleTrigger,paw_flow,,-0.026939554,
+8,1.35127513,1,DoubleTrigger,paw_flow,,0.370906356,
+8,1.35274194,1,DoubleTrigger,paw_flow,,,9.684588601
+8,1.353020963,1,DoubleTrigger,paw_flow,,0.146043001,
+8,1.364893865,1,DoubleTrigger,paw_flow,,,11.02216218
+8,1.367479381,1,DoubleTrigger,paw_flow,,,13.07980195
+8,1.3828632,1,DoubleTrigger,paw_flow,,,16.98942524
+8,1.387199012,1,DoubleTrigger,paw_flow,,0.543910398,
+8,1.390102645,1,DoubleTrigger,paw_flow,,,14.41748326
+8,1.397674013,1,DoubleTrigger,paw_flow,,0.794730269,
+8,1.398681224,1,DoubleTrigger,paw_flow,,0.66500141,
+8,1.40225457,1,DoubleTrigger,paw_flow,,,15.75505684
+8,1.487059493,1,DoubleTrigger,paw_flow,,,16.57897458
+8,1.546405597,1,DoubleTrigger,paw_flow,,0.838102145,
+8,1.591643612,1,DoubleTrigger,paw_flow,,,16.47716989
+8,1.682782053,1,DoubleTrigger,paw_flow,,0.872814686,
+8,1.706569796,1,DoubleTrigger,paw_flow,,,16.27259095
+8,1.789694133,1,DoubleTrigger,paw_flow,,,15.75904284
+8,1.831849375,1,DoubleTrigger,paw_flow,,0.87294361,
+8,1.862217856,1,DoubleTrigger,paw_flow,,,15.14250502
+8,1.91860387,1,DoubleTrigger,paw_flow,,0.898964586,
+8,1.92452879,1,DoubleTrigger,paw_flow,,,14.73162345
+8,1.932369096,1,DoubleTrigger,paw_flow,,0.726003519,
+8,1.939524782,1,DoubleTrigger,paw_flow,,,9.999267437
+8,1.941205368,1,DoubleTrigger,paw_flow,,,11.33673329
+8,1.942885953,1,DoubleTrigger,paw_flow,,,12.67419914
+8,1.945865732,1,DoubleTrigger,paw_flow,,0.587636813,
+8,1.957623394,1,DoubleTrigger,paw_flow,,,7.736079151
+8,1.959429515,1,DoubleTrigger,paw_flow,,0.440621517,
+8,1.973463331,1,DoubleTrigger,paw_flow,,0.233066087,
+8,1.977144039,1,DoubleTrigger,paw_flow,,,6.604592738
+8,2.02415965,1,DoubleTrigger,paw_flow,,0.103380202,
+8,2.03893787,1,DoubleTrigger,paw_flow,,,5.78218321
+8,2.090131086,1,DoubleTrigger,paw_flow,,,4.856783963
+8,2.123872069,1,DoubleTrigger,paw_flow,,,6.708982944
+8,2.135020077,1,DoubleTrigger,paw_flow,,0.224557163,
+8,2.136027289,1,DoubleTrigger,paw_flow,,0.094828304,
+8,2.156507259,1,DoubleTrigger,paw_flow,,0.657008179,
+8,2.157225224,1,DoubleTrigger,paw_flow,,,8.25253596
+8,2.15778306,1,DoubleTrigger,paw_flow,,0.492684958,
+8,2.158723124,1,DoubleTrigger,paw_flow,,0.37160469,
+8,2.159552189,1,DoubleTrigger,paw_flow,,,10.10441175
+8,2.168190914,1,DoubleTrigger,paw_flow,,0.752153418,
+8,2.19243114,1,DoubleTrigger,paw_flow,,0.830012221,
+8,2.192776068,1,DoubleTrigger,paw_flow,,,11.54508278
+8,2.279789963,1,DoubleTrigger,paw_flow,,0.778195883,
+8,2.289086537,1,DoubleTrigger,paw_flow,,,13.19216416
+8,2.354793656,1,DoubleTrigger,paw_flow,,0.71772021,
+8,2.365617809,1,DoubleTrigger,paw_flow,,,15.76496798
+8,2.400522274,1,DoubleTrigger,paw_flow,,,18.54310486
+8,2.455852315,1,DoubleTrigger,paw_flow,,,20.90992924
+8,2.491102964,1,DoubleTrigger,paw_flow,,0.761081342,
+8,2.542079272,1,DoubleTrigger,paw_flow,,,22.86554886
+8,2.652458268,1,DoubleTrigger,paw_flow,,0.77851819,
+8,2.669415932,1,DoubleTrigger,paw_flow,,,24.20430747
+8,2.691806669,1,DoubleTrigger,paw_flow,,0.510444113,
+8,2.697985883,1,DoubleTrigger,paw_flow,,,21.94122691
+8,2.702953145,1,DoubleTrigger,paw_flow,,0.674778078,
+8,2.705504747,1,DoubleTrigger,paw_flow,,0.346131636,
+8,2.71621377,1,DoubleTrigger,paw_flow,,,19.78092062
+8,2.744383116,1,DoubleTrigger,paw_flow,,0.138597693,
+8,2.770637766,1,DoubleTrigger,paw_flow,,-0.043001222,
+8,2.775809913,1,DoubleTrigger,paw_flow,,,17.20951728
+8,2.783798665,1,DoubleTrigger,paw_flow,,-0.138124975,
+8,2.805543346,1,DoubleTrigger,paw_flow,,,15.87237462
+8,2.80991902,1,DoubleTrigger,paw_flow,,-0.302426709,
+8,2.860816781,1,DoubleTrigger,paw_flow,,-0.458058365,
+8,2.865139489,1,DoubleTrigger,paw_flow,,,13.30097129
+8,2.968560126,1,DoubleTrigger,paw_flow,,,12.27322871
+8,2.998133301,1,DoubleTrigger,paw_flow,,-0.544426091,
+8,3.122356069,1,DoubleTrigger,paw_flow,,-0.544318655,
+8,3.124208186,1,DoubleTrigger,paw_flow,,,11.14314278
+8,3.217933139,1,DoubleTrigger,paw_flow,,,10.7325844
+8,3.30822019,1,DoubleTrigger,paw_flow,,-0.483617367,
+8,3.384957468,1,DoubleTrigger,paw_flow,,,10.32278012
+8,3.54370627,1,DoubleTrigger,paw_flow,,-0.414224514,
+8,3.63588179,1,DoubleTrigger,paw_flow,,,10.01671967
+8,3.804036904,1,DoubleTrigger,paw_flow,,-0.344810174,
+8,3.908136619,1,DoubleTrigger,paw_flow,,,10.01952065
+8,4.027235003,1,DoubleTrigger,paw_flow,,-0.292725246,
+8,4.169790832,1,DoubleTrigger,paw_flow,,,9.919331903
+8,4.287699932,1,DoubleTrigger,paw_flow,,-0.240608087,
+8,4.358662771,1,DoubleTrigger,paw_flow,,,10.229917
+8,4.548366303,1,DoubleTrigger,paw_flow,,-0.2144367,
+8,4.599503581,1,DoubleTrigger,paw_flow,,,10.23239479
+8,4.771698696,1,DoubleTrigger,paw_flow,,-0.179648953,
+8,4.808801096,1,DoubleTrigger,paw_flow,,,10.1316674
+8,4.912092458,1,DoubleTrigger,paw_flow,,,9.001042825
+8,4.919691659,1,DoubleTrigger,paw_flow,,-0.041142581,
+8,5.025725884,1,DoubleTrigger,paw_flow,,,7.767643992
+8,5.088036818,1,DoubleTrigger,paw_flow,,,7.356762417
+8,5.09266347,1,DoubleTrigger,paw_flow,,0.080088097,
+8,5.101610776,1,DoubleTrigger,paw_flow,,,9.826037869
+8,5.124104765,1,DoubleTrigger,paw_flow,,,11.06083719
+8,5.12578535,1,DoubleTrigger,paw_flow,,,12.39830304
+8,5.128587352,1,DoubleTrigger,paw_flow,,0.25309214,
+8,5.139465238,1,DoubleTrigger,paw_flow,,0.452020467,
+8,5.148150063,1,DoubleTrigger,paw_flow,,,13.53022037
+8,5.14886588,1,DoubleTrigger,paw_flow,,0.841217786,
+8,5.149604502,1,DoubleTrigger,paw_flow,,0.74608329,
+8,5.150477418,1,DoubleTrigger,paw_flow,,0.633651612,
+8,5.31556222,1,DoubleTrigger,paw_flow,,,13.42906206
+8,5.359843144,1,DoubleTrigger,paw_flow,,0.867346199,
+8,5.461643871,1,DoubleTrigger,paw_flow,,,13.01904232
+8,5.533755019,1,DoubleTrigger,paw_flow,,0.867496609,
+8,5.607984073,1,DoubleTrigger,paw_flow,,,12.81478657
+8,5.658112083,1,DoubleTrigger,paw_flow,,0.850306864,
+8,5.671877308,1,DoubleTrigger,paw_flow,,0.677345796,
+8,5.681154174,1,DoubleTrigger,paw_flow,,,12.71265869
+8,5.685776829,1,DoubleTrigger,paw_flow,,0.487087547,
+8,5.699004875,1,DoubleTrigger,paw_flow,,0.383315204,
+8,5.699382062,1,DoubleTrigger,paw_flow,,,10.55235239
+8,5.718256328,1,DoubleTrigger,paw_flow,,,8.906456033
+8,5.725058083,1,DoubleTrigger,paw_flow,,0.22766206,
+8,5.727822737,1,DoubleTrigger,paw_flow,,,8.186389844
+8,5.738890456,1,DoubleTrigger,paw_flow,,0.046052402,
+8,5.747343382,1,DoubleTrigger,paw_flow,,,7.054903431
+8,5.791684981,1,DoubleTrigger,paw_flow,,,9.010092131
+8,5.814699918,1,DoubleTrigger,paw_flow,,-0.118206358,
+8,5.835121649,1,DoubleTrigger,paw_flow,,,10.24510691
+8,5.857486361,1,DoubleTrigger,paw_flow,,,11.37702424
+8,5.962329033,1,DoubleTrigger,paw_flow,,,11.48098353
+8,5.964774452,1,DoubleTrigger,paw_flow,,-0.247806293,
+8,6.087338728,1,DoubleTrigger,paw_flow,,,10.96786635
+8,6.226448035,1,DoubleTrigger,paw_flow,,-0.351363765,
+8,6.264575846,1,DoubleTrigger,paw_flow,,,10.35240582
+8,6.473356258,1,DoubleTrigger,paw_flow,,,9.840150477
+8,6.487315848,1,DoubleTrigger,paw_flow,,-0.351138149,
+8,6.698024522,1,DoubleTrigger,paw_flow,,-0.290415374,
+8,6.745223259,1,DoubleTrigger,paw_flow,,,9.534305487
+8,6.945932879,1,DoubleTrigger,paw_flow,,-0.221011778,
+8,7.132921374,1,DoubleTrigger,paw_flow,,,9.744055468
+8,7.256086916,1,DoubleTrigger,paw_flow,,-0.168851644,
+8,7.394963415,1,DoubleTrigger,paw_flow,,,9.952512691
+8,7.479687899,1,DoubleTrigger,paw_flow,,-0.16865826,
+8,7.625332885,1,DoubleTrigger,paw_flow,,,9.954882747
+8,7.777688248,1,DoubleTrigger,paw_flow,,-0.151103232,
+8,7.85557308,1,DoubleTrigger,paw_flow,,,9.854370815
+8,7.960415751,1,DoubleTrigger,paw_flow,,,9.958330101
+8,8.0257309,1,DoubleTrigger,paw_flow,,-0.098996817,
+8,8.063836389,1,DoubleTrigger,paw_flow,,,8.930587515
+8,8.099123054,1,DoubleTrigger,paw_flow,,0.048093684,
+8,8.109470745,1,DoubleTrigger,paw_flow,,,11.9145961
+8,8.118261499,1,DoubleTrigger,paw_flow,,,10.57723798
+8,8.121080268,1,DoubleTrigger,paw_flow,,0.420004566,
+8,8.121881221,1,DoubleTrigger,paw_flow,,,13.45793366
+8,8.122423217,1,DoubleTrigger,paw_flow,,0.247032755,
+8,8.144111841,1,DoubleTrigger,paw_flow,,0.653537999,
+8,8.155191169,1,DoubleTrigger,paw_flow,,0.826520554,
+8,8.155363653,1,DoubleTrigger,paw_flow,,,15.10436866
+8,8.27080694,1,DoubleTrigger,paw_flow,,,15.31131767
+8,8.353813303,1,DoubleTrigger,paw_flow,,0.843989632,
+8,8.448302609,1,DoubleTrigger,paw_flow,,,14.90162112
+8,8.514900017,1,DoubleTrigger,paw_flow,,0.896020843,
+8,8.593867156,1,DoubleTrigger,paw_flow,,,14.08007343
+8,8.626969099,1,DoubleTrigger,paw_flow,,0.861523173,
+8,8.673371771,1,DoubleTrigger,paw_flow,,,10.68582965
+8,8.675052357,1,DoubleTrigger,paw_flow,,,12.0232955
+8,8.677508597,1,DoubleTrigger,paw_flow,,,13.97805328
+8,8.677934007,1,DoubleTrigger,paw_flow,,0.697242926,
+8,8.691564938,1,DoubleTrigger,paw_flow,,0.541579039,
+8,8.692116762,1,DoubleTrigger,paw_flow,,,8.937051305
+8,8.705464459,1,DoubleTrigger,paw_flow,,0.35132079,
+8,8.710861752,1,DoubleTrigger,paw_flow,,,7.188272962
+8,8.731584814,1,DoubleTrigger,paw_flow,,0.187019056,
+8,8.751325077,1,DoubleTrigger,paw_flow,,,6.057002008
+8,8.794501967,1,DoubleTrigger,paw_flow,,0.083289687,
+8,8.844015823,1,DoubleTrigger,paw_flow,,,4.823387715
+8,8.846213512,1,DoubleTrigger,paw_flow,,,6.572381519
+8,8.869304218,1,DoubleTrigger,paw_flow,,0.048759787,
+8,8.880383546,1,DoubleTrigger,paw_flow,,0.221742342,
+8,8.890813662,1,DoubleTrigger,paw_flow,,,8.733334195
+8,8.893916281,1,DoubleTrigger,paw_flow,,,11.20250192
+8,8.914293005,1,DoubleTrigger,paw_flow,,0.654204101,
+8,8.926110954,1,DoubleTrigger,paw_flow,,0.73205216,
+8,8.927915816,1,DoubleTrigger,paw_flow,,,13.26046488
+8,8.928259673,1,DoubleTrigger,paw_flow,,0.455297262,
+8,8.993200093,1,DoubleTrigger,paw_flow,,,15.21586903
+8,9.015694082,1,DoubleTrigger,paw_flow,,,16.45066836
+8,9.037710004,1,DoubleTrigger,paw_flow,,0.758094624,
+8,9.060811335,1,DoubleTrigger,paw_flow,,,19.02314899
+8,9.168498074,1,DoubleTrigger,paw_flow,,,21.39051202
+8,9.174220754,1,DoubleTrigger,paw_flow,,0.775509985,
+8,9.243865863,1,DoubleTrigger,paw_flow,,,23.03737794
+8,9.298309227,1,DoubleTrigger,paw_flow,,0.792914602,
+8,9.360989736,1,DoubleTrigger,paw_flow,,,24.5817928
+8,9.423337765,1,DoubleTrigger,paw_flow,,0.689238951,
+8,9.43558187,1,DoubleTrigger,paw_flow,,,25.61136679
+8,9.447242255,1,DoubleTrigger,paw_flow,,0.810340706,
+8,9.464539649,1,DoubleTrigger,paw_flow,,,23.6569322
+8,9.474839853,1,DoubleTrigger,paw_flow,,0.45576998,
+8,9.481345502,1,DoubleTrigger,paw_flow,,,20.36492403
+8,9.50169883,1,DoubleTrigger,paw_flow,,0.19633375,
+8,9.53124596,1,DoubleTrigger,paw_flow,,,18.4107049
+8,9.540644347,1,DoubleTrigger,paw_flow,,-0.019848784,
+8,9.554946752,1,DoubleTrigger,paw_flow,,-0.261998576,
+8,9.600537787,1,DoubleTrigger,paw_flow,,,15.22211737
+8,9.618871117,1,DoubleTrigger,paw_flow,,-0.495456804,
+8,9.650567521,1,DoubleTrigger,paw_flow,,,13.37078022
+8,9.743966802,1,DoubleTrigger,paw_flow,,-0.607781046,
+8,9.795485689,1,DoubleTrigger,paw_flow,,,12.03482259
+8,9.991942307,1,DoubleTrigger,paw_flow,,-0.54702604,
+8,10.01383251,1,DoubleTrigger,paw_flow,,,10.80250106

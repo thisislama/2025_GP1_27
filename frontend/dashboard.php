@@ -1,0 +1,670 @@
+<?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+unset($_SESSION['show_uploaded_image']);
+unset($_SESSION['last_uploaded_image']);
+unset($_SESSION['uploaded_filename']);
+
+if (empty($_SESSION['user_id'])) {
+    if (!empty($_POST['action']) || !empty($_POST['ajax'])) {
+        http_response_code(401);
+        exit('Unauthorized. Please sign in.');
+    }
+    header('Location: signin.php');
+    exit;
+}
+
+$userID = (int)$_SESSION['user_id'];
+
+// --- Database connection ---
+require_once __DIR__ . '/db_connection.php';
+
+// --- Doctor name ---
+$docRes = $conn->prepare("SELECT first_name, last_name, role FROM healthcareprofessional WHERE userID=?");
+$docRes->bind_param("i", $userID);
+$docRes->execute();
+$docData = $docRes->get_result()->fetch_assoc();
+$_SESSION['doctorName'] = "Dr. " . $docData['first_name'] . " " . $docData['last_name'];
+$_SESSION['role'] = $docData['role'];
+$docRes->close();
+
+
+// Initialize variables
+$stats = [
+    'anomaly' => 0,
+    'total_scans' => 0,
+    'patients' => 0
+];
+$recent_patients = [];
+$upload_message = '';
+
+
+if ($conn->connect_error) {
+    $error_message = "Database connection failed: " . $conn->connect_error;
+} else {
+    // Clear upload message after displaying once
+    if (isset($_SESSION['upload_message'])) {
+        unset($_SESSION['upload_message']);
+    }
+    // Get statistics
+
+    // Get total patients assigned to this doctor
+    $patients_sql = "SELECT COUNT(DISTINCT PID) AS total_patients FROM patient_doctor_assignments WHERE userID = ?";
+    $patients_stmt = $conn->prepare($patients_sql);
+    $patients_stmt->bind_param("i", $userID);
+    $patients_stmt->execute();
+    $patients_result = $patients_stmt->get_result();
+    if ($patients_result && $patients_row = $patients_result->fetch_assoc()) {
+        $stats['patients'] = $patients_row['total_patients'] ?? 0;
+    }
+    $patients_stmt->close();
+
+        // Get scans and anomalies for assigned patients
+    $scans_sql = "
+        SELECT 
+            COUNT(wa.waveImg_id) AS total_scans,
+            SUM(CASE WHEN wa.status = 'abnormal' THEN 1 ELSE 0 END) AS anomalies
+            ,MAX(wa.timestamp) AS last_visit
+        FROM waveform wa
+        WHERE wa.PID IN (SELECT PID FROM patient_doctor_assignments WHERE userID = ?)
+    ";
+
+        $scans_stmt = $conn->prepare($scans_sql);
+        $scans_stmt->bind_param("i", $userID);
+        $scans_stmt->execute();
+        $scans_result = $scans_stmt->get_result();
+        if ($scans_result && $scans_row = $scans_result->fetch_assoc()) {
+            $stats['total_scans'] = $scans_row['total_scans'] ?? 0;
+            $stats['anomaly'] = $scans_row['anomalies'] ?? 0;
+        }
+        $scans_stmt->close();
+
+   // Get recent patients with details
+    $recent_sql = "
+    SELECT p.PID, p.first_name, p.last_name, p.status, p.DOB
+    FROM Patient p
+    INNER JOIN patient_doctor_assignments pda ON p.PID = pda.PID
+    WHERE pda.userID = ?
+    LIMIT 3
+    ";
+
+    $stmt = $conn->prepare($recent_sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $recent_result = $stmt->get_result();
+
+if ($recent_result) {
+    $recent_patients = $recent_result->fetch_all(MYSQLI_ASSOC);
+}
+
+
+}
+function getWaveformType($fileType)
+{
+    $types = [
+        'png' => 'Image',
+        'jpg' => 'Image',
+        'jpeg' => 'Image'
+    ];
+    return $types[$fileType] ?? 'Unknown';
+}
+
+  // Get analysis history data
+$sql = "
+    SELECT 
+        wa.waveImg_id,
+        p.PID,
+        p.first_name,
+        p.last_name,
+        p.phone,
+        p.gender,
+        wa.timestamp as analysis_date,
+        wa.status,
+        wa.anomaly_type,
+        wa.finding_notes
+    FROM waveform wa
+    JOIN Patient p ON wa.PID = p.PID
+    JOIN patient_doctor_assignments pda ON p.PID = pda.PID
+    WHERE pda.userID = ? 
+    ORDER BY wa.timestamp DESC
+    LIMIT 3
+";
+
+// Prepare and execute with userID parameter
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result2 = $stmt->get_result();
+$results2 = $result2->fetch_all(MYSQLI_ASSOC);
+
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TANAFS Dashboard</title>
+    <link rel="icon" type="image/png" href="/images/fi.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+    <link rel="stylesheet" href="dash.css"/>
+    <link rel="stylesheet" href="styles.css"/>
+
+</head>
+<body>
+    <!-- Header for iPad & medium screens only -->
+<header class="ipad-header">
+    <div class="ipad-inner">
+
+        <a href="dashboard.php" class="ipad-logo">
+            <img src="Images/Logo.png" alt="Tanafs Logo">
+        </a>
+
+        <nav class="ipad-nav">
+            <a href="dashboard.php" class="nav-link">Dashboard</a>
+            <a href="patients.php" class="nav-link">Patients</a>
+            <a href="history2.php" class="nav-link">History</a>
+            <a href="profile.php" class="profile-btn">
+                <img src="images/profile.png" alt="Profile">
+            </a>
+
+            <form action="Logout.php" method="post">
+                <button type="submit" class="ipad-logout">Logout</button>
+            </form>
+        </nav>
+
+    </div>
+</header>
+
+<div class="wrapper">
+
+    <img class="topimg" src="Images/Group 8.png" alt="img">
+    <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
+
+    <nav class="auth-nav" aria-label="User navigation">
+        <a class="nav-link active" href="dashboard.php">Dashboard</a>
+        <a class="nav-link" href="patients.php">Patients</a>
+        <a class="nav-link" href="history2.php">History</a>
+        <a href="profile.php" class="profile-btn">
+            <div class="profile">
+                <img class="avatar-icon" src="images/profile.png" alt="Profile">
+                <div class="user-info-minimal">
+                            <div class="user-name"><?php echo  $_SESSION['doctorName'] ?></div>
+                            <div class="user-role"><?php echo  $_SESSION['role'] ?></div>
+                </div>
+            </div>
+        </a>
+
+        <form action="Logout.php" method="post" style="display:inline;">
+            <button type="submit" class="btn-logout">
+            <span class="material-symbols-outlined" style="font-size: 2em; margin-right:1.24em;">logout</span></button>
+        </form>
+    </nav>
+    <!--
+     <div class="dashboard-header">
+            <h1>Hello <?php echo $_SESSION['doctorName'] ?>,</h1>
+            <p class="subtitle">This is what we've got for you today.</p>
+        </div>
+-->
+    <div class="stats-grid">
+                <div class="stat anomaly" style="box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em; border-left: 4px solid #e53935;">
+                    <div>
+                        <div class="label" >Abnormality</div>
+                        <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
+                        <div class="under"><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
+                    </div>
+
+                    <div class="icon warn">
+                        <span style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">warning</span>
+                    </div>
+                </div>
+
+                <div class="stat analysis" style="box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em; border-left: 4px solid #143ab5ff;">
+                    <div>
+                        <div class="label" >Analysis</div>
+                        <div class="value"><?php echo $stats['total_scans']; ?></div>
+                        <div class="under"><?php echo $stats['total_scans']; ?> analyses you applied for</div>
+                    </div>
+                    <div class="icon analysis">
+                        <span  style="font-size: 1.65em;text-align: center" class="material-symbols-outlined">scan</span>
+                    </div>
+                </div>
+
+                <div class="stat patient" style="box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em; border-left: 4px solid #2b4a77;">
+                    <div>
+                        <div class="label" >Patients</div>
+                        <div class="value"><?php echo $stats['patients'] ?></div>
+                        <div class="under"><?php echo $stats['patients'] ?>  total patients assigned to you</div>
+
+                    </div>
+                    <div class="icon patient" >
+                        <span  style="font-size: 1.85em;text-align: center" class="material-symbols-outlined">group</span>
+                    </div>
+                </div>
+
+                <div class="stat reports" style="box-shadow: rgba(169, 175, 188, 0.8) -0.01em 0.01em 0.7em 0.15em; border-left: 4px solid #0a76fc;">
+                    <div>
+                        <div class="label" >Reports</div>
+                        <div class="value"><?php echo $stats['reports'] ?? 0 ?></div>
+                        <div class="under"><?php echo $stats['reports'] ?? 0 ?>  total number of generated reports</div>
+                    </div>
+                    <div class="icon patient" >
+                        <span  style="font-size: 1.85em;text-align: center" class="material-symbols-outlined">Assignment_add</span>
+                    </div>
+                </div>
+    </div>
+
+    
+    <main class="container">
+            
+        <!-- LEFT -->
+        <section class="left-column">
+            <!--
+            <h2 style="color:#0c6bdf; font-size:1.65em;margin:5px">
+                Welcome back <br>
+                <span style="color:rgba(89,115,195,0.76);font-size: .80em;margin-left: 1.7em">
+                 <?php echo  $_SESSION['doctorName'] ?>
+                </span>
+            </h2>
+            -->
+            
+            <!-- UPLOAD CARD -->
+        <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Upload an Image</h2>
+                </div>
+            <form id="uploadForm" method="post" enctype="multipart/form-data" class="upload-card">
+                <input id="fileUpload" type="file" name="waveform_file" accept=".jpeg,.png,.jpg"/>
+                <label for="fileUpload" class="upload-drop" id="dropzone">
+                <div class="hint">Upload your Waveform Image</div>
+                <div style="font-size:28px;opacity:0.65">
+                    <img class="upImg" src="images/upload2.png" style="height:6em;" alt="upload">
+                   <!-- <span class="material-symbols-outlined">upload</span>-->
+                </div>
+                <div style="font-size:1.5empx;font-weight:500;color:#0b84feb3;margin-top:4px">Drag &amp; drop or <b style="text-decoration:underline;">choose a file</b> to upload</div>
+                <div style="font-size:.8em;color:rgba(145,148,151,0.7);margin-top:8px"> Only JPEG, PNG, JPG files are allowed. Max 10.0MB. </div>
+                </label>
+            </form>
+        </div>
+
+        <!--<div id="uploadLoader" style="display:none; text-align:center; margin-top:1em;">
+            <img src="images/loading.gif" alt="Loading..." style="height:80px;">
+            <p>Analyzing waveform…</p>
+        </div>-->
+
+            
+
+           <!-- <div class="small-cards">
+                <h3 style="margin-bottom:.4em;margin-left:12px;color:#0a4a98;font-weight:700">Recent Patients</h3>
+                <?php if (!empty($recent_patients)): ?>
+                    <?php foreach ($recent_patients as $patient): ?>
+                        <div class="file-container">
+                            <div class="file-item" onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>'">
+                                <div class="file-header">
+                                    <div class="file-icon">
+                                        <span class="material-symbols-outlined">description</span>
+                                    </div>
+                                    <div class="patient-data">
+                                        <div class="file-number">File Number</div>
+                                        <div class="file-id">P-<?php echo substr((string)$patient['PID'], -4); ?></div>
+                                    </div>    
+                                    <div class="file-actions">
+                                        <div class="action-btn">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="patient-details" >
+                                    <div class="detail-item" >
+                                    
+                                     </div>
+                                </div>
+                               <div class="file-footer">
+                                    <div class="last-updated">Updated: 2 days ago</div>
+                                    <div class="view-btn">
+                                         <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                        </div>  
+                                   <div class="view-btn">
+                                       <a class="view-btn" href="patient.html?pid=<?php echo $patient['PID']; ?>"> View </a> 
+                                        <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="none">No recent patients found.</p>
+                <?php endif; ?>
+            </div>-->
+          <!-- RECENT ANALYSIS -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Analysis</h2>
+                            <button class="btn-text"><a href="history2.php">View All →</a></button>
+                        </div>
+                        <div class="transactions-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Date</th>
+                                        <th>Result</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                     <?php
+                    if (!empty($results2)) {
+                        foreach ($results2 as $row) {
+                            $patient_id = $row['PID'];
+                            $analysis_id = $row['waveImg_id'];
+                            $full_name = htmlspecialchars($row['first_name'] . " " . $row['last_name']);
+                            $phone = htmlspecialchars($row['phone']);
+                            $date = date('Y-m-d', strtotime($row['analysis_date']));
+                            $time = date('H:i', strtotime($row['analysis_date']));
+                            $status = $row['status'];
+                            $anomaly_type = $row['anomaly_type'] ?: 'N/A';
+
+                            echo "  
+                                    <tr>
+                                        <td>P{$patient_id}</td>
+                                        <td>{$date}</td>
+                                        <td>{$anomaly_type}</td>
+                                        <td><span class='status-badge $status'>{$status}</span></td>
+                                    </tr>
+                                    ";
+                        } } else {
+                    echo "<tr><td colspan='9' class='no-data'><img style='height:10em; margin:.5em' src='images/nores.png' alt='no-result'>.
+                    <br>No analysis history found.
+                    </td></tr>";
+                    }
+                    ?>  
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+        </section>
+
+        <!-- RIGHT -->
+        <section class="right-column">
+            <div class="card account-card" style=" background: linear-gradient(135deg, #0a76fc, #c4d8ff); box-shadow: rgba(10, 118, 252, 0.4) 0em 0.5em 1.5em 0em; color: white;">
+                        <div class="card-header">
+                            <h2 class="card-title">My Patients</h2>
+                            <button class="btn-primary">Add Patient</button>
+                        </div>
+                        <div class="account-info">
+                            <div class="account-number">Total: <?php echo $stats['patients'] ?? '0' ?> Patients</div>
+                            <div class="account-actions">
+                                <button class="btn-secondary"><a href="patients.php">View All</a></button>
+                                <button class="btn-secondary">Generate Report</button>
+                            </div>
+                        </div>
+            </div>
+        <!-- RECENT PATIENTS -->
+
+            <div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Recent Patients</h2>
+    </div>
+
+    <?php if (!empty($recent_patients)): ?>
+        <div class="patients-list">
+            <?php foreach ($recent_patients as $patient): ?>
+                <div class="patient-item"
+                     onclick="window.location.href='patient.html?pid=<?php echo $patient['PID']; ?>';">
+
+                    <div class="patient-info">
+                        <div class="patient-icon">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+
+                        <div>
+                            <div class="patient-name">
+                                P-<?php echo $patient['PID']; ?> •
+                                <?php echo htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']); ?>
+                            </div>
+
+                            <div class="patient-details">
+                                DOB: <?php echo $patient['DOB'] ?? 'Unknown'; ?> 
+                               <!-- • Last analysis: <?php echo $patient['last_visit'] ?? 'Today'; ?>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="patient-status <?php echo strtolower($patient['status']); ?>">
+                        <?php echo $patient['status']; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="none" style="margin-left:1.2em;margin-top:.8em;">
+            No recent patients found.
+        </p>
+    <?php endif; ?>
+</div>
+
+
+      
+        </section>
+    </main>
+</div>
+
+
+<footer id="contact" class="site-footer">
+    <div class="footer-grid">
+
+        <div class="footer-col brand">
+            <img src="images/logo.png" alt="Tanafs logo" class="footer-logo"/>
+            <p class="brand-tag">Breathe well, live well</p>
+        </div>
+
+        <!-- Social -->
+        <nav class="footer-col social" aria-label="Social media">
+            <h3 class="footer-title">Social Media</h3>
+            <ul class="social-list">
+                <li>
+                    <a href="#" aria-label="Twitter">
+                        <img src="images/twitter.png" alt="Twitter"/>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" aria-label="Instagram">
+                        <img src="images/instagram.png" alt="Instagram"/>
+                    </a>
+                </li>
+            </ul>
+            <span class="social-handle">@official_Tanafs</span>
+        </nav>
+
+        <!-- Contact -->
+        <div class="footer-col contact">
+            <h3 class="footer-title">Contact Us</h3>
+            <ul class="contact-list">
+                <li>
+                    <a href="#" class="contact-link">
+                        <img src="images/whatsapp.png" alt="WhatsApp"/>
+                        <span>+123 165 788</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:Appointly@gmail.com" class="contact-link">
+                        <img src="images/email.png" alt="Email"/>
+                        <span>Tanafs@gmail.com</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bar">
+        <p class="legal">
+            <a href="#">Terms &amp; Conditions</a>
+            <span class="dot">•</span>
+            <a href="#">Privacy Policy</a>
+        </p>
+        <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
+    </div>
+</footer>
+
+    
+    <script>
+        // DOM Elements
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileUpload');
+        const form = document.getElementById('uploadForm');
+        const loader = document.getElementById('uploadLoader');
+
+        // Debug logging
+        console.log("=== UPLOAD DEBUG ===");
+        console.log("File Input Found:", !!fileInput);
+        console.log("Form Found:", !!form);
+        console.log("Loader Found:", !!loader);
+        console.log("Dropzone Found:", !!dropzone);
+
+        // Initialize event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // File input change handler
+            if (fileInput) {
+                fileInput.addEventListener('change', handleFileUpload);
+            }
+
+            // Drag and drop handlers
+            if (dropzone) {
+                // Click handler
+                dropzone.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fileInput.click();
+                });
+
+                // Drag over handler
+                dropzone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.add('dragover');
+                });
+
+                // Drag leave handler
+                dropzone.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.remove('dragover');
+                });
+
+                // Drop handler
+                dropzone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.remove('dragover');
+
+                    if (e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        // Trigger change event
+                        const event = new Event('change', { bubbles: true });
+                        fileInput.dispatchEvent(event);
+                    }
+                });
+            }
+        });
+
+        
+async function handleFileUpload(e) {
+    console.log("File selected:", this.files[0]);
+    
+    if (!this.files.length) {
+        console.error("No file selected");
+        return;
+    }
+    
+    const file = this.files[0];
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, PNG, JPG)');
+        return;
+    }
+
+    if (file.size > 10000000) {
+        alert('File is too large. Maximum size is 10MB.');
+        return;
+    }
+    
+    if (loader) loader.style.display = 'block';
+    
+    try {
+        const formData = new FormData();
+        formData.append('waveform_file', file);
+        
+        console.log("Uploading file...");
+        
+        const response = await fetch("upload_waveform.php", {
+            method: "POST",
+            body: formData,
+            credentials: 'same-origin'
+        });
+        
+        const responseText = await response.text();
+        console.log("Raw Response:", responseText);
+        
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (jsonError) {
+            console.error("JSON Parse Error:", jsonError);
+            throw new Error('Invalid server response');
+        }
+        
+       if (data.success) {
+    // Store file info and prediction in session storage
+    sessionStorage.setItem('temp_upload', JSON.stringify({
+        file_path: data.file_path,
+        file_name: data.file_name,
+        prediction: data.prediction
+    }));
+    
+    alert("✓ File uploaded and analyzed successfully!");
+    
+    // Redirect to analysis page with file path
+    window.location.href = 'analysis.php?upload=' + encodeURIComponent(data.file_path);
+} else {
+    throw new Error(data.error || "Upload failed");
+}
+        
+    } catch (error) {
+        console.error("Upload Error:", error);
+        alert("Upload failed: " + error.message);
+    } finally {
+        if (loader) loader.style.display = 'none';
+        this.value = '';
+    }
+}
+        // Generate report function
+        function generateReport() {
+            alert("Report generation feature coming soon!");
+            // You can redirect to report generation page
+            // window.location.href = 'generate_report.php';
+        }
+
+        // Prevent default drag behaviors on the whole document
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            document.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    </script>
+
+
+</body>
+</html>
+
+<?php
+if (isset($conn)) {
+    $conn->close();
+}
+?>

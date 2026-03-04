@@ -1,0 +1,77 @@
+[02-Feb-2026 18:09:02 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 3) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 11
+[02-Feb-2026 18:09:02 UTC] PHP Warning:  http_response_code(): Cannot set response code - headers already sent (output started at C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php:11) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 57
+[02-Feb-2026 18:13:24 UTC] Upload Error: Unknown column 'confidence' in 'field list'
+[02-Feb-2026 18:13:48 UTC] Upload Error: Unknown column 'confidence' in 'field list'
+[02-Feb-2026 18:15:04 UTC] Upload Error: Unknown column 'confidence' in 'field list'
+[02-Feb-2026 18:17:55 UTC] Upload Error: Unknown column 'confidence' in 'field list'
+[02-Feb-2026 18:20:31 UTC] Upload Error: Data truncated for column 'status' at row 1
+[02-Feb-2026 18:25:12 UTC] Upload Error: Column count doesn't match value count at row 1
+[02-Feb-2026 18:26:22 UTC] Upload Error: Column 'anomaly_type' cannot be null
+[02-Feb-2026 18:27:16 UTC] Upload Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE waveImg_id = ?' at line 5
+[02-Feb-2026 18:30:00 UTC] Upload Error: Data truncated for column 'status' at row 1
+[13-Feb-2026 12:08:38 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:08:38 UTC] Upload Error: Data truncated for column 'status' at row 1
+[13-Feb-2026 12:08:46 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:08:46 UTC] Upload Error: Data truncated for column 'status' at row 1
+[13-Feb-2026 12:09:42 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:09:42 UTC] Upload Error: Data truncated for column 'status' at row 1
+[13-Feb-2026 12:11:47 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:11:47 UTC] Upload Error: Data truncated for column 'status' at row 1
+[13-Feb-2026 12:11:53 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:11:53 UTC] Upload Error: Data truncated for column 'status' at row 1
+[13-Feb-2026 12:12:47 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:12:47 UTC] Upload Error: Data truncated for column 'status' at row 1
+[13-Feb-2026 12:13:00 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:13:00 UTC] Upload Error: Data truncated for column 'status' at row 1
+[13-Feb-2026 12:13:49 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:13:49 UTC] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php:81
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php(81): mysqli->close()
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 81
+[13-Feb-2026 12:15:16 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 7) in C:\MAMP\htdocs\2025_GP_27\frontend\upload_helpers.php on line 2
+[13-Feb-2026 12:15:16 UTC] PHP Fatal error:  Uncaught Error: mysqli object is already closed in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php:81
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php(81): mysqli->close()
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 81
+[13-Feb-2026 12:32:35 UTC] Upload attempt by user: 46
+[13-Feb-2026 12:32:35 UTC] File info: Array
+(
+    [name] => 000000.jpg
+    [full_path] => 000000.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\Users\lamaA\AppData\Local\Temp\phpAD21.tmp
+    [error] => 0
+    [size] => 53547
+)
+
+[13-Feb-2026 12:32:35 UTC] Target file: uploads/1770985955_000000.jpg
+[13-Feb-2026 12:32:35 UTC] File type: jpg
+[13-Feb-2026 12:32:35 UTC] File uploaded successfully to: uploads/1770985955_000000.jpg
+[13-Feb-2026 12:32:35 UTC] Using temporary patient ID: 1010
+[13-Feb-2026 12:32:35 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Data truncated for column 'status' at row 1 in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php:165
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php(165): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 165
+[13-Feb-2026 12:32:55 UTC] Upload attempt by user: 46
+[13-Feb-2026 12:32:55 UTC] File info: Array
+(
+    [name] => 000000.jpg
+    [full_path] => 000000.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\Users\lamaA\AppData\Local\Temp\phpFA67.tmp
+    [error] => 0
+    [size] => 53547
+)
+
+[13-Feb-2026 12:32:55 UTC] Target file: uploads/1770985975_000000.jpg
+[13-Feb-2026 12:32:55 UTC] File type: jpg
+[13-Feb-2026 12:32:55 UTC] File uploaded successfully to: uploads/1770985975_000000.jpg
+[13-Feb-2026 12:32:55 UTC] Using temporary patient ID: 1010
+[13-Feb-2026 12:32:55 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Data truncated for column 'status' at row 1 in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php:165
+Stack trace:
+#0 C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php(165): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\MAMP\htdocs\2025_GP_27\frontend\upload_waveform.php on line 165

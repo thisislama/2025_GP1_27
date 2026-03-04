@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tanafs Patient</title>
+
+  <!-- Google Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f2f6fb; --card:#fff; --accent:#0f65ff; --muted:#9aa6c0;
+      --soft-blue:#eef6ff; --panel-shadow:0 0.625em 1.875em rgba(17,24,39,.06);
+      --radius:.875em;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:var(--bg); color:#15314b;
+      min-height:100vh; display:flex; flex-direction:column;
+    }
+
+    /* ---------- Header---------- */
+  
+    img.topimg{
+      position:absolute; top:-4.9%; left:48%; transform:translateX(-50%);
+      height:auto; width:auto; max-width:90%; z-index:10; pointer-events:none;
+    }
+    img.logo{
+      position:absolute; top:3.8%; left:14%;
+      width:clamp(100px,12vw,180px); height:auto; z-index:20; pointer-events:none;
+    }
+    .auth-nav{
+      position:absolute; top:6%; right:16.2%;
+      display:flex; align-items:center; gap:1.6em; z-index:30;
+    }
+    .nav-link{
+      color:#0876FA; font-weight:600; text-decoration:none; font-size:1em;
+      transition:all .3s ease; position:relative;
+    }
+    .nav-link::after{
+      content:""; position:absolute; bottom:-4px; left:0; width:0; height:2px;
+      background:linear-gradient(90deg,#0876FA,#78C1F5); transition:width .3s ease; border-radius:2px;
+    }
+    .nav-link:hover::after{width:100%}
+    .nav-link:hover{transform:translateY(-2px); color:#055ac0}
+    .profile-btn{all:unset;cursor:pointer;display:inline-block}
+    .btn-logout{
+      background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; padding:.5em .975em;
+      border-radius:.75em; font-weight:600; border:none; box-shadow:0 .5em 1.25em rgba(15,101,255,.14);
+      cursor:pointer; font-size:.875em;
+    }
+    .avatar-icon{width:30px;height:30px;display:block}
+
+    /* ---------- Main panels---------- */
+    main.main{flex:1; display:flex; flex-direction:column}
+    .panel{
+      background:#fff; border-radius:1.125em; box-shadow:0 .0625em .1875em rgba(0,0,0,.05);
+      padding:1.25em; margin: 3em auto .9375em auto;
+ width:calc(100% - 7.125em);
+    }
+    .analysis-table{border-collapse:collapse}
+    th,td{text-align:center;padding:.75em;color:#2b4a77}
+    .analysis-table thead th{background:#f3f6fb;text-align:left}
+    .analysis-table tbody td{border-top:1px solid #eef1f6}
+
+
+    .table-scroll{max-height:15.625em;overflow-y:auto;border-radius:.75em;border:none}
+    .table-scroll::-webkit-scrollbar{width:.5em}
+    .table-scroll::-webkit-scrollbar-thumb{background:#c5d4f7;border-radius:.625em}
+    .table-scroll::-webkit-scrollbar-thumb:hover{background:#9fb8f5}
+
+    .comment-card .title{font-weight:700;color:#2b4a77;margin-bottom:.5em}
+    .comment-basic-info{display:flex;justify-content:space-between;font-size:.8125em;color:#6b7b8f;margin-bottom:.3125em}
+    .comment-date{color:#2b4a77;font-weight:600}
+    .comment-basic-info b{color:#2b4a77;font-weight:600}
+    .comment-content{background:#f6f9ff;border:1px solid rgba(15,101,255,.12);border-radius:.75em;padding:.75em;color:#2b4a77;margin-bottom:.75em}
+    .comment-input{width:100%;border:1px solid #dfe6ef;border-radius:.75em;padding:.75em;min-height:4.375em;resize:vertical}
+    .btn-add{margin-top:.625em;background:linear-gradient(90deg,#0f65ff,#5aa6ff);color:#fff;border:0;padding:.625em 1em;border-radius:.75em;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.375em;box-shadow:0 .5em 1.25em rgba(15,101,255,.14)}
+
+    .reports-panel .title{font-weight:700;color:#2b4a77}
+    .report-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25em}
+    .report-item{display:flex;align-items:center;justify-content:space-between;padding:.5em 1em;border:1px solid #eef1f6;border-radius:.875em;background:#fff;box-shadow:0 .0625em .1875em rgba(0,0,0,.05)}
+    .report-item .left{display:flex;align-items:center;gap:.75em;color:#2b4a77;font-weight:550;font-size:.9375em}
+    .pd{background:#f0f6ff;color:#0f65ff;border:1px solid rgba(15,101,255,.15);padding:.25em .625em;border-radius:999px;font-size:.75em;font-weight:700}
+    .btn-open{border:1px solid rgba(15,101,255,.25);background:#f0f6ff;color:#0f65ff;padding:.5em .875em;border-radius:.75em;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.375em}
+    .btn-generate{margin-top:1em;align-self:flex-start;background:linear-gradient(90deg,#0f65ff,#5aa6ff);color:#fff;border:0;padding:.625em 1em;border-radius:.75em;font-weight:700;cursor:pointer;box-shadow:0 .5em 1.25em rgba(15,101,255,.14);display:inline-flex;align-items:center;gap:.625em}
+    .report-date{color:#2b4a77;font-weight:600;font-size:.8125em;position:relative;top:1.25em}
+
+    /* Date/Time Columns*/
+   
+
+    /* ---------- Footer---------- */
+    .site-footer{background:#F6F6F6;color:#0b1b2b;font-family:'Montserrat',sans-serif;margin-top:6em}
+    .footer-grid{max-width:75em;margin:0 auto;padding:2.5em 1.25em;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:2em;align-items:start}
+    .footer-logo{height:5.5em;width:auto;display:block;margin-left:-3em}
+    .brand-tag{margin-top:.75em;color:#4c5d7a;font-size:.95em}
+    .footer-title{margin:0 0 1em 0;font-size:1.05em;font-weight:700;letter-spacing:.02em;color:#0B83FE;text-transform:uppercase}
+    .social-list{list-style:none;padding:0;margin:0;display:flex;gap:.75em;align-items:center}
+    .social-list li a{display:inline-flex;align-items:center;justify-content:center;border-radius:0;background:none;box-shadow:none;transition:transform .2s ease, opacity .2s ease}
+    .social-list li a:hover{transform:translateY(-.2em);box-shadow:0 .6em 1.4em rgba(0,0,0,.08)}
+    .social-list img{width:1.2em;height:1.2em}
+    .social-handle{display:block;margin-top:.6em;color:#0B83FE;font-size:.95em}
+    .contact-list{list-style:none;padding:0;margin:.25em 0 0 0;display:grid;gap:.6em}
+    .contact-link{display:flex;align-items:center;gap:.6em;text-decoration:none;color:#0B83FE;padding:.5em .6em;border-radius:.6em;transition:background .2s ease, transform .2s ease}
+    .contact-link:hover{background:rgba(255,255,255,.7);transform:translateX(.2em)}
+    .contact-link img{width:1.15em;height:1.15em}
+    .footer-bar{border-top:.06em solid rgba(11,45,92,.12);text-align:center;padding:.9em 1em 1.2em}
+    .legal{margin:.2em 0;color:#4c5d7a;font-size:.9em}
+    .legal a{color:#27466e;text-decoration:none}
+    .legal a:hover{text-decoration:underline}
+    .legal .dot{margin:0 .5em;color:rgba(11,45,92,.6)}
+    .copy{margin:.2em 0 0;color:#0B83FE;font-size:.85em}
+    
+  
+    
+    
+    
+   
+    
+ 
+.PName {
+  position: relative;
+  top: 60px;      
+  left: 40px;        
+}
+.PName h2 {
+  margin: 0;
+  padding: 0;
+}
+.PName .pid {
+ 
+  color: #2b4a77;
+  margin-top: 4px;
+  font-weight: 600;
+}
+.analysis-title {
+  font-weight: 700;
+  color: #2b4a77;
+  margin-bottom: .5em;
+  font-size: 1.15rem;    
+}
+
+
+.ipad-header {
+    display: none;
+}
+
+
+@media (max-width: 1366px) {
+
+    .auth-nav,
+    .topimg,
+    .logo {
+        display: none !important;
+    }
+
+    .ipad-header {
+        display: block;
+        width: 100%;
+        background: #ffffff;
+        padding: 14px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+    }
+
+    .ipad-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ipad-logo img {
+        height: 55px;
+        width: auto;
+    }
+
+    .ipad-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.2em;
+    }
+
+    .ipad-nav .nav-link {
+        color: #0B83FE;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .ipad-nav .profile-btn img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .ipad-logout {
+        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+        color: white;
+        padding: 0.4em 0.9em;
+        border-radius: 0.7em;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+
+
+   
+}
+
+
+
+
+.extra-rec-sub{
+  color:#6b7b8f;
+  font-size:.9rem;
+  margin:.25em 0 1em 0;
+}
+
+.rec-grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap:1em;
+}
+
+@media (max-width: 900px){
+  .rec-grid{ grid-template-columns:1fr; }
+}
+
+.rec-card{
+  border:1px solid #eef1f6;
+  border-radius: .875em;
+  padding: 1em;
+  background:#fff;
+  box-shadow:0 .0625em .1875em rgba(0,0,0,.05);
+}
+
+.rec-card .rec-title{
+  font-weight:800;
+  color:#2b4a77;
+  margin-bottom:.75em;
+}
+
+.rec-list{
+  display:flex;
+  flex-direction:column;
+  gap:.75em;
+  margin-bottom:.9em;
+}
+
+.rec-item{
+  background:#f6f9ff;
+  border:1px solid rgba(15,101,255,.12);
+  border-radius:.75em;
+  padding:.75em;
+}
+
+.rec-meta{
+  display:flex;
+  justify-content:space-between;
+  font-size:.8rem;
+  color:#6b7b8f;
+  margin-bottom:.4em;
+}
+.rec-meta b{ color:#2b4a77; }
+
+.rec-textarea{
+  width:100%;
+  border:1px solid #dfe6ef;
+  border-radius:.75em;
+  padding:.75em;
+  min-height:4.2em;
+  resize:vertical;
+}
+
+.rec-actions{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:.6em;
+}
+
+
+
+
+
+.rec-grid{
+  display:flex;
+  gap:1em;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding-bottom:.5em;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rec-grid::-webkit-scrollbar{ height:.5em; }
+.rec-grid::-webkit-scrollbar-thumb{ background:#c5d4f7; border-radius:.625em; }
+.rec-grid::-webkit-scrollbar-thumb:hover{ background:#9fb8f5; }
+
+.rec-card{
+  flex: 0 0 520px;          /* عرض ثابت للكرت - عدليه حسب رغبتك */
+  scroll-snap-align:start;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ---------- Extra Recommendations ---------- */
+
+/* الكرت الكبير */
+.rec-card{
+  border:1px solid #eef1f6;
+  border-radius:.875em;
+  padding:1em;
+  background:#fff;
+  box-shadow:0 .0625em .1875em rgba(0,0,0,.05);
+
+  display:flex;
+  flex-direction:column;
+
+  max-height: 520px;     /* ← يكبر لين هنا وبعدها يبدأ السكرول داخل الكرت */
+}
+
+/* قائمة التعليقات داخل الكرت (هي اللي تسكرول) */
+.rec-list{
+  flex: 1 1 auto;
+  min-height: 0;         /* ✅ ضروري عشان السكرول يشتغل داخل flex */
+  overflow-y: auto;      /* ✅ السكرول هنا */
+  overflow-x: hidden;
+  padding-right: .25em;
+
+  display:flex;
+  flex-direction:column;
+  gap:.75em;
+}
+
+/* شكل سكرول القائمة (اختياري) */
+.rec-list::-webkit-scrollbar{ width:.5em; }
+.rec-list::-webkit-scrollbar-thumb{ background:#c5d4f7; border-radius:.625em; }
+.rec-list::-webkit-scrollbar-thumb:hover{ background:#9fb8f5; }
+
+/* التعليق نفسه بدون سكرول */
+.rec-item{
+  background:#f6f9ff;
+  border:1px solid rgba(15,101,255,.12);
+  border-radius:.75em;
+  padding:.75em;
+
+  overflow: visible;     /* ما فيه سكرول داخل التعليق */
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* textarea والزر ثابتين تحت */
+.rec-textarea{
+  margin-top:.75em;
+  width:100%;
+  border:1px solid #dfe6ef;
+  border-radius:.75em;
+  padding:.75em;
+
+  height: 90px;
+  resize: vertical;
+
+  white-space: normal;
+  overflow-x: hidden;
+  word-break: break-word;
+  flex: 0 0 auto;
+}
+
+.rec-actions{
+  margin-top:.6em;
+  display:flex;
+  justify-content:flex-end;
+  flex: 0 0 auto;
+}
+
+
+
+
+
+/* ===== Doctor Action column ===== */
+.action-cell{
+  display:flex;
+  flex-direction:column;
+  gap:.55em;
+  align-items:flex-end;            /* يخلي الزر يمين مثل تصميمك */
+}
+
+.action-textarea{
+  width:100%;
+  min-height:3.5em;
+  resize:vertical;
+
+  border:1px solid #dfe6ef;
+  border-radius:.75em;
+  padding:.75em;
+
+  background:#fff;
+  color:#2b4a77;
+  font-family:inherit;
+  font-size:.9em;
+  line-height:1.4;
+
+  white-space:normal;          /* يكسر السطر */
+  word-break:break-word;       /* يكسر الكلمات الطويلة */
+  overflow-x:hidden;           /* يمنع السكرول الأفقي */
+}
+
+
+.action-textarea:focus{
+  border-color: rgba(15,101,255,.45);
+  box-shadow: 0 0 0 .2em rgba(15,101,255,.12);
+}
+
+/* زر بنفس روح btn-add لكن أصغر */
+.action-btn{
+  border:0;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.3em;
+
+  background:linear-gradient(90deg,#0f65ff,#5aa6ff);
+  color:#fff;
+
+  padding:.4em .75em;     /* أصغر */
+  border-radius:.65em;
+  font-weight:600;
+  font-size:.75em;        /* أصغر خط */
+
+  box-shadow:0 .35em .9em rgba(15,101,255,.12);
+}
+
+
+.action-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
+
+
+
+
+  </style>
+</head>
+
+<body>
+<header class="ipad-header">
+    <div class="ipad-inner">
+
+        <a href="dashboard.php" class="ipad-logo">
+            <img src="Images/Logo.png" alt="Tanafs Logo">
+        </a>
+
+        <nav class="ipad-nav">
+            <a href="dashboard.php" class="nav-link">Dashboard</a>
+            <a href="patients.php" class="nav-link">Patients</a>
+            <a href="history2.php" class="nav-link">History</a>
+
+            <a href="profile.php" class="profile-btn">
+                <img src="images/profile.png" alt="Profile">
+            </a>
+
+            <form action="Logout.php" method="post">
+                <button type="submit" class="ipad-logout">Logout</button>
+            </form>
+        </nav>
+
+    </div>
+</header>
+<main class="main">
+  <!-- ===== Header  ===== -->
+ <div class="header-wrapper">
+    <img class="topimg" src="Images/Group 8.png" alt="img">
+    <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
+
+    <nav class="auth-nav">
+              <a class="nav-link" href="dashboard.php">Dashboard</a>
+
+        <a class="nav-link" href="patients.php">Patients</a>
+        <a class="nav-link" href="history2.php">history</a>
+
+        <button class="profile-btn" onclick="window.location.href='profile.php'">
+    <img class="avatar-icon" src="images/profile.png" alt="Profile" />
+</button>
+
+
+       <button class="btn-logout" onclick="window.location.href='logout.php'">Logout</button>
+
+     
+
+    </nav>
+</div>
+
+
+  <!-- Page Title-->
+  <section style="display:flex;align-items:flex-end;gap:12px;justify-content:space-between;padding:70px 30px;">
+   <div class="PName">
+    <h2 id="patientName" style="color:#1f46b6"></h2>
+    <h2 id="patientID" class="pid" style="color:#1f46b6"></h2>
+</div>
+
+
+     
+    <div style="border-radius:12px;text-align:right;"></div>
+  </section>
+
+  <!-- ===== Patient Detail Section ===== -->
+  <section class="panel" aria-label="Patient detail">
+      <div class="analysis-title">Aِِnalyzed waveforms</div>
+    <div class="panel-body">
+      <div class="table-scroll">
+        <table class="analysis-table">
+         <thead>
+<tr>
+  <th style="width:160px">Waveform status</th>
+  <th style="width:120px">Date</th>
+  <th style="width:100px">Time</th>
+  <th style="width:500px;text-align:center;">Explanation</th>
+  <th style="width:500px;text-align:center;">Recommendation</th>
+  <th style="width:400px;text-align:center;">Doctor Action</th>
+</tr>
+</thead>
+
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  
+<!-- ===== Extra Recommendations ===== -->
+<section class="panel extra-rec-panel" aria-label="Extra recommendations">
+  <div class="analysis-title">Actions Taken for Abnormal Waveforms</div>
+  <div class="extra-rec-sub">Document what you did to address the abnormal waveform.</div>
+
+  <div id="recGrid" class="rec-grid">
+    <!-- cards generated by JS -->
+  </div>
+</section>
+
+  <!-- ===== Comments ===== -->
+  <section class="panel comment-card" aria-label="Comments">
+    <div class="title">Comments</div>
+    <div class="comment-block">
+      <div class="comment-basic-info">
+        <span><b></b></span>
+        <span class="comment-date"></span>
+      </div>
+      <div class="comment-content"></div>
+    </div>
+    <textarea class="comment-input" placeholder="Write your comment here"></textarea>
+    <button class="btn-add"><span class="material-symbols-outlined">add_comment</span> Add comment</button>
+  </section>
+
+  <!-- ===== Report ===== -->
+  <section class="panel reports-panel" aria-label="Reports">
+    <div class="report-top">
+      <div class="title">Report</div>
+      <div class="report-date">10/10/2025</div>
+    </div>
+    <div class="report-item">
+      <div class="left">
+        <span class="material-symbols-outlined">description</span>
+        <div>Last Report</div>
+        <span class="pd">PDF</span>
+      </div>
+      <button class="btn-open"><span class="material-symbols-outlined">open_in_new</span> Open</button>
+    </div>
+    <button class="btn-generate"><span class="material-symbols-outlined">summarize</span> Generate report</button>
+  </section>
+</main>
+
+<!-- ===== Footer ===== -->
+<footer id="contact" class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col brand">
+      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo"/>
+      <p class="brand-tag">Breathe well, live well</p>
+    </div>
+    <nav class="footer-col social" aria-label="Social media">
+      <h3 class="footer-title">Social Media</h3>
+      <ul class="social-list">
+        <li><a href="#" aria-label="Twitter"><img src="images/twitter.png" alt="Twitter"/></a></li>
+        <li><a href="#" aria-label="Instagram"><img src="images/instagram.png" alt="Instagram"/></a></li>
+      </ul>
+      <span class="social-handle">@official_Tanafs</span>
+    </nav>
+    <div class="footer-col contact">
+      <h3 class="footer-title">Contact Us</h3>
+      <ul class="contact-list">
+        <li><a href="#" class="contact-link"><img src="images/whatsapp.png" alt="WhatsApp"/><span>+123 165 788</span></a></li>
+        <li><a href="mailto:Tanafs@gmail.com" class="contact-link"><img src="images/email.png" alt="Email"/><span>Tanafs@gmail.com</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <p class="legal">
+      <a href="#">Terms &amp; Conditions</a>
+      <span class="dot">•</span>
+      <a href="#">Privacy Policy</a>
+    </p>
+    <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// pid=...
+function getPidFromURL() {
+  const pidStr = new URLSearchParams(location.search).get('pid');  // extract PID from link as string
+  const pidNum = parseInt(pidStr, 10);  // convert to intger
+  return Number.isFinite(pidNum) ? pidNum : 0;
+}
+</script>
+
+
+<script>
+// bring patient's name and displays it on the page
+document.addEventListener("DOMContentLoaded", () => {
+  const pid = getPidFromURL();
+  fetch(`PHPpatient.php?pid=${pid}&mode=patient`)//The page sends a request to the PHP backend to retrieve the patient's name
+    .then(r=>r.json())//convert response from php to json
+    .then(data=>{  //insert name inside the page
+      const nameElement=document.querySelector(".PName h2");
+      nameElement.textContent = (nameElement && data.name) ? data.name : "Unknown Patient";
+    });
+});
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const pid = getPidFromURL();
+
+  document.getElementById("patientID").textContent =
+      pid ? `File Number: ${pid}` : "";
+});
+</script>
+
+
+
+
+<script>
+  //Utility functions to format MySQL timestamps into readable date/time for display 
+
+function fmtDateTime(mysqlTs, locale='en-GB'){
+  if(!mysqlTs) return '-';
+  const iso=String(mysqlTs).replace(' ','T');
+  const d=new Date(iso); if(isNaN(d)) return mysqlTs;
+  return new Intl.DateTimeFormat(locale,{  //create new object
+    year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',
+    hour12:false,timeZone:'Asia/Riyadh'
+  }).format(d);
+}
+
+function fmtDate(mysqlTs, locale='en-GB'){
+  if(!mysqlTs) return '-';
+  const iso=String(mysqlTs).replace(' ','T');
+  const d=new Date(iso); if(isNaN(d)) return mysqlTs;
+  return new Intl.DateTimeFormat(locale,{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Riyadh'}).format(d); //create new object
+}
+
+function fmtTime(mysqlTs, locale='en-GB'){
+  if(!mysqlTs) return '-';
+  const iso=String(mysqlTs).replace(' ','T');
+  const d=new Date(iso); if(isNaN(d)) return mysqlTs;
+  return new Intl.DateTimeFormat(locale,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Riyadh'}).format(d);  //create new object
+}
+</script>
+
+<script>
+  // Loads the patient's analyzed waveform records and fills the analysis table 
+
+document.addEventListener("DOMContentLoaded", () => {
+  const pid = getPidFromURL();
+  const tbody=document.querySelector(".analysis-table tbody");
+  const anomalyInfo={
+    "Double Trigger":{explanation:"Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",solution:"Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"},
+    "Accumulation":{explanation:"Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",solution:"Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."},
+    "Leak":{explanation:"Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",solution:"Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"},
+    "Premature cycling":{explanation:"Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient’s inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",solution:"Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"},
+    "Ineffective effort":{explanation:"Ineffective  effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",solution:"Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."},
+    "Normal":{explanation:"Waveform within normal pattern.",solution:"Continue routine monitoring"}
+  };
+  const getSeverityClass=(level)=>{ if(!level) return ""; const s=level.toLowerCase(); if(s.includes("high")||s.includes("critical"))return"critical"; if(s.includes("moderate"))return"moderate"; return"normal"; };
+
+  fetch(`PHPpatient.php?pid=${pid}&mode=analysis`)
+    .then(res=>res.json())
+    .then(data=>{
+      tbody.innerHTML="";
+      if(!Array.isArray(data)||data.length===0){ tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;">No records found</td></tr>`; return; }
+      data.forEach(row=>{
+        let type=row.anomaly_type; if(!type||type.toLowerCase()==="none") type="Normal";
+        const severity=row.severity_level||"-";
+        const info=anomalyInfo[type]||{explanation:"-",solution:"-"};
+        const tr=document.createElement("tr");
+       tr.innerHTML = `
+  <td>${type}</td>
+  <td>${fmtDate(row.timestamp)}</td>
+  <td>${fmtTime(row.timestamp)}</td>
+  <td>${info.explanation}</td>
+  <td>${info.solution}</td>
+  <td>
+  <div class="action-cell">
+    <textarea
+      class="action-textarea"
+      data-id="${row.waveImg_id}"
+      placeholder="Write what you did to address this waveform...">${row.finding_notes ?? ''}</textarea>
+
+    <button class="action-btn wave-save-btn" data-id="${row.waveImg_id}">
+      <span class="material-symbols-outlined">save</span>
+      ${row.finding_notes ? 'Update' : 'Add'}
+    </button>
+  </div>
+</td>
+
+`;
+
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(err=>{ console.error(err); tbody.innerHTML=`<tr><td colspan="6" style="color:red;text-align:center;">Error loading data</td></tr>`; });
+});
+
+
+
+document.addEventListener("click", async function(e){
+  if(!e.target.classList.contains("wave-save-btn")) return;
+
+  const id = e.target.dataset.id;
+  const textarea = document.querySelector(`.wave-note-input[data-id="${id}"]`);
+  const note = textarea.value.trim();
+
+  if(!note){
+    alert("Please write the action first.");
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append("waveImg_id", id);
+  fd.append("note", note);
+
+  const res = await fetch(`PHPpatient.php?mode=save_finding_note&pid=${getPidFromURL()}`,{
+    method:"POST",
+    body: fd
+  });
+
+  const out = await res.json();
+
+  if(out.status === "success"){
+    alert("Saved successfully");
+    location.reload();
+  }else{
+    alert(out.message || "Error saving");
+  }
+});
+
+</script>
+
+<script>
+(function(){
+  const pid = getPidFromURL();;
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));   // Escape dangerous characters to prevent HTML injection in comments
+  function loadComments(){
+    const panel=document.querySelector('.comment-card'); if(!panel) return;
+    const inputBox=panel.querySelector('.comment-input');
+    panel.querySelectorAll('.comment-block').forEach(el=>el.remove());  //  Remove existing comment blocks before reloading
+    fetch(`PHPpatient.php?mode=comments&pid=${encodeURIComponent(pid)}&_=${Date.now()}`,{cache:'no-store'})
+      .then(res=>res.json())
+      .then(list=>{
+        (list||[]).forEach(comment=>{
+          const block=document.createElement('div'); block.className='comment-block';
+          const d=fmtDateTime(comment.date);
+          block.innerHTML=`
+            <div class="comment-basic-info">
+              <span>Created by <b>${esc(comment.by||'Unknown')}</b></span>
+              <span class="comment-date" title="${esc(comment.date)}">${esc(d)}</span>
+            </div>
+            <div class="comment-content">${esc(comment.text||'')}</div>
+          `;
+          panel.insertBefore(block,inputBox);   // Insert each comment above the input box
+        });
+      })
+      .catch(err=>{
+        console.error('loadComments error:',err);
+        const note=document.createElement('div');
+        note.style.cssText='color:#d32f2f;margin:.5em 0;font-size:.9em;';
+        note.textContent='Error loading comments';
+        panel.insertBefore(note,inputBox);
+      });
+  }
+  const addBtn=document.querySelector('.btn-add');
+  if(addBtn){
+    addBtn.addEventListener('click',()=>{
+      const ta=document.querySelector('.comment-input');
+      const txt=ta.value.trim(); if(!txt){ alert('Please write your comment first.'); return; }
+     const fd = new FormData();
+fd.append('content', txt);
+
+
+      addBtn.disabled=true;
+      fetch(`PHPpatient.php?mode=add_comment&pid=${encodeURIComponent(pid)}`,{method:'POST',body:fd})
+        .then(res=>res.json())
+        .then(data=>{ if(data.status==='success'){ ta.value=''; loadComments(); } else { alert(data.message||'Error adding comment.'); } })
+        .catch(()=>alert('Error adding comment. Please try again.'))
+        .finally(()=>{ addBtn.disabled=false; });
+    });
+  }
+  loadComments();
+})();
+</script>
+
+<script>
+  //Handles loading and adding patient comments
+document.addEventListener("DOMContentLoaded", async ()=>{
+  const pid = getPidFromURL();
+  const panel=document.querySelector('.reports-panel');
+  const item=panel.querySelector('.report-item');
+  const left=item.querySelector('.left');
+  const btnOpen=item.querySelector('.btn-open');
+  const dateBox=panel.querySelector('.report-date');
+  try{
+    const res=await fetch(`PHPpatient.php?mode=report&pid=${encodeURIComponent(pid)}&_=${Date.now()}`,{cache:'no-store'});//Sending a request to the PHP file to retrieve the latest report.
+    const data=await res.json();
+    if(data.status==='success'&&data.filePath){
+      const rel=String(data.filePath).replace(/^\/+/,''); const url=`/Tanafas/reports/${encodeURI(rel)}`;//make url for report
+      btnOpen.disabled=false; btnOpen.title='Open last report'; btnOpen.onclick=()=>window.open(url,'_blank');
+      if(data.timestamp){ const txt=fmtDateTime(data.timestamp); dateBox.textContent=txt; dateBox.title=data.timestamp; }
+    }else{
+      left.innerHTML=`<div>There is no report related to this patient</div>`;
+      btnOpen.style.display='none'; dateBox.textContent='—';
+    }
+  }catch(e){
+    console.error(e);
+    left.innerHTML=`<span class="material-symbols-outlined">error</span><div style="color:#d32f2f">Error loading report</div>`;
+    btnOpen.style.display='none'; dateBox.textContent='—';
+  }
+});
+</script>
+<script>
+  // Validates patient data before generating a report and redirects if analysis/comments exist 
+
+(function () {
+  const btn = document.querySelector('.btn-generate');
+  if (!btn) return;
+
+  
+  const normalize = (raw) => {//Converts any result coming from PHP into an array, even if it's empty. 
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    if (raw.status === "empty") return [];
+    return [];
+  };
+
+  const showMessage = (msg) => {
+    alert(msg); 
+  };
+
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();      //Preventing the page from refreshing.
+    e.stopPropagation();     // 
+
+    const pid = getPidFromURL();
+    if (!pid) {
+      alert("Invalid patient ID");
+      return;
+    }
+
+    try {
+      const [anRes, cmRes] = await Promise.all([
+        fetch(`PHPpatient.php?mode=analysis&pid=${pid}`),
+        fetch(`PHPpatient.php?mode=comments&pid=${pid}`)
+      ]);
+
+      const [anData, cmData] = await Promise.all([anRes.json(), cmRes.json()]);
+      const analysis = normalize(anData);
+      const comments = normalize(cmData);
+
+      
+      console.log({analysis, comments});
+
+      if (analysis.length === 0 && comments.length === 0) {
+        showMessage("Unable to generate the report: this patient has no analyzed waveforms or comments available.");
+        return;
+      }
+
+      
+      location.href = `ReportPage.html?pid=${pid}`;
+
+    } catch (err) {
+      console.error(err);
+      showMessage("Failed to verify patient data");
+    }
+  });
+})();
+</script>
+
+
+
+<script>
+(function(){
+  const pid = getPidFromURL();
+  const grid = document.getElementById('recGrid');
+  if(!grid || !pid) return;
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[m]));
+
+  function typeLabel(t){
+    if(!t) return 'Unknown';
+    if(String(t).toLowerCase()==='none') return 'Normal';
+    return t;
+  }
+
+  async function loadRecommendations(){
+    grid.innerHTML = `<div style="color:#6b7b8f">Loading...</div>`;
+    try{
+      const res = await fetch(`PHPpatient.php?mode=recommendations&pid=${encodeURIComponent(pid)}&_=${Date.now()}`, {cache:'no-store'});
+      const data = await res.json();
+
+      if(!data || data.status !== 'success'){
+        grid.innerHTML = `<div style="color:#d32f2f">Failed to load recommendations</div>`;
+        return;
+      }
+
+      const cards = data.cards || [];
+      if(cards.length === 0){
+        grid.innerHTML = `<div style="color:#6b7b8f">No abnormal waveform types found for this patient.</div>`;
+        return;
+      }
+
+      grid.innerHTML = '';
+      cards.forEach(card => {
+        const type = typeLabel(card.type);
+        const latest = card.latest || null; // {waveImg_id,timestamp,finding_notes}
+        const history = Array.isArray(card.history) ? card.history : [];
+
+        const el = document.createElement('div');
+        el.className = 'rec-card';
+
+        const historyHtml = history.length
+          ? history.map(h => `
+              <div class="rec-item">
+                <div class="rec-meta">
+                  <span>Created by <b>${esc(h.by || 'Unknown')}</b></span>
+                  <span title="${esc(h.timestamp)}">${esc(fmtDateTime(h.timestamp))}</span>
+                </div>
+                <div>${esc(h.note || '')}</div>
+              </div>
+            `).join('')
+          : `<div style="color:#6b7b8f;font-size:.9rem;">No previous notes for this type.</div>`;
+
+        const placeholder = `Write what you did to resolve the last ${type} detected for this patient`;
+        const existing = (latest && latest.finding_notes) ? String(latest.finding_notes) : '';
+
+        el.innerHTML = `
+          <div class="rec-title">${esc(type)}</div>
+
+          <div class="rec-list">${historyHtml}</div>
+
+          <textarea class="rec-textarea" placeholder="${esc(placeholder)}">${esc(existing)}</textarea>
+
+          <div class="rec-actions">
+            <button class="btn-add rec-save-btn">
+              <span class="material-symbols-outlined">save</span>
+              ${existing ? 'Update' : 'Add'}
+            </button>
+          </div>
+        `;
+
+        const btn = el.querySelector('.rec-save-btn');
+        const ta  = el.querySelector('.rec-textarea');
+
+        btn.addEventListener('click', async () => {
+          if(!latest || !latest.waveImg_id){
+            alert('No latest waveform found for this type.');
+            return;
+          }
+          const newNote = ta.value.trim();
+          if(!newNote){
+            alert('Please write your note first.');
+            return;
+          }
+
+          // confirm if already exists and changed
+          if(existing && newNote !== existing){
+            const ok = confirm('This type already has a note for the latest waveform. Do you want to update it?');
+            if(!ok) return;
+          }
+
+          btn.disabled = true;
+          try{
+            const fd = new FormData();
+            fd.append('waveImg_id', latest.waveImg_id);
+            fd.append('note', newNote);
+
+            const saveRes = await fetch(`PHPpatient.php?mode=save_finding_note&pid=${encodeURIComponent(pid)}`, {
+              method:'POST',
+              body: fd
+            });
+
+            const out = await saveRes.json();
+            if(out.status === 'success'){
+              await loadRecommendations(); // refresh lists + latest note
+            }else{
+              alert(out.message || 'Error saving note');
+            }
+          }catch(e){
+            console.error(e);
+            alert('Error saving note. Please try again.');
+          }finally{
+            btn.disabled = false;
+          }
+        });
+
+        grid.appendChild(el);
+      });
+
+    }catch(e){
+      console.error(e);
+      grid.innerHTML = `<div style="color:#d32f2f">Error loading recommendations</div>`;
+    }
+  }
+
+  loadRecommendations();
+})();
+</script>
+
+
+</body>
+</html>

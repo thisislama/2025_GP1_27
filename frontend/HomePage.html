@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tanafs</title>
+    <link rel="icon" type="image/png" href="/images/fi.png">
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Madani+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+/* ===== iPad Nav (scoped) ===== */
+:root{
+  --t-bg:#f2f6fb;
+  --t-accent:#0f65ff;
+  --t-accent-2:#5aa6ff;
+  --t-pill: #ffffff;
+  --t-shadow: 0 10px 30px rgba(17,24,39,.08);
+}
+
+.t-ipad-nav, .t-nav-spacer { display: none; }
+
+@media (min-width:768px) and (max-width:1024px){
+  .t-ipad-nav{
+    position: fixed; inset: 0 0 auto 0; top: max(8px, env(safe-area-inset-top));
+    z-index: 1000; display: block;
+    background: var(--t-bg); 
+  }
+  .t-ipad-nav .t-bar{
+    max-width: 1100px; margin: 10px auto 12px;
+    background: var(--t-pill);
+    border-radius: 999px;
+    padding: 10px 16px;
+    display: grid; grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 12px;
+    box-shadow: 0 0 0 1px rgba(15,101,255,.12), var(--t-shadow);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .t-ipad-nav .t-brand img{ height: 38px; width: auto; display: block; }
+
+  .t-ipad-nav .t-links{
+    display: flex; justify-content: center; align-items: center; gap: 18px;
+  }
+  .t-ipad-nav .t-link{
+    color:#0876FA; font-weight:600; text-decoration:none; font-size: 1rem;
+    position: relative; padding: 6px 2px;
+  }
+  .t-ipad-nav .t-link::after{
+    content:""; position:absolute; left:0; bottom:-4px; width:0; height:2px;
+    background: linear-gradient(90deg, var(--t-accent), var(--t-accent-2));
+    border-radius:2px; transition:width .25s ease;
+  }
+  .t-ipad-nav .t-link:hover::after{ width:100%; }
+
+  .t-ipad-nav .t-avatar{ width:30px; height:30px; display:block; border-radius:50%; }
+  .t-ipad-nav .t-logout{
+    background: linear-gradient(90deg,var(--t-accent),var(--t-accent-2));
+    color:#fff; border:0; border-radius:12px; padding:8px 14px;
+    font-weight:600; cursor:pointer;
+    box-shadow: 0 8px 16px rgba(15,101,255,.18);
+  }
+
+  .t-ipad-nav .t-burger{
+    display:none; background:transparent; border:0; cursor:pointer; padding:8px; margin-left:auto;
+  }
+  .t-ipad-nav .t-burger span{
+    display:block; width:22px; height:2px; background:#2b4a77; margin:5px 0; border-radius:2px;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+
+  @media (orientation: portrait){
+    .t-ipad-nav .t-bar{ grid-template-columns:auto auto; }
+    .t-ipad-nav .t-burger{ display:inline-block; }
+    .t-ipad-nav .t-links{
+      display:none; grid-column:1 / -1;
+      background: #fff; border-radius:16px; padding:10px;
+      box-shadow: var(--t-shadow);
+    }
+    .t-ipad-nav.is-open .t-links{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; }
+    .t-ipad-nav.is-open .t-burger span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+    .t-ipad-nav.is-open .t-burger span:nth-child(2){ opacity:0; }
+    .t-ipad-nav.is-open .t-burger span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+  }
+
+  .t-nav-spacer{ display:block; height:74px; }
+}
+@media (min-width:768px) and (max-width:1024px){
+  .auth-nav,
+  img.logo,
+  img.topimg {
+    display: none !important;
+  }
+
+  .topbar,
+  .secondary-nav,
+  .header-compact {
+    display: none !important;
+  }
+
+  main, .main, .container { margin-top: 0 !important; }
+  .t-nav-spacer { height: 74px; } 
+}
+
+    </style>
+</head>
+<body>
+<!-- iPad-only Nav (scoped) -->
+<div class="t-ipad-nav" role="navigation" aria-label="Main">
+  <div class="t-bar">
+    <a class="t-brand" href="dashboard.php" aria-label="Home">
+      <img src="images/logo.png" alt="Tanafs logo">
+    </a>
+
+    <button class="t-burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="t-links">
+    <a class="nav-link" href="#about">About Us</a>
+<a class="nav-link" href="#contact">Contact</a>
+<a class="auth-signin" href="signin.php">Sign in</a>
+<a class="auth-signup" href="signup.php">Sign up</a>
+    </div>
+  </div>
+</div>
+<div class="t-nav-spacer"></div>
+
+   <div class="wrapper">
+    <img class="topimg" src="images/Group 8.png" alt="img">
+  <nav class="auth-nav" aria-label="Main navigation">
+      <span class="auth-sep" aria-hidden="true"></span>
+<a class="nav-link" href="#about">About Us</a>
+<a class="nav-link" href="#contact">Contact</a>
+<a class="auth-signin" href="signin.php">Sign in</a>
+<a class="auth-signup" href="signup.php">Sign up</a>
+
+    </nav>
+      <img class="logo" src="images/Logo.png" alt="Tanafs Logo">
+<h1 class="hero-title">
+<span class="hero-text">Breathe well<br>live well</span>
+</h1>
+    <img class="Background" src="images/pic1.png" alt="Background">
+
+  </div>
+ <div id="about" class="about-section">
+    <div class="wave-row">
+    <img src="images/wave1.png" alt="wave" class="wave">
+    <h2 class="about-title">About TANAFS</h2>
+    <img src="images/wave2.png" alt="wave" class="wave">
+  </div>
+ 
+    <p class="about-text">
+Tanafs is an AI-powered platform designed to assist healthcare professionals in intensive care units.
+It analyzes breathing patterns through medical image processing to detect abnormal conditions.
+The system helps reduce workload, improve monitoring accuracy, and support clinical decision-making.
+Tanafs contributes to advancing healthcare quality in alignment with Saudi Arabia’s Vision 2030  </p>
+  </div>
+
+  
+
+<section class="tfs-features">
+<div class="tfs-row tfs-row--left">
+<div class="tfs-caption">
+<h3 class="tfs-title">TANAFS System</h3>
+<p class="tfs-desc">
+   Designed to analyzes ventilator data for the specific purpose of pattern recognition and anomaly
+  detection. It identifies characteristic breathing patterns and mark any significant abnormal respiratory events.
+  </p>
+</div>
+<img class="tfs-combo" src="images/vent.png" alt="Lungs with card">
+</div>
+
+
+<div class="tfs-row tfs-row--right">
+<div class="tfs-caption">
+<h3 class="tfs-title">Empowering Healthcare Professionals</h3>
+<p class="tfs-desc">Designed to assist ICU teams by simplifying waveform interpretation, reducing cognitive load, and minimizing human error.</p>
+</div>
+<img class="tfs-combo" src="images/Lung1.png" alt="Ventilator with card">
+</div>
+<div class="tfs-row tfs-row--left">
+<div class="tfs-caption">
+<h3 class="tfs-title">Advancing Digital Healthcare</h3>
+<p class="tfs-desc">Supports Saudi Vision 2030 by promoting innovation, digital transformation, and improved quality of patient care in the healthcare sector.</p>
+</div>
+<img class="tfs-combo" src="images/file1.png" alt="Lungs with card">
+</div>
+</section>
+
+<footer  id="contact" class="site-footer">
+  <div class="footer-grid">
+
+    <div class="footer-col brand">
+      <img src="images/logo.png" alt="Tanafs logo" class="footer-logo" />
+      <p class="brand-tag">Breathe well, live well</p>
+    </div>
+
+    <!-- Social -->
+    <nav class="footer-col social" aria-label="Social media">
+      <h3 class="footer-title">Social Media</h3>
+      <ul class="social-list">
+        <li>
+          <a href="#" aria-label="Twitter">
+            <img src="images/twitter.png" alt="Twitter" />
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Instagram">
+            <img src="images/instagram.png" alt="Instagram" />
+          </a>
+        </li>
+      </ul>
+      <span class="social-handle">@official_Tanafs</span>
+    </nav>
+
+    <!-- Contact -->
+    <div class="footer-col contact">
+      <h3 class="footer-title">Contact Us</h3>
+      <ul class="contact-list">
+        <li>
+          <a href="#" class="contact-link">
+            <img src="images/whatsapp.png" alt="WhatsApp" />
+            <span>+123 165 788</span>
+          </a>
+        </li>
+        <li>
+          <a href="mailto:Appointly@gmail.com" class="contact-link">
+            <img src="images/email.png" alt="Email" />
+            <span>Tanafs@gmail.com</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bar">
+    <p class="legal">
+      <a href="#">Terms &amp; Conditions</a>
+      <span class="dot">•</span>
+      <a href="#">Privacy Policy</a>
+    </p>
+    <p class="copy">© 2025 Tanafs Company. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+document.querySelector('.t-burger')?.addEventListener('click', function () {
+  document.querySelector('.t-ipad-nav')?.classList.toggle('is-open');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<annotation>
+	<folder>images</folder>
+	<filename>002962.jpg</filename>
+	<path>F:\tmp\exp\data3\images\002962.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>716</width>
+		<height>278</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Normal Flow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>104</xmin>
+			<ymin>18</ymin>
+			<xmax>703</xmax>
+			<ymax>105</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Normal Volume</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>96</xmin>
+			<ymin>172</ymin>
+			<xmax>707</xmax>
+			<ymax>264</ymax>
+		</bndbox>
+	</object>
+</annotation>
