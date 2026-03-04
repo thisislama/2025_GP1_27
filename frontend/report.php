@@ -49,7 +49,7 @@ if ($sessionUserId > 0) {
 $waves = [];
 $aRes = mysqli_query($conn, "
   SELECT anomaly_type,`timestamp` AS ts
-  FROM waveform_analysis
+  FROM waveform
   WHERE PID=$pid
   ORDER BY `timestamp` DESC
 ");
