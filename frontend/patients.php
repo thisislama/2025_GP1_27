@@ -384,106 +384,25 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'connect_existing') {
 
 ?>
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Patients List - TANAFS</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/fi.png">
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Patients List - TANAFS</title>
 
-<style>
-<?php include 'dashboard-style.css';  ?>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/images/fi.png">
+  <link rel="stylesheet" href="dash.css"/>
+  <link rel="stylesheet" href="styles.css"/>
 
-.wrapper { position: relative; width: 100%; min-height: 100vh; }
-.nav-link.active::after {
-    width: 100%;
-}
+  <style>
+    <?php include 'dashboard-style.css'; ?>
 
-img.topimg {
-  position: absolute;
-  top: -5.9%;
-  left: 48%;
-  transform: translateX(-50%);
-  max-width: 90%;
-  z-index: 10;
-  pointer-events: none;
-}
-
-img.logo {
-  position: absolute;
-  top: 2.9%;
-  left: 14%;
-  width: clamp(6.25em, 12vw, 11.25em);
-  height: auto;
-  z-index: 20;
-}
-
-.auth-nav {
-  position: absolute;
-  top: 4.5%;
-  right: 16.2%;
-  display: flex;
-  align-items: center;
-  gap: 1.6em;
-  z-index: 30;
-}
-
-.nav-link {
-  color: #0876FA;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 1em;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-link::after {
-  content: "";
-  position: absolute;
-  bottom: -0.25em;
-  left: 0;
-  width: 0;
-  height: 0.125em;
-  background: linear-gradient(90deg, #0876FA, #78C1F5);
-  transition: width 0.3s ease;
-  border-radius: 0.125em;
-}
-
-.nav-link:hover::after { width: 100%; }
 
 /* ========== Profile / Buttons ========== */
-.profile-btn {
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.profile {
-  display: flex;
-  gap: 0.625em;
-  align-items: center;
-  padding: 0.375em 0.625em;
-}
 
 .avatar-icon { width: 1.875em; height: 1.875em; display: block; border: 0; }
-
-.btn-logout {
-  background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-  color: #fff;
-  padding: 0.5em 0.975em;
-  border-radius: 0.75em;
-  font-weight: 400;
-  border: none;
-  cursor: pointer;
-  font-size: 0.875em;
-}
 
 
 .title {
@@ -1116,9 +1035,7 @@ tr.no-result-row td {
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   width: 95%;
 }
-.ipad-header {
-    display: none;
-}
+
 
 @media (max-width: 1366px) {
 
@@ -1128,16 +1045,6 @@ tr.no-result-row td {
         display: none !important;
     }
 
-    .ipad-header {
-        display: block;
-        width: 100%;
-        background: #ffffff;
-        padding: 14px 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        position: sticky;
-        top: 0;
-        z-index: 9999;
-    }
 
     .ipad-inner {
         display: flex;
@@ -1222,9 +1129,7 @@ tr.no-result-row td {
    
 @media (max-width: 1024px) {
 
-    .ipad-header {
-        padding: 10px 16px;           
-    }
+   
 
     .ipad-inner {
         gap: 0.75rem;
@@ -1292,6 +1197,17 @@ tr.no-result-row td {
   background: #d92b2b !important; 
   color: #fff !important;
 }
+html, body { height: 100%; }
+
+.wrapper{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main{
+  flex: 1;
+}
 
 
 </style>
@@ -1326,24 +1242,30 @@ tr.no-result-row td {
   <img class="topimg" src="Images/Group 8.png" alt="img">
   <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
-   <nav class="auth-nav" aria-label="User navigation">
-        <a class="nav-link" href="dashboard.php">Dashboard</a>
-        <a class="nav-link active" href="patients.php">Patients</a>
-        <a class="nav-link" href="history2.php">History</a>
-        <a href="profile.php" class="profile-btn">
-            <div class="profile">
-                <img class="avatar-icon" src="images/profile.png" alt="Profile">
-            </div>
-        </a>
+  <nav class="auth-nav" aria-label="User navigation">
+  <a class="nav-link" href="dashboard.php">Dashboard</a>
+  <a class="nav-link active" href="patients.php">Patients</a>
+  <a class="nav-link" href="history2.php">History</a>
 
-        <form action="Logout.php" method="post" style="display:inline;">
-            <button type="submit" class="btn-logout">Logout</button>
-        </form>
-    </nav>
+  <a href="profile.php" class="profile-btn">
+    <div class="profile">
+                <img class="avatar-icon" src="images/profile.png" alt="Profile">
+      <div class="user-info-minimal">
+        <div class="user-name"><?php echo $_SESSION['doctorName'] ?? ''; ?></div>
+        <div class="user-role"><?php echo $_SESSION['role'] ?? ''; ?></div>
+      </div>
+    </div>
+  </a>
+
+  <form action="Logout.php" method="post" style="display:inline;">
+    <button type="submit" class="btn-logout">
+      <span class="material-symbols-outlined" style="font-size: 2em; margin-right:1.24em;">logout</span>
+    </button>
+  </form>
+</nav>
 
   <!-- Page Content -->
-  <main style="margin-top:130px; text-align:center;">
-
+<main style="margin-top:130px; text-align:center;">
         <div class="title">
           <h2 class="heading">Patient Management</h2>
           <p class="heading2">Access and manage your assigned patients. View detailed profiles, check respiratory analysis reports, and maintain comprehensive care records for all patients under your supervision.</p>
