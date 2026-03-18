@@ -185,31 +185,33 @@ elseif ($mode === 'recommendations') {
         exit;
     }
 
-    // 1) Fetch all abnormal waveforms for this patient (newest first)
-    $sql = "
-        SELECT 
-            w.waveImg_id,
-            w.anomaly_type,
-            w.`timestamp`,
-            w.finding_notes,
-            w.userID,
-            CONCAT_WS(' ', hp.first_name, hp.last_name) AS by_name
-        FROM waveform w
-        LEFT JOIN healthcareprofessional hp ON hp.userID = w.userID
-        WHERE w.pid = ?
-          AND w.anomaly_type IS NOT NULL
-          AND TRIM(w.anomaly_type) <> ''
-          AND LOWER(TRIM(w.anomaly_type)) <> 'none'
-          AND LOWER(TRIM(w.anomaly_type)) <> 'normal'
-        ORDER BY w.`timestamp` DESC, w.waveImg_id DESC
-    ";
+    // 1) Fetch all abnormal waveforms for  patients (newest first)
+   $sql = "
+    SELECT 
+        w.waveImg_id,
+        w.pid,
+        w.anomaly_type,
+        w.`timestamp`,
+        w.finding_notes,
+        w.userID,
+        CONCAT_WS(' ', hp.first_name, hp.last_name) AS by_name,
+        CONCAT_WS(' ', p.first_name, p.last_name) AS patient_name
+    FROM waveform w
+    LEFT JOIN healthcareprofessional hp ON hp.userID = w.userID
+    LEFT JOIN patient p ON p.PID = w.pid
+    WHERE w.anomaly_type IS NOT NULL
+      AND TRIM(w.anomaly_type) <> ''
+      AND LOWER(TRIM(w.anomaly_type)) <> 'none'
+      AND LOWER(TRIM(w.anomaly_type)) <> 'normal'
+    ORDER BY w.anomaly_type ASC, w.`timestamp` DESC, w.waveImg_id DESC
+";
 
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
         echo json_encode(["status"=>"error","message"=>"Prepare failed: ".mysqli_error($conn)]);
         exit;
     }
-    mysqli_stmt_bind_param($stmt, "i", $pid);
+    
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
 
@@ -221,25 +223,28 @@ elseif ($mode === 'recommendations') {
         if ($type === '') continue;
 
         // set latest (first time we see type because results are DESC)
-        if (!isset($latestByType[$type])) {
-            $latestByType[$type] = [
-                "waveImg_id"     => (int)$row["waveImg_id"],
-                "timestamp"      => $row["timestamp"],
-                "finding_notes"  => $row["finding_notes"]
-            ];
-        }
-
+       if (!isset($latestByType[$type])) {
+    $latestByType[$type] = [
+        "waveImg_id"     => (int)$row["waveImg_id"],
+        "pid"            => (int)$row["pid"],
+        "patient_name"   => trim($row["patient_name"] ?? ''),
+        "timestamp"      => $row["timestamp"],
+        "finding_notes"  => $row["finding_notes"]
+    ];
+}
         // history notes: only where finding_notes not null/empty
         $note = $row['finding_notes'];
         if ($note !== null && trim($note) !== '') {
             $name = trim($row['by_name'] ?? '');
             if (!isset($historyByType[$type])) $historyByType[$type] = [];
             $historyByType[$type][] = [
-                "waveImg_id" => (int)$row["waveImg_id"],
-                "timestamp"  => $row["timestamp"],
-                "by"         => ($name !== '' ? $name : 'Unknown'),
-                "note"       => $note
-            ];
+    "waveImg_id"    => (int)$row["waveImg_id"],
+    "pid"           => (int)$row["pid"],
+    "patient_name"  => trim($row["patient_name"] ?? ''),
+    "timestamp"     => $row["timestamp"],
+    "by"            => ($name !== '' ? $name : 'Unknown'),
+    "note"          => $note
+];
         }
     }
 
