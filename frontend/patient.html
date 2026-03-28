@@ -968,8 +968,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
       }
 
       
-      location.href = `ReportPage.html?pid=${pid}`;
-
+location.href = `ReportPage.php?pid=${pid}`;
     } catch (err) {
       console.error(err);
       showMessage("Failed to verify patient data");
