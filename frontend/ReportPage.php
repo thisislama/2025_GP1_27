@@ -1094,8 +1094,8 @@ body {
                                 <div class="label">Anomaly Type:</div>
                                 <div class="value"><?= e($anomalyText); ?></div>
 
-                                <div class="label">Finding Notes:</div>
-                                <div class="value"><?= e($notesText !== '' ? $notesText : 'No additional finding notes were documented for this analysis.'); ?></div>
+                                <div class="label">Doctor Action:</div>
+                                <div class="value"><?= e($notesText !== '' ? $notesText : 'No additional Doctor Action were documented for this analysis.'); ?></div>
                             </div>
                         </div>
                     <?php endforeach; ?>

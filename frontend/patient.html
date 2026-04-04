@@ -841,8 +841,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     const res=await fetch(`PHPpatient.php?mode=report&pid=${encodeURIComponent(pid)}&_=${Date.now()}`,{cache:'no-store'});//Sending a request to the PHP file to retrieve the latest report.
     const data=await res.json();
     if(data.status==='success'&&data.filePath){
-      const rel=String(data.filePath).replace(/^\/+/,''); const url=`/Tanafas/reports/${encodeURI(rel)}`;//make url for report
-      btnOpen.disabled=false; btnOpen.title='Open last report'; btnOpen.onclick=()=>window.open(url,'_blank');
+const rel = String(data.filePath).replace(/^\/+/, '');
+const url = `/2025_GP_27/${encodeURI(rel)}`;  btnOpen.disabled=false; btnOpen.title='Open last report'; btnOpen.onclick=()=>window.open(url,'_blank');
       if(data.timestamp){ const txt=fmtDateTime(data.timestamp); dateBox.textContent=txt; dateBox.title=data.timestamp; }
     }else{
       left.innerHTML=`<div>There is no report related to this patient</div>`;

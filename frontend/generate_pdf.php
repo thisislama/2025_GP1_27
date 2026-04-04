@@ -17,7 +17,7 @@ $html = '<html><head>
 <style>
 @page {
     size: A4;
-    margin: 0; /* 🔥 يلغي الحواف */
+    margin: 0; 
 }
 
 html, body {
@@ -38,5 +38,76 @@ $dompdf->loadHtml($html, 'UTF-8');
 $dompdf->setPaper("A4","portrait");
 $dompdf->render();
 
-$dompdf->stream("TANAFS_Report.pdf", ["Attachment"=>false]);
+/* =========================
+   🔹 1. نطلع محتوى الـ PDF
+========================= */
+$output = $dompdf->output();
+
+/* =========================
+/* =========================
+   🔹 2. نحفظه في السيرفر
+========================= */
+$fileName = "report_" . $pid . "_" . time() . ".pdf";
+
+$dir = "C:/MAMP/htdocs/2025_GP_27/frontend/reports/"; // 🔥 مسار ثابت
+
+if (!is_dir($dir)) {
+    mkdir($dir, 0777, true);
+}
+
+$filePath = $dir . $fileName;
+
+file_put_contents($filePath, $output);
+
+if (!file_exists($filePath)) {
+    die("❌ ما انحفظ");
+}
+/* =========================
+/* =========================
+   🔹 3. نحفظه في الداتابيس
+========================= */
+
+$conn = mysqli_connect("localhost","root","root","tanafs");
+
+$note = "Auto generated report";
+
+// 🔥 لازم تعرفه قبل
+$relativePath = "frontend/reports/" . $fileName;
+
+// تحقق هل فيه تقرير قديم
+$check = mysqli_query($conn, "SELECT filePath FROM report WHERE PID = $pid LIMIT 1");
+
+if ($row = mysqli_fetch_assoc($check)) {
+
+    // حذف الملف القديم
+    $oldPath = "C:/MAMP/htdocs/2025_GP_27/" . $row['filePath'];
+    if (file_exists($oldPath)) {
+        unlink($oldPath);
+    }
+
+    // تحديث
+    $stmt = mysqli_prepare($conn, "
+        UPDATE report SET filePath=?, timestamp=NOW()
+        WHERE PID=?
+    ");
+
+    mysqli_stmt_bind_param($stmt, "si", $relativePath, $pid);
+    mysqli_stmt_execute($stmt);
+
+} else {
+
+    // أول مرة
+    $stmt = mysqli_prepare($conn, "
+        INSERT INTO report (PID, note, filePath, timestamp)
+        VALUES (?, ?, ?, NOW())
+    ");
+
+    mysqli_stmt_bind_param($stmt, "iss", $pid, $note, $relativePath);
+    mysqli_stmt_execute($stmt);
+}
+/* =========================
+   🔹 4. عرض الـ PDF
+========================= */
+$dompdf->stream($fileName, ["Attachment"=>false]);
+
 exit;
