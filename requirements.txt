@@ -1,6 +1,8 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 fastapi==0.103.1
 uvicorn==0.23.2
-torch==2.0.1
+torch
 opencv-python-headless==4.9.0.74
 numpy==1.25.2
 Pillow==10.0.0
@@ -11,8 +13,6 @@ matplotlib==3.7.1
 seaborn==0.12.2
 scipy==1.10.1
 
-# I kept these if you are still using them for something else, 
-# though they are usually for Flask:
 Werkzeug==2.3.7
 Jinja2==3.1.2
 itsdangerous==2.1.2
