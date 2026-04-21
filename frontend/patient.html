@@ -65,8 +65,36 @@
     }
     .analysis-table{border-collapse:collapse}
     th,td{text-align:center;padding:.75em;color:#2b4a77}
-    .analysis-table thead th{background:#f3f6fb;text-align:left}
+    /*.analysis-table thead th{background:#f3f6fb;text-align:left}*/
+    .analysis-table thead th{
+  background:#f3f6fb;
+  text-align:center;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  box-shadow: 0 1px 0 #eef1f6;
+}
     .analysis-table tbody td{border-top:1px solid #eef1f6}
+    
+    .analysis-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+.analysis-table thead th{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background:#f3f6fb;
+  text-align:center;
+  box-shadow: 0 1px 0 #eef1f6;
+}
+
+.analysis-table tbody td{
+  border-top:1px solid #eef1f6;
+  background:#fff;
+}
 
 
     .table-scroll{max-height:15.625em;overflow-y:auto;border-radius:.75em;border:none}
@@ -459,6 +487,43 @@
 
 
 
+
+
+
+
+
+/* ملاحظات المريض الحالي */
+.rec-item.current-patient{
+  background:#e8f2ff;
+  border:1px solid #9ec5ff;
+}
+
+/* ملاحظات المرضى الآخرين */
+.rec-item.other-patient{
+  background:#f8fafc;
+  border:1px solid #e3eaf5;
+}
+
+/* وسم المريض */
+.patient-badge{
+  display:inline-block;
+  margin-left:.5em;
+  padding:.18em .55em;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:700;
+}
+
+.patient-badge.current{
+  background:#d8eaff;
+  color:#0f65ff;
+}
+
+.patient-badge.other{
+  background:#eef1f5;
+  color:#6b7b8f;
+}
+
   </style>
 </head>
 
@@ -743,10 +808,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("click", async function(e){
-  if(!e.target.classList.contains("wave-save-btn")) return;
+  const btn = e.target.closest(".wave-save-btn");
+  if(!btn) return;
 
-  const id = e.target.dataset.id;
-  const textarea = document.querySelector(`.wave-note-input[data-id="${id}"]`);
+  const id = btn.dataset.id;
+  const textarea = document.querySelector(`.action-textarea[data-id="${id}"]`);
   const note = textarea.value.trim();
 
   if(!note){
@@ -772,7 +838,6 @@ document.addEventListener("click", async function(e){
     alert(out.message || "Error saving");
   }
 });
-
 </script>
 
 <script>
@@ -957,80 +1022,33 @@ location.href = `ReportPage.php?pid=${pid}`;
         el.className = 'rec-card';
 
         const historyHtml = history.length
-          ? history.map(h => `
-              <div class="rec-item">
-                <div class="rec-meta">
-                  <span>Created by <b>${esc(h.by || 'Unknown')}</b></span>
-                  <span title="${esc(h.timestamp)}">${esc(fmtDateTime(h.timestamp))}</span>
-                </div>
-                <div>${esc(h.note || '')}</div>
-              </div>
-            `).join('')
-          : `<div style="color:#6b7b8f;font-size:.9rem;">No previous notes for this type.</div>`;
+  ? history.map(h => {
+      const isCurrentPatient = Number(h.pid) === Number(pid);
+      const rowClass = isCurrentPatient ? 'current-patient' : 'other-patient';
+      const badgeClass = isCurrentPatient ? 'current' : 'other';
+      const badgeText = isCurrentPatient ? 'Current patient' : `Patient #${h.pid}`;
 
-        const placeholder = `Write what you did to resolve the last ${type} detected for this patient`;
-        const existing = (latest && latest.finding_notes) ? String(latest.finding_notes) : '';
+    return `
+  <div class="rec-item ${rowClass}">
+    <div class="rec-meta">
+      <span>
+        Created by <b>${esc(h.by || 'Unknown')}</b>
+        <span class="patient-badge ${badgeClass}">${esc(badgeText)}</span>
+      </span>
+      <span title="${esc(h.timestamp)}">${esc(fmtDateTime(h.timestamp))}</span>
+    </div>
 
+    <div>${esc(h.note || '')}</div>
+  </div>
+`;
+    }).join('')
+  : `<div style="color:#6b7b8f;font-size:.9rem;">No previous notes for this type.</div>`;
         el.innerHTML = `
-          <div class="rec-title">${esc(type)}</div>
+  <div class="rec-title">${esc(type)}</div>
+  <div class="rec-list">${historyHtml}</div>
+`;
 
-          <div class="rec-list">${historyHtml}</div>
-
-          <textarea class="rec-textarea" placeholder="${esc(placeholder)}">${esc(existing)}</textarea>
-
-          <div class="rec-actions">
-            <button class="btn-add rec-save-btn">
-              <span class="material-symbols-outlined">save</span>
-              ${existing ? 'Update' : 'Add'}
-            </button>
-          </div>
-        `;
-
-        const btn = el.querySelector('.rec-save-btn');
-        const ta  = el.querySelector('.rec-textarea');
-
-        btn.addEventListener('click', async () => {
-          if(!latest || !latest.waveImg_id){
-            alert('No latest waveform found for this type.');
-            return;
-          }
-          const newNote = ta.value.trim();
-          if(!newNote){
-            alert('Please write your note first.');
-            return;
-          }
-
-          // confirm if already exists and changed
-          if(existing && newNote !== existing){
-            const ok = confirm('This type already has a note for the latest waveform. Do you want to update it?');
-            if(!ok) return;
-          }
-
-          btn.disabled = true;
-          try{
-            const fd = new FormData();
-            fd.append('waveImg_id', latest.waveImg_id);
-            fd.append('note', newNote);
-
-            const saveRes = await fetch(`PHPpatient.php?mode=save_finding_note&pid=${encodeURIComponent(pid)}`, {
-              method:'POST',
-              body: fd
-            });
-
-            const out = await saveRes.json();
-            if(out.status === 'success'){
-              await loadRecommendations(); // refresh lists + latest note
-            }else{
-              alert(out.message || 'Error saving note');
-            }
-          }catch(e){
-            console.error(e);
-            alert('Error saving note. Please try again.');
-          }finally{
-            btn.disabled = false;
-          }
-        });
-
+      
         grid.appendChild(el);
       });
 

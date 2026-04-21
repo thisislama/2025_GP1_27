@@ -130,7 +130,7 @@ elseif ($waveImg_id > 0) {
     $stmt->close();
 
     $imagePath = htmlspecialchars($analysis['filePath']);
-    $notes = $analysis['finding_notes'] ?: 'No notes available.';
+    $notes = $analysis['finding_notes'] ?: 'No clinical action recorded.';
     $patientName = $analysis['first_name'] ? $analysis['first_name'] . ' ' . $analysis['last_name'] : 'Not linked yet';
     $anomaly_type = $analysis['anomaly_type'];
     $status = $analysis['status'];
@@ -920,7 +920,7 @@ $patients_stmt->close();
                             
                             <?php if (!$is_temp): ?>
                                 <div class="info-label" style="margin-top: 1.5em;">
-                                    <i class="fas fa-notes-medical"></i> Clinical Notes
+                                    <i class="fas fa-notes-medical"></i> Doctor Action
                                 </div>
                                 <p><?= nl2br(htmlspecialchars($notes)) ?></p>
                             <?php endif; ?>
@@ -988,7 +988,7 @@ $patients_stmt->close();
                     <div class="feedback-section">
                         <div class="feedback-title">
                             <i class="fas fa-comment-medical"></i>
-                            <span>Doctor's Feedback on Recommendation</span>
+                            <span>Recommendation and Action</span>
                         </div>
                         
                         <div class="alert alert-info" style="margin-bottom: 1em;">
@@ -996,31 +996,10 @@ $patients_stmt->close();
                             <span> Suggested Recommendation: <?= htmlspecialchars($suggested_recommendation) ?></span>
                         </div>
                         
-                        <div class="feedback-option">
-                            <input type="radio" name="feedback_helpful" id="feedbackYes" value="yes" checked>
-                            <label for="feedbackYes">
-                                <strong>Yes, this recommendation is helpful</strong>
-                                <br>
-                                <small style="color: var(--gray-500);">I agree with the suggestion</small>
-                            </label>
-                        </div>
+                      
                         
-                        <div class="feedback-option">
-                            <input type="radio" name="feedback_helpful" id="feedbackNo" value="no">
-                            <label for="feedbackNo">
-                                <strong>No, I would modify this recommendation</strong>
-                                <br>
-                                <small style="color: var(--gray-500);">The suggestion needs adjustment</small>
-                            </label>
-                        </div>
-                        
-                        <div id="modifiedRecommendationField" style="display: none;">
-                            <label class="form-label">Your Modified Recommendation</label>
-                            <textarea name="modified_recommendation" class="feedback-textarea" rows="3" placeholder="Please provide your modified recommendation based on clinical expertise..."></textarea>
-                        </div>
-                        
-                        <label class="form-label" style="margin-top: 1em;">Additional Clinical Notes</label>
-                        <textarea name="finding_notes" class="form-textarea" rows="4" placeholder="Enter your observations, additional recommendations, and clinical notes..."></textarea>
+                        <label class="form-label" style="margin-top: 1em;">Doctor Action</label>
+                        <textarea name="finding_notes" class="form-textarea" rows="4" placeholder="Write the clinical action you took to address this waveform issue..."></textarea>
                     </div>
                 </form>
             </div>
@@ -1108,23 +1087,7 @@ $patients_stmt->close();
             }
         }
         
-        document.addEventListener('DOMContentLoaded', function() {
-            const feedbackYes = document.getElementById('feedbackYes');
-            const feedbackNo = document.getElementById('feedbackNo');
-            const modifiedField = document.getElementById('modifiedRecommendationField');
-            
-            function updateModifiedField() {
-                if (feedbackNo.checked) {
-                    modifiedField.style.display = 'block';
-                } else {
-                    modifiedField.style.display = 'none';
-                }
-            }
-            
-            feedbackYes.addEventListener('change', updateModifiedField);
-            feedbackNo.addEventListener('change', updateModifiedField);
-        });
-        
+      
         function selectStatus(status, element) {
             document.getElementById('statusInput').value = status;
             
