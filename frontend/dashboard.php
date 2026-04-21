@@ -35,7 +35,8 @@ $docRes->close();
 $stats = [
     'anomaly' => 0,
     'total_scans' => 0,
-    'patients' => 0
+    'patients' => 0,
+    'reports' => 0
 ];
 $recent_patients = [];
 $upload_message = '';
@@ -65,7 +66,7 @@ if ($conn->connect_error) {
     $scans_sql = "
         SELECT 
             COUNT(wa.waveImg_id) AS total_scans,
-            SUM(CASE WHEN wa.status = 'abnormal' THEN 1 ELSE 0 END) AS anomalies
+            SUM(CASE WHEN wa.status = 'anomaly' THEN 1 ELSE 0 END) AS anomalies
             ,MAX(wa.timestamp) AS last_visit
         FROM waveform wa
         WHERE wa.PID IN (SELECT PID FROM patient_doctor_assignments WHERE userID = ?)
@@ -81,6 +82,9 @@ if ($conn->connect_error) {
         }
         $scans_stmt->close();
 
+        $anomaly_percentage = ($stats['total_scans'] > 0)
+    ? round(($stats['anomaly'] / $stats['total_scans']) * 100)
+    : 0;
    // Get recent patients with details
     $recent_sql = "
     SELECT p.PID, p.first_name, p.last_name, p.status, p.DOB
@@ -138,6 +142,25 @@ $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result2 = $stmt->get_result();
 $results2 = $result2->fetch_all(MYSQLI_ASSOC);
+
+
+$reports_sql = "
+    SELECT COUNT(r.reportID) AS total_reports
+    FROM report r
+    INNER JOIN patient_doctor_assignments pda ON r.PID = pda.PID
+    WHERE pda.userID = ?
+";
+
+$reports_stmt = $conn->prepare($reports_sql);
+$reports_stmt->bind_param("i", $userID);
+$reports_stmt->execute();
+$reports_result = $reports_stmt->get_result();
+
+if ($reports_result && $reports_row = $reports_result->fetch_assoc()) {
+    $stats['reports'] = $reports_row['total_reports'] ?? 0;
+}
+
+$reports_stmt->close();
 
 ?>
 <!doctype html>
@@ -212,7 +235,7 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
                     <div>
                         <div class="label" >Abnormality</div>
                         <div class="value"><?php echo $stats['anomaly'] ?? '0' ?></div>
-                        <div class="under"><?php echo $stats['anomaly'] ?? '0'?>% of total scans</div>
+                        <div class="under"><?php echo $anomaly_percentage; ?>% of total scans</div>
                     </div>
 
                     <div class="icon warn">
@@ -399,7 +422,6 @@ $results2 = $result2->fetch_all(MYSQLI_ASSOC);
                             <div class="account-number">Total: <?php echo $stats['patients'] ?? '0' ?> Patients</div>
                             <div class="account-actions">
                                 <button class="btn-secondary"><a href="patients.php">View All</a></button>
-                                <button class="btn-secondary">Generate Report</button>
                             </div>
                         </div>
             </div>

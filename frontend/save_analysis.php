@@ -25,7 +25,7 @@ try {
     }
 
     // Set status based on anomaly_type
-    $status = (strtolower($anomaly_type) === 'normal flow' || strtolower($anomaly_type) === 'normal volume' || strtolower($anomaly_type) === 'normal pressure') ? 'normal' : 'abnormal';
+    $status = (strtolower($anomaly_type) === 'normal flow' || strtolower($anomaly_type) === 'normal volume' || strtolower($anomaly_type) === 'normal pressure') ? 'normal' : 'anomaly';
 
     $sql = "INSERT INTO waveform (userID, PID, filePath, timestamp, status, anomaly_type, finding_notes) 
             VALUES (?, ?, ?, NOW(), ?, ?, ?)";
