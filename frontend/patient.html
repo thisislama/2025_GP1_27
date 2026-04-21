@@ -757,14 +757,99 @@ function fmtTime(mysqlTs, locale='en-GB'){
 document.addEventListener("DOMContentLoaded", () => {
   const pid = getPidFromURL();
   const tbody=document.querySelector(".analysis-table tbody");
-  const anomalyInfo={
-    "Double Trigger":{explanation:"Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",solution:"Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"},
-    "Accumulation":{explanation:"Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",solution:"Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."},
-    "Leak":{explanation:"Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",solution:"Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"},
-    "Premature cycling":{explanation:"Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient’s inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",solution:"Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"},
-    "Ineffective effort":{explanation:"Ineffective  effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",solution:"Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."},
-    "Normal":{explanation:"Waveform within normal pattern.",solution:"Continue routine monitoring"}
-  };
+  const anomalyInfo = {
+  "Double Trigger": {
+    explanation: "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
+    solution: "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
+  },
+
+  "Accumulation": {
+    explanation: "Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",
+    solution: "Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."
+  },
+
+  "Leak": {
+    explanation: "Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",
+    solution: "Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"
+  },
+
+  "Premature cycling": {
+    explanation: "Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient’s inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",
+    solution: "Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"
+  },
+
+  "Ineffective effort": {
+    explanation: "Ineffective effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",
+    solution: "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
+  },
+
+  "Normal": {
+    explanation: "Waveform within normal pattern.",
+    solution: "Continue routine monitoring"
+  },
+
+  
+
+  "Accumulation Flow": {
+    explanation: "Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",
+    solution: "Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."
+  },
+
+  "Accumulation Volume": {
+    explanation: "Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",
+    solution: "Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."
+  },
+
+  "Leakage Volume": {
+    explanation: "Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",
+    solution: "Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"
+  },
+
+  "Double_Triggering Flow": {
+    explanation: "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
+    solution: "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
+  },
+
+  "Double_Triggering Volume": {
+    explanation: "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
+    solution: "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
+  },
+
+  "Premature_cycling Flow": {
+    explanation: "Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient’s inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",
+    solution: "Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"
+  },
+
+  "Premature_cycling Volume": {
+    explanation: "Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient’s inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",
+    solution: "Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"
+  },
+
+  "Ineffective_effort Flow": {
+    explanation: "Ineffective effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",
+    solution: "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
+  },
+
+  "Ineffective_effort Volume": {
+    explanation: "Ineffective effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",
+    solution: "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
+  },
+
+  "Normal Flow": {
+    explanation: "Waveform within normal pattern.",
+    solution: "Continue routine monitoring"
+  },
+
+  "Normal Volume": {
+    explanation: "Waveform within normal pattern.",
+    solution: "Continue routine monitoring"
+  },
+
+  "Normal Pressure": {
+    explanation: "Waveform within normal pattern.",
+    solution: "Continue routine monitoring"
+  }
+};
   const getSeverityClass=(level)=>{ if(!level) return ""; const s=level.toLowerCase(); if(s.includes("high")||s.includes("critical"))return"critical"; if(s.includes("moderate"))return"moderate"; return"normal"; };
 
   fetch(`PHPpatient.php?pid=${pid}&mode=analysis`)
