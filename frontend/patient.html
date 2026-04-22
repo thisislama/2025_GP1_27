@@ -48,12 +48,8 @@
     }
     .nav-link:hover::after{width:100%}
     .nav-link:hover{transform:translateY(-2px); color:#055ac0}
-    .profile-btn{all:unset;cursor:pointer;display:inline-block}
-    .btn-logout{
-      background:linear-gradient(90deg,#0f65ff,#5aa6ff); color:#fff; padding:.5em .975em;
-      border-radius:.75em; font-weight:600; border:none; box-shadow:0 .5em 1.25em rgba(15,101,255,.14);
-      cursor:pointer; font-size:.875em;
-    }
+    
+   
     .avatar-icon{width:30px;height:30px;display:block}
 
     /* ---------- Main panels---------- */
@@ -221,10 +217,7 @@
         font-weight: 600;
     }
 
-    .ipad-nav .profile-btn img {
-        width: 32px;
-        height: 32px;
-    }
+    
 
     .ipad-logout {
         background: linear-gradient(90deg, #0f65ff, #5aa6ff);
@@ -524,6 +517,126 @@
   color:#6b7b8f;
 }
 
+
+
+
+
+.profile{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 8px;
+}
+
+.user-info-minimal{
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.user-name{
+  font-weight: 600;
+  color: #232735;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.user-role{
+  font-size: 0.72rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.avatar-icon{
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #0f65ff;
+}
+
+.btn-logout{
+  background: #f8fafd;
+  border: none;
+  width: 52px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: 0.2s ease;
+  margin-left: 6px;
+}
+
+.btn-logout:hover{
+  color: #0f65ff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.logout-icon{
+  font-size: 30px;
+}
+
+.auth-nav{
+  position: absolute;
+  top: 5.2%;
+  right: 16.2%;
+  display: flex;
+  align-items: center;
+  gap: 1.2em;
+  z-index: 30;
+}
+
+.profile{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 6px;
+}
+
+.user-name{
+  font-weight: 600;
+  color: #232735;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.user-role{
+  font-size: 0.62rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.avatar-icon{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #0f65ff;
+}
+
+.btn-logout{
+  background: #f8fafd;
+  border: none;
+  width: 46px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: 0.2s ease;
+  margin-left: 4px;
+  padding: 0;
+}
+
+.logout-icon{
+  font-size: 28px;
+  margin: 0;
+}
   </style>
 </head>
 
@@ -535,19 +648,27 @@
             <img src="Images/Logo.png" alt="Tanafs Logo">
         </a>
 
-        <nav class="ipad-nav">
-            <a href="dashboard.php" class="nav-link">Dashboard</a>
-            <a href="patients.php" class="nav-link">Patients</a>
-            <a href="history2.php" class="nav-link">History</a>
+       <nav class="auth-nav" aria-label="User navigation">
+    <a class="nav-link" href="dashboard.php">Dashboard</a>
+    <a class="nav-link" href="patients.php">Patients</a>
+    <a class="nav-link" href="history2.php">History</a>
 
-            <a href="profile.php" class="profile-btn">
-                <img src="images/profile.png" alt="Profile">
-            </a>
+    <a href="profile.php" class="profile-btn">
+        <div class="profile">
+            <img class="avatar-icon" src="images/profile.png" alt="Profile">
+            <div class="user-info-minimal">
+                <div class="user-name">Dr. Njood Turki</div>
+                <div class="user-role">Respiratory therapist</div>
+            </div>
+        </div>
+    </a>
 
-            <form action="Logout.php" method="post">
-                <button type="submit" class="ipad-logout">Logout</button>
-            </form>
-        </nav>
+    <form action="Logout.php" method="post" style="display:inline;">
+        <button type="submit" class="btn-logout">
+            <span class="material-symbols-outlined logout-icon">logout</span>
+        </button>
+    </form>
+</nav>
 
     </div>
 </header>
@@ -557,22 +678,27 @@
     <img class="topimg" src="Images/Group 8.png" alt="img">
     <img class="logo" src="Images/Logo.png" alt="Tanafs Logo">
 
-    <nav class="auth-nav">
-              <a class="nav-link" href="dashboard.php">Dashboard</a>
+    <nav class="auth-nav" aria-label="User navigation">
+    <a class="nav-link" href="dashboard.php">Dashboard</a>
+    <a class="nav-link" href="patients.php">Patients</a>
+    <a class="nav-link" href="history2.php">History</a>
 
-        <a class="nav-link" href="patients.php">Patients</a>
-        <a class="nav-link" href="history2.php">history</a>
+<a href="profile.php" class="profile-btn">
+    <div class="profile">
+        <img class="avatar-icon" src="images/profile.png" alt="Profile">
+        <div class="user-info-minimal">
+            <div class="user-name" id="doctorName">Loading...</div>
+            <div class="user-role" id="doctorRole">Loading...</div>
+        </div>
+    </div>
+</a>
 
-        <button class="profile-btn" onclick="window.location.href='profile.php'">
-    <img class="avatar-icon" src="images/profile.png" alt="Profile" />
-</button>
-
-
-       <button class="btn-logout" onclick="window.location.href='logout.php'">Logout</button>
-
-     
-
-    </nav>
+    <form action="Logout.php" method="post" style="display:inline;">
+        <button type="submit" class="btn-logout">
+            <span class="material-symbols-outlined logout-icon">logout</span>
+        </button>
+    </form>
+</nav>
 </div>
 
 
@@ -1147,6 +1273,24 @@ location.href = `ReportPage.php?pid=${pid}`;
 })();
 </script>
 
-
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("PHPpatient.php?mode=doctor_info")
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        document.getElementById("doctorName").textContent = data.doctorName || "Unknown Doctor";
+        document.getElementById("doctorRole").textContent = data.role || "Unknown Role";
+      } else {
+        document.getElementById("doctorName").textContent = "Unknown Doctor";
+        document.getElementById("doctorRole").textContent = "";
+      }
+    })
+    .catch(() => {
+      document.getElementById("doctorName").textContent = "Unknown Doctor";
+      document.getElementById("doctorRole").textContent = "";
+    });
+});
+</script>
 </body>
 </html>

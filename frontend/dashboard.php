@@ -416,7 +416,7 @@ $reports_stmt->close();
             <div class="card account-card" style=" background: linear-gradient(135deg, #0a76fc, #c4d8ff); box-shadow: rgba(10, 118, 252, 0.4) 0em 0.5em 1.5em 0em; color: white;">
                         <div class="card-header">
                             <h2 class="card-title">My Patients</h2>
-                            <button class="btn-primary">Add Patient</button>
+                            <button class="btn-primary"><a href="patients.php">Add Patient</a></button>
                         </div>
                         <div class="account-info">
                             <div class="account-number">Total: <?php echo $stats['patients'] ?? '0' ?> Patients</div>

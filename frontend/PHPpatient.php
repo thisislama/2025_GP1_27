@@ -300,5 +300,37 @@ elseif ($mode === 'save_finding_note') {
     echo json_encode($ok ? ["status"=>"success"] : ["status"=>"error","message"=>"Update failed: ".$err], JSON_UNESCAPED_UNICODE);
 }
 
+elseif ($mode === 'doctor_info') {
+    $sql = "SELECT first_name, last_name, role
+            FROM healthcareprofessional
+            WHERE userID = ?";
+    
+    $stmt = mysqli_prepare($conn, $sql);
+    if (!$stmt) {
+        echo json_encode(["status" => "error", "message" => "Prepare failed"]);
+        exit;
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $sessionUserId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        echo json_encode([
+            "status" => "success",
+            "doctorName" => trim($row["first_name"] . " " . $row["last_name"]),
+            "role" => $row["role"]
+        ], JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Doctor not found"
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    mysqli_free_result($result);
+    mysqli_stmt_close($stmt);
+}
+
 
 mysqli_close($conn);
