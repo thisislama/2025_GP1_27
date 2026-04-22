@@ -85,8 +85,83 @@ if (!$userData) {
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
 
 <style>
+
+         :root {
+             --bg: #f2f6fb;
+            --accent: #0f65ff;
+            --muted: #9aa6c0;
+            --radius: 24px;
+            --field-h: 3.25rem;
+            --field-r: 12px;
+            --gap: 16px;
+            --pad: 36px;
+            --maxw: 800px;
+
+            --primary-blue: #0a76fc;
+            --secondary-blue: #c4d8ff;
+            --light-blue: #bdd6ffff;
+            --dark-blue: #2b4a77;
+            --success: #14b530;
+            --warning: #e53935;
+            --text-dark: #232735;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f8fafd;
+
+
+            --primary-blue: #0f65ff;
+            --light-blue: #bdd6ffff;
+            --dark-blue: #2b4a77;
+            --success: #14b530;
+            --warning: #da2323;
+            --text-dark: #232735;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            --border-radius: 16px;
+
+            --border-color: #e9eef6;
+            --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.04);
+            --border-radius: 16px;
+            --border-radius-sm: 12px;
+            --border-radius-xs: 8px;
+            
+
+        }
+
+    
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-right: 1.5em;
+        }
+        .user-info {
+            display:block;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.75rem;
+        }
+
+        .user-role {
+            font-size: 0.55rem;
+            color: var(--text-muted);
+        }
+
+        .avatar-icon {
+            width: 2em;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-blue);
+        }
 :root {
   --bg: #f2f6fb;
   --card: #ffffff;
@@ -321,6 +396,88 @@ body {
   margin: 0;
   background: #f9faff; 
 }
+
+
+        .btn,
+        .btn-logout {
+            /*background: linear-gradient(90deg, #0f65ff, #5aa6ff);
+            color: #fff;*/
+            background: none;
+            border: none;
+            width: 2.5em;
+            height: 2.65em;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+
+        }
+           
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-xs);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31, 69, 181, 0.2);
+}
+
+.btn-secondary {
+    background: var(--bg-light);
+    color: var(--primary-blue);
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--border-radius-xs);
+    border: 1px solid var(--border-color);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.btn-text {
+    background: none;
+    border: none;
+    color: var(--primary-blue);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.875rem;
+    padding: 0;
+}
+
+.btn-text:hover {
+    text-decoration: underline;
+}
+
+            
+  
+        .icon-btn,
+        .btn-logout:hover {
+        background: var(--bg-light);
+        color: var(--primary-blue);
+        box-shadow: var(--shadow);
+        }
+
+        .icon-btn,
+        .btn-logout:hover {
+        background: var(--bg-light);
+        color: var(--primary-blue);
+        box-shadow: var(--shadow);
+        }
   @media (min-width: 768px) and (max-width: 1024px) {
   .auth-nav {
     top: 4%;
@@ -438,18 +595,23 @@ body {
   <img class="topimg" src="images/Group 8.png" alt="">
   <img class="logo" src="images/logo.png" alt="Logo">
 
-   <nav class="auth-nav" aria-label="User navigation">
-        <a class="nav-link" href="dashboard.php">Dashboard</a>
+     <nav class="auth-nav" aria-label="User navigation">
+        <a class="nav-link active" href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
         <a class="nav-link" href="history2.php">History</a>
         <a href="profile.php" class="profile-btn">
             <div class="profile">
                 <img class="avatar-icon" src="images/profile.png" alt="Profile">
+                <div class="user-info-minimal">
+                            <div class="user-name"><?php echo  $_SESSION['doctorName'] ?></div>
+                            <div class="user-role"><?php echo  $_SESSION['role'] ?></div>
+                </div>
             </div>
         </a>
 
         <form action="Logout.php" method="post" style="display:inline;">
-            <button type="submit" class="btn-logout">Logout</button>
+            <button type="submit" class="btn-logout">
+            <span class="material-symbols-outlined" style="font-size: 2em; margin-right:1.24em;">logout</span></button>
         </form>
     </nav>
 

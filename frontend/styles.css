@@ -59,7 +59,38 @@ z-index: 30;
 }
 .auth-nav a { white-space: nowrap; }
 
+/*user icon name etc*/
+  
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-right: 1.5em;
+        }
+        .user-info {
+            display:block;
+            align-items: center;
+            gap: 1rem;
+        }
 
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.75rem;
+        }
+
+        .user-role {
+            font-size: 0.55rem;
+            color: var(--text-muted);
+        }
+
+        .avatar-icon {
+            width: 2em;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-blue);
+        }
+        
 .auth-signup, .auth-signin { padding: 0.55em 1em; }
 
 .auth-signin{
