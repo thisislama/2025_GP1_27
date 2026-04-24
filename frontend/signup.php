@@ -150,9 +150,9 @@ $up->execute();
         header('Location: verify_notice.php');
         exit;
 
-    } catch (Throwable $e) {
-        redirect_with_error('An unexpected error occurred. Please try again later.');
-    }
+  } catch (Throwable $e) {
+    redirect_with_error('An unexpected error occurred. Please try again later.');
+}
 }
 
 $error = $_SESSION['error'] ?? '';
