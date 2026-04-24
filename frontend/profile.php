@@ -188,11 +188,13 @@ img.logo { position: absolute; top: 2%; left: 14%; width: clamp(100px, 12vw, 180
 .auth-nav { position: absolute; top: 2.9%; right: 16.2%; display: flex; align-items: center; gap: 1.6em; z-index: 30; }
 .nav-link { color: #0876FA; font-weight: 600; text-decoration: none; font-size: 1em; transition: all 0.3s ease; position: relative; }
 .nav-link::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0876FA, #78C1F5); transition: width 0.3s ease; border-radius: 2px; }
-.nav-link:hover::after { width: 100%; }
+.nav-link:hover::after { width: 100%; } 
 .nav-link:hover { transform: translateY(-2px); color: #055ac0; }
 .profile { display: flex; gap: 0.625em; align-items: center;  padding: 0.375em 0.625em; }
 .avatar-icon { width: 30px; height: 30px; display: block; }
-.btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em; font-weight: 400; border: none; box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14); cursor: pointer; font-size: 0.875em; }
+.btn-logout { background: linear-gradient(90deg, #0f65ff, #5aa6ff); color: white; padding: 0.5em 0.975em; border-radius: 0.75em;
+ font-weight: 400; border: none; /*box-shadow: 0 0.5em 1.25em rgba(15,101,255,0.14);*/ cursor: pointer; font-size: 0.875em; }
+
 profile-card{
   width: 100%;
   max-width: 34rem;                 
@@ -403,6 +405,7 @@ body {
             /*background: linear-gradient(90deg, #0f65ff, #5aa6ff);
             color: #fff;*/
             background: none;
+            background-color: transparent;
             border: none;
             width: 2.5em;
             height: 2.65em;
@@ -467,16 +470,13 @@ body {
   
         .icon-btn,
         .btn-logout:hover {
-        background: var(--bg-light);
         color: var(--primary-blue);
-        box-shadow: var(--shadow);
+        background-color: transparent;
         }
 
         .icon-btn,
         .btn-logout:hover {
-        background: var(--bg-light);
         color: var(--primary-blue);
-        box-shadow: var(--shadow);
         }
   @media (min-width: 768px) and (max-width: 1024px) {
   .auth-nav {
@@ -563,6 +563,83 @@ body {
 
 
 }
+
+        body {
+            margin: 0.5em;
+            background: #f2f6fb!important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: #15314b;
+            overflow-y: auto;
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            display: block;
+        }
+
+        /* ===== Navigation Bar ===== */
+
+        .nav-link.active::after {
+          width: 100%;
+       }
+
+
+        .material-symbols-outlined {
+            font-variation-settings: 'wght' 500;
+            font-size: 20px
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-right: 1.5em;
+        }
+        .user-info {
+            display:block;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.75rem;
+        }
+
+        .user-role {
+            font-size: 0.55rem;
+            color: var(--text-muted);
+        }
+
+        .avatar-icon {
+            width: 2em;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-blue);
+        }
+        
+.auth-nav {
+position: absolute;
+top: 3%;
+right: 12%;
+display: flex;
+align-items: center;
+gap: 1.1em; 
+flex-wrap: wrap; 
+z-index: 30;
+}
+.auth-nav a { white-space: nowrap; }
+img.topimg {
+position: absolute;
+top: -2.992%; /* أقل سالبًا لتقليل القص على الشاشات المتوسطة */
+left: 50%;
+transform: translateX(-50%);
+height: auto;
+width: min(92%, 1400px); /* تتمدد حتى 92% مع حد أقصى */
+max-width: 100%;
+z-index: 10;
+pointer-events: none;
+transition: top 0.25s ease, width 0.25s ease, transform 0.25s ease;
+}
     </style>
 </head>
 <body>
@@ -595,11 +672,11 @@ body {
   <img class="topimg" src="images/Group 8.png" alt="">
   <img class="logo" src="images/logo.png" alt="Logo">
 
-     <nav class="auth-nav" aria-label="User navigation">
-        <a class="nav-link active" href="dashboard.php">Dashboard</a>
+   <nav class="auth-nav" aria-label="User navigation">
+        <a class="nav-link " href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
         <a class="nav-link" href="history2.php">History</a>
-        <a href="profile.php" class="profile-btn">
+        <a class="nav-link active" href="profile.php" class="profile-btn">
             <div class="profile">
                 <img class="avatar-icon" src="images/profile.png" alt="Profile">
                 <div class="user-info-minimal">

@@ -807,9 +807,9 @@
 
         .icon-btn,
         .btn-logout:hover {
-        background: var(--bg-light);
+      /*  background: var(--bg-light);*/
         color: var(--primary-blue);
-        box-shadow: var(--shadow);
+      /*  box-shadow: var(--shadow);*/
         }
 
         .nav-link,
