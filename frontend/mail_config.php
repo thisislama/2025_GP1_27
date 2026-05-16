@@ -13,7 +13,7 @@ function sendAppMail(string $toEmail, string $toName, string $subject, string $h
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'tanafsg27@gmail.com';      
-        $mail->Password   = 'wygi poyc cfkp oewm';    
+        $mail->Password   = 'dftbhsbtkxkqyubg';    
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
@@ -27,8 +27,7 @@ function sendAppMail(string $toEmail, string $toName, string $subject, string $h
 
         $mail->send();
         return true;
-    } catch (Exception $e) {
-        error_log("Mail error: " . $e->getMessage());
-        return false;
-    }
+} catch (Exception $e) {
+    die("Mailer Error: " . $mail->ErrorInfo);
+}
 }
