@@ -215,13 +215,21 @@ if (isset($_SESSION['error_message'])) {
             <a href="patients.php" class="nav-link">Patients</a>
             <a href="history2.php" class="nav-link">History</a>
 
-            <a href="profile.php" class="profile-btn">
-                <img src="images/profile.png" alt="Profile">
-            </a>
+           <a href="profile.php" class="profile-btn">
+    <div class="profile">
+        <img class="avatar-icon" src="images/profile.png" alt="Profile">
+        <div class="user-info-minimal">
+            <div class="user-name"><?php echo $_SESSION['doctorName']; ?></div>
+            <div class="user-role"><?php echo $_SESSION['role']; ?></div>
+        </div>
+    </div>
+</a>
 
-            <form action="Logout.php" method="post">
-                <button type="submit" class="ipad-logout">Logout</button>
-            </form>
+<form action="Logout.php" method="post">
+    <button type="submit" class="btn-logout">
+        <span class="material-symbols-outlined">logout</span>
+    </button>
+</form>
         </nav>
 
     </div>
@@ -235,15 +243,27 @@ if (isset($_SESSION['error_message'])) {
         <a class="nav-link" href="dashboard.php">Dashboard</a>
         <a class="nav-link" href="patients.php">Patients</a>
         <a class="nav-link active" href="history2.php">History</a>
-        <a href="profile.php" class="profile-btn">
-            <div class="profile">
-                <img class="avatar-icon" src="images/profile.png" alt="Profile">
-            </div>
-        </a>
+       <a href="profile.php" class="profile-btn">
+    <div class="profile">
+        <img class="avatar-icon" src="images/profile.png" alt="Profile">
 
-        <form action="Logout.php" method="post" style="display:inline;">
-            <button type="submit" class="btn-logout">Logout</button>
-        </form>
+        <div class="user-info-minimal">
+            <div class="user-name">
+                <?php echo $_SESSION['doctorName']; ?>
+            </div>
+
+            <div class="user-role">
+                <?php echo $_SESSION['role']; ?>
+            </div>
+        </div>
+    </div>
+</a>
+
+<form action="Logout.php" method="post" style="display:inline;">
+    <button type="submit" class="btn-logout">
+        <span class="material-symbols-outlined">logout</span>
+    </button>
+</form>
     </nav>
 
 

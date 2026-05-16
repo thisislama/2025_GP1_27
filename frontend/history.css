@@ -59,7 +59,7 @@ body {
 
 img.topimg {
     position: absolute;
-    top: -15.7%;
+    top: -14.2%;
     left: 48%;
     transform: translateX(-50%);
     max-width: 90%;
@@ -69,7 +69,7 @@ img.topimg {
 
 img.logo {
     position: absolute;
-    top: -10.2%;
+    top: -8.7%;
     left: 14%;
     width: clamp(100px, 12vw, 180px);
     height: auto;
@@ -77,14 +77,14 @@ img.logo {
     pointer-events: none;
 }
 
-.auth-nav {
-    position: absolute;
-    top: -9%;
-    right: 16.2%;
-    display: flex;
-    align-items: center;
-    gap: 1.6em;
-    z-index: 30;
+.auth-nav{
+    position:absolute;
+    top:-7.5%;
+    right:15%;
+    display:flex;
+    align-items:center;
+    gap:1.4em;
+    z-index:30;
 }
 
 .nav-link {
@@ -121,36 +121,82 @@ img.logo {
     width: 100%;
 }
 
-.profile {
+
+
+
+.profile{
     display: flex;
-    gap: 0.625em;
     align-items: center;
-    padding: 0.375em 0.625em;
+    gap: 0.75rem;
+    margin-right: 1.5em;
 }
 
-.avatar-icon {
-    width: 30px;
-    height: 30px;
-    display: block;
+.avatar-icon{
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent);
 }
 
-.profile-btn {
-    all: unset;
-    cursor: pointer;
-    display: inline-block;
-}
-
-.btn-logout {
-    background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-    color: white;
-    padding: 0.5em 0.975em;
-    border-radius: 0.75em;
+.user-name{
     font-weight: 600;
-    border: none;
-    box-shadow: 0 0.5em 1.25em rgba(15, 101, 255, 0.14);
-    cursor: pointer;
-    font-size: 0.875em;
+    color: var(--text-dark);
+    font-size: 0.75rem;
+    line-height: 1;
 }
+
+.user-role{
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    line-height: 1;
+    text-decoration: none !important;
+}
+
+
+
+
+.profile-btn,
+.profile-btn *{
+    text-decoration:none !important;
+    color:inherit !important;
+}
+
+.profile-btn{
+    text-decoration: none !important;
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+}
+
+
+
+
+.user-info-minimal{
+    display:flex;
+    flex-direction:column;
+    line-height:1.05;
+}
+
+.btn-logout{
+    background:transparent;
+    border:none;
+    color:#6b7b8f;
+    cursor:pointer;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:none;
+}
+
+
+
+
+
+
+
+
 
 /* ===== Main Content ===== */
 .main {
@@ -880,18 +926,49 @@ tr:hover {
     .ipad-nav .profile-btn img {
         width: 32px;
         height: 32px;
+        text-decoration:none;
+        display:flex;
+        align-items:center;
     }
 
-    .ipad-logout {
-        background: linear-gradient(90deg, #0f65ff, #5aa6ff);
-        color: white;
-        padding: 0.4em 0.9em;
-        border-radius: 0.7em;
-        border: none;
-        cursor: pointer;
-        font-size: 0.9em;
-        font-weight: 500;
-    }
+    .ipad-nav .profile{
+    display:flex;
+    align-items:center;
+    gap:.6em;
+}
+
+.ipad-nav .avatar-icon{
+    width:38px;
+    height:38px;
+}
+
+.ipad-nav .user-info-minimal{
+    display:flex;
+    flex-direction:column;
+    line-height:1.05;
+}
+
+.ipad-nav .user-name{
+    font-size:.9em;
+    font-weight:700;
+    color:#111;
+}
+
+.ipad-nav .user-role{
+    font-size:.7em;
+    color:#6b7b8f;
+}
+
+.ipad-nav .btn-logout{
+    background:transparent;
+    border:none;
+    color:#6b7b8f;
+    padding:0;
+    box-shadow:none;
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+}
 
     .filter-section {
         flex-direction: column;
