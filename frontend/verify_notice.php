@@ -1,27 +1,10 @@
 <?php
 session_start();
 
-require_once __DIR__ . '/mail_config.php';  
-
 $pending_email = $_SESSION['pending_email'] ?? null;
 $pending_token = $_SESSION['pending_token'] ?? null;
+$pending_name  = $_SESSION['pending_name'] ?? 'User';
 
-// Handle resend email request
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resend_email'])) {
-    if ($pending_email && $pending_token) {
-        $success = send_verification_email($pending_email, $pending_name, $pending_token);
-        if ($success) {
-            $resend_message = "Verification email has been resent!";
-            $resend_status = "success";
-        } else {
-            $resend_message = "Failed to resend email. Please try again.";
-            $resend_status = "error";
-        }
-    } else {
-        $resend_message = "Unable to resend email. Session data missing.";
-        $resend_status = "error";
-    }
-}
 
 ?>
 <!doctype html>
