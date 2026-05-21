@@ -884,17 +884,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const pid = getPidFromURL();
   const tbody=document.querySelector(".analysis-table tbody");
   const anomalyInfo = {
-  "Double Trigger": {
-    explanation: "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
-    solution: "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
-  },
-
-  "Accumulation": {
-    explanation: "Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",
-    solution: "Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."
-  },
-
-  "Leak": {
+  
+  "Leakage Flow": {
     explanation: "Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",
     solution: "Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"
   },
@@ -909,13 +900,7 @@ document.addEventListener("DOMContentLoaded", () => {
     solution: "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
   },
 
-  "Normal": {
-    explanation: "Waveform within normal pattern.",
-    solution: "Continue routine monitoring"
-  },
-
-  
-
+ 
   "Accumulation Flow": {
     explanation: "Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",
     solution: "Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."
