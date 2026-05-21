@@ -31,7 +31,19 @@ $explanation = '';
 
 // Static array with explanations and recommendations
 $anomalyInfo = [
-    "Double Trigger" => [
+     "double triggering  flow" => [
+        "explanation" => "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
+        "suggested_recommendation" => "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
+    ],
+     "Double_Triggering Flow" => [
+        "explanation" => "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
+        "suggested_recommendation" => "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
+    ],
+     "Double_Triggering VOLUME" => [
+        "explanation" => "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
+        "suggested_recommendation" => "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
+    ],
+    "double triggering volume" => [
         "explanation" => "Double triggering occurs when two continuous ventilatory inspiratory efforts are initiated by the patient, with insufficient expiratory time between them",
         "suggested_recommendation" => "Review ventilator support and inspiratory parameters, including inspiratory flow, inspiratory time, and rise time. Consider reviewing sedation and analgesia levels if excessive respiratory drive is suspected"
     ],
@@ -39,7 +51,23 @@ $anomalyInfo = [
         "explanation" => "Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",
         "suggested_recommendation" => "Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."
     ],
-    "Leak" => [
+    "ACCUMULATION VOLUME" => [
+        "explanation" => "Accumulation occurs when incomplete exhalation leads to air trapping, resulting in intrinsic positive end-expiratory pressure (auto-PEEP), which increases the effort required to trigger the ventilator",
+        "suggested_recommendation" => "Review expiratory time and ventilator rate to reduce air trapping and intrinsic PEEP."
+    ],
+    "leak flow" => [
+        "explanation" => "Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",
+        "suggested_recommendation" => "Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"
+    ],
+    "Leakage Flow" => [
+        "explanation" => "Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",
+        "suggested_recommendation" => "Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"
+    ],
+    "Leakage VOLUME" => [
+        "explanation" => "Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",
+        "suggested_recommendation" => "Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"
+    ],
+    "leak volume" => [
         "explanation" => "Leakage occurs when air escapes from the ventilator circuit, leading to patient–ventilator dyssynchrony",
         "suggested_recommendation" => "Inspect the ventilator circuit for air leak. Review ventilator trigger settings to ensure accurate detection of patient effort and improve patient–ventilator synchrony"
     ],
@@ -51,7 +79,19 @@ $anomalyInfo = [
         "explanation" => "Premature cycling occurs when the ventilator ends the inspiratory phase earlier than the patient's inspiratory effort is completed, causing a mismatch between patient demand and ventilator support",
         "suggested_recommendation" => "Review and adjust inspiratory time and cycling criteria to ensure that ventilator expiratory transition aligns with patient inspiratory effort"
     ],
-    "Ineffective effort" => [
+    "ineffective effort flow " => [
+        "explanation" => "Ineffective effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",
+        "suggested_recommendation" => "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
+    ],
+    "ineffective effort volume " => [
+        "explanation" => "Ineffective effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",
+        "suggested_recommendation" => "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
+    ],
+    "Ineffective_effort Volume " => [
+        "explanation" => "Ineffective effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",
+        "suggested_recommendation" => "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
+    ],
+     "Ineffective_effort Flow " => [
         "explanation" => "Ineffective effort occurs when the patient generates an inspiratory effort that fails to trigger the ventilator, resulting in missed breaths and patient–ventilator dyssynchrony",
         "suggested_recommendation" => "Review ventilator trigger sensitivity and settings to improve detection of patient inspiratory effort and reduce ineffective triggering events."
     ],
