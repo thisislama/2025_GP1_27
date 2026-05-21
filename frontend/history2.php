@@ -61,7 +61,7 @@ if ($conn->connect_error) {
         $search_term = $conn->real_escape_string($_GET['search']);
         $search_filter = " AND (
         p.PID LIKE '%$search_term%' 
-        OR wa.waveAnalysisID LIKE '%$search_term%' 
+        OR wa.waveImg_id LIKE '%$search_term%'
         OR p.first_name LIKE '%$search_term%' 
         OR p.last_name LIKE '%$search_term%'
     )";
@@ -69,11 +69,11 @@ if ($conn->connect_error) {
 
 
     // Handle status filter
-    $status_filter = "";
-    if (isset($_GET['status']) && !empty($_GET['status']) && $_GET['status'] != 'all') {
-        $status = $conn->real_escape_string($_GET['status']);
-        $status_filter = " AND wa.status = '$status'";
-    }
+   $status_filter = "";
+if (isset($_GET['status']) && !empty($_GET['status']) && $_GET['status'] != 'all') {
+    $status = strtolower(trim($conn->real_escape_string($_GET['status'])));
+    $status_filter = " AND LOWER(TRIM(wa.status)) = '$status'";
+}
 
     // Handle delete functionality
     if (isset($_POST['delete']) && !empty($_POST['selected_rows'])) {
@@ -296,44 +296,89 @@ if (isset($_SESSION['error_message'])) {
                         <div class="filter-group">
                             <label for="status">Status</label>
                             <select name="status" id="status">
-                                <option value="all">All Statuses</option>
-                                <option value="Normal" <?php echo (isset($_GET['status']) && $_GET['status'] == 'Normal') ? 'selected' : ''; ?>>
-                                    Normal
-                                </option>
-                                <option value="Abnormal" <?php echo (isset($_GET['status']) && $_GET['status'] == 'Abnormal') ? 'selected' : ''; ?>>
-                                    Abnormal
-                                </option>
-                            </select>
+    <option value="all">All Statuses</option>
+
+    <option value="normal"
+        <?php echo (isset($_GET['status']) && $_GET['status'] == 'normal') ? 'selected' : ''; ?>>
+        Normal
+    </option>
+
+    <option value="anomaly"
+        <?php echo (isset($_GET['status']) && $_GET['status'] == 'anomaly') ? 'selected' : ''; ?>>
+        Abnormal
+    </option>
+</select>
                         </div>
 
-                        <div class="filter-group">
-                            <label for="category">Anomaly type</label>
-                          <select name="category" id="category">
-                                <option value="all">All Anomaly</option>
-                                <option value="double trigger" <?php echo (isset($_GET['category']) && $_GET['category'] == 'double trigger') ? 'selected' : ''; ?>>
-                                    double trigger
-                                </option>
-                                <option value="auto trigger" <?php echo (isset($_GET['category']) && $_GET['category'] == 'auto trigger') ? 'selected' : ''; ?>>
-                                    auto trigger
-                                </option>
-                                <option value="ineffective trigger" <?php echo (isset($_GET['category']) && $_GET['category'] == 'ineffective trigger') ? 'selected' : ''; ?>>
-                                    ineffective trigger
-                                </option>
-                                <option value="delayed cycling" <?php echo (isset($_GET['category']) && $_GET['category'] == 'delayed cycling') ? 'selected' : ''; ?>>
-                                    delayed cycling
-                                </option>
-                                <option value="reverse trigger" <?php echo (isset($_GET['category']) && $_GET['category'] == 'reverse trigger') ? 'selected' : ''; ?>>
-                                    reverse trigger
-                                </option>
-                                <option value="flow limited" <?php echo (isset($_GET['category']) && $_GET['category'] == 'flow limited') ? 'selected' : ''; ?>>
-                                    flow limited
-                                </option>
-                                <option value="early cycling" <?php echo (isset($_GET['category']) && $_GET['category'] == 'early cycling') ? 'selected' : ''; ?>>
-                                    early cycling
-                                </option>
-                            </select>
+                       <div class="filter-group">
+    <label for="category">Anomaly type</label>
 
-                        </div>
+    <select name="category" id="category">
+
+        <option value="all">All Anomaly</option>
+
+        <option value="Accumulation Flow"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Accumulation Flow') ? 'selected' : ''; ?>>
+            Accumulation Flow
+        </option>
+
+        <option value="Accumulation Volume"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Accumulation Volume') ? 'selected' : ''; ?>>
+            Accumulation Volume
+        </option>
+
+        <option value="Double_Triggering Flow"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Double_Triggering Flow') ? 'selected' : ''; ?>>
+            Double Triggering Flow
+        </option>
+
+        <option value="Double_Triggering Volume"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Double_Triggering Volume') ? 'selected' : ''; ?>>
+            Double Triggering Volume
+        </option>
+
+        <option value="Ineffective_effort Flow"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Ineffective_effort Flow') ? 'selected' : ''; ?>>
+            Ineffective Effort Flow
+        </option>
+
+        <option value="Ineffective_effort Volume"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Ineffective_effort Volume') ? 'selected' : ''; ?>>
+            Ineffective Effort Volume
+        </option>
+
+        <option value="Leakage Flow"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Leakage Flow') ? 'selected' : ''; ?>>
+            Leakage Flow
+        </option>
+
+        <option value="Leakage Volume"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Leakage Volume') ? 'selected' : ''; ?>>
+            Leakage Volume
+        </option>
+
+        <option value="Normal Flow"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Normal Flow') ? 'selected' : ''; ?>>
+            Normal Flow
+        </option>
+
+        <option value="Normal Volume"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Normal Volume') ? 'selected' : ''; ?>>
+            Normal Volume
+        </option>
+
+        <option value="Premature_cycling Flow"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Premature_cycling Flow') ? 'selected' : ''; ?>>
+            Premature Cycling Flow
+        </option>
+
+        <option value="Premature_cycling Volume"
+            <?php echo (isset($_GET['category']) && $_GET['category'] == 'Premature_cycling Volume') ? 'selected' : ''; ?>>
+            Premature Cycling Volume
+        </option>
+
+    </select>
+</div>
 
                         <div class="filter-group">
                             <label for="date_from">From Date</label>

@@ -180,7 +180,7 @@ elseif ($action === 'delete') {
                 $delR->close();
 
                 
-                $delW = $conn->prepare("DELETE FROM waveform_analysis WHERE PID=?");
+                $delW = $conn->prepare("DELETE FROM waveform WHERE PID=?");
                 $delW->bind_param($pidType, $pidParam);
                 $delW->execute();
                 $delW->close();
