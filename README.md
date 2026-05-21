@@ -19,24 +19,222 @@ Database & Hosting
 Development Tools
 <p> <img src="https://img.shields.io/badge/Google%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=black" height="32" title="Google Colab"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" width="50" title="VS Code"/> </p>
 
- ## Launching Instructions
+---
+## Installation Instructions
 
-#### The system will be publicly hosted on Flask once finished.
- For now, you can run it locally:
-<br> 1️. Clone the Repository
-<br> git clone https://github.com/<your-org-or-username>/2025_GP_27.git
-<br> cd 2025_GP_27
-<br> 2️. Create a Virtual Environment 
-<br> python -m venv venv
-<br>  Activate the Environment
-<br>    - Windows
-<br>      venv\Scripts\activate
- <br>   - macOS / Linux
- <br>     source venv/bin/activate
-<br> 3️. Install Project Dependencies
-<br> pip install -r requirements.txt
-<br> 4️. Run the Flask Application
-<br>  python app.py
-<br> 5️. Access the Application
-<br> Once the server starts, open your browser and visit:
-<br> 👉 http://127.0.0.1:5000
+### Prerequisites
+
+| Requirement | Version / Specification |
+| :--- | :--- |
+| Web Server | Apache (XAMPP / WAMP / MAMP / Live Server) |
+| PHP | 7.4 or higher |
+| MySQL | 5.7 or higher |
+| Python | 3.8 or higher |
+| Browser | Microsoft Edge (recommended), Firefox, Safari |
+
+---
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/thisislama/2025_GP1_27.git
+cd 2025_GP1_27
+```
+
+---
+
+### Step 2: Configure the Patient Management System (PMS) Data Source
+
+The system uses a simulated PMS JSON file for patient records.
+
+1. Ensure the file exists at:
+   ```
+   data/patients_record.json
+   ```
+2. The JSON structure should follow this format:
+
+```json
+{
+  "hospital_records": [
+    {
+      "PID": "P-1001",
+      "first_name": "Ali",
+      "last_name": "AlHarbi",
+      "gender": "Male",
+      "status": "active",
+      "phone": "05XXXXXXXX",
+      "DOB": "1990-03-14"
+    }
+  ]
+}
+```
+
+---
+
+### Step 3: Set Up the AI Model (Python / FastAPI)
+
+1. Navigate to the model directory:
+   ```bash
+   cd model1
+   ```
+
+2. Install Python dependencies:
+   ```bash
+   pip install torch torchvision opencv-python fastapi uvicorn
+   ```
+
+3. Run the FastAPI server:
+   ```bash
+   python app.py
+   ```
+   or
+   ```bash
+   uvicorn app:app --reload --port 8000
+   ```
+
+The AI API will be available at: `http://localhost:8000`
+
+---
+
+### Live Server (Hostinger)
+
+The application is hosted at:
+```
+https://skyblue-whale-909440.hostingersite.com/
+```
+
+---
+
+## Testing Information
+
+### Test User Credentials
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| Respiratory Therapist | rt@tanafs.com | Password123! |
+| ICU Nurse | nurse@tanafs.com | Password123! |
+| Doctor | doctor@tanafs.com | Password123! |
+
+> **Note:** You can also create a new account via the Sign-Up page. Email verification is required.
+
+---
+
+### Test Patient Data (for PMS Simulation)
+
+| File Number (PID) | Name | Status |
+| :--- | :--- | :--- |
+| P-1001 | Ali AlHarbi | active |
+| P-1010 | Lama AlShahrani | active |
+| P-1011 | Hassan AlMalki | active |
+
+---
+
+### Test Waveform Images
+
+Sample waveform images for testing are available in the `sample-images/` directory:
+
+| File | Expected Result |
+| :--- | :--- |
+| `normal-flow.jpg` | Normal Flow |
+| `double-triggering.jpg` | Double Triggering Flow |
+| `accumulation.jpg` | Accumulation Flow |
+| `leakage.jpg` | Leakage Volume |
+
+---
+
+### AI Model Performance
+
+| Metric | Value |
+| :--- | :--- |
+| Architecture | ResNet-18 |
+| Training Accuracy | 94% |
+| Test Accuracy | 93.93% |
+| Weighted F1-Score | 0.94 |
+| Categories | 12 waveform types |
+| Avg Response Time | 6.3 seconds |
+
+---
+
+### System Availability Monitoring
+
+| Tool | UptimeRobot |
+| :--- | :--- |
+| Monitoring Interval | Every 5 minutes |
+| Measured Availability | 99.8% |
+| Monitoring Period | May 3-9, 2025 |
+
+---
+
+## Project Structure
+
+```
+2025_GP1_27/
+│
+├── frontend/
+│   ├── dashboard.php
+│   ├── patients.php
+│   ├── history2.php
+│   ├── profile.php
+│   ├── signin.php
+│   ├── signup.php
+│   ├── dashboard-style.css
+│   ├── styles.css
+│   └── main.js
+│
+├── backend/
+│   ├── db_connection.php
+│   ├── Logout.php
+│   └── PHPMailer/
+│
+├── model1/
+│   ├── Train_ResNet_W - Copy.ipynb
+│   ├── app.py (FastAPI)
+│   └── requirements.txt
+│
+├── database/
+│   └── tanafs_db.sql
+│
+├── data/
+│   └── patients_record.json
+│
+├── images/
+│   └── (logo, icons, etc.)
+│
+├── js/
+│   └── tanafs-shortcuts.js
+│
+├── sample-images/
+│   └── (test waveform images)
+│
+└── README.md
+```
+
+---
+
+## GitHub Repository
+
+| Link | URL |
+| :--- | :--- |
+| **Repository** | https://github.com/thisislama/2025_GP1_27 |
+| **AI Model Notebook** | https://github.com/thisislama/2025_GP1_27/blob/main/model1/Train_ResNet_W%20-%20Copy.ipynb |
+
+---
+
+## Jira Project Management
+
+| Link | URL |
+| :--- | :--- |
+| **Jira Board** | https://gp1447g27.atlassian.net/jira/software/projects/GP/boards/1 |
+
+
+---
+
+## License
+
+© 2026 TANAFS Company. All rights reserved.
+
+---
+
+**TANAFS | تنفس** 
+–--
+Breathe well, live well
