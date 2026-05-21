@@ -51,13 +51,14 @@ function redirect_with_error(string $msg) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $first_name = trim($_POST['first_name'] ?? '');
-    $last_name  = trim($_POST['last_name']  ?? '');
-    $role       = trim($_POST['role']       ?? '');
-    $email      = trim($_POST['email']      ?? '');
-    $phone      = trim($_POST['phone']      ?? '');
-    $password   = $_POST['password']        ?? '';
-    $dob        = trim($_POST['dob']        ?? '');
+$first_name = trim($_POST['first_name'] ?? '');
+$last_name  = trim($_POST['last_name']  ?? '');
+$role       = trim($_POST['role']       ?? '');
+$email      = trim($_POST['email']      ?? '');
+$phone      = trim($_POST['phone']      ?? '');
+$password   = $_POST['password'] ?? '';
+$confirm_password = $_POST['confirm_password'] ?? '';
+$dob        = trim($_POST['dob'] ?? '');
 
    if ($first_name === '') {
     redirect_with_error('First name is required.');
@@ -74,6 +75,13 @@ if ($email === '') {
 if ($password === '') {
     redirect_with_error('Password is required.');
 }
+if ($confirm_password === '') {
+    redirect_with_error('Confirm password is required.');
+}
+
+if ($password !== $confirm_password) {
+    redirect_with_error('Passwords do not match.');
+}
 if ($dob === '') {
     redirect_with_error('Date of birth is required.');
 }
@@ -89,6 +97,13 @@ if (!preg_match('/^[\p{L}\s]{3,}$/u', $last_name)) {
     if (!in_array($role, $allowed_roles, true)) redirect_with_error('Invalid role selected.');
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) redirect_with_error('Please enter a valid email address.');
     if (mb_strlen($password) < 8) redirect_with_error('Password must be at least 8 characters.');
+    if (mb_strlen($password) < 8) {
+    redirect_with_error('Password must be at least 8 characters.');
+}
+
+if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\'"\\\\|,.<>\/?]/', $password)) {
+    redirect_with_error('Password must include at least one symbol.');
+}
 $normalizedPhone = preg_replace('/[^0-9+]/', '', $phone);
 
 $digitsOnly = preg_replace('/\D/', '', $normalizedPhone);
@@ -144,14 +159,16 @@ $up->execute();
     redirect_with_error('We could not send the verification email. Please try again later.');
 }
 
-        session_regenerate_id(true);
-        $_SESSION['pending_email'] = $email;
-        $_SESSION['pending_token'] = $token;
-        header('Location: verify_notice.php');
-        exit;
+session_regenerate_id(true);
+$_SESSION['pending_email'] = $email;
+$_SESSION['pending_token'] = $token;
+$_SESSION['pending_name']  = $first_name;
 
-  } catch (Throwable $e) {
-    redirect_with_error('An unexpected error occurred. Please try again later.');
+header('Location: verify_notice.php');
+exit;
+
+} catch (Throwable $e) {
+    die('Signup Error: ' . $e->getMessage());
 }
 }
 
@@ -318,7 +335,7 @@ font-weight:700; margin:0 0 6px; }
   background: none;
   border: 0;
   cursor: pointer;
-  color: #64748B; /* نفس لون الأيقونة */
+  color: #64748B; 
 }
 
 .toggle-password:hover {
