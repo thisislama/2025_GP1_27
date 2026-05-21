@@ -112,8 +112,7 @@ https://skyblue-whale-909440.hostingersite.com/
 | Role | Email | Password |
 | :--- | :--- | :--- |
 | Respiratory Therapist | rt@tanafs.com | Password123! |
-| ICU Nurse | nurse@tanafs.com | Password123! |
-| Doctor | doctor@tanafs.com | Password123! |
+
 
 > **Note:** You can also create a new account via the Sign-Up page. Email verification is required.
 
