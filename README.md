@@ -77,20 +77,28 @@ The system uses a simulated PMS JSON file for patient records.
    ```bash
    cd model1
    ```
-
-2. Install Python dependencies:
+   
+2. Create a virtual environment:
    ```bash
-   pip install torch torchvision opencv-python fastapi uvicorn
+   python -m venv venv
+   ```
+   activate it by:
+    ```bash
+   venv\Scripts\activate
+   ```
+   
+3. Install Python dependencies:
+   ```bash
+   pip install fastapi uvicorn torch torchvision pillow python-multipart
    ```
 
-3. Run the FastAPI server:
+4. Run the FastAPI server:
    ```bash
-   python app.py
+     uvicorn main:app --reload
    ```
-   or
-   ```bash
-   uvicorn app:app --reload --port 8000
-   ```
+ 
+
+   
 
 The AI API will be available at: `http://localhost:8000`
 
